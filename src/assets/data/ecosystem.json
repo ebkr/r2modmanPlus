@@ -19126,6 +19126,55 @@
         ]
       }
     },
+    "banjo-recompiled": {
+      "uuid": "31d9c310-34d3-4c9c-9361-ea664f8a1104",
+      "label": "banjo-recompiled",
+      "meta": {
+        "displayName": "Banjo: Recompiled",
+        "iconUrl": "banjo-recompiled.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Banjo: Recompiled",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://hackmd.io/fMDiGEJ9TBSjomuZZOgzNg",
+        "discordUrl": "https://discord.gg/AWZThJ4dPf"
+      }
+    },
     "beetleball": {
       "uuid": "4746944a-59d5-4038-8a13-f9710a4c4bb7",
       "label": "beetleball",
@@ -19508,6 +19557,124 @@
         "wikiUrl": "https://github.com/alexneargarder/BroforceMods/wiki",
         "discordUrl": "https://discord.com/invite/freelives",
         "autolistPackageIds": []
+      }
+    },
+    "carrier-deck": {
+      "uuid": "82453e42-aa80-4dd0-ab64-8a64d72fe252",
+      "label": "carrier-deck",
+      "meta": {
+        "displayName": "Carrier Deck",
+        "iconUrl": "carrier-deck.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "580720"
+            }
+          ],
+          "steamFolderName": "Carrier Deck",
+          "dataFolderName": "CD_Data",
+          "exeNames": [
+            "CD.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Carrier Deck",
+            "iconUrl": "carrier-deck.webp"
+          },
+          "settingsIdentifier": "CarrierDeck",
+          "internalFolderName": "CarrierDeck",
+          "packageIndex": "https://thunderstore.io/c/carrier-deck/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Carrier Deck",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Carrier Deck is a fast paced time management game where you play as the Air Boss on board the CVN-76 in the midst of active war."
       }
     },
     "chill-with-you": {
@@ -20666,6 +20833,123 @@
       },
       "r2modman": null
     },
+    "factory-planner": {
+      "uuid": "f8e2a1c3-9b4d-4e6f-a7c8-d1e2f3a4b5c6",
+      "label": "factory-planner",
+      "meta": {
+        "displayName": "Factory Planner",
+        "iconUrl": "factory-planner.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3679930"
+            }
+          ],
+          "steamFolderName": "Factory Planner",
+          "dataFolderName": "Factory Planner_Data",
+          "exeNames": [
+            "Factory Planner.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Factory Planner",
+            "iconUrl": "factory-planner.webp"
+          },
+          "settingsIdentifier": "FactoryPlanner",
+          "internalFolderName": "FactoryPlanner",
+          "packageIndex": "https://thunderstore.io/c/factory-planner/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Factory Planner",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ]
+      }
+    },
     "five-nights-at-freddys-into-the-pit": {
       "uuid": "ec590bff-7655-4946-acf1-476782de86d5",
       "label": "five-nights-at-freddys-into-the-pit",
@@ -21600,6 +21884,9 @@
           "asset-packs": {
             "label": "Asset Packs"
           },
+          "early-plugins": {
+            "label": "Early Plugins"
+          },
           "mods": {
             "label": "Mods"
           },
@@ -21623,7 +21910,10 @@
           "mods": {
             "name": "Mods",
             "requireCategories": [
-              "mods"
+              "mods",
+              "plugins",
+              "early-plugins",
+              "asset-packs"
             ],
             "excludeCategories": [
               "modpacks",
@@ -21635,7 +21925,8 @@
           "plugins": {
             "name": "Plugins",
             "requireCategories": [
-              "plugins"
+              "plugins",
+              "early-plugins"
             ],
             "excludeCategories": [
               "modpacks",
@@ -21655,7 +21946,8 @@
               "worlds",
               "universes",
               "saves",
-              "plugins"
+              "plugins",
+              "early-plugins"
             ]
           },
           "saves": {
@@ -21669,7 +21961,8 @@
               "universes",
               "mods",
               "plugins",
-              "asset-packs"
+              "asset-packs",
+              "early-plugins"
             ]
           },
           "universes": {
@@ -21683,7 +21976,8 @@
               "saves",
               "mods",
               "plugins",
-              "asset-packs"
+              "asset-packs",
+              "early-plugins"
             ]
           },
           "worlds": {
@@ -21697,7 +21991,8 @@
               "saves",
               "mods",
               "plugins",
-              "asset-packs"
+              "asset-packs",
+              "early-plugins"
             ]
           },
           "other": {
@@ -21709,7 +22004,8 @@
               "modpacks",
               "worlds",
               "universes",
-              "saves"
+              "saves",
+              "early-plugins"
             ]
           },
           "modpacks": {
@@ -23402,6 +23698,124 @@
         ]
       }
     },
+    "on-together": {
+      "uuid": "299844b0-c8f4-41da-8e4a-d742aca37f8d",
+      "label": "on-together",
+      "meta": {
+        "displayName": "On-Together: Virtual Co-Working",
+        "iconUrl": "on-together.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3707400"
+            }
+          ],
+          "steamFolderName": "On-Together",
+          "dataFolderName": "On-Together_Data",
+          "exeNames": [
+            "On-Together/On-Together.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "On-Together: Virtual Co-Working",
+            "iconUrl": "on-together.webp"
+          },
+          "settingsIdentifier": "OnTogetherVirtualCoWorking",
+          "internalFolderName": "OnTogetherVirtualCoWorking",
+          "packageIndex": "https://thunderstore.io/c/on-together/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "On-Together: Virtual Co-Working",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Virtual co-working with friends or strangers all over the world! Digital pals hang out at the bottom of the screen while you work, study, and get stuff done. Includes productivity tools, hangout spots, breaktime games, and more!"
+      }
+    },
     "ostranauts": {
       "uuid": "376711bd-6557-4c98-8efc-acc903868386",
       "label": "ostranauts",
@@ -24145,6 +24559,126 @@
         ]
       }
     },
+    "project-arrhythmia": {
+      "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "label": "project-arrhythmia",
+      "meta": {
+        "displayName": "Project Arrhythmia",
+        "iconUrl": "project-arrhythmia.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "440310"
+            }
+          ],
+          "steamFolderName": "Project Arrhythmia",
+          "dataFolderName": "Project Arrhythmia_Data",
+          "exeNames": [
+            "Project Arrhythmia.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Project Arrhythmia",
+            "iconUrl": "project-arrhythmia.webp"
+          },
+          "settingsIdentifier": "ProjectArrhythmia",
+          "internalFolderName": "ProjectArrhythmia",
+          "packageIndex": "https://thunderstore.io/c/project-arrhythmia/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "PA"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Project Arrhythmia",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/BN25jdt3Vj",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "pushing-it-together-sisyphus": {
       "uuid": "ca4df913-b688-459c-bb60-f56951a5b6a0",
       "label": "pushing-it-together-sisyphus",
@@ -24422,7 +24956,15 @@
           "additionalSearchStrings": [
             "夺魄机兵"
           ],
-          "installRules": [],
+          "installRules": [
+            {
+              "route": "mods",
+              "defaultFileExtensions": [],
+              "trackingMethod": "package-zip",
+              "subRoutes": [],
+              "isDefaultLocation": true
+            }
+          ],
           "relativeFileExclusions": null
         }
       ],
@@ -25246,6 +25788,54 @@
         "autolistPackageIds": []
       }
     },
+    "starfox-64-recompiled": {
+      "uuid": "887dcdab-3747-44a3-8c11-56389c80cc73",
+      "label": "starfox-64-recompiled",
+      "meta": {
+        "displayName": "Starfox 64: Recompiled",
+        "iconUrl": null
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Starfox 64: Recompiled",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": []
+      },
+      "r2modman": null
+    },
     "starship": {
       "uuid": "367e77fa-c7d6-4ca0-a8c6-a35e3f10d300",
       "label": "starship",
@@ -25295,6 +25885,124 @@
         "autolistPackageIds": []
       },
       "r2modman": null
+    },
+    "stolen-realm": {
+      "uuid": "7bb8d376-9f63-4ffb-ad9b-6069565a1ae0",
+      "label": "stolen-realm",
+      "meta": {
+        "displayName": "Stolen Realm",
+        "iconUrl": "stolen-realm.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1330000"
+            }
+          ],
+          "steamFolderName": "Stolen Realm",
+          "dataFolderName": "Stolen Realm_Data",
+          "exeNames": [
+            "Stolen Realm.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Stolen Realm",
+            "iconUrl": "stolen-realm.webp"
+          },
+          "settingsIdentifier": "StolenRealm",
+          "internalFolderName": "StolenRealm",
+          "packageIndex": "https://thunderstore.io/c/stolen-realm/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Stolen Realm",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Stolen Realm is a simultaneous turn-based tactical dungeon crawling looter with action RPG elements where you control up to 6 heroes, solo or through online co-op, venturing forth in adventures set in a high-fantasy, low-poly world."
+      }
     },
     "super-fantasy-kingdom": {
       "uuid": "fe0fa301-b037-4cbc-84e1-300a44bd3eb0",
@@ -25513,6 +26221,124 @@
         "autolistPackageIds": []
       },
       "r2modman": null
+    },
+    "the-farmer-was-replaced": {
+      "uuid": "20fb1c8c-fa3b-48ec-b0bc-e7d1acc15355",
+      "label": "the-farmer-was-replaced",
+      "meta": {
+        "displayName": "The Farmer Was Replaced",
+        "iconUrl": "the-farmer-was-replaced.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2060160"
+            }
+          ],
+          "steamFolderName": "The Farmer Was Replaced",
+          "dataFolderName": "TheFarmerWasReplaced_Data",
+          "exeNames": [
+            "TheFarmerWasReplaced.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "The Farmer Was Replaced",
+            "iconUrl": "the-farmer-was-replaced.webp"
+          },
+          "settingsIdentifier": "TheFarmerWasReplaced",
+          "internalFolderName": "TheFarmerWasReplaced",
+          "packageIndex": "https://thunderstore.io/c/the-farmer-was-replaced/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "The Farmer Was Replaced",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Program and optimize a drone to automate a farm and watch it do the work for you. Collect resources to unlock better technology and become the most efficient farmer in the world. Improve your problem solving and coding skills."
+      }
     },
     "unfair-flips": {
       "uuid": "747c7cd7-8b91-45fd-b734-72fb313cf39b",
@@ -31440,6 +32266,45 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "banjo-recompiled": {
+      "displayName": "Banjo: Recompiled",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://hackmd.io/fMDiGEJ9TBSjomuZZOgzNg",
+      "discordUrl": "https://discord.gg/AWZThJ4dPf"
+    },
     "beetleball": {
       "displayName": "Beetleball",
       "categories": {
@@ -31603,6 +32468,47 @@
       "wikiUrl": "https://github.com/alexneargarder/BroforceMods/wiki",
       "discordUrl": "https://discord.com/invite/freelives",
       "autolistPackageIds": []
+    },
+    "carrier-deck": {
+      "displayName": "Carrier Deck",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Carrier Deck is a fast paced time management game where you play as the Air Boss on board the CVN-76 in the midst of active war."
     },
     "chill-with-you": {
       "displayName": "Chill with You : Lo-Fi Story",
@@ -32151,6 +33057,46 @@
       },
       "discordUrl": "https://discord.gg/KZRVjVEe5v"
     },
+    "factory-planner": {
+      "displayName": "Factory Planner",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ]
+    },
     "five-nights-at-freddys-into-the-pit": {
       "displayName": "Five Nights at Freddy's: Into the Pit",
       "categories": {
@@ -32516,6 +33462,9 @@
         "asset-packs": {
           "label": "Asset Packs"
         },
+        "early-plugins": {
+          "label": "Early Plugins"
+        },
         "mods": {
           "label": "Mods"
         },
@@ -32539,7 +33488,10 @@
         "mods": {
           "name": "Mods",
           "requireCategories": [
-            "mods"
+            "mods",
+            "plugins",
+            "early-plugins",
+            "asset-packs"
           ],
           "excludeCategories": [
             "modpacks",
@@ -32551,7 +33503,8 @@
         "plugins": {
           "name": "Plugins",
           "requireCategories": [
-            "plugins"
+            "plugins",
+            "early-plugins"
           ],
           "excludeCategories": [
             "modpacks",
@@ -32571,7 +33524,8 @@
             "worlds",
             "universes",
             "saves",
-            "plugins"
+            "plugins",
+            "early-plugins"
           ]
         },
         "saves": {
@@ -32585,7 +33539,8 @@
             "universes",
             "mods",
             "plugins",
-            "asset-packs"
+            "asset-packs",
+            "early-plugins"
           ]
         },
         "universes": {
@@ -32599,7 +33554,8 @@
             "saves",
             "mods",
             "plugins",
-            "asset-packs"
+            "asset-packs",
+            "early-plugins"
           ]
         },
         "worlds": {
@@ -32613,7 +33569,8 @@
             "saves",
             "mods",
             "plugins",
-            "asset-packs"
+            "asset-packs",
+            "early-plugins"
           ]
         },
         "other": {
@@ -32625,7 +33582,8 @@
             "modpacks",
             "worlds",
             "universes",
-            "saves"
+            "saves",
+            "early-plugins"
           ]
         },
         "modpacks": {
@@ -33323,6 +34281,47 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "on-together": {
+      "displayName": "On-Together: Virtual Co-Working",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Virtual co-working with friends or strangers all over the world! Digital pals hang out at the bottom of the screen while you work, study, and get stuff done. Includes productivity tools, hangout spots, breaktime games, and more!"
+    },
     "ostranauts": {
       "displayName": "Ostranauts",
       "categories": {
@@ -33618,6 +34617,47 @@
           ]
         }
       },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
+    "project-arrhythmia": {
+      "displayName": "Project Arrhythmia",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/BN25jdt3Vj",
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
@@ -34167,6 +35207,44 @@
       "discordUrl": "https://discord.com/invite/shipofharkinian",
       "autolistPackageIds": []
     },
+    "starfox-64-recompiled": {
+      "displayName": "Starfox 64: Recompiled",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": []
+    },
     "starship": {
       "displayName": "Starship",
       "categories": {
@@ -34206,6 +35284,47 @@
       "wikiUrl": "https://gamebanana.com/games/21612",
       "discordUrl": "https://discord.com/invite/shipofharkinian",
       "autolistPackageIds": []
+    },
+    "stolen-realm": {
+      "displayName": "Stolen Realm",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Stolen Realm is a simultaneous turn-based tactical dungeon crawling looter with action RPG elements where you control up to 6 heroes, solo or through online co-op, venturing forth in adventures set in a high-fantasy, low-poly world."
     },
     "super-fantasy-kingdom": {
       "displayName": "Super Fantasy Kingdom",
@@ -34325,6 +35444,47 @@
       },
       "discordUrl": "https://discord.gg/vXmCVnsPE5",
       "autolistPackageIds": []
+    },
+    "the-farmer-was-replaced": {
+      "displayName": "The Farmer Was Replaced",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Program and optimize a drone to automate a farm and watch it do the work for you. Collect resources to unlock better technology and become the most efficient farmer in the world. Improve your problem solving and coding skills."
     },
     "unfair-flips": {
       "displayName": "Unfair Flips",
