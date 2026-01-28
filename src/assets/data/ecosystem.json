@@ -23715,10 +23715,10 @@
               "identifier": "3707400"
             }
           ],
-          "steamFolderName": "On-Together",
+          "steamFolderName": "On-Together/On-Together",
           "dataFolderName": "On-Together_Data",
           "exeNames": [
-            "On-Together/On-Together.exe"
+            "On-Together.exe"
           ],
           "packageLoader": "bepinex",
           "meta": {
