@@ -175,6 +175,6 @@ onMounted( async () => {
     gap: 1rem;
     justify-content: start;
     text-align: left;
-    width: 100vw;
+    width: 100%;
 }
 </style>
