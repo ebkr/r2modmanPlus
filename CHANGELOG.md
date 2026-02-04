@@ -1,3 +1,18 @@
+### 3.2.14
+#### Games added
+- Carrier Deck
+- Factory Planner
+- On-Together: Virtual Co-Working
+- Project Arrhythmia
+- Stolen Realm
+- The Farmer Was Replaced
+- YAPYAP
+
+#### Fixes
+- On Together automatically resolves the correct folder
+- Fixed linux_wrapper implementation that supports UMM. (Thanks to @alexneargarder)
+- Miside image fixed (Thanks to @Hythera)
+
 ### 3.2.13
 #### Fixes
 - Linux behaviour used to automatically set WINEDLLOVERRIDES. This has been restored for now.
