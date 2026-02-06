@@ -20,6 +20,9 @@ jobs:
           - kind: flatpak
             os: ubuntu-latest
             platform: flatpak
+          - kind: mac
+            os: macos-latest
+            platform: osx
     steps:
       - uses: actions/checkout@v4
 
