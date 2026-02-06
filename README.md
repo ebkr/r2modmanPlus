@@ -1,4 +1,4 @@
-> [!WARNING] 
+> [!WARNING]
 > There has been a rise in third-party redistribution sites which are claiming to be official.
 >
 > There are only two legitimate places to download r2modman which are:
@@ -53,6 +53,15 @@ You can choose to update, enable/disable or even uninstall mods with a simple cl
  - tar.gz
 
  _Problems with Linux builds should be reported in the [r2modman discord](https://discord.gg/jE2zWHY)._
+
+#### macOS (Apple Silicon)
+1. Click "Manual Download" on Thunderstore.
+2. Inside the downloaded **.zip** file run the "r2modman X.X.X arm64.dmg" (where X.X.X is the current version).
+3. Drag r2modman.app to the Applications folder.
+4. If macOS complains that the application is damaged, run this command.
+```bash
+xattr -rd com.apple.quarantine /Applications/r2modman.app
+```
 
 ##### Note
 - Temporary workaround to force Proton on Linux systems
