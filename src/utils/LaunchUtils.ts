@@ -132,5 +132,5 @@ export async function areWrapperArgumentsProvided(game: Game): Promise<boolean> 
 }
 
 export async function getWrapperLaunchArgs(): Promise<string> {
-    return `"${path.join(PathResolver.MOD_ROOT, appWindow.getPlatform() === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh')}" %command%`;
+    return `"${path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh')}" %command%`;
 }

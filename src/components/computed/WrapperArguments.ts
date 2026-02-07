@@ -22,7 +22,7 @@ function determineWrapperArguments() {
     if (isFlatpakExecutable.value) {
         wrapperPath = `${path.join(PathResolver.MOD_ROOT, 'web_start_wrapper.sh')}`
     } else {
-        wrapperPath = path.join(PathResolver.MOD_ROOT, appWindow.getPlatform() === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh');
+        wrapperPath = path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh');
     }
     return `"${wrapperPath}" %command%`;
 }

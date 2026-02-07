@@ -51,6 +51,19 @@ export default class SteamGameRunner_Darwin extends GameRunnerProvider {
                 "This should be the default location. If there are others, please let me know.");
         }
 
+        // If sh files aren't executable then the wrapper will fail.
+        const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(Profile.getActiveProfile().getProfilePath())))
+            .filter(value => value.endsWith(".sh"));
+
+        try {
+            for (const shFile of shFiles) {
+                await FsProvider.instance.chmod(await FsProvider.instance.realpath(Profile.getActiveProfile().joinToProfilePath(shFile)), 0o755);
+            }
+        } catch (e) {
+            const err: Error = e as Error;
+            return new R2Error("Failed to make sh file executable", err.message, "You may need to run the manager with elevated privileges.");
+        }
+
         try{
             const mappedArgs = args.map(value => `"${value}"`).join(' ');
             const cmd = `"${steamExecutable}/Contents/MacOS/steam_osx" -applaunch ${game.activePlatform.storeIdentifier} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`;

@@ -10,7 +10,7 @@
             </div>
         </div>
 		<div class="container">
-			To be able to launch {{ activeGame.displayName }} on Linux, you must first setup your Steam launch options correctly.<br/>
+			To be able to launch {{ activeGame.displayName }} on {{ platformName }}, you must first setup your Steam launch options correctly.<br/>
 			This needs to be done because of how the BepInEx injection works on Unix systems.<br/>
 			<br/>
 			Please copy and paste the following to your {{ activeGame.displayName }} launch options:<br/>
@@ -48,7 +48,8 @@ const platformName = computed<string>(() => appWindow.getPlatform() === 'darwin'
 const finalArgs = computed(() => {
     let result = '';
     if (WineDllOverridesValue.value) {
-        result = `${WineDllOverridesValue.value} `;
+        // Using env to set environment variables is needed for Steam on MacOS compatibility.
+        result = `/usr/bin/env ${WineDllOverridesValue.value} `;
     }
     return result + ComputedWrapperLaunchArguments.value;
 });
