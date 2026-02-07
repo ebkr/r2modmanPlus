@@ -10,6 +10,7 @@ import * as vdf from '@node-steam/vdf';
 import VdfParseError from '../../../model/errors/Vdf/VdfParseError';
 import LoggerProvider, { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import GameManager from '../../../model/game/GameManager';
+import { getPropertyFromPath } from "../../../utils/Common";
 
 export default class DarwinGameDirectoryResolver extends GameDirectoryResolverProvider {
 
@@ -152,4 +153,40 @@ export default class DarwinGameDirectoryResolver extends GameDirectoryResolverPr
         }
     }
 
+    // TODO: Move this to Steam Utils when the multiple store refactor is made
+    public async getLaunchArgs(game: Game): Promise<R2Error | string> {
+        const steamDir = await this.getSteamDirectory();
+        if (steamDir instanceof R2Error) return steamDir;
+
+        const loginUsers = vdf.parse((await FsProvider.instance.readFile(path.join(steamDir, 'config', 'loginusers.vdf'))).toString());
+        let userSteamID64 = '';
+        for(let _id in loginUsers.users) {
+            if(loginUsers.users[_id].MostRecent == 1) {
+                userSteamID64 = _id;
+                break;
+            }
+        }
+
+        if(userSteamID64.length === 0) return new R2Error(
+            'Unable to get the current Steam User ID',
+            'Please try again',
+            null
+        );
+
+        const userAccountID = (BigInt(userSteamID64) & BigInt(0xFFFFFFFF)).toString();
+
+        const localConfig = vdf.parse((await FsProvider.instance.readFile(path.join(steamDir, 'userdata', userAccountID, 'config', 'localconfig.vdf'))).toString());
+
+        //find apps in one of possible locations.
+        const apps = getPropertyFromPath(localConfig, [
+            'UserLocalConfigStore.Software.Valve.Steam.Apps',
+            'UserLocalConfigStore.Software.Valve.Steam.apps',
+            'UserLocalConfigStore.Software.Valve.steam.apps'
+        ]);
+        if (!apps) {
+            console.warn('Steam.Apps not found !');
+        }
+
+        return apps[game.activePlatform.storeIdentifier!].LaunchOptions || '';
+    }
 }

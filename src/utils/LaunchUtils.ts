@@ -8,6 +8,7 @@ import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ModLinker from '../r2mm/manager/ModLinker';
 import {Platform} from '../assets/data/ecosystemTypes';
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
+import DarwinGameDirectoryResolver from "../r2mm/manager/darwin/DarwinGameDirectoryResolver";
 import {LaunchType} from "../model/real_enums/launch/LaunchType";
 import path from "../providers/node/path/path";
 import PathResolver from "../r2mm/manager/PathResolver";
@@ -98,7 +99,7 @@ export async function isManagerRunningOnFlatpak(): Promise<boolean> {
 
 export async function getProvidedWrapperArguments(game: Game): Promise<string> {
     return Promise.resolve()
-        .then(async () => await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(game))
+        .then(async () => await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver | DarwinGameDirectoryResolver).getLaunchArgs(game))
         .then(launchArgs => {
             if (typeof launchArgs !== 'string') {
                 throw launchArgs;
@@ -118,6 +119,20 @@ export async function areAnyWrapperArgumentsProvided(game: Game): Promise<boolea
     const linuxWrapper = 'linux_wrapper.sh';
     return getProvidedWrapperArguments(game)
         .then(launchArgs => (launchArgs.includes(linuxWrapper) || launchArgs.includes(flatpakWrapper)))
+        .catch(() => false);
+}
+
+/**
+ * Returns true if any old MacOS wrappers are set. These are no longer valid.
+ * @param game - The game to check for the set launch arguments
+ */
+export async function areAnyOldMacWrapperArgumentsProvided(game: Game): Promise<boolean> {
+    // We don't care about the paths here
+    // We can assume that if a wrapper is provided then it's pointing to an existing install (old or new)
+    const macos_binary_wrapper = 'macos_proxy';
+    const macos_script_wrapper = 'macos_wrapper.sh';
+    return getProvidedWrapperArguments(game)
+        .then(launchArgs => (launchArgs.includes(macos_script_wrapper) || launchArgs.includes(macos_binary_wrapper)))
         .catch(() => false);
 }
 

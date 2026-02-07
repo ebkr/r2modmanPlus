@@ -164,8 +164,11 @@ async function moveToNextScreen() {
             }
         }
     } else if (appWindow.getPlatform() === 'darwin') {
+        const activeGame: Game = store.state.activeGame;
         await ensureWrapperInGameFolder('linux_wrapper.sh');
-        return router.push({name: 'linux'});
+        if (!(await areWrapperArgumentsProvided(activeGame))) {
+            return router.push({name: 'linux'});
+        }
     }
     return router.push({name: 'profiles'});
 }
