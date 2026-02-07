@@ -9,8 +9,8 @@ import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameD
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
 import ChildProcess from '../../../../providers/node/child_process/child_process';
-import appWindow from "../../../../providers/node/app/app_window";
 import path from "../../../../providers/node/path/path";
+import plist from 'plist';
 
 export default class DirectGameRunner extends GameRunnerProvider {
 
@@ -57,30 +57,11 @@ export default class DirectGameRunner extends GameRunnerProvider {
                 return reject(r2err);
             }
 
-            const gameExecutablePath = path.join(gameDir, gameExecutable);
-            let realGameExecutablePath;
-            if (appWindow.getPlatform() === 'darwin' && gameExecutable.endsWith('.app') && (await FsProvider.instance.stat(gameExecutablePath)).isDirectory()) {
-                const infoPlist = await (FsProvider.instance.readFile(path.join(gameExecutablePath, 'Contents', 'Info.plist')))
-                    .then(buf => buf.toString())
-                    .then(str => new DOMParser().parseFromString(str, 'application/xml'));
-                const keys = Array.from(infoPlist.getElementsByTagName('key'));
-                const realExecutableName = keys.find(key => key.innerHTML.trim() === 'CFBundleExecutable')
-                    ?.nextElementSibling?.innerHTML.trim();
-                if (realExecutableName === undefined) {
-                    const r2err = new R2Error(
-                        `${gameExecutable} is invalid`,
-                        'Could not find an actual executable inside app',
-                        'Ensure that the game folder has been set correctly in the settings'
-                    );
-                    return reject(r2err);
-                }
-                realGameExecutablePath = path.join(gameExecutablePath, 'Contents', 'MacOS', realExecutableName);
-            }
-            realGameExecutablePath ??= gameExecutablePath;
+            const gameExecutablePath = await getRealExecutablePath(path.join(gameDir, gameExecutable));
 
             const mappedArgs = args.map(value => `"${value}"`).join(' ');
 
-            const command = `"${realGameExecutablePath}" ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`;
+            const command = `"${gameExecutablePath}" ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${command}`);
 
             const childProcess = ChildProcess.exec(command, {
@@ -96,5 +77,35 @@ export default class DirectGameRunner extends GameRunnerProvider {
                 return resolve();
             }));
         });
+    }
+}
+
+async function getRealExecutablePath(executablePath: string) {
+    // MacOS .app files are actually folders, with the real executable being defined in a config file.
+    if (executablePath.endsWith('.app') && (await FsProvider.instance.stat(executablePath)).isDirectory()) {
+        const infoPlist = await FsProvider.instance.readFile(path.join(executablePath, 'Contents', 'Info.plist'))
+            .then(buffer => plist.parse(buffer.toString('utf-8')) as plist.PlistObject)
+            .catch(err => new R2Error(
+                `${executablePath} is invalid`,
+                err.toString(),
+                'Ensure that the game folder has been set correctly in the settings'
+            ));
+        if (infoPlist instanceof R2Error) {
+            throw infoPlist;
+        }
+
+        const realExecutableName = infoPlist['CFBundleExecutable']
+        if (typeof realExecutableName !== 'string') {
+            throw new R2Error(
+                `${executablePath} is invalid`,
+                'Could not find an actual executable inside app',
+                'Ensure that the game folder has been set correctly in the settings'
+            );
+        }
+
+        const realExecutablePath = path.join(executablePath, 'Contents', 'MacOS', realExecutableName);
+        return realExecutablePath;
+    } else {
+        return executablePath;
     }
 }
