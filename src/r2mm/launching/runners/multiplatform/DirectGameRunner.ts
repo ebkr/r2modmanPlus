@@ -9,6 +9,8 @@ import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameD
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
 import ChildProcess from '../../../../providers/node/child_process/child_process';
+import appWindow from "../../../../providers/node/app/app_window";
+import path from "../../../../providers/node/path/path";
 
 export default class DirectGameRunner extends GameRunnerProvider {
 
@@ -43,11 +45,45 @@ export default class DirectGameRunner extends GameRunnerProvider {
             const gameExecutable = (await FsProvider.instance.readdir(gameDir))
                 .filter((x: string) => game.exeName.includes(x))[0];
 
+            if (gameExecutable === undefined) {
+                const message = game.exeName.length > 1 ?
+                    `Could not find any of "${game.exeName.join('", "')}"` :
+                    `Could not find "${game.exeName[0]}"`;
+                const r2err = new R2Error(
+                    `${game.displayName} folder is invalid`,
+                    message,
+                    'Ensure that the game folder has been set correctly in the settings'
+                );
+                return reject(r2err);
+            }
+
+            const gameExecutablePath = path.join(gameDir, gameExecutable);
+            let realGameExecutablePath;
+            if (appWindow.getPlatform() === 'darwin' && gameExecutable.endsWith('.app') && (await FsProvider.instance.stat(gameExecutablePath)).isDirectory()) {
+                const infoPlist = await (FsProvider.instance.readFile(path.join(gameExecutablePath, 'Contents', 'Info.plist')))
+                    .then(buf => buf.toString())
+                    .then(str => new DOMParser().parseFromString(str, 'application/xml'));
+                const keys = Array.from(infoPlist.getElementsByTagName('key'));
+                const realExecutableName = keys.find(key => key.innerHTML.trim() === 'CFBundleExecutable')
+                    ?.nextElementSibling?.innerHTML.trim();
+                if (realExecutableName === undefined) {
+                    const r2err = new R2Error(
+                        `${gameExecutable} is invalid`,
+                        'Could not find an actual executable inside app',
+                        'Ensure that the game folder has been set correctly in the settings'
+                    );
+                    return reject(r2err);
+                }
+                realGameExecutablePath = path.join(gameExecutablePath, 'Contents', 'MacOS', realExecutableName);
+            }
+            realGameExecutablePath ??= gameExecutablePath;
+
             const mappedArgs = args.map(value => `"${value}"`).join(' ');
 
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`);
+            const command = `"${realGameExecutablePath}" ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`;
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${command}`);
 
-            const childProcess = ChildProcess.exec(`"${gameExecutable}" ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`, {
+            const childProcess = ChildProcess.exec(command, {
                 cwd: gameDir,
                 windowsHide: false,
             }, (err => {
