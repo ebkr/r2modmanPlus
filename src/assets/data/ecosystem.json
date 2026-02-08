@@ -23718,7 +23718,8 @@
           "steamFolderName": "On-Together/On-Together",
           "dataFolderName": "On-Together_Data",
           "exeNames": [
-            "On-Together.exe"
+            "On-Together.exe",
+            "OnTogether.exe"
           ],
           "packageLoader": "bepinex",
           "meta": {
