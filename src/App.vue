@@ -1,8 +1,15 @@
 <template>
     <div>
-        <main>
-            <router-view v-if="visible"/>
-        </main>
+        <div class="main-wrapper">
+            <main>
+                <router-view v-if="visible" class="router"/>
+            </main>
+            <div id="activity-bar">
+                <div>
+                    <BreadcrumbNavigator/>
+                </div>
+            </div>
+        </div>
         <ErrorModal />
     </div>
 </template>
@@ -52,6 +59,7 @@ import { NodeFsImplementation } from './providers/node/fs/NodeFsImplementation';
 import { useRouter } from 'vue-router';
 import { ProtocolProviderImplementation } from './providers/generic/protocol/ProtocolProviderImplementation';
 import { provideProtocolImplementation } from './providers/generic/protocol/ProtocolProvider';
+import BreadcrumbNavigator from 'components/breadcrumbs/BreadcrumbNavigator.vue';
 
 const store = baseStore;
 const router = useRouter();
@@ -154,5 +162,32 @@ html {
 main {
     display: grid;
     grid-template-rows: 100vh;
+}
+</style>
+
+<style lang="scss" scoped>
+.main-wrapper {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+
+    main {
+        flex: 1;
+        overflow-y: hidden;
+        display: flex;
+    }
+}
+
+.router {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#activity-bar {
+    height: min-content;
+    background-color: #16222c;
+    padding: 0.25rem 1rem;
+    display: flex;
 }
 </style>
