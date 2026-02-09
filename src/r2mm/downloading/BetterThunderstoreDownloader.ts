@@ -1,4 +1,3 @@
-import StatusEnum from '../../model/enums/StatusEnum';
 import axios, { AxiosResponse } from 'axios';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ZipExtract from '../installing/ZipExtract';
@@ -61,6 +60,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             try {
                 const response = await this._downloadCombo(comboInProgress, singleModProgressCallback);
                 await this._saveDownloadResponse(response, comboInProgress, singleModProgressCallback);
+                await DownloadUtils.markAsDownloadedFromOnline(comboInProgress);
             } catch(e) {
                 throw R2Error.fromThrownValue(e, `Failed to download mod ${comboInProgress.getVersion().getFullName()}`);
             }
