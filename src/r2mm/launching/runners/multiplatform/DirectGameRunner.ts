@@ -13,6 +13,8 @@ import path from "../../../../providers/node/path/path";
 import appWindow from "../../../../providers/node/app/app_window";
 import PathResolver from "../../../manager/PathResolver";
 import plist from 'plist';
+import { ensureScriptsAreAllExecutable } from "../../../../utils/LaunchUtils";
+import { parse as parseShell } from "shell-quote";
 
 export default class DirectGameRunner extends GameRunnerProvider {
 
@@ -66,20 +68,11 @@ export default class DirectGameRunner extends GameRunnerProvider {
             // Linux and Mac need a wrapper for a few loaders like BepInEx.
             let wrapper = '';
             if (['linux', 'darwin'].includes(appWindow.getPlatform())) {
-                wrapper = `"${path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh')}" `;
+                await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, 'wrapper_args.txt'), `${PathResolver.MOD_ROOT}/linux_wrapper.sh`);
+                wrapper = `"${path.join(PathResolver.MOD_ROOT, 'web_start_wrapper.sh')}" `;
 
                 // The wrapper may call other scripts, so they need to all be executable.
-                const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(Profile.getActiveProfile().getProfilePath())))
-                    .filter(value => value.endsWith(".sh"));
-
-                try {
-                    for (const shFile of shFiles) {
-                        await FsProvider.instance.chmod(await FsProvider.instance.realpath(Profile.getActiveProfile().joinToProfilePath(shFile)), 0o755);
-                    }
-                } catch (e) {
-                    const err: Error = e as Error;
-                    return new R2Error("Failed to make script file executable", err.message, "You may need to run the manager with elevated privileges.");
-                }
+                ensureScriptsAreAllExecutable();
             }
 
             const command = `${wrapper}"${gameExecutablePath}" ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`;

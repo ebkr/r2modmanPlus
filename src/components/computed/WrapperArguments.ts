@@ -19,7 +19,7 @@ function determineWrapperArguments() {
     const _ = activeGame.value;
 
     let wrapperPath = "";
-    if (isFlatpakExecutable.value) {
+    if (isFlatpakExecutable.value || appWindow.getPlatform() === 'darwin') {
         wrapperPath = `${path.join(PathResolver.MOD_ROOT, 'web_start_wrapper.sh')}`
     } else {
         wrapperPath = path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh');

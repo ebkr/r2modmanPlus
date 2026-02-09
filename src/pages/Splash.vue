@@ -166,6 +166,7 @@ async function moveToNextScreen() {
     } else if (appWindow.getPlatform() === 'darwin') {
         const activeGame: Game = store.state.activeGame;
         await ensureWrapperInGameFolder('linux_wrapper.sh');
+        await ensureWrapperInGameFolder('web_start_wrapper.sh');
         if (!(await areWrapperArgumentsProvided(activeGame))) {
             return router.push({name: 'linux'});
         }

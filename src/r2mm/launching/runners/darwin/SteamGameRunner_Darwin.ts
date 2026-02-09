@@ -11,6 +11,9 @@ import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/
 import ChildProcess from '../../../../providers/node/child_process/child_process';
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
+import PathResolver from "../../../manager/PathResolver";
+import { ensureScriptsAreAllExecutable } from "../../../../utils/LaunchUtils";
+import { parse as parseShell } from "shell-quote";
 
 export default class SteamGameRunner_Darwin extends GameRunnerProvider {
 
@@ -35,7 +38,7 @@ export default class SteamGameRunner_Darwin extends GameRunnerProvider {
     async start(game: Game, args: string[]): Promise<void | R2Error> {
         const settings = await ManagerSettings.getSingleton(game);
         const steamDir = await GameDirectoryResolverProvider.instance.getSteamDirectory();
-        if(steamDir instanceof R2Error) {
+        if (steamDir instanceof R2Error) {
             return steamDir;
         }
 
@@ -51,25 +54,21 @@ export default class SteamGameRunner_Darwin extends GameRunnerProvider {
                 "This should be the default location. If there are others, please let me know.");
         }
 
-        // If sh files aren't executable then the wrapper will fail.
-        const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(Profile.getActiveProfile().getProfilePath())))
-            .filter(value => value.endsWith(".sh"));
+        // The wrapper may call other scripts, so they need to all be executable.
+        await ensureScriptsAreAllExecutable();
 
         try {
-            for (const shFile of shFiles) {
-                await FsProvider.instance.chmod(await FsProvider.instance.realpath(Profile.getActiveProfile().joinToProfilePath(shFile)), 0o755);
-            }
-        } catch (e) {
-            const err: Error = e as Error;
-            return new R2Error("Failed to make sh file executable", err.message, "You may need to run the manager with elevated privileges.");
-        }
+            const lineArgs = [
+                `${PathResolver.MOD_ROOT}/linux_wrapper.sh`,
+                ...args,
+                ...parseShell(settings.getContext().gameSpecific.launchParameters)
+            ]
+            await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, 'wrapper_args.txt'), lineArgs.join('\n'))
 
-        try{
-            const mappedArgs = args.map(value => `"${value}"`).join(' ');
-            const cmd = `"${steamExecutable}/Contents/MacOS/steam_osx" -applaunch ${game.activePlatform.storeIdentifier} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`;
+            const cmd = `open steam://run/${game.activePlatform.storeIdentifier}`;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);
             await ChildProcess.exec(cmd);
-        } catch(err){
+        } catch (err) {
             LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting the game');
             LoggerProvider.instance.Log(LogSeverity.ERROR, (err as Error).message);
             throw new R2Error('Error starting Steam', (err as Error).message, 'Ensure that the Steam folder has been set correctly in the settings');
