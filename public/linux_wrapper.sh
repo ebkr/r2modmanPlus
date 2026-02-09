@@ -57,22 +57,11 @@ else
             ;;
             # start_game_bepinex.sh doesn't inject Doorstop on MacOS, so we need to do that ourselves before running it
             Darwin*)
-                exec sh <<'                END' -s -- "$BASEDIR" "$R2PROFILE" "$@"
-                    BASEDIR="$1"; shift
-                    R2PROFILE="$1"; shift
-                    export DYLD_LIBRARY_PATH
-                    if [ -z "$DYLD_LIBRARY_PATH" ]; then
-                        DYLD_LIBRARY_PATH="$BASEDIR/profiles/$R2PROFILE/doorstop_libs"
-                    else
-                        DYLD_LIBRARY_PATH="$BASEDIR/profiles/$R2PROFILE/doorstop_libs:$DYLD_LIBRARY_PATH"
-                    fi
-                    export DYLD_INSERT_LIBRARIES
-                    if [ -z "$DYLD_INSERT_LIBRARIES" ]; then
-                        DYLD_INSERT_LIBRARIES="$BASEDIR/profiles/$R2PROFILE/doorstop_libs/libdoorstop_x64.dylib"
-                    else
-                        DYLD_INSERT_LIBRARIES="$BASEDIR/profiles/$R2PROFILE/doorstop_libs/libdoorstop_x64.dylib:$DYLD_INSERT_LIBRARIES"
-                    fi
-                    source "$BASEDIR/profiles/$R2PROFILE/start_game_bepinex.sh" "$@"
+                exec sh <<'                END' -s -- "$BASEDIR/profiles/$R2PROFILE" "$@"
+                    BEPINEXDIR="$1"; shift
+                    export DYLD_LIBRARY_PATH="${BEPINEXDIR}/doorstop_libs${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}"
+                    export DYLD_INSERT_LIBRARIES="libdoorstop_x64.dylib${DYLD_INSERT_LIBRARIES:+:$DYLD_INSERT_LIBRARIES}"
+                    source "${BEPINEXDIR}/start_game_bepinex.sh" "$@"
                 END
             ;;
         esac
