@@ -34,13 +34,11 @@ onMounted(async () => {
 
 <template>
     <div class='notification margin-top margin-right' v-show="portableUpdateAvailable">
-        <div class='container'>
-            <p>
-                An {{ appName }} update is available.
-                <ExternalLink :url="`https://github.com/ebkr/r2modmanPlus/releases/tag/${updateTagName}`">
-                    Click here to go to the release page.
-                </ExternalLink>
-            </p>
-        </div>
+        <p>
+            An {{ appName }} update is available.
+            <ExternalLink :url="`https://github.com/ebkr/r2modmanPlus/releases/tag/${updateTagName}`">
+                Click here to go to the release page.
+            </ExternalLink>
+        </p>
     </div>
 </template>

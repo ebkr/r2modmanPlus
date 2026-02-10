@@ -12,6 +12,7 @@ import { splitToNameAndVersion } from '../../../utils/DependencyUtils';
 import { computed, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
+import { useVulnerablePackageComposable } from '@r2/components/composables/VulnerablePackageComposable';
 
 const store = getStore<State>();
 
@@ -20,6 +21,8 @@ type LocalModCardProps = {
 }
 
 const props = defineProps<LocalModCardProps>();
+
+const { vulnerablePackages } = useVulnerablePackageComposable();
 
 const disabledDependencies = ref<ManifestV2[]>([]);
 const missingDependencies = ref<string[]>([]);
@@ -33,6 +36,7 @@ const isDeprecated = computed(() => store.state.tsMods.deprecated.get(props.mod.
 const isLatestVersion = computed(() => store.getters['tsMods/isLatestVersion'](props.mod));
 const localModList = computed(() => store.state.profile.modList);
 const tsMod = computed(() => store.getters['tsMods/tsMod'](props.mod));
+const isConcerningPackage = computed<boolean>(() => vulnerablePackages.value.findIndex(value => value.getName() === props.mod.getName()) >= 0)
 
 async function updateDependencies() {
     if (props.mod.getDependencies().length === 0) {
@@ -187,7 +191,9 @@ function dependencyStringToModName(x: string) {
         :enabled="mod.isEnabled()"
         :id="`${mod.getAuthorName()}-${mod.getName()}-${mod.getVersionNumber()}`"
         :image="mod.getIcon()"
-        :allowSorting="true">
+        :allowSorting="true"
+        :class="[{'card--is-concern': isConcerningPackage}]"
+    >
 
         <template v-slot:title>
             <span class="non-selectable">
@@ -217,10 +223,21 @@ function dependencyStringToModName(x: string) {
 
         <template v-slot:description>
             <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0"><strong>Installed on:</strong> {{ getReadableDate(mod.getInstalledAtTime()) }}</p>
+            <div class="notification is-warning" v-if="isConcerningPackage">
+                <p>This package was originally downloaded from Thunderstore however can no longer be found.</p>
+                <p>Mods can be removed due to the author's request or due to violating Thunderstore's package policies.</p>
+                <p><strong>It is recommended to remove this mod.</strong></p>
+            </div>
         </template>
 
         <!-- Show icon button row even when card is collapsed -->
         <template v-slot:other-icons>
+            <span v-if="isConcerningPackage"
+                  class='card-header-icon'>
+                <i v-tooltip.left="`This package may be vulnerable`"
+                   class='fas fa-unlink'
+                ></i>
+            </span>
             <DonateIconButton :mod="tsMod" v-if="tsMod"/>
             <span v-if="!isLatestVersion"
                 @click.prevent.stop="updateMod()"
