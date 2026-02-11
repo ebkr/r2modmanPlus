@@ -2230,21 +2230,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.19.1":
-  version: 20.19.1
-  resolution: "@types/node@npm:20.19.1"
-  dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10c0/4f1c3c8ec24c79af6802b376fa307904abf19accb9ac291de0bfc02220494c8b027d3ef733dbf64cc09b37594f22f679a15eabb30f3785bcfcc13bd9bbd8c0e2
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:^20.9.0":
   version: 20.19.2
   resolution: "@types/node@npm:20.19.2"
   dependencies:
     undici-types: "npm:~6.21.0"
   checksum: 10c0/85195d2435a215c886b3dabb2a93c557397e2b933a18803c6dd4fb3f87c3de9c8290fe78f08b52ebeb3b14063a00b217f66b4f9c0192581dc7a677c4f8663a9c
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^22.19.11":
+  version: 22.19.11
+  resolution: "@types/node@npm:22.19.11"
+  dependencies:
+    undici-types: "npm:~6.21.0"
+  checksum: 10c0/4b274acf27ec31aa83b50ef22088f83c783e6bcd7dcb40b4834f64f44868b6bf68725214220f15a0c776928f7c0f7f26f03c05cd5868f0526340af3f4af4b58b
   languageName: node
   linkType: hard
 
@@ -9783,7 +9783,7 @@ __metadata:
     "@types/js-yaml": "npm:^4"
     "@types/jsdom": "npm:^21.1.7"
     "@types/lodash.debounce": "npm:^4.0.7"
-    "@types/node": "npm:^20.19.1"
+    "@types/node": "npm:^22.19.11"
     "@types/quill": "npm:^2.0.3"
     "@types/sinon": "npm:^10.0.2"
     "@types/unzipper": "npm:^0.10.1"

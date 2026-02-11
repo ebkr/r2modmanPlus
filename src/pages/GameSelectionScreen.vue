@@ -189,6 +189,7 @@ import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import { useRouter } from 'vue-router';
 import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
+import { getDatabaseProvider } from '../providers/database/DatabaseProvider';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -406,6 +407,13 @@ function toggleViewMode() {
 
 function capitalize(str: string) {
     return str.slice(0, 1).toUpperCase() + str.slice(1);
+}
+
+try {
+    const packageCacheDb = getDatabaseProvider('package_cache');
+    packageCacheDb.query('aaa');
+} catch (e) {
+    console.error(e);
 }
 </script>
 

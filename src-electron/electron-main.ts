@@ -57,7 +57,7 @@ async function createWindow() {
         }
     });
 
-    hookIpc(mainWindow);
+    hookIpc(mainWindow, app);
 
     if (windowSize.maximized) {
         mainWindow.maximize();

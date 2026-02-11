@@ -45,6 +45,9 @@ declare global {
             openExternal: (path: string) => void;
             selectFile: (path: string) => void;
             getEnvironmentVariables: () => Record<string, string>;
+        },
+        db: {
+            open: (name: string) => string;
         }
     }
 }

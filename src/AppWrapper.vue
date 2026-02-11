@@ -17,11 +17,14 @@ import {provideOsImplementation} from "./providers/node/os/os";
 import {NodeOsImplementation} from "./providers/node/os/NodeOsImplementation";
 import { provideBufferImplementation } from './providers/node/buffer/buffer';
 import { NodeBufferImplementation } from './providers/node/buffer/BufferImplementation';
+import { provideDatabaseProviderImplementation } from './providers/database/DatabaseProvider';
+import { DatabaseProviderImpl } from './providers/database/DatabaseProviderImpl';
 
 providePathImplementation(() => NodePathImplementation);
 provideChildProcessImplementation(() => NodeChildProcessImplementation);
 provideOsImplementation(() => NodeOsImplementation);
 provideBufferImplementation(() => NodeBufferImplementation);
+provideDatabaseProviderImplementation('package_cache', new DatabaseProviderImpl('package_cache'))
 
 function logError(error: R2Error) {
     console.error(error.name, error.message, error.stack);
