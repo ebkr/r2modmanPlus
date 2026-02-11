@@ -3,12 +3,6 @@
         <div class="search-and-sort">
             <SearchAndSort />
         </div>
-        <DisableModModal />
-        <UninstallModModal />
-        <AssociatedModsModal />
-
-        <ManagerUpdateBanner/>
-        <VulnerablePackageBanner v-if="hasVulnerablePackages"/>
 
         <div class="tags has-addons" v-if="filters.size > 0">
             <span class="margin-right" v-for="filter in filters">
@@ -20,6 +14,13 @@
                 </a>
             </span>
         </div>
+
+        <DisableModModal />
+        <UninstallModModal />
+        <AssociatedModsModal />
+
+        <ManagerUpdateBanner/>
+        <VulnerablePackageBanner v-if="hasVulnerablePackages"/>
 
         <slot name="above-list"></slot>
 

@@ -5,6 +5,8 @@ import { State } from '@r2/store';
 import { getStore } from '@r2/providers/generic/store/StoreProvider';
 import ManifestV2 from '@r2/model/ManifestV2';
 import { useModManagementComposable } from 'components/composables/ModManagementComposable';
+import R2Error from '@r2/model/errors/R2Error';
+import ProfileModList from '@r2/r2mm/mods/ProfileModList';
 
 const store = getStore<State>();
 
@@ -12,6 +14,7 @@ const { uninstallMod } = useModManagementComposable();
 
 const isOpen = computed(() => store.state.modals.isVulnerableModReviewModalOpen);
 const modToReview = computed<ManifestV2 | null>(() => store.state.modals.vulnerableModToReview);
+const profile = computed(() => store.getters['profile/activeProfile']);
 
 function close() {
     store.commit('closeVulnerableModReviewModal');
@@ -20,6 +23,23 @@ function close() {
 async function removeMod() {
     await uninstallMod(modToReview.value!);
     close();
+}
+
+async function trustPackage() {
+    const mods = await ProfileModList.getModList(profile.value.asImmutableProfile());
+    const mod = mods.find(value => value.getName() === modToReview.value?.getName());
+    if (mod) {
+        mod.setTrustedPackage(true);
+    }
+    try {
+        await store.dispatch(
+            'profile/saveModListToDisk',
+            {mods: mods, profile: profile.value}
+        );
+    } catch (e) {
+        store.commit('error/handleError', R2Error.fromThrownValue(e));
+    }
+    await close();
 }
 </script>
 
@@ -38,10 +58,10 @@ async function removeMod() {
             </div>
         </template>
         <template v-slot:footer>
-            <button class="button">
+            <button class="button" @click.stop.prevent="trustPackage">
                 Mark version as safe
             </button>
-            <button class="button is-danger" @click="removeMod">
+            <button class="button is-danger" @click.stop.prevent="removeMod">
                 Remove mod
             </button>
         </template>
