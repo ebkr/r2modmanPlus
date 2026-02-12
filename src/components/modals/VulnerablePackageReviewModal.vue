@@ -27,19 +27,27 @@ async function removeMod() {
 
 async function trustPackage() {
     const mods = await ProfileModList.getModList(profile.value.asImmutableProfile());
+    if (mods instanceof R2Error) {
+        console.error(mods);
+        store.commit('error/handleError', mods);
+        return;
+    }
     const mod = mods.find(value => value.getName() === modToReview.value?.getName());
     if (mod) {
         mod.setTrustedPackage(true);
     }
     try {
-        await store.dispatch(
-            'profile/saveModListToDisk',
-            {mods: mods, profile: profile.value}
-        );
+        const err = await ProfileModList.saveModList(profile.value.asImmutableProfile(), mods);
+        if (err instanceof R2Error) {
+            store.commit('error/handleError', err);
+            return;
+        }
+        await store.dispatch('profile/updateModList', mods);
     } catch (e) {
         store.commit('error/handleError', R2Error.fromThrownValue(e));
+    } finally {
+        close();
     }
-    await close();
 }
 </script>
 

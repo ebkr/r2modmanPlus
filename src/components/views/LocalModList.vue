@@ -4,6 +4,15 @@
             <SearchAndSort />
         </div>
 
+        <DisableModModal />
+        <UninstallModModal />
+        <AssociatedModsModal />
+
+        <ManagerUpdateBanner/>
+        <VulnerablePackageBanner v-if="hasVulnerablePackages"/>
+
+        <slot name="above-list"></slot>
+
         <div class="tags has-addons" v-if="filters.size > 0">
             <span class="margin-right" v-for="filter in filters">
                 <a href="#" @click="removeFilter(filter)">
@@ -14,15 +23,6 @@
                 </a>
             </span>
         </div>
-
-        <DisableModModal />
-        <UninstallModModal />
-        <AssociatedModsModal />
-
-        <ManagerUpdateBanner/>
-        <VulnerablePackageBanner v-if="hasVulnerablePackages"/>
-
-        <slot name="above-list"></slot>
 
         <div class="mod-list-content">
             <div class="draggable-content">

@@ -21,4 +21,8 @@ function addUnlinkedFilter() {
     background-color: var(--notification-concern-background-color);
     color: var(--notification-concern-text-color);
 }
+
+.notification {
+    margin-bottom: 0.5rem;
+}
 </style>

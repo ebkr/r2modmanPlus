@@ -47,6 +47,12 @@ function applyVisibleList() {
 watch([visibleModList, store.state.profile.filters], applyVisibleList);
 onMounted(applyVisibleList);
 
+watch(internalVisibleList, (newList) => {
+    if (newList.length === 0) {
+        store.commit('profile/removeFilter', 'Unlinked');
+    }
+})
+
 const draggableList = computed({
     get() {
         return internalVisibleList.value;

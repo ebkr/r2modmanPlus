@@ -16,8 +16,7 @@ const onlineModList = computed<Map<string, ThunderstoreMod>>(() => {
 });
 
 const vulnerablePackages = computed<ManifestV2[]>(() => {
-    // TODO - Fix logic (post dev testing)
-    return localModList.value.filter(value => !value.isOnlineSource() && !value.isTrustedPackage() && onlineModList.value.has(value.getName()));
+    return localModList.value.filter(value => !value.isTrustedPackage() && (value.isOnlineSource() && !onlineModList.value.has(value.getName())));
 });
 
 export function useVulnerablePackageComposable() {

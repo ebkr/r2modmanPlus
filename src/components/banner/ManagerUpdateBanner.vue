@@ -42,3 +42,9 @@ onMounted(async () => {
         </p>
     </div>
 </template>
+
+<style scoped lang="scss">
+.notification {
+    margin-bottom: 0.5rem;
+}
+</style>
