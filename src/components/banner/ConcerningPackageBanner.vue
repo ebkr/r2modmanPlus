@@ -2,8 +2,10 @@
 
 import { getStore } from '@r2/providers/generic/store/StoreProvider';
 import { State } from '@r2/store';
+import { useConcerningPackageComposable } from '@r2/components/composables/ConcerningPackageComposable';
 
 const store = getStore<State>();
+const { hasConcerningPackages } = useConcerningPackageComposable();
 
 function addUnlinkedFilter() {
     store.commit('profile/scopeLocalModListToUnlinkedPackages');
@@ -11,7 +13,7 @@ function addUnlinkedFilter() {
 </script>
 
 <template>
-    <div class="notification is-concern margin-right">
+    <div class="notification is-concern margin-right" v-show="hasConcerningPackages">
         <span>You have packages that can no longer be found on Thunderstore.</span> <a href="#" @click.stop.prevent="addUnlinkedFilter">Click here to review packages.</a>
     </div>
 </template>

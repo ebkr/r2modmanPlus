@@ -9,7 +9,7 @@
         <AssociatedModsModal />
 
         <ManagerUpdateBanner/>
-        <VulnerablePackageBanner v-if="hasVulnerablePackages"/>
+        <ConcerningPackageBanner/>
 
         <slot name="above-list"></slot>
 
@@ -50,12 +50,9 @@ import { State } from '../../store';
 import { computed, defineAsyncComponent } from 'vue';
 import SkeletonLocalModCard from './LocalModList/SkeletonLocalModCard.vue';
 import ManagerUpdateBanner from '../banner/ManagerUpdateBanner.vue';
-import VulnerablePackageBanner from '@r2/components/banner/VulnerablePackageBanner.vue';
-import { useVulnerablePackageComposable } from '@r2/components/composables/VulnerablePackageComposable';
+import ConcerningPackageBanner from '@r2/components/banner/ConcerningPackageBanner.vue';
 
 const store = getStore<State>();
-
-const { hasVulnerablePackages } = useVulnerablePackageComposable();
 
 const LocalModDraggableList = defineAsyncComponent(() => import('./LocalModList/LocalModDraggableList.vue'));
 

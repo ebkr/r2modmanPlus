@@ -118,7 +118,7 @@
         <DownloadProgressModal />
         <DownloadModVersionSelectModal />
         <UpdateAllInstalledModsModal />
-        <VulnerablePackageReviewModal/>
+        <ConcerningPackageReviewModal/>
         <LaunchTypeModal v-if="canRenderLaunchTypeModal()" />
 
         <div class="router-view">
@@ -157,7 +157,7 @@ import path from '../providers/node/path/path';
 import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
 import appWindow from '../providers/node/app/app_window';
 import GameInstructionParser from "../r2mm/launching/instructions/GameInstructionParser";
-import VulnerablePackageReviewModal from 'components/modals/VulnerablePackageReviewModal.vue';
+import ConcerningPackageReviewModal from 'components/modals/ConcerningPackageReviewModal.vue';
 
 const store = getStore<State>();
 const router = useRouter();

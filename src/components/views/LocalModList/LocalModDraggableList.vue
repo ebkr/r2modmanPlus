@@ -22,11 +22,11 @@ import { State } from '../../../store';
 import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
 import { ImmutableProfile } from '../../../model/Profile';
-import { useVulnerablePackageComposable } from '@r2/components/composables/VulnerablePackageComposable';
+import { useConcerningPackageComposable } from '@r2/components/composables/ConcerningPackageComposable';
 
 const store = getStore<State>();
 
-const { isVulnerablePackage } = useVulnerablePackageComposable();
+const { isConcerningPackage } = useConcerningPackageComposable();
 
 const profile = computed<ImmutableProfile>(() => store.getters['profile/activeProfile'].asImmutableProfile());
 
@@ -38,7 +38,7 @@ function applyVisibleList() {
     const newModList = visibleModList.value;
     const modList = store.state.profile.modList;
     if (store.state.profile.filters.has('Unlinked')) {
-        internalVisibleList.value = modList.filter(value => isVulnerablePackage(value));
+        internalVisibleList.value = modList.filter(value => isConcerningPackage(value));
     } else {
         internalVisibleList.value = newModList;
     }

@@ -15,21 +15,21 @@ const onlineModList = computed<Map<string, ThunderstoreMod>>(() => {
     return new Map<string, ThunderstoreMod>(mods.map(value => [value.getFullName(), value]));
 });
 
-const vulnerablePackages = computed<ManifestV2[]>(() => {
+const concerningPackages = computed<ManifestV2[]>(() => {
     return localModList.value.filter(value => !value.isTrustedPackage() && (value.isOnlineSource() && !onlineModList.value.has(value.getName())));
 });
 
-export function useVulnerablePackageComposable() {
+export function useConcerningPackageComposable() {
 
-    const hasVulnerablePackages = computed<boolean>(() => vulnerablePackages.value.length > 0);
+    const hasConcerningPackages = computed<boolean>(() => concerningPackages.value.length > 0);
 
-    function isVulnerablePackage(mod: ManifestV2) {
-        return vulnerablePackages.value.findIndex(value => value.getName() === mod.getName()) >= 0;
+    function isConcerningPackage(mod: ManifestV2) {
+        return concerningPackages.value.findIndex(value => value.getName() === mod.getName()) >= 0;
     }
 
     return {
-        vulnerablePackages,
-        hasVulnerablePackages,
-        isVulnerablePackage
+        concerningPackages,
+        hasConcerningPackages,
+        isConcerningPackage
     }
 }

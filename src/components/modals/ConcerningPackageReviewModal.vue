@@ -4,7 +4,7 @@ import ModalCard from '@r2/components/ModalCard.vue';
 import { State } from '@r2/store';
 import { getStore } from '@r2/providers/generic/store/StoreProvider';
 import ManifestV2 from '@r2/model/ManifestV2';
-import { useModManagementComposable } from 'components/composables/ModManagementComposable';
+import { useModManagementComposable } from '@r2/components/composables/ModManagementComposable';
 import R2Error from '@r2/model/errors/R2Error';
 import ProfileModList from '@r2/r2mm/mods/ProfileModList';
 
@@ -12,12 +12,12 @@ const store = getStore<State>();
 
 const { uninstallMod } = useModManagementComposable();
 
-const isOpen = computed(() => store.state.modals.isVulnerableModReviewModalOpen);
-const modToReview = computed<ManifestV2 | null>(() => store.state.modals.vulnerableModToReview);
+const isOpen = computed(() => store.state.modals.isConcerningModReviewModalOpen);
+const modToReview = computed<ManifestV2 | null>(() => store.state.modals.concerningModToReview);
 const profile = computed(() => store.getters['profile/activeProfile']);
 
 function close() {
-    store.commit('closeVulnerableModReviewModal');
+    store.commit('closeConcerningModReviewModal');
 }
 
 async function removeMod() {
