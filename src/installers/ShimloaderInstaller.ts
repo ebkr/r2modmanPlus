@@ -4,10 +4,6 @@ import FsProvider from "../providers/generic/file/FsProvider";
 import FileTree from "../model/file/FileTree";
 import FileUtils from "../utils/FileUtils";
 import R2Error from "../model/errors/R2Error";
-import { InstallRuleInstaller } from "./InstallRuleInstaller";
-import { TrackingMethod } from "../model/schema/ThunderstoreSchema";
-import GameManager from "../model/game/GameManager";
-import InstallationRules, { CoreRuleType, RuleSubtype } from "../r2mm/installing/InstallationRules";
 
 export class ShimloaderInstaller implements PackageInstaller {
     /**
@@ -55,58 +51,5 @@ export class ShimloaderInstaller implements PackageInstaller {
         if (!await fs.exists(configDir)) {
             await fs.mkdirs(configDir);
         }
-    }
-}
-
-function getShimloaderDefaultRules(): RuleSubtype[] {
-    return [
-        {
-            route: path.join("shimloader", "mod"),
-            isDefaultLocation: true,
-            defaultFileExtensions: [],
-            trackingMethod: TrackingMethod.SUBDIR,
-            subRoutes: [],
-        },
-        {
-            route: path.join("shimloader", "pak"),
-            defaultFileExtensions: [],
-            trackingMethod: TrackingMethod.SUBDIR,
-            subRoutes: [],
-        },
-        {
-            route: path.join("shimloader", "cfg"),
-            defaultFileExtensions: [],
-            trackingMethod: TrackingMethod.NONE,
-            subRoutes: [],
-        }
-    ];
-}
-
-export class ShimloaderPluginInstaller implements PackageInstaller {
-    /**
-     * Build the install rule set for the current game. If the active game
-     * defines non-empty installRules in the schema, those take precedence.
-     * Otherwise the hardcoded shimloader defaults are used.
-     */
-    readonly installer = (): InstallRuleInstaller => {
-        const schemaRules = this.getSchemaRules();
-        const rules = schemaRules.length > 0 ? schemaRules : getShimloaderDefaultRules();
-        return new InstallRuleInstaller({
-            gameName: GameManager.activeGame.internalFolderName,
-            rules,
-            relativeFileExclusions: null,
-        });
-    };
-
-    private getSchemaRules(): RuleSubtype[] {
-        const gameName = GameManager.activeGame.internalFolderName;
-        const coreRule: CoreRuleType | undefined = InstallationRules.RULES.find(
-            (r) => r.gameName === gameName
-        );
-        return coreRule?.rules ?? [];
-    }
-
-    async install(args: InstallArgs) {
-        await this.installer().install(args);
     }
 }

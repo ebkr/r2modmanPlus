@@ -2,7 +2,7 @@ import { BepInExInstaller } from './BepInExInstaller';
 import { GodotMLInstaller } from './GodotMLInstaller';
 import { MelonLoaderInstaller } from './MelonLoaderInstaller';
 import { PackageInstaller } from './PackageInstaller';
-import { ShimloaderInstaller, ShimloaderPluginInstaller } from './ShimloaderInstaller';
+import { ShimloaderInstaller } from './ShimloaderInstaller';
 import { LovelyInstaller, LovelyPluginInstaller } from './LovelyInstaller';
 import { NorthstarInstaller } from './NorthstarInstaller';
 import { ReturnOfModdingInstaller, ReturnOfModdingPluginInstaller } from './ReturnOfModdingInstaller';
@@ -46,7 +46,7 @@ export function getPackageLoaderInstaller(loader: PackageLoader): PackageInstall
 /**
  * Plugin installer registry
  */
-type InstallRuleInstallers = PackageLoader.BEPINEX | PackageLoader.BEPISLOADER | PackageLoader.GODOTML | PackageLoader.MELONLOADER | PackageLoader.NORTHSTAR | PackageLoader.UMM;
+type InstallRuleInstallers = PackageLoader.BEPINEX | PackageLoader.BEPISLOADER | PackageLoader.GODOTML | PackageLoader.MELONLOADER | PackageLoader.NORTHSTAR | PackageLoader.SHIMLOADER | PackageLoader.UMM;
 type PluginInstallers = Exclude<PackageLoader, InstallRuleInstallers>;
 
 const PluginInstallers: Record<PluginInstallers, PackageInstaller> = {
@@ -55,7 +55,6 @@ const PluginInstallers: Record<PluginInstallers, PackageInstaller> = {
     [PackageLoader.NONE]: new DirectCopyInstaller(),
     [PackageLoader.RECURSIVE_MELONLOADER]: new RecursiveMelonLoaderPluginInstaller(),
     [PackageLoader.RETURN_OF_MODDING]: new ReturnOfModdingPluginInstaller(),
-    [PackageLoader.SHIMLOADER]: new ShimloaderPluginInstaller(),
     [PackageLoader.RIVET]: new RivetPluginInstaller(),
 };
 
@@ -66,6 +65,7 @@ function isPluginInstaller(loader: PackageLoader): loader is PluginInstallers {
         loader === PackageLoader.GODOTML ||
         loader === PackageLoader.MELONLOADER ||
         loader === PackageLoader.NORTHSTAR ||
+        loader === PackageLoader.SHIMLOADER ||
         loader === PackageLoader.UMM
     );
 }

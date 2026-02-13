@@ -9,18 +9,56 @@ import R2Error from '../../../../../../src/model/errors/R2Error';
 import Profile from '../../../../../../src/model/Profile';
 import ProfileInstallerProvider from '../../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
 import GenericProfileInstaller from '../../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
-import InstallationRules from '../../../../../../src/r2mm/installing/InstallationRules';
-import {TrackingMethod} from '../../../../../../src/model/schema/ThunderstoreSchema';
+import InstallationRules, { RuleSubtype } from '../../../../../../src/r2mm/installing/InstallationRules';
+import { TrackingMethod } from '../../../../../../src/model/schema/ThunderstoreSchema';
 import {describe, beforeEach, test, expect} from 'vitest';
 
+function getShimloaderRules(includePakExtension: boolean): RuleSubtype[] {
+    return [
+        {
+            route: 'shimloader/mod',
+            isDefaultLocation: true,
+            defaultFileExtensions: [],
+            trackingMethod: TrackingMethod.SUBDIR,
+            subRoutes: [],
+        },
+        {
+            route: 'shimloader/pak',
+            defaultFileExtensions: includePakExtension ? ['pak'] : [],
+            trackingMethod: TrackingMethod.SUBDIR,
+            subRoutes: [],
+        },
+        {
+            route: 'shimloader/cfg',
+            defaultFileExtensions: [],
+            trackingMethod: TrackingMethod.NONE,
+            subRoutes: [],
+        },
+    ];
+}
+
+function setPalworldInstallRules(rules: RuleSubtype[]) {
+    const existingRules = InstallationRules.RULES;
+    const palworldIdx = existingRules.findIndex((rule) => rule.gameName === 'Palworld');
+
+    if (palworldIdx === -1) {
+        throw new Error('Palworld install rules not found');
+    }
+
+    existingRules[palworldIdx] = {
+        ...existingRules[palworldIdx],
+        rules,
+    };
+    InstallationRules.RULES = existingRules;
+}
+
 describe('Shimloader Installer Tests', () => {
+    describe('Schema-defined installRules', () => {
 
-    describe('Default rules (no schema installRules)', () => {
-
-        beforeEach(() => {
-                installLogicBeforeEach('Palworld');
-            }
-        );
+        beforeEach(async () => {
+            await installLogicBeforeEach('Palworld');
+            setPalworldInstallRules(getShimloaderRules(false));
+        });
 
         test('Installs and uninstalls a package', async () => {
             const pkg = createManifest("test_mod", "auth");
@@ -46,10 +84,10 @@ describe('Shimloader Installer Tests', () => {
 
             const result = await ProfileInstallerProvider.instance.uninstallMod(pkg, Profile.getActiveProfile().asImmutableProfile());
             expect(result instanceof R2Error).toBeFalsy();
-            expectFilesToBeRemoved(sourceToExpectedDestination, expectedAfterUninstall)
+            await expectFilesToBeRemoved(sourceToExpectedDestination, expectedAfterUninstall);
         });
 
-        test('Loose .pak files go to shimloader/mod by default', async () => {
+        test('Loose .pak files route to schema default location when no extension rule exists', async () => {
             const pkg = createManifest("pak_mod", "auth");
             const name = pkg.getName();
             const sourceToExpectedDestination = {
@@ -65,45 +103,14 @@ describe('Shimloader Installer Tests', () => {
         });
     });
 
-    describe('Schema-defined installRules override', () => {
+    describe('Schema-defined installRules with pak extension rule', () => {
 
         beforeEach(async () => {
             await installLogicBeforeEach('Palworld');
-
-            // Override the schema rules for Palworld to simulate a game that
-            // defines custom shimloader install rules (e.g. routing loose .pak
-            // files to shimloader/pak via defaultFileExtensions).
-            const existingRules = InstallationRules.RULES;
-            const palworldIdx = existingRules.findIndex(r => r.gameName === 'Palworld');
-            existingRules[palworldIdx] = {
-                gameName: 'Palworld',
-                rules: [
-                    {
-                        route: 'shimloader/mod',
-                        isDefaultLocation: true,
-                        defaultFileExtensions: [],
-                        trackingMethod: TrackingMethod.SUBDIR,
-                        subRoutes: [],
-                    },
-                    {
-                        route: 'shimloader/pak',
-                        defaultFileExtensions: ['pak'],
-                        trackingMethod: TrackingMethod.SUBDIR,
-                        subRoutes: [],
-                    },
-                    {
-                        route: 'shimloader/cfg',
-                        defaultFileExtensions: [],
-                        trackingMethod: TrackingMethod.NONE,
-                        subRoutes: [],
-                    },
-                ],
-                relativeFileExclusions: null,
-            };
-            InstallationRules.RULES = existingRules;
+            setPalworldInstallRules(getShimloaderRules(true));
         });
 
-        test('Loose .pak files route to shimloader/pak when schema defines pak extension', async () => {
+        test('Loose .pak files route to shimloader/pak when schema defines .pak extension', async () => {
             const pkg = createManifest("pak_mod", "auth");
             const name = pkg.getName();
             const sourceToExpectedDestination = {
