@@ -268,7 +268,6 @@ onMounted(() => {
     #view-content {
         flex-grow: 1;
         overflow-y: auto;
-        padding-right: 1rem;
         height: 100%;
     }
 }
