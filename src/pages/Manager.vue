@@ -41,7 +41,7 @@ import { State } from '../store';
 import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
 import appWindow from '../providers/node/app/app_window';
 import ManagerActivityBar from '../components/navigation/ManagerActivityBar.vue';
-import ConcerningPackageReviewModal from 'components/modals/ConcerningPackageReviewModal.vue';
+import ConcerningPackageReviewModal from '@r2/components/modals/ConcerningPackageReviewModal.vue';
 
 const store = getStore<State>();
 
