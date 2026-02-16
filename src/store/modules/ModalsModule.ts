@@ -22,6 +22,8 @@ interface State {
     isProfileManagementModalOpen: boolean;
     isProfileCodeExportModalOpen: boolean;
     isLocalFileImportModalOpen: boolean;
+    concerningModToReview: ManifestV2 | null;
+    isConcerningModReviewModalOpen: boolean;
 }
 
 export default {
@@ -46,6 +48,8 @@ export default {
         isProfileManagementModalOpen: false,
         isProfileCodeExportModalOpen: false,
         isLocalFileImportModalOpen: false,
+        concerningModToReview: null,
+        isConcerningModReviewModalOpen: false,
     }),
 
     mutations: {
@@ -117,6 +121,10 @@ export default {
             state.isLocalFileImportModalOpen = false;
         },
 
+        closeConcerningModReviewModal: function(state: State): void {
+            state.isConcerningModReviewModalOpen = false;
+        },
+
         openAssociatedModsModal: function(state: State, mod: ManifestV2): void {
             state.associatedModsModalMod = mod;
             state.isAssociatedModsModOpen = true;
@@ -183,6 +191,11 @@ export default {
 
         openLocalFileImportModal: function(state: State): void {
             state.isLocalFileImportModalOpen = true;
+        },
+
+        openConcerningModReviewModal: function(state: State, mod: ManifestV2): void {
+            state.concerningModToReview = mod;
+            state.isConcerningModReviewModalOpen = true;
         },
     }
 }

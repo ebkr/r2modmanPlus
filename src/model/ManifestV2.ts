@@ -32,6 +32,7 @@ export default class ManifestV2 {
     private icon: string = '';
 
     private onlineSource: boolean = false;
+    private trustedPackage: boolean = false;
 
     // Intended to be used to import a mod with only minimal fields specified.
     // Should support manifest V1. Defaults to an "Unknown" author field if not found.
@@ -90,6 +91,7 @@ export default class ManifestV2 {
         this.icon = path.join(PathResolver.MOD_ROOT, 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
         this.setInstalledAtTime(jsManifestObject.installedAtTime || 0);
         this.setOnlineSource(jsManifestObject.onlineSource || false);
+        this.setTrustedPackage(jsManifestObject.trustedPackage || false);
         if (!jsManifestObject.enabled) {
             this.disable();
         }
@@ -255,5 +257,13 @@ export default class ManifestV2 {
 
     public setOnlineSource(isOnlineSource: boolean) {
         this.onlineSource = isOnlineSource;
+    }
+
+    public isTrustedPackage(): boolean {
+        return this.trustedPackage;
+    }
+
+    public setTrustedPackage(trusted: boolean) {
+        this.trustedPackage = trusted;
     }
 }
