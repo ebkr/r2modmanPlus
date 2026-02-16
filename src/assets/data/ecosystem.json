@@ -10313,7 +10313,29 @@
             "幻兽帕鲁"
           ],
           "packageLoader": "shimloader",
-          "installRules": [],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
           "relativeFileExclusions": null
         }
       ],
@@ -10395,7 +10417,29 @@
             "恐慌核心"
           ],
           "packageLoader": "shimloader",
-          "installRules": [],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
           "relativeFileExclusions": null
         }
       ],
@@ -17190,7 +17234,29 @@
             "虚空之声"
           ],
           "packageLoader": "shimloader",
-          "installRules": [],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
           "relativeFileExclusions": null
         }
       ],
@@ -18886,7 +18952,64 @@
         "displayName": "Astroneer",
         "iconUrl": null
       },
-      "distributions": [],
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "361420"
+        }
+      ],
+      "r2modman": [
+        {
+          "meta": {
+            "displayName": "Astroneer",
+            "iconUrl": "astroneer.webp"
+          },
+          "internalFolderName": "Astroneer",
+          "dataFolderName": "Astro",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "361420"
+            }
+          ],
+          "settingsIdentifier": "Astroneer",
+          "packageIndex": "https://thunderstore.io/c/astroneer/api/v1/package-listing-index/",
+          "steamFolderName": "ASTRONEER",
+          "exeNames": [
+            "Astro.exe"
+          ],
+          "gameInstanceType": "game",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "packageLoader": "shimloader",
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".pak"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
       "thunderstore": {
         "displayName": "Astroneer",
         "categories": {
@@ -18919,9 +19042,10 @@
         },
         "wikiUrl": "https://astroneermodding.readthedocs.io/en/latest/",
         "discordUrl": "https://discord.gg/astroneer-modding-774729322674126858",
-        "autolistPackageIds": []
-      },
-      "r2modman": null
+        "autolistPackageIds": [
+          "Thunderstore-unreal_shimloader"
+        ]
+      }
     },
     "baby-steps": {
       "uuid": "02ecb2ec-5bd1-402c-ab52-b87b3abc5d90",
@@ -20516,6 +20640,125 @@
         ]
       }
     },
+    "deadly-delivery": {
+      "uuid": "1fd29521-6a2d-4206-abc8-bc2f3a61ac83",
+      "label": "deadly-delivery",
+      "meta": {
+        "displayName": "Deadly Delivery",
+        "iconUrl": "deadly-delivery.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3743090"
+            }
+          ],
+          "steamFolderName": "Deadly Delivery",
+          "dataFolderName": "Deadly Delivery_Data",
+          "exeNames": [
+            "Deadly Delivery.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Deadly Delivery",
+            "iconUrl": "deadly-delivery.webp"
+          },
+          "settingsIdentifier": "DeadlyDelivery",
+          "internalFolderName": "DeadlyDelivery",
+          "packageIndex": "https://thunderstore.io/c/deadly-delivery/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Deadly Delivery",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/vxaFQr9jqC",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "An online VR co-op horror game about delivering parcels into haunted mines. Avoid monsters, drop off packages, and pray you reach the quota! Team up with up to 3 other delivery goblins, survive your shift and pay back your student loans."
+      }
+    },
     "dicey-dungeons": {
       "uuid": "6332d5c4-1a74-4826-abb3-f18b212f26fd",
       "label": "dicey-dungeons",
@@ -21444,6 +21687,124 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "granny-chapter-two": {
+      "uuid": "e0c90bc6-675a-4ae7-a60e-57696d4a2205",
+      "label": "granny-chapter-two",
+      "meta": {
+        "displayName": "Granny: Chapter Two",
+        "iconUrl": "granny-chapter-two.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1205040"
+            }
+          ],
+          "steamFolderName": "Granny Chapter Two",
+          "dataFolderName": "Granny Chapter Two_Data",
+          "exeNames": [
+            "Granny Chapter Two.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Granny: Chapter Two",
+            "iconUrl": "granny-chapter-two.webp"
+          },
+          "settingsIdentifier": "GrannyChapterTwo",
+          "internalFolderName": "GrannyChapterTwo",
+          "packageIndex": "https://thunderstore.io/c/granny-chapter-two/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Granny: Chapter Two",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "You have to escape Granny and Grandpa...You have five days..."
       }
     },
     "grey-hack": {
@@ -23023,6 +23384,54 @@
         ]
       }
     },
+    "mewgenics": {
+      "uuid": "5f9befbe-f606-4498-a1c1-f4dabcd8d5c2",
+      "label": "mewgenics",
+      "meta": {
+        "displayName": "Mewgenics",
+        "iconUrl": "mewgenics.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Mewgenics",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "shortDescription": "Build the ultimate cat army through tactical breeding and send them into deep, challenging turn-based adventures. Draft abilities, collect items, and manipulate genetics across generations in this roguelike tactics game from the creators of The Binding of Isaac and The End is Nigh."
+      }
+    },
     "mimesis": {
       "uuid": "aeebfea4-fe72-4535-9cea-0b880b5d270c",
       "label": "mimesis",
@@ -23718,7 +24127,8 @@
           "steamFolderName": "On-Together/On-Together",
           "dataFolderName": "On-Together_Data",
           "exeNames": [
-            "On-Together.exe"
+            "On-Together.exe",
+            "OnTogether.exe"
           ],
           "packageLoader": "bepinex",
           "meta": {
@@ -25324,7 +25734,29 @@
           "packageIndex": "https://thunderstore.io/c/rv-there-yet/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [],
-          "installRules": [],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
           "relativeFileExclusions": null
         }
       ],
@@ -25737,6 +26169,111 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "soulcalibur-vi": {
+      "uuid": "cc86a7a4-1f50-4c49-bbd6-d2eb960fb894",
+      "label": "soulcalibur-vi",
+      "meta": {
+        "displayName": "SOULCALIBUR VI",
+        "iconUrl": "soulcalibur-vi.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "544750"
+            }
+          ],
+          "steamFolderName": "SoulcaliburVI",
+          "dataFolderName": "SoulcaliburVI",
+          "exeNames": [
+            "SoulcaliburVI.exe"
+          ],
+          "packageLoader": "shimloader",
+          "meta": {
+            "displayName": "SOULCALIBUR VI",
+            "iconUrl": "soulcalibur-vi.webp"
+          },
+          "settingsIdentifier": "SoulcaliburVi",
+          "internalFolderName": "SoulcaliburVi",
+          "packageIndex": "https://thunderstore.io/c/soulcalibur-vi/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "SC6",
+            "SCVI",
+            "Soul Calibur"
+          ],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "SOULCALIBUR VI",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/jsJ7XpP",
+        "autolistPackageIds": [
+          "Thunderstore-unreal_shimloader"
+        ],
+        "shortDescription": "Bring more than your fists to the fight! Featuring all-new battle mechanics and characters, SOULCALIBUR VI marks a new era of the historic franchise. Welcome back to the stage of history!"
       }
     },
     "spaghetti-kart": {
@@ -26876,6 +27413,27 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "client": {
+            "label": "Client Side"
+          },
+          "all": {
+            "label": "All Clients"
+          },
+          "host": {
+            "label": "Host Only"
+          },
+          "wands": {
+            "label": "Wands"
+          },
+          "robes": {
+            "label": "Robes"
+          },
+          "items": {
+            "label": "Items"
+          },
+          "qol": {
+            "label": "Quality Of Life"
           }
         },
         "sections": {
@@ -26894,7 +27452,8 @@
         },
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
-        ]
+        ],
+        "discordUrl": "https://discord.gg/kzKBmD8HrB"
       }
     },
     "zelda-64-recompiled": {
@@ -32298,7 +32857,9 @@
       },
       "wikiUrl": "https://astroneermodding.readthedocs.io/en/latest/",
       "discordUrl": "https://discord.gg/astroneer-modding-774729322674126858",
-      "autolistPackageIds": []
+      "autolistPackageIds": [
+        "Thunderstore-unreal_shimloader"
+      ]
     },
     "baby-steps": {
       "displayName": "Baby Steps",
@@ -32976,6 +33537,48 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "deadly-delivery": {
+      "displayName": "Deadly Delivery",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/vxaFQr9jqC",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "An online VR co-op horror game about delivering parcels into haunted mines. Avoid monsters, drop off packages, and pray you reach the quota! Team up with up to 3 other delivery goblins, survive your shift and pay back your student loans."
+    },
     "dicey-dungeons": {
       "displayName": "Dicey Dungeons",
       "categories": {
@@ -33409,6 +34012,47 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "granny-chapter-two": {
+      "displayName": "Granny: Chapter Two",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "You have to escape Granny and Grandpa...You have five days..."
     },
     "grey-hack": {
       "displayName": "Grey Hack",
@@ -34096,6 +34740,44 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack_IL2CPP"
       ]
+    },
+    "mewgenics": {
+      "displayName": "Mewgenics",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "shortDescription": "Build the ultimate cat army through tactical breeding and send them into deep, challenging turn-based adventures. Draft abilities, collect items, and manipulate genetics across generations in this roguelike tactics game from the creators of The Binding of Isaac and The End is Nigh."
     },
     "mimesis": {
       "displayName": "Mimesis",
@@ -35285,6 +35967,48 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "soulcalibur-vi": {
+      "displayName": "SOULCALIBUR VI",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/jsJ7XpP",
+      "autolistPackageIds": [
+        "Thunderstore-unreal_shimloader"
+      ],
+      "shortDescription": "Bring more than your fists to the fight! Featuring all-new battle mechanics and characters, SOULCALIBUR VI marks a new era of the historic franchise. Welcome back to the stage of history!"
+    },
     "spaghetti-kart": {
       "displayName": "Spaghetti Kart",
       "categories": {
@@ -35823,6 +36547,27 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "client": {
+          "label": "Client Side"
+        },
+        "all": {
+          "label": "All Clients"
+        },
+        "host": {
+          "label": "Host Only"
+        },
+        "wands": {
+          "label": "Wands"
+        },
+        "robes": {
+          "label": "Robes"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "qol": {
+          "label": "Quality Of Life"
         }
       },
       "sections": {
@@ -35841,7 +36586,8 @@
       },
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
-      ]
+      ],
+      "discordUrl": "https://discord.gg/kzKBmD8HrB"
     },
     "zelda-64-recompiled": {
       "displayName": "Zelda 64: Recompiled",
