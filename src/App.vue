@@ -5,9 +5,6 @@
                 <router-view v-if="visible" class="router"/>
             </main>
             <div id="activity-bar">
-                <div>
-                    <BreadcrumbNavigator/>
-                </div>
             </div>
         </div>
         <ErrorModal />
@@ -189,5 +186,6 @@ main {
     background-color: #16222c;
     padding: 0.25rem 1rem;
     display: flex;
+    gap: 0.25rem;
 }
 </style>

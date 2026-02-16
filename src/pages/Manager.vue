@@ -1,4 +1,24 @@
 <template>
+    <Teleport to="#activity-bar">
+        <div>
+            <button id="game-switch-button" class="button">
+                <img class="game-icon" :src="ProtocolProvider.getPublicAssetUrl(`/images/game_selection/${activeGame.gameImage}`)" alt="Game icon"/>
+                {{ activeGame.displayName }}
+            </button>
+        </div>
+        <div class="activity-bar-group">
+            <button class="button flex-button">
+                <span>{{ profile.profileName }}</span>
+                <span class="tag is-inactive-link">Profile</span>
+            </button>
+        </div>
+        <div id="activity-bar-group" class="activity-bar-item--right">
+            <button class="button flex-button">
+                <span>{{ profile.profileName }}</span>
+                <span class="tag is-inactive-link">Profile</span>
+            </button>
+        </div>
+    </Teleport>
 	<div class="manager-main-view">
 		<div id='steamIncorrectDir' :class="['modal', {'is-active':(showSteamIncorrectDirectoryModal !== false)}]">
 			<div class="modal-background" @click="showSteamIncorrectDirectoryModal = false"></div>
@@ -156,6 +176,7 @@ import path from '../providers/node/path/path';
 import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
 import appWindow from '../providers/node/app/app_window';
 import GameInstructionParser from "../r2mm/launching/instructions/GameInstructionParser";
+import ProtocolProvider from 'src/providers/generic/protocol/ProtocolProvider';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -526,5 +547,28 @@ onMounted(async () => {
     display: flex;
     flex: 1;
     width: 100%;
+}
+
+.game-icon {
+    height: 100%;
+}
+
+#game-switch-button {
+    padding: 0 1rem 0 0;
+    display: flex;
+    gap: 1rem;
+
+    * {
+        flex: 1;
+    }
+}
+
+.flex-button {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.activity-bar-item--right {
+    flex: 0;
 }
 </style>

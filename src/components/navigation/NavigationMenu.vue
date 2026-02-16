@@ -58,15 +58,6 @@
                 </ul>
                 <slot></slot>
             </div>
-            <div class="menu__bottom">
-                <div id="profile-switcher" @click="openProfileManagementModal">
-                    <img :src="ProtocolProvider.getPublicAssetUrl(`/images/game_selection/${activeGame.gameImage}`)" alt="Game icon"/>
-                    <div>
-                        <p>{{ profile.getProfileName() }}</p>
-                        <p class="sub-action">Profile</p>
-                    </div>
-                </div>
-            </div>
         </aside>
     </div>
 </template>
