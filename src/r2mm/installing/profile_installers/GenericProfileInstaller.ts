@@ -19,7 +19,6 @@ import FileUtils from '../../../utils/FileUtils';
 import { getPackageLoaderInstaller, getPluginInstaller } from "../../../installers/registry";
 import { InstallArgs, PackageInstaller } from "../../../installers/PackageInstaller";
 import { InstallRuleInstaller } from "../../../installers/InstallRuleInstaller";
-import { ShimloaderPluginInstaller } from "../../../installers/ShimloaderInstaller";
 import { ReturnOfModdingPluginInstaller } from "../../../installers/ReturnOfModdingInstaller";
 import { TrackingMethod } from '../../../model/schema/ThunderstoreSchema';
 
@@ -44,10 +43,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         //       known case.
         let rule = this.rule;
         const installer = getPluginInstaller(GameManager.activeGame.packageLoader);
-        if (
-            installer instanceof ShimloaderPluginInstaller ||
-            installer instanceof ReturnOfModdingPluginInstaller
-        ) {
+        if (installer instanceof ReturnOfModdingPluginInstaller) {
             rule = installer.installer().rule;
         }
         if (!rule) {
