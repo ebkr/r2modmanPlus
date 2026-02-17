@@ -166,6 +166,7 @@ onMounted( async () => {
 
 #profile-actions-container {
     display: flex;
+    width: 100%;
 }
 
 #profile-actions-row {
