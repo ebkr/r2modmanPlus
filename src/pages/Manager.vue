@@ -1,22 +1,29 @@
 <template>
     <Teleport to="#activity-bar">
-        <div>
-            <button id="game-switch-button" class="button">
-                <img class="game-icon" :src="ProtocolProvider.getPublicAssetUrl(`/images/game_selection/${activeGame.gameImage}`)" alt="Game icon"/>
-                {{ activeGame.displayName }}
-            </button>
-        </div>
-        <div class="activity-bar-group">
-            <button class="button flex-button">
-                <span>{{ profile.profileName }}</span>
-                <span class="tag is-inactive-link">Profile</span>
-            </button>
-        </div>
-        <div id="activity-bar-group" class="activity-bar-item--right">
-            <button class="button flex-button">
-                <span>{{ profile.profileName }}</span>
-                <span class="tag is-inactive-link">Profile</span>
-            </button>
+        <div class="activity-bar--left">
+            <div>
+                <button id="game-switch-button" class="button">
+                    <img class="game-icon" :src="ProtocolProvider.getPublicAssetUrl(`/images/game_selection/${activeGame.gameImage}`)" alt="Game icon"/>
+                    {{ activeGame.displayName }}
+                </button>
+            </div>
+            <div>
+                <button class="button flex-button">
+                    <span>{{ profile.profileName }}</span>
+                    <span class="tag is-inactive-link">Profile</span>
+                </button>
+            </div>
+            <div>
+                <button class="button" v-tooltip.top="{content: 'Share profile', distance: 10}">
+                    <span><i class="fa fa-share-alt fa-sm margin-right--half-width"></i> Share</span>
+                </button>
+            </div>
+            <div class="vertical-break"></div>
+            <div>
+                <button class="button" v-tooltip.top="{content: 'Import a local mod', distance: 10}">
+                    <span>Import</span>
+                </button>
+            </div>
         </div>
     </Teleport>
 	<div class="manager-main-view">
@@ -177,6 +184,7 @@ import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vu
 import appWindow from '../providers/node/app/app_window';
 import GameInstructionParser from "../r2mm/launching/instructions/GameInstructionParser";
 import ProtocolProvider from 'src/providers/generic/protocol/ProtocolProvider';
+import { ExternalLink } from 'components/all';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -550,13 +558,15 @@ onMounted(async () => {
 }
 
 .game-icon {
-    height: 100%;
+    height: calc(100% - 4px);
+    padding-left: 2px;
+    border-radius: 2px;
 }
 
 #game-switch-button {
     padding: 0 1rem 0 0;
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
 
     * {
         flex: 1;
@@ -568,7 +578,20 @@ onMounted(async () => {
     gap: 0.5rem;
 }
 
-.activity-bar-item--right {
-    flex: 0;
+.activity-bar--left {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.vertical-break {
+    height: 2rem;
+    width: 2px;
+    margin: 0 0.25rem;
+    background-color: var(--preview-panel-background-color);
+    border-radius: 5px;
+    align-self: center;
 }
 </style>

@@ -187,5 +187,7 @@ main {
     padding: 0.25rem 1rem;
     display: flex;
     gap: 0.25rem;
+    flex-direction: row;
+    width: 100%;
 }
 </style>
