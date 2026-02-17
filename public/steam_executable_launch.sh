@@ -1,10 +1,10 @@
 #!/bin/sh
 
 if [ $# -eq 0 ]; then
-    echo "Error: flatpak-spawn arguments must be provided" >&2
+    echo "Error: xdg-open arguments must be provided" >&2
     exit 1
 fi
 
-echo "Executing: /usr/bin/flatpak-spawn $@" >&1
+echo "Executing: /usr/bin/xdg-open $@" >&1
 
-exec flatpak-spawn "$@"
+exec xdg-open "$@"

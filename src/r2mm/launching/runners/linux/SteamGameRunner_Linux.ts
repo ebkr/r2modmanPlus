@@ -123,7 +123,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
                 await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, 'wrapper_args.txt'), lineArgs.join('\n'))
 
                 childProcess.execSync(
-                    `${PathResolver.MOD_ROOT}/steam_executable_launch.sh --host ${executableNamePart} steam://run/${game.activePlatform.storeIdentifier}/`);
+                    `${PathResolver.MOD_ROOT}/steam_executable_launch.sh steam://run/${game.activePlatform.storeIdentifier}/`);
             } else {
                 console.log("Launching standard", commandString)
                 childProcess.execSync(
