@@ -5,6 +5,6 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-echo "Executing: /usr/bin/xdg-open $@" >&1
+echo "Executing: /usr/bin/flatpak-spawn --host /usr/bin/xdg-open $@" >&1
 
-exec xdg-open "$@"
+exec flatpak-spawn --host xdg-open "$@"
