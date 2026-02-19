@@ -103,7 +103,8 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         try {
 
             if (await isManagerRunningOnFlatpak()) {
-                console.log("Launching flatpak")
+
+                LoggerProvider.instance.Log(LogSeverity.INFO, `Launching using Flatpak behaviour`);
 
                 const isProton = await getDeterminedLaunchType(game, settings.getLaunchType() || LaunchType.AUTO) === LaunchType.PROTON;
 
@@ -123,14 +124,16 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
                 await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, 'wrapper_args.txt'), lineArgs.join('\n'));
 
                 // If we are on Steam Deck game mode, then run the Flatpak spawn Steam script instead of using xdg-open
-                if (env.STEAM_DECK === '1' && env.XDG_CURRENT_DESKTOP === 'gamescope') {
-                    childProcess.execSync(`${PathResolver.MOD_ROOT}/steam_executable_launch.sh ${game.activePlatform.storeIdentifier}`);
+                if (env.SteamDeck === '1' && env.XDG_CURRENT_DESKTOP === 'gamescope') {
+                    LoggerProvider.instance.Log(LogSeverity.INFO, `User on Steam Deck`);
+                    childProcess.execSync(`${PathResolver.MOD_ROOT}/steam_executable_launch.sh --host ${executableNamePart} steam://run/${game.activePlatform.storeIdentifier}/`);
                     return;
                 }
 
+                LoggerProvider.instance.Log(LogSeverity.INFO, `User on regular Flatpak environment`);
                 childProcess.execSync(`xdg-open steam://run/${game.activePlatform.storeIdentifier}/`);
             } else {
-                console.log("Launching standard", commandString)
+                LoggerProvider.instance.Log(LogSeverity.INFO, `Launching using Native behaviour`);
                 childProcess.execSync(
                     commandString,
                     {
