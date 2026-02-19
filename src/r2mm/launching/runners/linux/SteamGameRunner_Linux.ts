@@ -120,10 +120,15 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
                     ...parseShell(userDefinedArgsPart)
                 );
 
-                await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, 'wrapper_args.txt'), lineArgs.join('\n'))
+                await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, 'wrapper_args.txt'), lineArgs.join('\n'));
 
-                childProcess.execSync(
-                    `${PathResolver.MOD_ROOT}/steam_executable_launch.sh steam://run/${game.activePlatform.storeIdentifier}/`);
+                // If we are on Steam Deck game mode, then run the Flatpak spawn Steam script instead of using xdg-open
+                if (env.STEAM_DECK === '1' && env.XDG_CURRENT_DESKTOP === 'gamescope') {
+                    childProcess.execSync(`${PathResolver.MOD_ROOT}/steam_executable_launch.sh ${game.activePlatform.storeIdentifier}`);
+                    return;
+                }
+
+                childProcess.execSync(`xdg-open steam://run/${game.activePlatform.storeIdentifier}/`);
             } else {
                 console.log("Launching standard", commandString)
                 childProcess.execSync(
