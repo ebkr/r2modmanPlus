@@ -196,6 +196,11 @@ function dependencyStringToModName(x: string) {
                     v-tooltip.right="'This mod is deprecated and could be broken'">
                     Deprecated
                 </span>
+                <span v-if="props.mod.getInstallMode() == 'managed' && !tsMod"
+                    class="tag is-warning margin-right margin-right--half-width"
+                    v-tooltip.right="'This mod was delisted and could be temporarily or permanently unavailable'">
+                    Delisted
+                </span>
                 <span v-if="!mod.isEnabled()"
                     class="tag is-warning margin-right margin-right--half-width"
                     v-tooltip.right="'This mod will not be used in-game'">
