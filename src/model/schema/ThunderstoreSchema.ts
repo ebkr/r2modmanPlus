@@ -1,7 +1,6 @@
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
-import ecosystem from "../../assets/data/ecosystem.json";
 import { ThunderstoreEcosystem }  from "../../assets/data/ecosystemTypes";
 import jsonSchema from "../../assets/data/ecosystemJsonSchema.json";
 import R2Error from "../errors/R2Error";
@@ -17,29 +16,49 @@ export {
 } from "../../assets/data/ecosystemTypes";
 
 export class EcosystemSchema {
-    private static _isValidated: boolean = false;
+    private static _ecosystem: ThunderstoreEcosystem | null = null;
 
     /**
-     * Get a validated instance of the ecosystem schema.
+     * Load ecosystem data.
+     * Must be called before accessing any ecosystem data.
      */
-    private static get ecosystem(): ThunderstoreEcosystem {
-        if (this._isValidated) {
-            return ecosystem as ThunderstoreEcosystem;
+    static async load(): Promise<void> {
+        if (this._ecosystem) {
+            return;
         }
 
-        // Validate the schema via its schema schema.
+        const response = await fetch('public://data/ecosystem.json');
+        if (!response.ok) {
+            throw new R2Error(
+                "Failed to load ecosystem data",
+                `HTTP ${response.status}: ${response.statusText}`
+            );
+        }
+
+        const data = await response.json();
+
+        // Validate the schema via its JSON schema.
         const ajv = new Ajv();
         addFormats(ajv);
 
         const validate = ajv.compile(jsonSchema);
-        const isOk = validate(ecosystem);
+        const isOk = validate(data);
 
         if (!isOk) {
             throw new R2Error("Schema validation error", ajv.errorsText(validate.errors));
         }
 
-        this._isValidated = true;
-        return ecosystem as ThunderstoreEcosystem;
+        this._ecosystem = data as ThunderstoreEcosystem;
+    }
+
+    private static get ecosystem(): ThunderstoreEcosystem {
+        if (!this._ecosystem) {
+            throw new R2Error(
+                "Ecosystem not loaded",
+                "Call EcosystemSchema.load() before accessing ecosystem data"
+            );
+        }
+        return this._ecosystem;
     }
 
     /**

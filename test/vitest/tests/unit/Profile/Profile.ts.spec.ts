@@ -7,6 +7,7 @@ import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
 import ProfileProvider from '../../../../../src/providers/ror2/model_implementation/ProfileProvider';
 import PathResolver from '../../../../../src/r2mm/manager/PathResolver';
 import { beforeAll, describe, expect, test } from 'vitest';
+import { replaceEcosystemWithRealData } from '../../../utils/EcosystemTestHandler';
 import { providePathImplementation } from '../../../../../src/providers/node/path/path';
 import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
 
@@ -29,6 +30,7 @@ function activateGame(name: string) {
 describe("ImmutableProfile", () => {
 
     beforeAll(async () => {
+        replaceEcosystemWithRealData();
         providePathImplementation(() => TestPathProvider);
         const inMemoryFs = new InMemoryFsProvider();
         FsProvider.provide(() => inMemoryFs);

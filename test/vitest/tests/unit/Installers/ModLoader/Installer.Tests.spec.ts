@@ -8,11 +8,16 @@ import GenericProfileInstaller from '../../../../../../src/r2mm/installing/profi
 import InstallationRules from '../../../../../../src/r2mm/installing/InstallationRules';
 import { createManifest, installLogicBeforeEach } from '../../../../utils/InstallLogicUtils';
 import { TrackingMethod } from '../../../../../../src/model/schema/ThunderstoreSchema';
-import { describe, beforeEach, test, expect } from 'vitest';
+import { describe, beforeAll, beforeEach, test, expect } from 'vitest';
+import { replaceEcosystemWithRealData } from '../../../../utils/EcosystemTestHandler';
 import { providePathImplementation } from '../../../../../../src/providers/node/path/path';
 import { TestPathProvider } from '../../../../stubs/providers/node/Node.Path.Provider';
 
 describe('Installer Tests', () => {
+
+    beforeAll(() => {
+        replaceEcosystemWithRealData();
+    });
 
     describe('SUBDIR', () => {
 

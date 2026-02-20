@@ -4,7 +4,7 @@ import {FetchingJSONSchemaStore, InputData, JSONSchemaInput, quicktype} from "qu
 
 const ECOSYSTEM_DATA_URL = "https://thunderstore.io/api/experimental/schema/dev/latest/";
 const ECOSYSTEM_JSON_SCHEMA_URL = "https://thunderstore.io/api/experimental/schema/ecosystem-json-schema/latest/";
-const ECOSYSTEM_DATA_PATH = "./src/assets/data/ecosystem.json";
+const ECOSYSTEM_DATA_PATH = "./public/data/ecosystem.json";
 const ECOSYSTEM_JSON_SCHEMA_PATH = "./src/assets/data/ecosystemJsonSchema.json";
 const ECOSYSTEM_DATA_TYPES_PATH = "./src/assets/data/ecosystemTypes.ts";
 

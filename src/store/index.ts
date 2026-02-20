@@ -17,7 +17,7 @@ import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { SplashModule } from './modules/SplashModule';
 
 export interface State {
-    activeGame: Game;
+    activeGame: Game | null;
     isMigrationChecked: boolean;
     modLoaderPackageNames: string[];
     _settings: ManagerSettings | null;
@@ -32,7 +32,7 @@ type Context = ActionContext<State, State>;
 
 export const store = {
     state: {
-        activeGame: GameManager.defaultGame,
+        activeGame: null,
         isMigrationChecked: false,
         modLoaderPackageNames: [],
 
@@ -107,7 +107,7 @@ export const store = {
         },
 
         settings(state: State): ManagerSettings {
-            if (state._settings === null) {
+            if (state._settings === null || state.activeGame === null) {
                 throw new R2Error(
                     'Accessing unset settings from Vuex store',
                     'getters.settings was called before actions.setActiveGame'

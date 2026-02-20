@@ -184,7 +184,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     private getModLoader(mod: ManifestV2): ModLoaderPackageMapping|undefined {
-        const modLoaders = MOD_LOADER_VARIANTS[GameManager.activeGame.internalFolderName];
+        const modLoaders = MOD_LOADER_VARIANTS[GameManager.activeGame.internalFolderName]!;
         return modLoaders.find(loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase());
     }
 
@@ -224,7 +224,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const fs = FsProvider.instance;
 
         // Uninstallation logic for mod loaders.
-        const modLoaders = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
+        const modLoaders = MOD_LOADER_VARIANTS[activeGame.internalFolderName]!;
         if (modLoaders.find(loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase())) {
             try {
                 for (const file of (await fs.readdir(profile.getProfilePath()))) {

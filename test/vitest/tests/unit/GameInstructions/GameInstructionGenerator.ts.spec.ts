@@ -4,9 +4,11 @@ import Profile from "../../../../../src/model/Profile";
 import { DynamicGameInstruction } from "../../../../../src/r2mm/launching/instructions/DynamicGameInstruction";
 import { CustomInstructions, ModsPathInstructions } from "../../../../../src/r2mm/launching/instructions/instructions/loader/CustomInstructions";
 import { describe, test, expect, beforeEach } from 'vitest';
+import { replaceEcosystemWithRealData } from '../../../utils/EcosystemTestHandler';
 import { providePathImplementation } from '../../../../../src/providers/node/path/path';
 import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
 
+replaceEcosystemWithRealData();
 const game = GameManager.findByFolderName("RiskOfRain2")!;
 const profile = new Profile("Default");
 

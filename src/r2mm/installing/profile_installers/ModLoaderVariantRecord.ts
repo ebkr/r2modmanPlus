@@ -2,17 +2,6 @@ import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageM
 import VersionNumber from '../../../model/VersionNumber';
 import { EcosystemSchema, PackageLoader } from '../../../model/schema/ThunderstoreSchema';
 
-/**
- * A set of modloader packages read from the ecosystem schema.
- */
-export const MODLOADER_PACKAGES = EcosystemSchema.modloaderPackages.map((x) =>
-    new ModLoaderPackageMapping(
-        x.packageId,
-        x.rootFolder,
-        x.loader,
-    ),
-);
-
 type Modloaders = Record<string, ModLoaderPackageMapping[]>;
 
 // Overrides are needed as the "recommended version" information
@@ -36,13 +25,27 @@ const OVERRIDES: Modloaders = {
     ],
 }
 
-export const MOD_LOADER_VARIANTS: Modloaders = Object.fromEntries(
-    EcosystemSchema.supportedGames
-        .map((game) => [
-            game.internalFolderName,
-            OVERRIDES[game.internalFolderName] || MODLOADER_PACKAGES
-        ])
-);
+export let MODLOADER_PACKAGES: ModLoaderPackageMapping[] = [];
+
+export let MOD_LOADER_VARIANTS: Modloaders = {};
+
+export function initModLoaderData() {
+    MODLOADER_PACKAGES = EcosystemSchema.modloaderPackages.map((x) =>
+        new ModLoaderPackageMapping(
+            x.packageId,
+            x.rootFolder,
+            x.loader,
+        ),
+    );
+
+    MOD_LOADER_VARIANTS = Object.fromEntries(
+        EcosystemSchema.supportedGames
+            .map((game) => [
+                game.internalFolderName,
+                OVERRIDES[game.internalFolderName] || MODLOADER_PACKAGES
+            ])
+    );
+}
 
 export const getModLoaderPackageNames = () => {
     const deduplicated = new Set(EcosystemSchema.modloaderPackages.map((x) => x.packageId));

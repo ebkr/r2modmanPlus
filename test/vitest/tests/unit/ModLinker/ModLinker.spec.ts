@@ -12,6 +12,7 @@ import { ManagerSettingsInterfaceHolder } from '../../../../../src/r2mm/manager/
 import InMemoryFsProvider from '../../../stubs/providers/InMemory.FsProvider';
 import SettingsRedirectGameDirectoryResolver from '../../../stubs/providers/SettingsRedirectGameDirectoryResolver';
 import { describe, beforeAll, test, expect } from 'vitest';
+import { replaceEcosystemWithRealData } from '../../../utils/EcosystemTestHandler';
 import { providePathImplementation } from '../../../../../src/providers/node/path/path';
 import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
 import { provideAppWindowImplementation } from '../../../../../src/providers/node/app/app_window';
@@ -28,6 +29,7 @@ describe.skipIf(process.platform !== 'win32')('ModLinker', async () => {
     let settings!: ManagerSettings;
 
     beforeAll(async () => {
+        replaceEcosystemWithRealData();
         providePathImplementation(() => TestPathProvider);
         provideAppWindowImplementation(() => TestAppWindowProvider);
 

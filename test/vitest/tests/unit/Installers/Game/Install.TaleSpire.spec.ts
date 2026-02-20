@@ -11,12 +11,14 @@ import {
     testUntrackedFileStructure
 } from '../../../../utils/InstallLogicUtils';
 import {describe, beforeAll, afterAll, test} from 'vitest';
+import { replaceEcosystemWithRealData } from '../../../../utils/EcosystemTestHandler';
 
 let pkg: ManifestV2;
 
 describe('TaleSpire Install Logic', () => {
 
     beforeAll(async () => {
+        replaceEcosystemWithRealData();
         await installLogicBeforeEach("TaleSpire");
         pkg = createManifest('test_mod', 'author');
         await setupFolderStructureTestFiles(pkg);
