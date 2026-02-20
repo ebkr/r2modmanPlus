@@ -91,7 +91,6 @@
     "electron-builder": "26.0.12",
     "electron-debug": "^3.0.1",
     "electron-devtools-installer": "^3.0.0",
-    "electron-installer-flatpak": "^0.8.0",
     "electron-packager": "14.1.1",
     "identity-obj-proxy": "^3.0.0",
     "mock-require": "^3.0.3",
@@ -106,6 +105,9 @@
     "vitest": "^3.2.4",
     "vue": "^3.5.16",
     "wallaby-vue-compiler": "^1.0.3"
+  },
+  "optionalDependencies": {
+    "electron-installer-flatpak": "^0.8.0"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0",

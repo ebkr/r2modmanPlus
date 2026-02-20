@@ -11,7 +11,8 @@ import ProfileInstallerProvider from '../../../../../../src/providers/ror2/insta
 import GenericProfileInstaller from '../../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import InstallationRules, { RuleSubtype } from '../../../../../../src/r2mm/installing/InstallationRules';
 import { TrackingMethod } from '../../../../../../src/model/schema/ThunderstoreSchema';
-import {describe, beforeEach, test, expect} from 'vitest';
+import { describe, beforeEach, test, expect, beforeAll } from 'vitest';
+import { replaceEcosystemWithRealData } from '../../../../utils/EcosystemTestHandler';
 
 function getShimloaderRules(includePakExtension: boolean): RuleSubtype[] {
     return [
@@ -53,12 +54,17 @@ function setPalworldInstallRules(rules: RuleSubtype[]) {
 }
 
 describe('Shimloader Installer Tests', () => {
+
+    beforeAll(() => {
+        replaceEcosystemWithRealData();
+    });
+
     describe('Schema-defined installRules', () => {
 
-        beforeEach(async () => {
-            await installLogicBeforeEach('Palworld');
-            setPalworldInstallRules(getShimloaderRules(false));
-        });
+    beforeEach(async () => {
+        await installLogicBeforeEach('Palworld');
+        setPalworldInstallRules(getShimloaderRules(false));
+    });
 
         test('Installs and uninstalls a package', async () => {
             const pkg = createManifest("test_mod", "auth");

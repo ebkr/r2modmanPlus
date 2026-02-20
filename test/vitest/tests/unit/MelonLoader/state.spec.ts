@@ -14,6 +14,7 @@ import GameManager from '../../../../../src/model/game/GameManager';
 import ConflictManagementProvider from '../../../../../src/providers/generic/installing/ConflictManagementProvider';
 import { addToStateFile } from '../../../../../src/installers/InstallRuleInstaller';
 import { describe, beforeEach, afterEach, test, expect } from 'vitest';
+import { replaceEcosystemWithRealData } from '../../../utils/EcosystemTestHandler';
 import {providePathImplementation} from "../../../../../src/providers/node/path/path";
 import {TestPathProvider} from "../../../stubs/providers/node/Node.Path.Provider";
 import StubProfileProvider from '../../../stubs/providers/stub.ProfileProvider';
@@ -25,6 +26,7 @@ let mlProfileInstaller: GenericProfileInstaller;
 let conflictManagement: ConflictManagementProviderImpl;
 
 let beforeSetup = () => {
+    replaceEcosystemWithRealData();
     TestSetup.stubSetUp();
     sandbox = Sinon.createSandbox();
     mlProfileInstaller = new GenericProfileInstaller();

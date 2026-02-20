@@ -10,9 +10,14 @@ import {
 import Profile, { ImmutableProfile } from '../../../../../../src/model/Profile';
 import R2Error from '../../../../../../src/model/errors/R2Error';
 import ProfileInstallerProvider from '../../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
-import {describe, beforeEach, test, expect} from 'vitest';
+import {describe, beforeAll, beforeEach, test, expect} from 'vitest';
+import { replaceEcosystemWithRealData } from '../../../../utils/EcosystemTestHandler';
 
 describe('UMMInstaller Tests', () => {
+    beforeAll(() => {
+        replaceEcosystemWithRealData();
+    });
+
     beforeEach(
         () => installLogicBeforeEach("Broforce")
     );
@@ -54,6 +59,10 @@ describe('UMMInstaller Tests', () => {
 });
 
 describe('UMM Mod Tests (using InstallRules)', () => {
+    beforeAll(() => {
+        replaceEcosystemWithRealData();
+    });
+
     beforeEach(
         () => installLogicBeforeEach("Broforce")
     );

@@ -12,12 +12,14 @@ import {
     testUntrackedFileStructure
 } from '../../../../utils/InstallLogicUtils';
 import {describe, beforeAll, afterAll, test} from 'vitest';
+import { replaceEcosystemWithRealData } from '../../../../utils/EcosystemTestHandler';
 
 let pkg: ManifestV2;
 
 describe('H3VR Install Logic', () => {
 
     beforeAll(async () => {
+        replaceEcosystemWithRealData();
         await installLogicBeforeEach("H3VR");
         pkg = createManifest('test_mod', 'author');
         await setupFolderStructureTestFiles(pkg);
