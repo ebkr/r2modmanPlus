@@ -8,6 +8,7 @@ import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ModLinker from '../r2mm/manager/ModLinker';
 import {Platform} from '../assets/data/ecosystemTypes';
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
+import DarwinGameDirectoryResolver from "../r2mm/manager/darwin/DarwinGameDirectoryResolver";
 import {LaunchType} from "../model/real_enums/launch/LaunchType";
 import path from "../providers/node/path/path";
 import PathResolver from "../r2mm/manager/PathResolver";
@@ -98,7 +99,7 @@ export async function isManagerRunningOnFlatpak(): Promise<boolean> {
 
 export async function getProvidedWrapperArguments(game: Game): Promise<string> {
     return Promise.resolve()
-        .then(async () => await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(game))
+        .then(async () => await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver | DarwinGameDirectoryResolver).getLaunchArgs(game))
         .then(launchArgs => {
             if (typeof launchArgs !== 'string') {
                 throw launchArgs;
@@ -121,16 +122,44 @@ export async function areAnyWrapperArgumentsProvided(game: Game): Promise<boolea
         .catch(() => false);
 }
 
+/**
+ * Returns true if any old MacOS wrappers are set. These are no longer valid.
+ * @param game - The game to check for the set launch arguments
+*/
+export async function areAnyOldMacWrapperArgumentsProvided(game: Game): Promise<boolean> {
+    const oldWrappers = [
+        'macos_proxy', // old binary wrapper
+        'macos_wrapper.sh', // old shell script wrapper
+        'linux_wrapper.sh', // Linux wrapper; never officially instructed for use on Mac, but some may have tried it
+    ];
+    return getProvidedWrapperArguments(game)
+        .then(launchArgs => oldWrappers.some(old => launchArgs.includes(old)))
+        .catch(() => false);
+}
+
 export async function areWrapperArgumentsProvided(game: Game): Promise<boolean> {
     const isFlatpak = await isManagerRunningOnFlatpak();
     const flatpakWrapper = path.join(PathResolver.MOD_ROOT, 'web_start_wrapper.sh');
     const linuxWrapper = path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh');
-    const appropriateWrapper = isFlatpak ? flatpakWrapper : linuxWrapper;
+    const appropriateWrapper = (isFlatpak || appWindow.getPlatform() === 'darwin') ? flatpakWrapper : linuxWrapper;
     return getProvidedWrapperArguments(game)
         .then(launchArgs => launchArgs.includes(appropriateWrapper))
         .catch(() => false);
 }
 
 export async function getWrapperLaunchArgs(): Promise<string> {
-    return `"${path.join(PathResolver.MOD_ROOT, appWindow.getPlatform() === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh')}" %command%`;
+    return `"${path.join(PathResolver.MOD_ROOT, appWindow.getPlatform() === 'darwin' ? 'web_start_wrapper.sh' : 'linux_wrapper.sh')}" %command%`;
+}
+
+export async function ensureScriptsAreAllExecutable() {
+    try {
+        const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(Profile.getActiveProfile().getProfilePath())))
+            .filter(value => value.endsWith(".sh"));
+        for (const shFile of shFiles) {
+            await FsProvider.instance.chmod(await FsProvider.instance.realpath(Profile.getActiveProfile().joinToProfilePath(shFile)), 0o755);
+        }
+    } catch (e) {
+        const err: Error = e as Error;
+        return new R2Error("Failed to make script file executable", err.message, "You may need to run the manager with elevated privileges.");
+    }
 }

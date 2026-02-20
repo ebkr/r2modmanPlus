@@ -9,8 +9,15 @@
                 <p>You must update your launch arguments to support this.</p>
             </div>
         </div>
+        <div class="container margin-bottom" v-if="hasOldMacWrapperSet">
+            <div class="notification is-warning">
+                <p>It looks like you've previously set launch arguments.</p>
+                <p>The MacOS version of {{ appName }} now uses a different wrapper script.</p>
+                <p>You must update your launch arguments to support this.</p>
+            </div>
+        </div>
 		<div class="container">
-			To be able to launch {{ activeGame.displayName }} on Linux, you must first setup your Steam launch options correctly.<br/>
+			To be able to launch {{ activeGame.displayName }} on {{ platformName }}, you must first setup your Steam launch options correctly.<br/>
 			This needs to be done because of how the BepInEx injection works on Unix systems.<br/>
 			<br/>
 			Please copy and paste the following to your {{ activeGame.displayName }} launch options:<br/>
@@ -33,6 +40,7 @@ import {ComputedWrapperLaunchArguments, WineDllOverridesValue} from '../componen
 import InteractionProviderImpl from '../r2mm/system/InteractionProviderImpl';
 import appWindow from '../providers/node/app/app_window';
 import {
+    areAnyOldMacWrapperArgumentsProvided,
     areAnyWrapperArgumentsProvided,
     isManagerRunningOnFlatpak
 } from '../utils/LaunchUtils';
@@ -48,7 +56,8 @@ const platformName = computed<string>(() => appWindow.getPlatform() === 'darwin'
 const finalArgs = computed(() => {
     let result = '';
     if (WineDllOverridesValue.value) {
-        result = `${WineDllOverridesValue.value} `;
+        // Using env to set environment variables is needed for Steam on MacOS compatibility.
+        result = `/usr/bin/env ${WineDllOverridesValue.value} `;
     }
     return result + ComputedWrapperLaunchArguments.value;
 });
@@ -58,6 +67,9 @@ areAnyWrapperArgumentsProvided(activeGame.value).then(value => alreadyHadValuesS
 
 const isFlatpak = ref<boolean>(false);
 isManagerRunningOnFlatpak().then(value => isFlatpak.value = value);
+
+const hasOldMacWrapperSet = ref<boolean>(false);
+areAnyOldMacWrapperArgumentsProvided(activeGame.value).then(value => hasOldMacWrapperSet.value = value)
 
 function copy(){
     let range = document.createRange();
