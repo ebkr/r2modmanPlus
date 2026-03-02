@@ -2606,7 +2606,7 @@
             ]
           }
         },
-        "discordUrl": "https://discord.gg/TmBBV2qRuq"
+        "discordUrl": "https://discord.gg/freesoulbrc"
       }
     },
     "bonelab": {
@@ -18751,6 +18751,127 @@
       },
       "r2modman": null
     },
+    "a-gentlemens-dispute": {
+      "uuid": "ffe89e5e-c199-48d0-9ff5-48f0ad04c700",
+      "label": "a-gentlemens-dispute",
+      "meta": {
+        "displayName": "A Gentlemen's Dispute",
+        "iconUrl": "a-gentlemens-dispute.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2820700"
+            }
+          ],
+          "steamFolderName": "A Gentlemen's Dispute",
+          "dataFolderName": "A Gentlemen's Dispute_Data",
+          "exeNames": [
+            "A Gentlemen's Dispute.exe",
+            "AGentlemensDispute.app"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "A Gentlemen's Dispute",
+            "iconUrl": "a-gentlemens-dispute.webp"
+          },
+          "settingsIdentifier": "AgentlemensDispute",
+          "internalFolderName": "AgentlemensDispute",
+          "packageIndex": "https://thunderstore.io/c/a-gentlemens-dispute/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "AGD"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "A Gentlemen's Dispute",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Polite mayhem awaits! Hurl traps, swing bats, and detonate all in sight as you vie to be the last gentleman standing. Refined chaos for up to 8 players - anything goes, so long as it's done with class!"
+      }
+    },
     "aeruta": {
       "uuid": "70e4bc07-8642-44f1-a0a5-575eac59bd60",
       "label": "aeruta",
@@ -20362,6 +20483,7 @@
       ],
       "thunderstore": {
         "displayName": "Crawlspace 2",
+        "discordUrl": "https://discord.gg/BDZ6NjegeR",
         "categories": {
           "mods": {
             "label": "Mods"
@@ -20518,6 +20640,85 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "cursed-words": {
+      "uuid": "4363e08e-0e9d-4578-a8ab-9c28ce866280",
+      "label": "cursed-words",
+      "meta": {
+        "displayName": "Cursed Words",
+        "iconUrl": "cursed-words.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3856460"
+            }
+          ],
+          "steamFolderName": "Cursed Words",
+          "dataFolderName": "Cursed Words_Data",
+          "exeNames": [
+            "Cursed Words.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Cursed Words",
+            "iconUrl": "cursed-words.webp"
+          },
+          "settingsIdentifier": "CursedWords",
+          "internalFolderName": "CursedWords",
+          "packageIndex": "https://thunderstore.io/c/cursed-words/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Cursed Words",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/7vqFuNCE8v",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Starts as Boggle, ends as Schrodinger - Cursed Words is a roguelike adventure about writing words... for a while, until words become NUM83R5, or chess pieces, or the infinite void."
       }
     },
     "darkwater": {
@@ -20907,6 +21108,86 @@
         ]
       },
       "r2modman": null
+    },
+    "ducks-can-drive": {
+      "uuid": "5bbaccc5-d8fe-4fab-877d-7dec9db01630",
+      "label": "ducks-can-drive",
+      "meta": {
+        "displayName": "Ducks Can Drive",
+        "iconUrl": "ducks-can-drive.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2472840"
+            }
+          ],
+          "steamFolderName": "Ducks Can Drive",
+          "dataFolderName": "Ducks Can Drive_Data",
+          "exeNames": [
+            "Ducks Can Drive.exe",
+            "DuckDrive.x86_64",
+            "Ducks Can Drive.app"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Ducks Can Drive",
+            "iconUrl": "ducks-can-drive.webp"
+          },
+          "settingsIdentifier": "DucksCanDrive",
+          "internalFolderName": "DucksCanDrive",
+          "packageIndex": "https://thunderstore.io/c/ducks-can-drive/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Ducks Can Drive",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Ducks like to race, even in their own cars! Earn money by delivering food to fellow ducks in the city, then use this money to upgrade your vehicle. The better the vehicle, the better chance you have to win the race at the end of the day!"
+      }
     },
     "easy-delivery-co": {
       "uuid": "3f5f3de7-0056-48d1-b5fe-55bb4f395874",
@@ -26541,6 +26822,127 @@
         "shortDescription": "Stolen Realm is a simultaneous turn-based tactical dungeon crawling looter with action RPG elements where you control up to 6 heroes, solo or through online co-op, venturing forth in adventures set in a high-fantasy, low-poly world."
       }
     },
+    "super-battle-golf": {
+      "uuid": "ff4d426c-8315-4e7c-b942-ce9d60dc2082",
+      "label": "super-battle-golf",
+      "meta": {
+        "displayName": "Super Battle Golf",
+        "iconUrl": "super-battle-golf.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "4069520"
+            }
+          ],
+          "steamFolderName": "Super Battle Golf",
+          "dataFolderName": "Super Battle Golf_Data",
+          "exeNames": [
+            "Super Battle Golf.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Super Battle Golf",
+            "iconUrl": "super-battle-golf.webp"
+          },
+          "settingsIdentifier": "SuperBattleGolf",
+          "internalFolderName": "SuperBattleGolf",
+          "packageIndex": "https://thunderstore.io/c/super-battle-golf/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "SBG"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Super Battle Golf",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/CCcvS2JDjH",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "An online 1-8 player golf game where everyone plays at the same time. Swing, shoot, sabotage, and finish first by any means necessary in a free-for-all rush to the hole."
+      }
+    },
     "super-fantasy-kingdom": {
       "uuid": "fe0fa301-b037-4cbc-84e1-300a44bd3eb0",
       "label": "super-fantasy-kingdom",
@@ -27434,6 +27836,9 @@
           },
           "qol": {
             "label": "Quality Of Life"
+          },
+          "contracts": {
+            "label": "Contracts"
           }
         },
         "sections": {
@@ -28261,7 +28666,7 @@
           ]
         }
       },
-      "discordUrl": "https://discord.gg/TmBBV2qRuq"
+      "discordUrl": "https://discord.gg/freesoulbrc"
     },
     "bopl-battle": {
       "displayName": "Bopl Battle",
@@ -32747,6 +33152,47 @@
       "discordUrl": "https://discord.com/invite/shipofharkinian",
       "autolistPackageIds": []
     },
+    "a-gentlemens-dispute": {
+      "displayName": "A Gentlemen's Dispute",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Polite mayhem awaits! Hurl traps, swing bats, and detonate all in sight as you vie to be the last gentleman standing. Refined chaos for up to 8 players - anything goes, so long as it's done with class!"
+    },
     "aeruta": {
       "displayName": "Aeruta",
       "categories": {
@@ -33419,6 +33865,7 @@
     },
     "crawlspace-2": {
       "displayName": "Crawlspace 2",
+      "discordUrl": "https://discord.gg/BDZ6NjegeR",
       "categories": {
         "mods": {
           "label": "Mods"
@@ -33496,6 +33943,48 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "cursed-words": {
+      "displayName": "Cursed Words",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/7vqFuNCE8v",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Starts as Boggle, ends as Schrodinger - Cursed Words is a roguelike adventure about writing words... for a while, until words become NUM83R5, or chess pieces, or the infinite void."
     },
     "darkwater": {
       "displayName": "Darkwater",
@@ -33697,6 +34186,47 @@
       "autolistPackageIds": [
         "Thunderstore-unreal_shimloader"
       ]
+    },
+    "ducks-can-drive": {
+      "displayName": "Ducks Can Drive",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Ducks like to race, even in their own cars! Earn money by delivering food to fellow ducks in the city, then use this money to upgrade your vehicle. The better the vehicle, the better chance you have to win the race at the end of the day!"
     },
     "easy-delivery-co": {
       "displayName": "Easy Delivery Co",
@@ -36167,6 +36697,48 @@
       ],
       "shortDescription": "Stolen Realm is a simultaneous turn-based tactical dungeon crawling looter with action RPG elements where you control up to 6 heroes, solo or through online co-op, venturing forth in adventures set in a high-fantasy, low-poly world."
     },
+    "super-battle-golf": {
+      "displayName": "Super Battle Golf",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/CCcvS2JDjH",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "An online 1-8 player golf game where everyone plays at the same time. Swing, shoot, sabotage, and finish first by any means necessary in a free-for-all rush to the hole."
+    },
     "super-fantasy-kingdom": {
       "displayName": "Super Fantasy Kingdom",
       "categories": {
@@ -36568,6 +37140,9 @@
         },
         "qol": {
           "label": "Quality Of Life"
+        },
+        "contracts": {
+          "label": "Contracts"
         }
       },
       "sections": {
