@@ -3,7 +3,6 @@ name: Generate Flatpak Node Sources
 on:
   release:
     types: [released]
-  workflow_dispatch:
 
 jobs:
   generate-flatpak-node-sources:
