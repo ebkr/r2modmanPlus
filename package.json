@@ -13,12 +13,10 @@
     "sync": "tsx ./scripts/sync.ts",
     "build-win": "quasar build --mode electron -T win32",
     "build-linux": "quasar build --mode electron -T linux",
-    "build-flatpak": "BUILD_FLATPAK=true quasar build --mode electron -T linux",
     "build-osx": "quasar build --mode electron -T mac",
     "publish": "quasar build --mode electron --publish always",
     "publish-win": "quasar build --mode electron -T win32 --publish always",
     "publish-linux": "quasar build --mode electron -T linux --publish always",
-    "publish-flatpak": "BUILD_FLATPAK=true quasar build --mode electron -T linux --publish always",
     "test": "vitest run ./test/vitest"
   },
   "dependencies": {
@@ -91,7 +89,6 @@
     "electron-builder": "26.0.12",
     "electron-debug": "^3.0.1",
     "electron-devtools-installer": "^3.0.0",
-    "electron-installer-flatpak": "^0.8.0",
     "electron-packager": "14.1.1",
     "identity-obj-proxy": "^3.0.0",
     "mock-require": "^3.0.3",
