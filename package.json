@@ -7,6 +7,7 @@
   "private": true,
   "license": "MIT",
   "type": "module",
+  "main": "src-electron/electron-main.ts",
   "scripts": {
     "run": "quasar dev -m electron --modern",
     "dev": "quasar dev -m electron --modern --devtools",
