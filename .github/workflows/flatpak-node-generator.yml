@@ -2,7 +2,7 @@ name: Generate Flatpak Node Sources
 
 on:
   release:
-    types: [published]
+    types: [released]
   workflow_dispatch:
 
 jobs:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -35,8 +35,9 @@ jobs:
           mkdir -p flatpak-sources
           flatpak-node-generator yarn yarn.lock --output flatpak-sources/generated-sources.json
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: flatpak-node-sources
-          path: flatpak-sources/generated-sources.json
+      - name: Append node-sources to releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          gh release upload $TAG_NAME flatpak-sources/generated-sources.json
