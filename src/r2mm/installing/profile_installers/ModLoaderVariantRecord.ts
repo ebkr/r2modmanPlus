@@ -38,7 +38,7 @@ const OVERRIDES: Modloaders = {
 
 export const MOD_LOADER_VARIANTS: Modloaders = Object.fromEntries(
     EcosystemSchema.supportedGames
-        .map((game) => [
+        .map(([_, game]) => [
             game.internalFolderName,
             OVERRIDES[game.internalFolderName] || MODLOADER_PACKAGES
         ])
