@@ -13,10 +13,15 @@ import path from "../providers/node/path/path";
 import PathResolver from "../r2mm/manager/PathResolver";
 import appWindow from '../providers/node/app/app_window';
 import InteractionProvider from "../providers/ror2/system/InteractionProvider";
+import { TypedEventEmitter } from "./TypedEventEmitter";
 
 export enum LaunchMode { VANILLA, MODDED };
 
+export const OnGameLaunch = new TypedEventEmitter<{ game: Game, profile: Profile, mode: LaunchMode }>();
+
 export const launch = async (game: Game, profile: Profile, mode: LaunchMode): Promise<void> => {
+    await OnGameLaunch.emit({game, profile, mode});
+
     const error = (mode === LaunchMode.MODDED)
         ? await GameRunnerProvider.instance.startModded(game, profile)
         : await GameRunnerProvider.instance.startVanilla(game, profile);
