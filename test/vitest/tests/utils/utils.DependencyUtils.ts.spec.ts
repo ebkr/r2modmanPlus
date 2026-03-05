@@ -32,7 +32,7 @@ vi.spyOn(PackageDexieStoreMockables, "fetchPackagesByCommunityPackagePairs").moc
 });
 
 const game = new Game(
-    "", "RiskOfRain2", "", "", [], "", "", [], "",
+    "", "RiskOfRain2", "", "", [], "", "", "riskofrain2",[], "",
     GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []
 );
 
