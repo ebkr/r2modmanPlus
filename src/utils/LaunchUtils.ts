@@ -20,6 +20,7 @@ export enum LaunchMode { VANILLA, MODDED };
 export const OnGameLaunch = new TypedEventEmitter<{ game: Game, profile: Profile, mode: LaunchMode }>();
 
 export const launch = async (game: Game, profile: Profile, mode: LaunchMode): Promise<void> => {
+    // This event is used for analytics by TMM
     await OnGameLaunch.emit({game, profile, mode});
 
     const error = (mode === LaunchMode.MODDED)
