@@ -16,7 +16,7 @@ import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
 import { getPluginInstaller, PackageLoaderInstallers } from "../../../installers/registry";
 import { InstallArgs, PackageInstaller } from "../../../installers/PackageInstaller";
-import { applyModeState, applyModeSubDirs, InstallRulePluginInstaller } from "../../../installers/InstallRuleInstaller";
+import { applyModeState, applyModeSubDirs, InstallRulePluginInstaller } from "../../../installers/InstallRulePluginInstaller";
 import { ReturnOfModdingPluginInstaller } from "../../../installers/ReturnOfModdingInstaller";
 
 

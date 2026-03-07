@@ -1,5 +1,5 @@
 import path from "../providers/node/path/path";
-import { InstallRulePluginInstaller } from "./InstallRuleInstaller";
+import { InstallRulePluginInstaller } from "./InstallRulePluginInstaller";
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import FileWriteError from "../model/errors/FileWriteError";
 import { PackageLoader } from "../model/schema/ThunderstoreSchema";
