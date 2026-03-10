@@ -18784,7 +18784,8 @@
           "packageIndex": "https://thunderstore.io/c/a-gentlemens-dispute/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "AGD"
+            "AGD",
+            "礼帽大乱斗"
           ],
           "installRules": [
             {
@@ -19101,7 +19102,10 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "异星探险家",
+            "异星旅人"
+          ],
           "packageLoader": "shimloader",
           "installRules": [
             {
@@ -19198,7 +19202,7 @@
           "settingsIdentifier": "BabySteps",
           "internalFolderName": "BabySteps",
           "packageIndex": "https://thunderstore.io/c/baby-steps/api/v1/package-listing-index/",
-          "gameSelectionDisplayMode": "hidden",
+          "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
             "一步一脚印"
           ],
@@ -19434,10 +19438,10 @@
           "distributions": [
             {
               "platform": "steam",
-              "identifier": "3821880"
+              "identifier": "4231580"
             }
           ],
-          "steamFolderName": "BeetleBall Playtest",
+          "steamFolderName": "Beetleball Demo",
           "dataFolderName": "Beetleball_Data",
           "exeNames": [
             "Beetleball.exe"
@@ -19458,6 +19462,7 @@
       ],
       "thunderstore": {
         "displayName": "Beetleball",
+        "shortDescription": "Score goals with dungballs in Beetleball, the Greatest Online Multiplayer Class-based Dung Beetle Soccer Game TO EVER EXIST",
         "categories": {
           "mods": {
             "label": "Mods"
@@ -19835,7 +19840,9 @@
           "internalFolderName": "CarrierDeck",
           "packageIndex": "https://thunderstore.io/c/carrier-deck/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "甲板指挥官"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -21388,7 +21395,9 @@
           "internalFolderName": "FactoryPlanner",
           "packageIndex": "https://thunderstore.io/c/factory-planner/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "卡牌工厂"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -22001,7 +22010,9 @@
           "internalFolderName": "GrannyChapterTwo",
           "packageIndex": "https://thunderstore.io/c/granny-chapter-two/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "恐怖奶奶2"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -24420,7 +24431,9 @@
           "internalFolderName": "OnTogetherVirtualCoWorking",
           "packageIndex": "https://thunderstore.io/c/on-together/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "随时在一起：云自习"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -25282,7 +25295,8 @@
           "packageIndex": "https://thunderstore.io/c/project-arrhythmia/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "PA"
+            "PA",
+            "心律失常"
           ],
           "installRules": [
             {
@@ -26014,7 +26028,9 @@
           "internalFolderName": "RvThereYet",
           "packageIndex": "https://thunderstore.io/c/rv-there-yet/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "我们到了吗？"
+          ],
           "installRules": [
             {
               "route": "shimloader/mod",
@@ -26486,7 +26502,10 @@
           "additionalSearchStrings": [
             "SC6",
             "SCVI",
-            "Soul Calibur"
+            "Soul Calibur",
+            "灵魂能力6",
+            "刀魂6",
+            "剑魂6"
           ],
           "installRules": [
             {
@@ -26735,7 +26754,9 @@
           "internalFolderName": "StolenRealm",
           "packageIndex": "https://thunderstore.io/c/stolen-realm/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "失落王国"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -26854,7 +26875,8 @@
           "packageIndex": "https://thunderstore.io/c/super-battle-golf/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "SBG"
+            "SBG",
+            "超级高尔夫大乱斗"
           ],
           "installRules": [
             {
@@ -26920,6 +26942,27 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "items": {
+            "label": "Items"
+          },
+          "qol": {
+            "label": "Quality of Life"
+          },
+          "cosmetics": {
+            "label": "Cosmetics"
+          },
+          "courses": {
+            "label": "Courses"
+          },
+          "clientside": {
+            "label": "Client-Side"
+          },
+          "hostonly": {
+            "label": "Host-Only"
+          },
+          "allclients": {
+            "label": "All Clients Required"
           }
         },
         "sections": {
@@ -27192,7 +27235,9 @@
           "internalFolderName": "TheFarmerWasReplaced",
           "packageIndex": "https://thunderstore.io/c/the-farmer-was-replaced/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "编程农场"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -33431,6 +33476,7 @@
     },
     "beetleball": {
       "displayName": "Beetleball",
+      "shortDescription": "Score goals with dungballs in Beetleball, the Greatest Online Multiplayer Class-based Dung Beetle Soccer Game TO EVER EXIST",
       "categories": {
         "mods": {
           "label": "Mods"
@@ -36717,6 +36763,27 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "qol": {
+          "label": "Quality of Life"
+        },
+        "cosmetics": {
+          "label": "Cosmetics"
+        },
+        "courses": {
+          "label": "Courses"
+        },
+        "clientside": {
+          "label": "Client-Side"
+        },
+        "hostonly": {
+          "label": "Host-Only"
+        },
+        "allclients": {
+          "label": "All Clients Required"
         }
       },
       "sections": {
