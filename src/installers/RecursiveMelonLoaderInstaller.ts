@@ -113,8 +113,8 @@ export class RecursiveMelonLoaderPluginInstaller implements PackageInstaller {
 
     async uninstall(args: InstallArgs): Promise<void> {
         try {
-            FileUtils.recursiveRemoveDirectoryIfExists(this.getModsPath(args));
-            FileUtils.recursiveRemoveDirectoryIfExists(this.getUserDataPath(args));
+            await FileUtils.recursiveRemoveDirectoryIfExists(this.getModsPath(args));
+            await FileUtils.recursiveRemoveDirectoryIfExists(this.getUserDataPath(args));
         } catch (e) {
             this.throwActionError(e, 'uninstall');
         }
