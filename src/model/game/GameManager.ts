@@ -23,7 +23,7 @@ export default class GameManager {
     }
 
     static get gameList(): Game[] {
-        return EcosystemSchema.supportedGames.map((game) => new Game(
+        return EcosystemSchema.supportedGames.map(([identifier, game]) => new Game(
             game.meta.displayName,
             game.internalFolderName,
             game.settingsIdentifier,
@@ -31,6 +31,7 @@ export default class GameManager {
             game.exeNames,
             game.dataFolderName,
             game.packageIndex,
+            identifier,
             game.distributions.map(
                 (x) => new StorePlatformMetadata(x.platform, x.identifier || undefined)
             ),

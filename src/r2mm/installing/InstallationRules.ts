@@ -39,7 +39,7 @@ export default class InstallationRules {
     }
 
     public static apply() {
-        this._RULES = EcosystemSchema.supportedGames.map((x) => ({
+        this._RULES = EcosystemSchema.supportedGames.map(([_, x]) => ({
             gameName: x.internalFolderName,
             rules: x.installRules,
             relativeFileExclusions: x.relativeFileExclusions,
