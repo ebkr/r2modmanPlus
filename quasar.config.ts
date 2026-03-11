@@ -5,6 +5,8 @@ import { defineConfig } from "#q-app/wrappers";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineConfig((ctx) => {
+    const skipPackaging = process.env.SKIP_PACKAGE === "true";
+
     return {
         // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
         // preFetch: true,
@@ -222,7 +224,7 @@ export default defineConfig((ctx) => {
                     include: "build/installer.nsh",
                 },
                 linux: {
-                    target: ["AppImage", "tar.gz", "deb", "rpm", "pacman"],
+                    target: !skipPackaging ? ["AppImage", "tar.gz", "deb", "rpm", "pacman"] : "dir",
                     icon: "src/assets/icon",
                     maintainer: "ebkr",
                     vendor: "ebkr",

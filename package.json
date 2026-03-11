@@ -12,7 +12,7 @@
     "run": "quasar dev -m electron --modern",
     "dev": "quasar dev -m electron --modern --devtools",
     "sync": "tsx ./scripts/sync.ts",
-    "build-unpacked": "quasar build -m electron --skip-pkg",
+    "build-unpackaged": "SKIP_PACKAGING=true quasar build -m electron",
     "build-win": "quasar build --mode electron -T win32",
     "build-linux": "quasar build --mode electron -T linux",
     "build-osx": "quasar build --mode electron -T mac",
