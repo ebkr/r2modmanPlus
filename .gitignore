@@ -26,3 +26,6 @@ log.txt
 *.njsproj
 *.sln
 /.vs
+
+/.yarn/*
+!/.yarn/releases/
