@@ -8,7 +8,7 @@ export abstract class DatabaseProvider {
         this._name = dbName;
     }
 
-    abstract query(q: string, ...args: any): Promise<any>;
+    abstract query(q: string, ...args: any): Promise<Record<string, any>[]>;
 }
 
 const databaseProviders: Map<string, DatabaseProvider> = new Map();

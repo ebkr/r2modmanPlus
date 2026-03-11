@@ -7,7 +7,7 @@ export class DatabaseProviderImpl extends DatabaseProvider {
         super(id, dbName);
     }
 
-    override async query(q: string, ...args: any): Promise<any> {
-        throw new Error("Method not implemented.");
+    override async query(q: string, ...args: any): Promise<Record<string, any>[]> {
+        return window.db.query(this._id, q, ...args);
     }
 }

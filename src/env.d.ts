@@ -48,6 +48,7 @@ declare global {
         },
         db: {
             open: (name: string) => string;
+            query: (dbId: string, query: string, ...args: any[]) => Promise<Record<string, any>[]>;
         }
     }
 }
