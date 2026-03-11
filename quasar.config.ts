@@ -5,7 +5,7 @@ import { defineConfig } from "#q-app/wrappers";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineConfig((ctx) => {
-    const skipPackaging = process.env.SKIP_PACKAGE === "true";
+    const skipPackaging = process.env.SKIP_PACKAGING === "true";
 
     return {
         // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
