@@ -8,7 +8,6 @@ import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import { splitToNameAndVersion } from '../../utils/DependencyUtils';
 
 
-
 // For keeping track of seen package list index files so we can
 // skip processing chunks if there's no changes.
 interface IndexChunkHash {

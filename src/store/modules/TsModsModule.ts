@@ -12,6 +12,7 @@ import { retry } from '../../utils/Common';
 import { Deprecations } from '../../utils/Deprecations';
 import { fetchAndProcessBlobFile, getAxiosWithTimeouts, isNetworkError } from '../../utils/HttpUtils';
 import { transformPackageUrl } from '../../providers/cdn/PackageUrlTransformer';
+import { upsertCommunity, upsertPackageListChunk } from '../../providers/database/package_cache/PackageCacheDatabase';
 
 export interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
@@ -278,13 +279,16 @@ export const TsModsModule = {
         },
 
         async fetchAndCachePackageListChunks(
-            {commit, dispatch},
+            {rootState, commit, dispatch},
             {packageListIndex, progressCallback}: {packageListIndex: PackageListIndex, progressCallback?: ProgressCallback},
         ): Promise<boolean> {
             const chunkCount = packageListIndex.content.length;
             let completed = 0;
             let successes = 0;
             const updateProgress = () => progressCallback && progressCallback(Math.floor((completed / chunkCount) * 100));
+
+            const community = rootState.activeGame.internalFolderName;
+            await upsertCommunity(community);
 
             for (const chunkUrl of packageListIndex.content) {
                 try {
@@ -327,6 +331,7 @@ export const TsModsModule = {
             const filtered = chunk.filter((pkg) => !state.exclusions.includes(pkg.full_name));
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.upsertPackageListChunk(community, filtered);
+            await upsertPackageListChunk(community, filtered);
         },
 
         async gameHasCachedModList({rootState}): Promise<boolean> {

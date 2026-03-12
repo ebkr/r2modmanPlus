@@ -49,6 +49,9 @@ declare global {
         db: {
             open: (name: string) => string;
             query: (dbId: string, query: string, ...args: any[]) => Promise<Record<string, any>[]>;
+            beginTransaction: (dbId: string) => Promise<string>;
+            nextStatement: (txId: string, q: string, ...args: any[]) => Promise<void>;
+            commitTransaction: (txId: string) => Promise<void>;
         }
     }
 }
