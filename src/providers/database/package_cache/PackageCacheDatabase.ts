@@ -53,28 +53,28 @@ export async function upsertCommunity(community: string) {
 export async function upsertPackageListChunk(community: string, packageChunk: any[]) {
     const db = await getPackageCacheDatabase();
     const date = new Date().toISOString();
-    const queries: [q: string, ...args: any][] = packageChunk.map(pkg => [
+    await db.transaction(
         `INSERT OR REPLACE INTO packages (
             community_slug, full_name, name, owner, package_url,
             date_created, date_updated, rating_score, is_pinned,
             is_deprecated, has_nsfw_content, date_fetched, categories
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        community,
-        pkg.full_name,
-        pkg.name,
-        pkg.owner,
-        pkg.package_url,
-        pkg.date_created,
-        pkg.date_updated,
-        pkg.rating_score,
-        pkg.is_pinned ? 1 : 0,
-        pkg.is_deprecated ? 1 : 0,
-        pkg.has_nsfw_content ? 1 : 0,
-        date,
-        JSON.stringify(pkg.categories ?? [])
-    ]);
-
-    await db.transaction(...queries);
+        packageChunk.map(pkg => [
+            community,
+            pkg.full_name,
+            pkg.name,
+            pkg.owner,
+            pkg.package_url,
+            pkg.date_created,
+            pkg.date_updated,
+            pkg.rating_score,
+            pkg.is_pinned ? 1 : 0,
+            pkg.is_deprecated ? 1 : 0,
+            pkg.has_nsfw_content ? 1 : 0,
+            date,
+            JSON.stringify(pkg.categories ?? [])
+        ])
+    );
 }
 
 export async function setLatestPackageListIndex(community: string, hash: string) {
@@ -84,5 +84,14 @@ export async function setLatestPackageListIndex(community: string, hash: string)
         community,
         hash,
         new Date().toISOString()
+    );
+}
+
+export async function getPaginatedPackages(limit: number, page: number) {
+    const db = await getPackageCacheDatabase();
+    await db.query(
+        `SELECT * FROM packages LIMIT ? OFFSET ?`,
+        limit,
+        (page - 1) * limit
     );
 }

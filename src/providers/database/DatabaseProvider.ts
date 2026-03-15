@@ -12,15 +12,12 @@ export abstract class DatabaseProvider {
 
     abstract query(q: string, ...args: any): Promise<Record<string, any>[]>;
 
-    async transaction(...statements: Statement[]): Promise<void> {
-        const txId = await this._beginTransaction();
-        await Promise.all(statements.map(([q, ...args]) => this._nextStatement(txId, q, ...args)));
-        return this._commitTransaction(txId);
+    async transaction(q: string, argSets: any[][]): Promise<void> {
+        if (argSets.length === 0) return;
+        return this._executeTransaction(q, argSets);
     }
 
-    protected abstract _beginTransaction(): Promise<string>;
-    protected abstract _nextStatement(txId: string, q: string, ...args: any[]): Promise<void>;
-    protected abstract _commitTransaction(txId: string): Promise<void>;
+    protected abstract _executeTransaction(q: string, argSets: any[][]): Promise<void>;
 }
 
 const databaseProviders: Map<string, DatabaseProvider> = new Map();

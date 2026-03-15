@@ -330,8 +330,16 @@ export const TsModsModule = {
 
             const filtered = chunk.filter((pkg) => !state.exclusions.includes(pkg.full_name));
             const community = rootState.activeGame.internalFolderName;
-            await PackageDb.upsertPackageListChunk(community, filtered);
-            await upsertPackageListChunk(community, filtered);
+
+            const benchmark = async (label, fn) => {
+                const start = performance.now();
+                await fn();
+                const end = performance.now();
+                console.log(`${label}: ${(end - start).toFixed(2)}ms`);
+            };
+
+            // TODO - Remove benchmark
+            await benchmark("SQLite", () => upsertPackageListChunk(community, filtered));
         },
 
         async gameHasCachedModList({rootState}): Promise<boolean> {

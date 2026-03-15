@@ -4,18 +4,23 @@ import path from 'path';
 import fs from 'fs';
 
 const databaseMap = new Map<string, DatabaseSync>();
-
-let txCounter = 0;
-const transactionBufferMap = new Map<string, { dbId: string; statements: { q: string; args: any[] }[] }>();
+const statementCache = new Map<string, Map<string, ReturnType<DatabaseSync['prepare']>>>();
 
 export function hookDbIpc(app: App) {
     ipcMain.on('db:open', (event, name) => {
         const id = `db-connection-${databaseMap.size.toString()}`;
         const basePath = path.join(app.getPath('appData'), "r2modmanPlus-local", "_database");
         fs.mkdirSync(basePath, { recursive: true });
-        databaseMap.set(id, new DatabaseSync(path.join(basePath, `${name}.sqlite`), {
+
+        const db = new DatabaseSync(path.join(basePath, `${name}.sqlite`), {
             open: true,
-        }));
+        });
+
+        databaseMap.set(id, db);
+        statementCache.set(id, new Map());
+        db.exec("PRAGMA journal_mode=MEMORY");
+        db.exec("PRAGMA synchronous=OFF");
+
         event.returnValue = id;
     });
 
@@ -25,31 +30,18 @@ export function hookDbIpc(app: App) {
         return JSON.stringify(stmt.all(...args));
     });
 
-    ipcMain.handle('db:transaction:begin', (event, dbId) => {
-        const txId = `db-transaction-${txCounter++}`;
-        transactionBufferMap.set(txId, { dbId, statements: [] });
-        return txId;
-    });
-
-    ipcMain.handle('db:transaction:next', (event, txId, q, ...args) => {
-        const tx = transactionBufferMap.get(txId);
-        if (!tx) {
-            throw new Error(`No transaction for id [${txId}]`);
+    ipcMain.handle('db:transaction', (event, dbId, q: string, argSets: any[][]) => {
+        const db: DatabaseSync = databaseMap.get(dbId)!;
+        const cache = statementCache.get(dbId)!;
+        let stmt = cache.get(q);
+        if (!stmt) {
+            stmt = db.prepare(q);
+            cache.set(q, stmt);
         }
-        tx.statements.push({ q, args });
-    });
-
-    ipcMain.handle('db:transaction:commit', (event, txId) => {
-        const tx = transactionBufferMap.get(txId);
-        if (!tx) {
-            throw new Error(`No transaction for id [${txId}]`);
-        }
-        transactionBufferMap.delete(txId);
-        const db = databaseMap.get(tx.dbId)!;
         db.exec('BEGIN TRANSACTION');
         try {
-            for (const { q, args } of tx.statements) {
-                db.prepare(q).run(...args);
+            for (const args of argSets) {
+                stmt.run(...args);
             }
             db.exec('COMMIT');
         } catch (e) {
