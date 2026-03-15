@@ -1,14 +1,17 @@
-import { getDatabaseProvider, type DatabaseProvider } from '../DatabaseProvider';
+import { type DatabaseProvider, getDatabaseProvider } from '../DatabaseProvider';
 import { getPackageCacheMigrations } from './AllPackageCacheMigrations';
+import { SortDirection } from '../../../model/real_enums/sort/SortDirection';
+import type SortingStyle from '../../../model/enums/SortingStyle';
+import { PackageSearchQuery } from './PackageSearchQuery';
 
-let packageCacheDatabase: DatabaseProvider = undefined!;
+let packageCacheDatabasePromise: Promise<DatabaseProvider> | undefined;
 
-export async function getPackageCacheDatabase() {
-    if (!packageCacheDatabase) {
-        packageCacheDatabase = getDatabaseProvider('package_cache');
-        await initDatabase(packageCacheDatabase);
+export function getPackageCacheDatabase(): Promise<DatabaseProvider> {
+    if (!packageCacheDatabasePromise) {
+        const db = getDatabaseProvider('package_cache');
+        packageCacheDatabasePromise = initDatabase(db).then(() => db);
     }
-    return packageCacheDatabase;
+    return packageCacheDatabasePromise;
 }
 
 async function initDatabase(db: DatabaseProvider) {
@@ -20,8 +23,13 @@ async function initDatabase(db: DatabaseProvider) {
     }
 
     for (const migration of migrations) {
-        console.log("Running migration", migration.version);
-        await db.query(migration.query);
+        const statements = migration.query
+            .split(';')
+            .map((s) => s.trim())
+            .filter(Boolean);
+        for (const statement of statements) {
+            await db.query(statement);
+        }
     }
 }
 
@@ -44,7 +52,8 @@ export async function resetCommunity(community: string) {
 export async function upsertCommunity(community: string) {
     const db = await getPackageCacheDatabase();
     return db.query(
-        `INSERT OR REPLACE INTO communities (slug, date_fetched) VALUES (?, ?)`,
+        `INSERT INTO communities (slug, date_fetched) VALUES (?, ?)
+         ON CONFLICT(slug) DO UPDATE SET date_fetched = excluded.date_fetched`,
         community,
         new Date().toISOString()
     );
@@ -54,11 +63,23 @@ export async function upsertPackageListChunk(community: string, packageChunk: an
     const db = await getPackageCacheDatabase();
     const date = new Date().toISOString();
     await db.transaction(
-        `INSERT OR REPLACE INTO packages (
+        `INSERT INTO packages (
             community_slug, full_name, name, owner, package_url,
             date_created, date_updated, rating_score, is_pinned,
             is_deprecated, has_nsfw_content, date_fetched, categories
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(community_slug, full_name) DO UPDATE SET
+            name = excluded.name,
+            owner = excluded.owner,
+            package_url = excluded.package_url,
+            date_created = excluded.date_created,
+            date_updated = excluded.date_updated,
+            rating_score = excluded.rating_score,
+            is_pinned = excluded.is_pinned,
+            is_deprecated = excluded.is_deprecated,
+            has_nsfw_content = excluded.has_nsfw_content,
+            date_fetched = excluded.date_fetched,
+            categories = excluded.categories`,
         packageChunk.map(pkg => [
             community,
             pkg.full_name,
@@ -75,6 +96,44 @@ export async function upsertPackageListChunk(community: string, packageChunk: an
             JSON.stringify(pkg.categories ?? [])
         ])
     );
+
+    const toVersionArgs = (pkg: any, v: any) => [
+        community,
+        pkg.full_name,
+        v.version_number,
+        `${pkg.full_name}-${v.version_number}`,
+        v.description,
+        v.icon,
+        v.download_url,
+        v.website_url,
+        v.file_size,
+        v.downloads,
+        v.date_created,
+        v.is_active ? 1 : 0,
+    ];
+
+    const versionQuery = `INSERT INTO versions (
+        community_slug, package_full_name, version_number, full_name,
+        description, icon, download_url, website_url, file_size,
+        downloads, date_created, is_active
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(community_slug, full_name) DO UPDATE SET
+        description = excluded.description,
+        icon = excluded.icon,
+        download_url = excluded.download_url,
+        website_url = excluded.website_url,
+        file_size = excluded.file_size,
+        downloads = excluded.downloads,
+        is_active = excluded.is_active`;
+
+    const latestVersionArgSets = packageChunk
+        .filter(pkg => pkg.versions?.length > 0)
+        .map(pkg => toVersionArgs(pkg, pkg.versions[0]));
+
+    if (latestVersionArgSets.length > 0) {
+        await db.transaction(versionQuery, latestVersionArgSets);
+    }
+
 }
 
 export async function setLatestPackageListIndex(community: string, hash: string) {
@@ -87,11 +146,24 @@ export async function setLatestPackageListIndex(community: string, hash: string)
     );
 }
 
-export async function getPaginatedPackages(limit: number, page: number) {
+export async function getPaginatedPackages(
+    searchTerm: string,
+    community: string,
+    sortDirection: SortDirection,
+    sortingStyle: string,
+    mustHaveAllCategories: string[],
+    mustHaveAtLeastOneCategories: string[],
+    mustNotHaveAnyCategories: string[],
+    limit: number,
+    page: number
+) {
     const db = await getPackageCacheDatabase();
-    await db.query(
-        `SELECT * FROM packages LIMIT ? OFFSET ?`,
-        limit,
-        (page - 1) * limit
-    );
+    return new PackageSearchQuery()
+        .withSearch(searchTerm)
+        .withCommunity(community)
+        .withAllCategories(mustHaveAllCategories)
+        .withAtLeastOneCategory(mustHaveAtLeastOneCategories)
+        .withoutCategories(mustNotHaveAnyCategories)
+        .withSortingStyle(sortingStyle, sortDirection)
+        .execute(db, limit, page);
 }

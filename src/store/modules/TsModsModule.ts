@@ -13,6 +13,7 @@ import { Deprecations } from '../../utils/Deprecations';
 import { fetchAndProcessBlobFile, getAxiosWithTimeouts, isNetworkError } from '../../utils/HttpUtils';
 import { transformPackageUrl } from '../../providers/cdn/PackageUrlTransformer';
 import { upsertCommunity, upsertPackageListChunk } from '../../providers/database/package_cache/PackageCacheDatabase';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
 
 export interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
@@ -338,8 +339,11 @@ export const TsModsModule = {
                 console.log(`${label}: ${(end - start).toFixed(2)}ms`);
             };
 
-            // TODO - Remove benchmark
-            await benchmark("SQLite", () => upsertPackageListChunk(community, filtered));
+            if (ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
+                await benchmark("SQLite", () => upsertPackageListChunk(community, filtered));
+            } else {
+                await benchmark("IndexedDB", () => PackageDb.upsertPackageListChunk(community, filtered));
+            }
         },
 
         async gameHasCachedModList({rootState}): Promise<boolean> {

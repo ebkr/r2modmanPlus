@@ -20,8 +20,8 @@ export default {
             PRIMARY KEY (community_slug, full_name)
         );
 
-        CREATE INDEX IF NOT EXISTS idx_packages_community_slug ON packages(community_slug);
-        CREATE INDEX IF NOT EXISTS idx_packages_full_name ON packages(full_name);
-        CREATE INDEX IF NOT EXISTS idx_packages_date_updated ON packages(date_updated);
+        CREATE INDEX IF NOT EXISTS idx_packages_community_date_updated ON packages(community_slug, date_updated DESC);
+        CREATE INDEX IF NOT EXISTS idx_packages_community_rating ON packages(community_slug, rating_score DESC);
+        CREATE INDEX IF NOT EXISTS idx_packages_community_name ON packages(community_slug, name);
     `
 } as Migration

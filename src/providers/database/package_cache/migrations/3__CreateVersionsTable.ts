@@ -20,8 +20,6 @@ export default {
             FOREIGN KEY (community_slug, package_full_name) REFERENCES packages(community_slug, full_name) ON DELETE CASCADE
         );
 
-        CREATE INDEX IF NOT EXISTS idx_versions_community_slug ON versions(community_slug);
-        CREATE INDEX IF NOT EXISTS idx_versions_package_full_name ON versions(package_full_name);
-        CREATE INDEX IF NOT EXISTS idx_versions_full_name ON versions(full_name);
+        CREATE INDEX IF NOT EXISTS idx_versions_community_package ON versions(community_slug, package_full_name);
     `
 } as Migration

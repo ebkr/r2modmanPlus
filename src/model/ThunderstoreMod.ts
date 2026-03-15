@@ -30,6 +30,26 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
         return a.getDateUpdated() >= b.getDateUpdated() ? -1 : 1;
     }
 
+    public static fromSqliteRow(row: Record<string, any>): ThunderstoreMod {
+        const mod = new ThunderstoreMod();
+        mod.setName(row.name);
+        mod.setFullName(row.full_name);
+        mod.setOwner(row.owner);
+        mod.setDateCreated(row.date_created);
+        mod.setDateUpdated(row.date_updated);
+        mod.setDeprecatedStatus(row.is_deprecated === 1);
+        mod.setPinnedStatus(row.is_pinned === 1);
+        mod.setRating(row.rating_score);
+        mod.setDownloadCount(row.total_downloads);
+        mod.setPackageUrl(row.package_url);
+        mod.setCategories(JSON.parse(row.categories ?? '[]'));
+        mod.setNsfwFlag(row.has_nsfw_content === 1);
+        mod.setLatestVersion(row.latest_version_number ?? '');
+        mod.setDescription(row.latest_description ?? '');
+        mod.setIcon(row.latest_icon ?? '');
+        return mod;
+    }
+
     public static parseFromThunderstoreData(data: any): ThunderstoreMod {
         const mod = new ThunderstoreMod();
         mod.setName(data.name);

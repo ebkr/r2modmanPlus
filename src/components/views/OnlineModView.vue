@@ -97,6 +97,12 @@ import OnlinePreviewPanel from '../v2/OnlinePreviewPanel.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { computed, ref, watch, onMounted, defineAsyncComponent } from 'vue';
+import ManagerInformation from 'src/_managerinf/ManagerInformation';
+import {
+    getPackageCacheDatabase,
+    getPaginatedPackages
+} from 'src/providers/database/package_cache/PackageCacheDatabase';
+import { PackageSearchQuery } from 'src/providers/database/package_cache/PackageSearchQuery';
 
 const store = getStore<State>();
 
@@ -114,6 +120,8 @@ const OnlineModList = defineAsyncComponent(() => OnlineModListProvider.provider(
 const localModList = computed<ManifestV2[]>(() => store.state.profile.modList);
 const thunderstoreModList = computed<ThunderstoreMod[]>(() => store.state.tsMods.mods);
 
+const pageSize = ref<number>(0);
+
 function getPaginationSize() {
     return Math.ceil(searchableThunderstoreModList.value.length / PAGE_SIZE);
 }
@@ -125,105 +133,150 @@ function changePage() {
     );
 }
 
-watch(pageNumber, changePage);
+if (!ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
+    watch(pageNumber, changePage);
 
-function filterThunderstoreModList() {
-    const allowNsfw = store.state.modFilters.allowNsfw;
-    const filterCategoriesToCompareOne = store.state.modFilters.selectedCategoriesCompareOne;
-    const filterCategoriesToCompareAll = store.state.modFilters.selectedCategoriesCompareAll;
-    const filterCategoriesToExclude = store.state.modFilters.selectedCategoriesToExclude;
-    const showDeprecatedPackages = store.state.modFilters.showDeprecatedPackages;
+    function filterThunderstoreModList() {
+        const allowNsfw = store.state.modFilters.allowNsfw;
+        const filterCategoriesToCompareOne = store.state.modFilters.selectedCategoriesCompareOne;
+        const filterCategoriesToCompareAll = store.state.modFilters.selectedCategoriesCompareAll;
+        const filterCategoriesToExclude = store.state.modFilters.selectedCategoriesToExclude;
+        const showDeprecatedPackages = store.state.modFilters.showDeprecatedPackages;
 
-    let searchableList = sortedThunderstoreModList.value;
-    const searchKeys = SearchUtils.makeKeys(thunderstoreSearchFilter.value);
-    if (searchKeys.length > 0) {
-        searchableList = sortedThunderstoreModList.value.filter((x: ThunderstoreMod) => {
-            return SearchUtils.isSearched(searchKeys, x.getFullName(), x.getDescription())
-        });
-    }
-    if (!allowNsfw) {
-        searchableList = searchableList.filter(mod => !mod.getNsfwFlag());
-    }
-    if (!showDeprecatedPackages) {
-        searchableList = searchableList.filter(
-            mod => !store.state.tsMods.deprecated.get(mod.getFullName())
-        );
-    }
-
-    // Category filters
-    if (filterCategoriesToExclude.length > 0) {
-        searchableList = searchableList.filter((x: ThunderstoreMod) =>
-            !filterCategoriesToExclude.some((category: string) => x.getCategories().includes(category)))
-    }
-    if (filterCategoriesToCompareOne.length > 0) {
-        searchableList = searchableList.filter((x: ThunderstoreMod) =>
-            filterCategoriesToCompareOne.some((category: string) => x.getCategories().includes(category)))
-    }
-    if (filterCategoriesToCompareAll.length > 0) {
-        searchableList = searchableList.filter((x: ThunderstoreMod) =>
-            filterCategoriesToCompareAll.every((category: string) => x.getCategories().includes(category)))
-    }
-
-    searchableThunderstoreModList.value = [...searchableList];
-
-    // Update results
-    changePage();
-}
-
-function sortThunderstoreModList() {
-    const sortDescending = store.state.modFilters.sortDirection == SortingDirection.STANDARD;
-    const sortedList = [...thunderstoreModList.value];
-    sortedList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
-        let result: boolean;
-        switch (store.state.modFilters.sortBehaviour) {
-            case SortingStyle.LAST_UPDATED:
-                result = a.getDateUpdated() < b.getDateUpdated();
-                break;
-            case SortingStyle.ALPHABETICAL:
-                result = a.getName().localeCompare(b.getName()) > 0;
-                break;
-            case SortingStyle.DOWNLOADS:
-                result = a.getDownloadCount() < b.getDownloadCount();
-                break;
-            case SortingStyle.RATING:
-                result = a.getRating() < b.getRating();
-                break;
-            case SortingStyle.DEFAULT:
-                result = true;
-                break;
-            default:
-                result = true;
-                break;
+        let searchableList = sortedThunderstoreModList.value;
+        const searchKeys = SearchUtils.makeKeys(thunderstoreSearchFilter.value);
+        if (searchKeys.length > 0) {
+            searchableList = sortedThunderstoreModList.value.filter((x: ThunderstoreMod) => {
+                return SearchUtils.isSearched(searchKeys, x.getFullName(), x.getDescription())
+            });
         }
-        const sortOrder = result ? 1 : -1;
-        return sortDescending ? sortOrder : -sortOrder;
+        if (!allowNsfw) {
+            searchableList = searchableList.filter(mod => !mod.getNsfwFlag());
+        }
+        if (!showDeprecatedPackages) {
+            searchableList = searchableList.filter(
+                mod => !store.state.tsMods.deprecated.get(mod.getFullName())
+            );
+        }
+
+        // Category filters
+        if (filterCategoriesToExclude.length > 0) {
+            searchableList = searchableList.filter((x: ThunderstoreMod) =>
+                !filterCategoriesToExclude.some((category: string) => x.getCategories().includes(category)))
+        }
+        if (filterCategoriesToCompareOne.length > 0) {
+            searchableList = searchableList.filter((x: ThunderstoreMod) =>
+                filterCategoriesToCompareOne.some((category: string) => x.getCategories().includes(category)))
+        }
+        if (filterCategoriesToCompareAll.length > 0) {
+            searchableList = searchableList.filter((x: ThunderstoreMod) =>
+                filterCategoriesToCompareAll.every((category: string) => x.getCategories().includes(category)))
+        }
+
+        searchableThunderstoreModList.value = [...searchableList];
+
+        // Update results
+        changePage();
+    }
+
+    function sortThunderstoreModList() {
+        const sortDescending = store.state.modFilters.sortDirection == SortingDirection.STANDARD;
+        const sortedList = [...thunderstoreModList.value];
+        sortedList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
+            let result: boolean;
+            switch (store.state.modFilters.sortBehaviour) {
+                case SortingStyle.LAST_UPDATED:
+                    result = a.getDateUpdated() < b.getDateUpdated();
+                    break;
+                case SortingStyle.ALPHABETICAL:
+                    result = a.getName().localeCompare(b.getName()) > 0;
+                    break;
+                case SortingStyle.DOWNLOADS:
+                    result = a.getDownloadCount() < b.getDownloadCount();
+                    break;
+                case SortingStyle.RATING:
+                    result = a.getRating() < b.getRating();
+                    break;
+                case SortingStyle.DEFAULT:
+                    result = true;
+                    break;
+                default:
+                    result = true;
+                    break;
+            }
+            const sortOrder = result ? 1 : -1;
+            return sortDescending ? sortOrder : -sortOrder;
+        });
+        sortedThunderstoreModList.value = sortedList;
+        filterThunderstoreModList();
+    }
+
+    watch(thunderstoreSearchFilter, () => {
+        pageNumber.value = 1;
+        filterThunderstoreModList();
     });
-    sortedThunderstoreModList.value = sortedList;
-    filterThunderstoreModList();
+
+    watch(() => [
+        store.state.modFilters.allowNsfw,
+        store.state.modFilters.selectedCategoriesCompareOne,
+        store.state.modFilters.selectedCategoriesCompareAll,
+        store.state.modFilters.selectedCategoriesToExclude,
+        store.state.modFilters.showDeprecatedPackages,
+    ], () => {
+        filterThunderstoreModList();
+    });
+
+    watch(() => [
+        store.state.modFilters.sortDirection,
+        store.state.modFilters.sortBehaviour,
+        thunderstoreModList.value,
+    ], () => {
+        sortThunderstoreModList();
+    });
+
+    onMounted(() => {
+        sortThunderstoreModList();
+    });
+} else {
+
+    async function updatePagedList() {
+        const rows = await getPaginatedPackages(
+            thunderstoreSearchFilter.value,
+            store.state.activeGame.internalFolderName,
+            store.state.modFilters.sortDirection,
+            store.state.modFilters.sortBehaviour,
+            store.state.modFilters.selectedCategoriesCompareAll,
+            store.state.modFilters.selectedCategoriesCompareOne,
+            store.state.modFilters.selectedCategoriesToExclude,
+            PAGE_SIZE,
+            pageNumber.value,
+        );
+        pagedThunderstoreModList.value = rows.map(ThunderstoreMod.fromSqliteRow);
+    }
+
+    async function updatePageSize() {
+        const db = await getPackageCacheDatabase();
+        pageSize.value = await new PackageSearchQuery()
+            .withCommunity(store.state.activeGame.internalFolderName)
+            .count(db);
+    }
+
+    watch(pageNumber, updatePagedList);
+    watch(thunderstoreSearchFilter, updatePagedList);
+    watch(() => [
+        store.state.modFilters.allowNsfw,
+        store.state.modFilters.selectedCategoriesCompareOne,
+        store.state.modFilters.selectedCategoriesCompareAll,
+        store.state.modFilters.selectedCategoriesToExclude,
+        store.state.modFilters.showDeprecatedPackages,
+        store.state.modFilters.sortDirection,
+        store.state.modFilters.sortBehaviour,
+    ], updatePagedList);
+    onMounted(async () => {
+        await updatePageSize();
+        await updatePagedList();
+    });
 }
-
-watch(thunderstoreSearchFilter, () => {
-    pageNumber.value = 1;
-    filterThunderstoreModList();
-});
-
-watch(() => [
-    store.state.modFilters.allowNsfw,
-    store.state.modFilters.selectedCategoriesCompareOne,
-    store.state.modFilters.selectedCategoriesCompareAll,
-    store.state.modFilters.selectedCategoriesToExclude,
-    store.state.modFilters.showDeprecatedPackages,
-], () => {
-    filterThunderstoreModList();
-});
-
-watch(() => [
-    store.state.modFilters.sortDirection,
-    store.state.modFilters.sortBehaviour,
-    thunderstoreModList.value,
-], () => {
-    sortThunderstoreModList();
-})
 
 function updatePageNumber(page: number) {
     pageNumber.value = page;
@@ -242,10 +295,6 @@ function toggleModPreview(mod: ThunderstoreMod) {
         previewMod.value = mod;
     }
 }
-
-onMounted(() => {
-    sortThunderstoreModList();
-});
 </script>
 
 <style lang="scss" scoped>
