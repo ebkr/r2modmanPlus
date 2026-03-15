@@ -23,7 +23,8 @@
                     </div>
                 </template>
                 <div class="column is-narrow">
-                    <select class='select' v-model="selectedVersion">
+                    <i v-if="loadingVersions" class="fas fa-spinner fa-spin" />
+                    <select v-else class='select' v-model="selectedVersion">
                         <option v-for='(value, index) in versionNumbers' :key='index' :value='value'>
                             {{value}}
                         </option>
@@ -66,6 +67,9 @@ import { State } from '../../store';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import { InstallMode } from "../../utils/DependencyUtils";
+import ManagerInformation from '../../_managerinf/ManagerInformation';
+import { transformPackageUrl } from '../../providers/cdn/PackageUrlTransformer';
+import VersionNumber from '../../model/VersionNumber';
 
 const store = getStore<State>();
 
@@ -73,6 +77,7 @@ const versionNumbers = ref<string[]>([]);
 const recommendedVersion = ref<string | null>(null);
 const selectedVersion = ref<string | null>(null);
 const currentVersion = ref<string | null>(null);
+const loadingVersions = ref<boolean>(false);
 
 const isOpen = computed(() => store.state.modals.isDownloadModVersionSelectModalOpen);
 const thunderstoreMod = computed(() => store.state.modals.downloadModalMod);
@@ -87,11 +92,23 @@ watch(() => store.state.modals.downloadModalMod, async () => {
         const activeGame: Game = store.state.activeGame;
         selectedVersion.value = thunderstoreMod.value.getLatestVersion();
         recommendedVersion.value = null;
+        loadingVersions.value = true;
 
-        versionNumbers.value = await PackageDb.getPackageVersionNumbers(
-            activeGame.internalFolderName,
-            thunderstoreMod.value.getFullName()
-        );
+        if (ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
+            const mod = thunderstoreMod.value;
+            const url = transformPackageUrl(`https://thunderstore.io/api/cyberstorm/package/${mod.getOwner()}/${mod.getName()}/versions/`)
+            const data = await fetch(url).then(r => r.json());
+            versionNumbers.value = (data as any[])
+                .map(v => v.version_number)
+                .sort((a, b) => new VersionNumber(a).compareToDescending(new VersionNumber(b)));
+        } else {
+            versionNumbers.value = await PackageDb.getPackageVersionNumbers(
+                activeGame.internalFolderName,
+                thunderstoreMod.value.getFullName()
+            );
+        }
+
+        loadingVersions.value = false;
 
         const foundRecommendedVersion = MOD_LOADER_VARIANTS[activeGame.internalFolderName]
             .find(value => value.packageName === thunderstoreMod.value!.getFullName());
@@ -131,11 +148,17 @@ async function downloadMod() {
     const activeGame: Game = store.state.activeGame;
 
     try {
-        version = await PackageDb.getVersionAsThunderstoreVersion(
-            activeGame.internalFolderName,
-            mod.getFullName(),
-            versionString
-        );
+        if (ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
+            const url = transformPackageUrl(`https://thunderstore.io/api/experimental/package/${mod.getOwner()}/${mod.getName()}/${versionString}/`);
+            const data = await fetch(url).then(r => r.json());
+            version = ThunderstoreVersion.parseFromThunderstoreData(data);
+        } else {
+            version = await PackageDb.getVersionAsThunderstoreVersion(
+                activeGame.internalFolderName,
+                mod.getFullName(),
+                versionString
+            );
+        }
     } catch {
         console.log(`Failed to get version [${versionString}] for mod [${mod.getFullName()}]`);
         return;

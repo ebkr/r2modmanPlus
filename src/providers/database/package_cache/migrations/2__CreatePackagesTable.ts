@@ -17,6 +17,10 @@ export default {
             has_nsfw_content BOOLEAN NOT NULL DEFAULT 0,
             date_fetched DATETIME NOT NULL DEFAULT (datetime('now')),
             categories TEXT NOT NULL DEFAULT '[]',
+            latest_version TEXT NOT NULL DEFAULT '',
+            latest_description TEXT NOT NULL DEFAULT '',
+            latest_icon TEXT NOT NULL DEFAULT '',
+            total_downloads INTEGER NOT NULL DEFAULT 0,
             PRIMARY KEY (community_slug, full_name)
         );
 

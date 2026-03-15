@@ -44,7 +44,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
         mod.setPackageUrl(row.package_url);
         mod.setCategories(JSON.parse(row.categories ?? '[]'));
         mod.setNsfwFlag(row.has_nsfw_content === 1);
-        mod.setLatestVersion(row.latest_version_number ?? '');
+        mod.setLatestVersion(row.latest_version ?? '');
         mod.setDescription(row.latest_description ?? '');
         mod.setIcon(row.latest_icon ?? '');
         return mod;

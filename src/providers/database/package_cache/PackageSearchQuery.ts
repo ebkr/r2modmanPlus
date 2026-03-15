@@ -14,7 +14,7 @@ export class PackageSearchQuery {
             this._conditions.push(`(
                 LOWER(p.name) LIKE ?
                 OR LOWER(p.owner) LIKE ?
-                OR LOWER(v.description) LIKE ?
+                OR LOWER(p.latest_description) LIKE ?
             )`);
             const like = `%${term.toLowerCase()}%`;
             this._args.push(like, like, like);
@@ -91,7 +91,6 @@ export class PackageSearchQuery {
         const rows = await db.query(`
             SELECT COUNT(*) AS total
             FROM packages p
-            LEFT JOIN versions v ON p.community_slug = v.community_slug AND p.full_name = v.package_full_name
             ${whereClause}`,
             ...this._args
         );
@@ -107,13 +106,8 @@ export class PackageSearchQuery {
             : '';
 
         return db.query(`
-            SELECT p.*,
-                COALESCE(v.downloads, 0) AS total_downloads,
-                v.version_number AS latest_version_number,
-                v.description AS latest_description,
-                v.icon AS latest_icon
+            SELECT p.*
             FROM packages p
-            LEFT JOIN versions v ON p.community_slug = v.community_slug AND p.full_name = v.package_full_name
             ${whereClause}
             ${orderByClause}
             LIMIT ?
