@@ -249,6 +249,8 @@ if (!ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
             store.state.modFilters.selectedCategoriesCompareAll,
             store.state.modFilters.selectedCategoriesCompareOne,
             store.state.modFilters.selectedCategoriesToExclude,
+            store.state.modFilters.allowNsfw,
+            store.state.modFilters.showDeprecatedPackages,
             PAGE_SIZE,
             pageNumber.value,
         );
@@ -263,6 +265,8 @@ if (!ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
             .withAllCategories(store.state.modFilters.selectedCategoriesCompareAll)
             .withAtLeastOneCategory(store.state.modFilters.selectedCategoriesCompareOne)
             .withoutCategories(store.state.modFilters.selectedCategoriesToExclude)
+            .withNsfw(store.state.modFilters.allowNsfw)
+            .withDeprecated(store.state.modFilters.showDeprecatedPackages)
             .count(db);
     }
 

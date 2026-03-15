@@ -78,19 +78,15 @@
 import R2Error from '../../model/errors/R2Error';
 import Game from '../../model/game/Game';
 import Profile from '../../model/Profile';
-import {
-    LaunchMode,
-    launch,
-    linkProfileFiles,
-    setGameDirIfUnset,
-    throwIfNoGameDir
- } from '../../utils/LaunchUtils';
-import FileUtils from '../../utils/FileUtils';
-import { ref, computed, onMounted, getCurrentInstance } from 'vue';
+import { launch, LaunchMode, linkProfileFiles, setGameDirIfUnset, throwIfNoGameDir } from '../../utils/LaunchUtils';
+import { computed, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import VueRouter, { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import ProtocolProvider from '../../providers/generic/protocol/ProtocolProvider';
+import ManagerInformation from 'src/_managerinf/ManagerInformation';
+import { PackageSearchQuery } from 'src/providers/database/package_cache/PackageSearchQuery';
+import { getPackageCacheDatabase } from 'src/providers/database/package_cache/PackageCacheDatabase';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -98,11 +94,31 @@ const router = useRouter();
 const activeGame = computed<Game>(() => store.state.activeGame);
 const profile = computed<Profile>(() => store.getters['profile/activeProfile']);
 const localModCount = computed<number>(() => store.state.profile.modList.length);
+const thunderstoreModCount = ref<number>(0);
 
-const thunderstoreModCount = computed(() =>
-    store.state.modFilters.showDeprecatedPackages
-        ? store.state.tsMods.mods.length
-        : store.getters['tsMods/undeprecatedModCount']
+async function updateThunderstoreModCount() {
+    const showDeprecatedPackages = store.state.modFilters.showDeprecatedPackages;
+    const allowNsfw = store.state.modFilters.allowNsfw;
+    if (ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
+        thunderstoreModCount.value = await new PackageSearchQuery()
+            .withCommunity(activeGame.value.internalFolderName)
+            .withNsfw(allowNsfw)
+            .withDeprecated(showDeprecatedPackages)
+            .count(await getPackageCacheDatabase());
+    } else {
+        thunderstoreModCount.value = showDeprecatedPackages ?
+            store.state.tsMods.mods.length :
+            store.getters['tsMods/undeprecatedModCount'];
+    }
+}
+
+watch(
+    () => [
+        store.state.modFilters.showDeprecatedPackages,
+        store.state.modFilters.allowNsfw,
+        store.state.tsMods.mods,
+    ],
+    updateThunderstoreModCount
 );
 
 function getTagLinkClasses(routeNames: string[]) {
@@ -130,6 +146,10 @@ async function launchGame(mode: LaunchMode) {
         store.commit("error/handleError", R2Error.fromThrownValue(error));
     }
 }
+
+onMounted(() => {
+    updateThunderstoreModCount();
+})
 
 </script>
 

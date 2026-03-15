@@ -154,6 +154,8 @@ export async function getPaginatedPackages(
     mustHaveAllCategories: string[],
     mustHaveAtLeastOneCategories: string[],
     mustNotHaveAnyCategories: string[],
+    allowNsfw: boolean,
+    showDeprecated: boolean,
     limit: number,
     page: number
 ) {
@@ -164,6 +166,8 @@ export async function getPaginatedPackages(
         .withAllCategories(mustHaveAllCategories)
         .withAtLeastOneCategory(mustHaveAtLeastOneCategories)
         .withoutCategories(mustNotHaveAnyCategories)
+        .withNsfw(allowNsfw)
+        .withDeprecated(showDeprecated)
         .withSortingStyle(sortingStyle, sortDirection)
         .execute(db, limit, page);
 }

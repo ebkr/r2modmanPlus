@@ -45,6 +45,16 @@ export class PackageSearchQuery {
         return this;
     }
 
+    withDeprecated(deprecated: boolean): this {
+        if (!deprecated) this._conditions.push(`p.is_deprecated = 0`);
+        return this;
+    }
+
+    withNsfw(nsfw: boolean): this {
+        if (!nsfw) this._conditions.push(`p.has_nsfw_content = 0`);
+        return this;
+    }
+
     withoutCategories(categories: string[]): this {
         if (categories.length > 0) {
             const placeholders = categories.map(() => '?').join(', ');
