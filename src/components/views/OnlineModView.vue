@@ -123,7 +123,7 @@ const thunderstoreModList = computed<ThunderstoreMod[]>(() => store.state.tsMods
 const pageSize = ref<number>(0);
 
 function getPaginationSize() {
-    return Math.ceil(searchableThunderstoreModList.value.length / PAGE_SIZE);
+    return Math.ceil(pageSize.value / PAGE_SIZE);
 }
 
 function changePage() {
@@ -174,6 +174,7 @@ if (!ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
         }
 
         searchableThunderstoreModList.value = [...searchableList];
+        pageSize.value = searchableList.length;
 
         // Update results
         changePage();
@@ -257,12 +258,20 @@ if (!ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
     async function updatePageSize() {
         const db = await getPackageCacheDatabase();
         pageSize.value = await new PackageSearchQuery()
+            .withSearch(thunderstoreSearchFilter.value)
             .withCommunity(store.state.activeGame.internalFolderName)
+            .withAllCategories(store.state.modFilters.selectedCategoriesCompareAll)
+            .withAtLeastOneCategory(store.state.modFilters.selectedCategoriesCompareOne)
+            .withoutCategories(store.state.modFilters.selectedCategoriesToExclude)
             .count(db);
     }
 
+    async function updateAll() {
+        await Promise.all([updatePageSize(), updatePagedList()]);
+    }
+
     watch(pageNumber, updatePagedList);
-    watch(thunderstoreSearchFilter, updatePagedList);
+    watch(thunderstoreSearchFilter, updateAll);
     watch(() => [
         store.state.modFilters.allowNsfw,
         store.state.modFilters.selectedCategoriesCompareOne,
@@ -271,7 +280,7 @@ if (!ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
         store.state.modFilters.showDeprecatedPackages,
         store.state.modFilters.sortDirection,
         store.state.modFilters.sortBehaviour,
-    ], updatePagedList);
+    ], updateAll);
     onMounted(async () => {
         await updatePageSize();
         await updatePagedList();

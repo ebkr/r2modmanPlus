@@ -20,6 +20,7 @@ export default {
             PRIMARY KEY (community_slug, full_name)
         );
 
+        CREATE INDEX IF NOT EXISTS idx_packages_community_pinned_date ON packages(community_slug, is_pinned DESC, date_updated DESC);
         CREATE INDEX IF NOT EXISTS idx_packages_community_date_updated ON packages(community_slug, date_updated DESC);
         CREATE INDEX IF NOT EXISTS idx_packages_community_rating ON packages(community_slug, rating_score DESC);
         CREATE INDEX IF NOT EXISTS idx_packages_community_name ON packages(community_slug, name);

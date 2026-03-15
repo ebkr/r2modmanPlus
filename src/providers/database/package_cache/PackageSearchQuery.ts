@@ -98,14 +98,13 @@ export class PackageSearchQuery {
 
         return db.query(`
             SELECT p.*,
-                COALESCE(SUM(v.downloads), 0) AS total_downloads,
-                MAX(v.version_number) AS latest_version_number,
-                MAX(v.description) AS latest_description,
-                MAX(v.icon) AS latest_icon
+                COALESCE(v.downloads, 0) AS total_downloads,
+                v.version_number AS latest_version_number,
+                v.description AS latest_description,
+                v.icon AS latest_icon
             FROM packages p
             LEFT JOIN versions v ON p.community_slug = v.community_slug AND p.full_name = v.package_full_name
             ${whereClause}
-            GROUP BY p.community_slug, p.full_name
             ${orderByClause}
             LIMIT ?
             OFFSET ?`,
