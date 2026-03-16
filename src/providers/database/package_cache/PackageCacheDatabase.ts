@@ -95,6 +95,16 @@ export async function upsertPackageListChunk(community: string, packageChunk: an
 
 }
 
+export async function isLatestPackageListIndex(community: string, hash: string): Promise<boolean> {
+    const db = await getPackageCacheDatabase();
+    const rows = await db.query(
+        `SELECT 1 FROM index_chunk_hashes WHERE community_slug = ? AND hash = ? LIMIT 1`,
+        community,
+        hash
+    );
+    return rows.length > 0;
+}
+
 export async function setLatestPackageListIndex(community: string, hash: string) {
     const db = await getPackageCacheDatabase();
     await db.query(

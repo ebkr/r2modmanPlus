@@ -12,7 +12,12 @@ import { retry } from '../../utils/Common';
 import { Deprecations } from '../../utils/Deprecations';
 import { fetchAndProcessBlobFile, getAxiosWithTimeouts, isNetworkError } from '../../utils/HttpUtils';
 import { transformPackageUrl } from '../../providers/cdn/PackageUrlTransformer';
-import { upsertCommunity, upsertPackageListChunk } from '../../providers/database/package_cache/PackageCacheDatabase';
+import {
+    isLatestPackageListIndex as sqliteIsLatestPackageListIndex,
+    setLatestPackageListIndex as sqliteSetLatestPackageListIndex,
+    upsertCommunity,
+    upsertPackageListChunk,
+} from '../../providers/database/package_cache/PackageCacheDatabase';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 
 export interface CachedMod {
@@ -275,7 +280,9 @@ export const TsModsModule = {
             }
 
             const community = rootState.activeGame.internalFolderName;
-            const isLatest = await PackageDb.isLatestPackageListIndex(community, index.hash);
+            const isLatest = ManagerInformation.FLAGS.IS_SQLITE_ENABLED
+                ? await sqliteIsLatestPackageListIndex(community, index.hash)
+                : await PackageDb.isLatestPackageListIndex(community, index.hash);
             return {...index, isLatest};
         },
 
@@ -445,7 +452,11 @@ export const TsModsModule = {
 
         async cacheIndexHash({rootState}, indexHash: string) {
             const community = rootState.activeGame.internalFolderName;
-            await PackageDb.setLatestPackageListIndex(community, indexHash);
+            if (ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
+                await sqliteSetLatestPackageListIndex(community, indexHash);
+            } else {
+                await PackageDb.setLatestPackageListIndex(community, indexHash);
+            }
         },
     }
 }
