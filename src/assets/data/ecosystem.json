@@ -20649,6 +20649,84 @@
         ]
       }
     },
+    "cryo": {
+      "uuid": "000d475a-d3d2-45e3-9059-2994929441a8",
+      "label": "cryo",
+      "meta": {
+        "displayName": "CRYO",
+        "iconUrl": "cryo.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2564910"
+            }
+          ],
+          "steamFolderName": "CRYO",
+          "dataFolderName": "Cryo_Data",
+          "exeNames": [
+            "Cryo.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "CRYO",
+            "iconUrl": "cryo.webp"
+          },
+          "settingsIdentifier": "Cryo",
+          "internalFolderName": "Cryo",
+          "packageIndex": "https://thunderstore.io/c/cryo/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "CRYO",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "CRYO is a multiplayer co-op survival horror for 1-4 players. You have been deployed by your company to various locations around the Antarctic due to communication issues. What awaits you in these dark, remote regions is far more sinister than a technical fault..."
+      }
+    },
     "cursed-words": {
       "uuid": "4363e08e-0e9d-4578-a8ab-9c28ce866280",
       "label": "cursed-words",
@@ -21979,6 +22057,87 @@
         ]
       }
     },
+    "gorilla-tag": {
+      "uuid": "f82a5eb3-c8b7-49af-99d8-a812ab87f8fc",
+      "label": "gorilla-tag",
+      "meta": {
+        "displayName": "Gorilla Tag",
+        "iconUrl": "gorilla-tag.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1533390"
+            }
+          ],
+          "steamFolderName": "Gorilla Tag",
+          "dataFolderName": "Gorilla Tag_Data",
+          "exeNames": [
+            "Gorilla Tag.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Gorilla Tag",
+            "iconUrl": "gorilla-tag.webp"
+          },
+          "settingsIdentifier": "GorillaTag",
+          "internalFolderName": "GorillaTag",
+          "packageIndex": "https://thunderstore.io/c/gorilla-tag/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "GT"
+          ],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Gorilla Tag",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/5rTmMjtECf",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Run, jump, and climb using only your hands. Play tag or infection with people online. Run away from the infected players, or outmaneuver the survivors to catch them. Embrace your inner ape."
+      }
+    },
     "granny-chapter-two": {
       "uuid": "e0c90bc6-675a-4ae7-a60e-57696d4a2205",
       "label": "granny-chapter-two",
@@ -22671,6 +22830,128 @@
         "wikiUrl": "https://hytalemodding.dev/",
         "discordUrl": "https://discord.gg/hytalemodding",
         "autolistPackageIds": []
+      }
+    },
+    "jump-scare-mansion": {
+      "uuid": "bd792010-c61e-454a-bf51-b3c28243e14f",
+      "label": "jump-scare-mansion",
+      "meta": {
+        "displayName": "Spooky's Jump Scare Mansion: HD Renovation",
+        "iconUrl": "jump-scare-mansion.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "577690"
+            }
+          ],
+          "steamFolderName": "Spooky's Jump Scare Mansion HD Renovation",
+          "dataFolderName": "SpookyUnity_Data",
+          "exeNames": [
+            "SpookyUnity.exe",
+            "SpookyUnity.app"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Spooky's Jump Scare Mansion: HD Renovation",
+            "iconUrl": "jump-scare-mansion.webp"
+          },
+          "settingsIdentifier": "SpookysJumpScareMansionHdRenovation",
+          "internalFolderName": "SpookysJumpScareMansionHdRenovation",
+          "packageIndex": "https://thunderstore.io/c/jump-scare-mansion/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "SJSM",
+            "Spookys"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Spooky's Jump Scare Mansion: HD Renovation",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Can you survive 1000 rooms of cute terror? Or will you break once the cuteness starts to fade off and you're running for your life from the unspeakable hideous beings that shake and writhe in bowels of this house? They wait for you, they wait and hunger for meeting you."
       }
     },
     "jump-space": {
@@ -24960,6 +25241,56 @@
         ]
       }
     },
+    "paradiddle": {
+      "uuid": "7bdd9e41-0144-4fa0-9727-580134489cfb",
+      "label": "paradiddle",
+      "meta": {
+        "displayName": "Paradiddle",
+        "iconUrl": "paradiddle.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Paradiddle",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/paradiddle",
+        "wikiUrl": "https://github.com/kasapoli/ParadiddleWorkshop",
+        "shortDescription": "So much more than a VR drum kit. Learn to drum step by step, flex your skills with the built-in rhythm game, and build your own custom kit from a library of 60+ percussive instruments without the limitations of money or physical space. Fun, intuitive drumming for pros and newcomers alike!"
+      }
+    },
     "patapon-1-2-replay": {
       "uuid": "d6dfad59-d6df-4398-b5d8-84dbbbace85f",
       "label": "patapon-1-2-replay",
@@ -25261,6 +25592,87 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "pit-of-goblin": {
+      "uuid": "642cb413-e757-4276-a329-5b7539e527e1",
+      "label": "pit-of-goblin",
+      "meta": {
+        "displayName": "Pit of Goblin",
+        "iconUrl": "pit-of-goblin.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3253530"
+            }
+          ],
+          "steamFolderName": "Pit of Goblin",
+          "dataFolderName": "Pit of Goblin_Data",
+          "exeNames": [
+            "Pit of Goblin.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Pit of Goblin",
+            "iconUrl": "pit-of-goblin.webp"
+          },
+          "settingsIdentifier": "PitOfGoblin",
+          "internalFolderName": "PitOfGoblin",
+          "packageIndex": "https://thunderstore.io/c/pit-of-goblin/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "POG",
+            "PoG"
+          ],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Pit of Goblin",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "In this online horror co-op, you play as a scrappy goblin, scavenging dungeons, dodging traps, and fleeing monsters to feed the Goblin King-Queen. Team up with goblin pals, or go rogue, as you dive deep and cause chaos! Fail to feed them, and you might be the next meal!"
       }
     },
     "project-arrhythmia": {
@@ -27520,6 +27932,126 @@
         "autolistPackageIds": [
           "LavaGang-MelonLoader"
         ]
+      }
+    },
+    "very-very-valet": {
+      "uuid": "f5e40d47-b6b6-46a0-b8e1-cefcd851e796",
+      "label": "very-very-valet",
+      "meta": {
+        "displayName": "Very Very Valet",
+        "iconUrl": "very-very-valet.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1448840"
+            }
+          ],
+          "steamFolderName": "Very Very Valet/windows",
+          "dataFolderName": "VeryVeryValet_Release_Data",
+          "exeNames": [
+            "VeryVeryValet_Release.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Very Very Valet",
+            "iconUrl": "very-very-valet.webp"
+          },
+          "settingsIdentifier": "VeryVeryValet",
+          "internalFolderName": "VeryVeryValet",
+          "packageIndex": "https://thunderstore.io/c/very-very-valet/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "VVV"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Very Very Valet",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Your next chaotic couch co-op party game is here! Drive, boost, and crash like wild with friends in this parking palooza"
       }
     },
     "vigil": {
@@ -33990,6 +34522,47 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "cryo": {
+      "displayName": "CRYO",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "CRYO is a multiplayer co-op survival horror for 1-4 players. You have been deployed by your company to various locations around the Antarctic due to communication issues. What awaits you in these dark, remote regions is far more sinister than a technical fault..."
+    },
     "cursed-words": {
       "displayName": "Cursed Words",
       "categories": {
@@ -34589,6 +35162,48 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "gorilla-tag": {
+      "displayName": "Gorilla Tag",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/5rTmMjtECf",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Run, jump, and climb using only your hands. Play tag or infection with people online. Run away from the infected players, or outmaneuver the survivors to catch them. Embrace your inner ape."
+    },
     "granny-chapter-two": {
       "displayName": "Granny: Chapter Two",
       "categories": {
@@ -34933,6 +35548,47 @@
       "wikiUrl": "https://hytalemodding.dev/",
       "discordUrl": "https://discord.gg/hytalemodding",
       "autolistPackageIds": []
+    },
+    "jump-scare-mansion": {
+      "displayName": "Spooky's Jump Scare Mansion: HD Renovation",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Can you survive 1000 rooms of cute terror? Or will you break once the cuteness starts to fade off and you're running for your life from the unspeakable hideous beings that shake and writhe in bowels of this house? They wait for you, they wait and hunger for meeting you."
     },
     "jump-space": {
       "displayName": "Jump Space",
@@ -35860,6 +36516,46 @@
         "BepInEx-BepInExPack_IL2CPP"
       ]
     },
+    "paradiddle": {
+      "displayName": "Paradiddle",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/paradiddle",
+      "wikiUrl": "https://github.com/kasapoli/ParadiddleWorkshop",
+      "shortDescription": "So much more than a VR drum kit. Learn to drum step by step, flex your skills with the built-in rhythm game, and build your own custom kit from a library of 60+ percussive instruments without the limitations of money or physical space. Fun, intuitive drumming for pros and newcomers alike!"
+    },
     "patapon-1-2-replay": {
       "displayName": "PATAPON 1+2 REPLAY",
       "categories": {
@@ -35995,6 +36691,47 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "pit-of-goblin": {
+      "displayName": "Pit of Goblin",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "In this online horror co-op, you play as a scrappy goblin, scavenging dungeons, dodging traps, and fleeing monsters to feed the Goblin King-Queen. Team up with goblin pals, or go rogue, as you dive deep and cause chaos! Fail to feed them, and you might be the next meal!"
     },
     "project-arrhythmia": {
       "displayName": "Project Arrhythmia",
@@ -37047,6 +37784,47 @@
       "autolistPackageIds": [
         "LavaGang-MelonLoader"
       ]
+    },
+    "very-very-valet": {
+      "displayName": "Very Very Valet",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Your next chaotic couch co-op party game is here! Drive, boost, and crash like wild with friends in this parking palooza"
     },
     "vigil": {
       "displayName": "Vigil",
