@@ -13,6 +13,9 @@ import { Deprecations } from '../../utils/Deprecations';
 import { fetchAndProcessBlobFile, getAxiosWithTimeouts, isNetworkError } from '../../utils/HttpUtils';
 import { transformPackageUrl } from '../../providers/cdn/PackageUrlTransformer';
 import {
+    getDeprecatedPackageNames,
+    getDistinctCategories,
+    getLatestVersionsForPackages,
     isLatestPackageListIndex as sqliteIsLatestPackageListIndex,
     setLatestPackageListIndex as sqliteSetLatestPackageListIndex,
     upsertCommunity,
@@ -28,6 +31,7 @@ export interface CachedMod {
 interface State {
     activeGameCacheStatus: string|undefined;
     cache: Map<string, CachedMod>;
+    categories: string[];
     deprecated: Map<string, boolean>;
     exclusions: string[];
     isThunderstoreModListUpdateInProgress: boolean;
@@ -68,6 +72,7 @@ export const TsModsModule = {
         /*** Does the active game have a mod list stored in IndexedDB? */
         activeGameCacheStatus: undefined,
         cache: new Map<string, CachedMod>(),
+        categories: [],
         deprecated: new Map<string, boolean>(),
         /*** Packages available through API that should be ignored by the manager */
         exclusions: [],
@@ -97,13 +102,7 @@ export const TsModsModule = {
 
         /*** Categories used by any mod listed in the community */
         categories(state) {
-            const categories = Array.from(
-                new Set(
-                    state.mods.map((mod) => mod.getCategories()).flat()
-                )
-            );
-            categories.sort();
-            return categories;
+            return state.categories;
         },
 
         /*** Is the version of a mod defined by ManifestV2 the newest version? */
@@ -146,11 +145,15 @@ export const TsModsModule = {
         reset(state: State) {
             state.activeGameCacheStatus = undefined;
             state.cache = new Map<string, CachedMod>();
+            state.categories = [];
             state.deprecated = new Map<string, boolean>();
             state.mods = [];
             state.modsLastUpdated = undefined;
             state.thunderstoreModListUpdateError = undefined;
             state.thunderstoreModListUpdateStatus = '';
+        },
+        setCategories(state, categories: string[]) {
+            state.categories = categories;
         },
         clearModCache(state) {
             state.cache.clear();
@@ -182,8 +185,25 @@ export const TsModsModule = {
             state.isThunderstoreModListUpdateInProgress = true;
             state.thunderstoreModListUpdateError = undefined;
         },
-        updateDeprecated(state, allMods: ThunderstoreMod[]) {
-            state.deprecated = Deprecations.getDeprecatedPackageMap(allMods);
+        setDeprecated(state, deprecated: Map<string, boolean>) {
+            state.deprecated = deprecated;
+        },
+        prewarmCacheModSqlite(state: State, {mods, latestVersionMap}: {mods: ManifestV2[], latestVersionMap: Map<string, string>}) {
+            const localState = new Map<string, CachedMod>(state.cache.entries());
+            mods.forEach(mod => {
+                const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
+                if (localState.get(cacheKey) === undefined) {
+                    const latestVersion = latestVersionMap.get(mod.getName());
+                    if (latestVersion === undefined) {
+                        localState.set(cacheKey, {tsMod: undefined, isLatest: true});
+                    } else {
+                        const latestVersionNumber = new VersionNumber(latestVersion);
+                        const isLatest = mod.getVersionNumber().isEqualOrNewerThan(latestVersionNumber);
+                        localState.set(cacheKey, {tsMod: undefined, isLatest});
+                    }
+                }
+            });
+            state.cache = localState;
         },
         prewarmCacheMod(state: State, mods: ThunderstoreMod[]) {
             const localState = new Map<string, CachedMod>(state.cache.entries());
@@ -386,9 +406,18 @@ export const TsModsModule = {
             return state.activeGameCacheStatus || 'Unknown status';
         },
 
-        async prewarmCache({rootGetters, commit}) {
+        async prewarmCache({rootGetters, rootState, commit}) {
             const profileMods: ManifestV2[] = rootGetters['profile/modList'];
-            commit('prewarmCacheMod', profileMods);
+            if (ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
+                const fullNames = profileMods.map((m) => m.getName());
+                const latestVersionMap = await getLatestVersionsForPackages(
+                    rootState.activeGame.internalFolderName,
+                    fullNames
+                );
+                commit('prewarmCacheModSqlite', {mods: profileMods, latestVersionMap});
+            } else {
+                commit('prewarmCacheMod', profileMods);
+            }
         },
 
         async pruneRemovedModsFromCache({rootState}, cutoff: Date) {
@@ -437,12 +466,40 @@ export const TsModsModule = {
             }
         },
 
+        async updateDeprecated({commit, state, rootState}) {
+            const community = rootState.activeGame.internalFolderName;
+            let deprecated: Map<string, boolean>;
+            if (ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
+                const names = await getDeprecatedPackageNames(community);
+                deprecated = new Map(names.map((name) => [name, true]));
+            } else {
+                deprecated = Deprecations.getDeprecatedPackageMap(state.mods);
+            }
+            commit('setDeprecated', deprecated);
+        },
+
+        async updateCategories({commit, state, rootState}) {
+            const community = rootState.activeGame.internalFolderName;
+            let categories: string[];
+            if (ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
+                categories = await getDistinctCategories(community);
+            } else {
+                categories = Array.from(new Set(state.mods.flatMap((mod) => mod.getCategories()))).sort();
+            }
+            commit('setCategories', categories);
+        },
+
         async updateMods({commit, dispatch, rootState}) {
+            if (ManagerInformation.FLAGS.IS_SQLITE_ENABLED) {
+                commit('clearModCache');
+                await Promise.all([dispatch('updateCategories'), dispatch('updateDeprecated')]);
+                return;
+            }
             const modList = await PackageDb.getPackagesAsThunderstoreMods(rootState.activeGame.internalFolderName);
             commit('setMods', modList);
-            commit('updateDeprecated', modList);
             commit('clearModCache');
             await dispatch('updateModsLastUpdated');
+            await Promise.all([dispatch('updateCategories'), dispatch('updateDeprecated')]);
         },
 
         async updateModsLastUpdated({commit, rootState}) {

@@ -95,6 +95,36 @@ export async function upsertPackageListChunk(community: string, packageChunk: an
 
 }
 
+export async function getLatestVersionsForPackages(community: string, fullNames: string[]): Promise<Map<string, string>> {
+    if (fullNames.length === 0) return new Map();
+    const db = await getPackageCacheDatabase();
+    const placeholders = fullNames.map(() => '?').join(', ');
+    const rows = await db.query(
+        `SELECT full_name, latest_version FROM packages WHERE community_slug = ? AND full_name IN (${placeholders})`,
+        community, ...fullNames
+    );
+    return new Map(rows.map((r) => [r.full_name as string, r.latest_version as string]));
+}
+
+export async function getDeprecatedPackageNames(community: string): Promise<string[]> {
+    const db = await getPackageCacheDatabase();
+    const rows = await db.query(
+        `SELECT full_name FROM packages WHERE community_slug = ? AND is_deprecated = 1`,
+        community
+    );
+    return rows.map((r) => r.full_name as string);
+}
+
+export async function getDistinctCategories(community: string): Promise<string[]> {
+    const db = await getPackageCacheDatabase();
+    const rows = await db.query(
+        `SELECT DISTINCT j.value FROM packages p, json_each(p.categories) j
+         WHERE p.community_slug = ? ORDER BY j.value`,
+        community
+    );
+    return rows.map((r) => r.value as string);
+}
+
 export async function isLatestPackageListIndex(community: string, hash: string): Promise<boolean> {
     const db = await getPackageCacheDatabase();
     const rows = await db.query(
