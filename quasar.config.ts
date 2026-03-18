@@ -1,8 +1,8 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
-import { defineConfig } from "#q-app/wrappers";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
+import { defineConfig } from '#q-app/wrappers';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig((ctx) => {
     const skipPackaging = process.env.SKIP_PACKING === "true";
