@@ -5,7 +5,7 @@ import { defineConfig } from '#q-app/wrappers';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig((ctx) => {
-    const skipPackaging = process.env.SKIP_PACKING === "true";
+    const skipPackaging = process.env.SKIP_PACKING === 'true';
 
     return {
         // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
@@ -15,13 +15,13 @@ export default defineConfig((ctx) => {
         // --> boot files are part of "main.js"
         // https://v2.quasar.dev/quasar-cli-vite/boot-files
         boot: [
-            "i18n",
+            'i18n',
             // 'axios',
-            "floating-vue",
+            'floating-vue',
         ],
 
         // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
-        css: ["app.scss"],
+        css: ['app.scss'],
 
         // https://github.com/quasarframework/quasar/tree/dev/extras
         extras: [
@@ -33,15 +33,15 @@ export default defineConfig((ctx) => {
             // 'line-awesome',
             // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-            "roboto-font", // optional, you are not bound to it
-            "material-icons", // optional, you are not bound to it
+            'roboto-font', // optional, you are not bound to it
+            'material-icons', // optional, you are not bound to it
         ],
 
         // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#build
         build: {
             target: {
-                browser: ["esnext"],
-                node: "esnext",
+                browser: ['esnext'],
+                node: 'esnext',
             },
 
             typescript: {
@@ -50,19 +50,19 @@ export default defineConfig((ctx) => {
                 // extendTsConfig (tsConfig) {}
             },
 
-            vueRouterMode: "history", // available values: 'hash', 'history'
+            vueRouterMode: 'history', // available values: 'hash', 'history'
             // vueRouterBase,
             // vueDevtools,
             // vueOptionsAPI: false,
 
             rebuildCache: false, // rebuilds Vite/linter/etc cache on startup
 
-            publicPath: "/",
+            publicPath: '/',
             // analyze: true,
             // env: {},
             // rawDefine: {}
             // ignorePublicFolder: true,
-            minify: "esbuild",
+            minify: 'esbuild',
             polyfillModulePreload: true,
             // distDir
 
@@ -71,19 +71,19 @@ export default defineConfig((ctx) => {
                 template: {
                     compilerOptions: {
                         isCustomElement: (tag: string) =>
-                            ["strike"].includes(tag),
+                            ['strike'].includes(tag),
                     },
                 },
             },
 
             win: {
                 publish: {
-                    provider: "github",
+                    provider: 'github',
                 },
             },
             linux: {
                 publish: {
-                    provider: "github",
+                    provider: 'github',
                 },
             },
 
@@ -101,8 +101,8 @@ export default defineConfig((ctx) => {
         framework: {
             config: {},
 
-            iconSet: "material-icons", // Quasar icon set
-            lang: "en-US", // Quasar language pack
+            iconSet: 'material-icons', // Quasar icon set
+            lang: 'en-US', // Quasar language pack
 
             // For special cases outside of where the auto-import strategy can have an impact
             // (like functional components as one of the examples),
@@ -121,17 +121,17 @@ export default defineConfig((ctx) => {
 
         // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#sourcefiles
         sourceFiles: {
-            rootComponent: "src/AppWrapper.vue",
+            rootComponent: 'src/AppWrapper.vue',
             // router: 'src/router/index',
             // store: 'src/store/index',
             //   pwaRegisterServiceWorker: 'src-pwa/register-service-worker',
             //   pwaServiceWorker: 'src-pwa/custom-service-worker',
             //   pwaManifestFile: 'src-pwa/manifest.json',
             electronMain:
-                process.env.NODE_ENV === "development"
-                    ? "src-electron/electron-main.dev.ts"
-                    : "src-electron/electron-main.ts",
-            electronPreload: "src-electron/electron-preload",
+                process.env.NODE_ENV === 'development'
+                    ? 'src-electron/electron-main.dev.ts'
+                    : 'src-electron/electron-main.ts',
+            electronPreload: 'src-electron/electron-preload',
             //   bexManifestFile: 'src-bex/manifest.json
         },
 
@@ -141,7 +141,7 @@ export default defineConfig((ctx) => {
             // (gets superseded if process.env.PORT is specified at runtime)
 
             middlewares: [
-                "render", // keep this as last one
+                'render', // keep this as last one
             ],
 
             // extendPackageJson (json) {},
@@ -161,7 +161,7 @@ export default defineConfig((ctx) => {
 
         // https://v2.quasar.dev/quasar-cli-vite/developing-pwa/configuring-pwa
         pwa: {
-            workboxMode: "GenerateSW", // 'GenerateSW' or 'InjectManifest'
+            workboxMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
             // swFilename: 'sw.js',
             // manifestFilename: 'manifest.json',
             // extendManifestJson (json) {},
@@ -188,12 +188,12 @@ export default defineConfig((ctx) => {
             // extendElectronPreloadConf (esbuildConf) {},
 
             // Electron preload scripts (if any) from /src-electron, WITHOUT file extension
-            preloadScripts: ["electron-preload"],
+            preloadScripts: ['electron-preload'],
 
             // specify the debugging port to use for the Electron app when running in development mode
             inspectPort: 5858,
 
-            bundler: "builder", // 'packager' or 'builder'
+            bundler: 'builder', // 'packager' or 'builder'
 
             packager: {
                 // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
@@ -209,32 +209,34 @@ export default defineConfig((ctx) => {
             builder: {
                 // https://www.electron.build/configuration/
 
-                appId: "ebkr-r2modman",
-                compression: "store",
+                appId: 'ebkr-r2modman',
+                compression: 'store',
 
                 win: {
-                    target: ["nsis", "portable"],
-                    icon: "src/assets/icon.ico",
+                    target: ['nsis', 'portable'],
+                    icon: 'src/assets/icon.ico',
                 },
                 nsis: {
                     oneClick: false,
                     allowToChangeInstallationDirectory: true,
                     allowElevation: false,
                     perMachine: false,
-                    include: "build/installer.nsh",
+                    include: 'build/installer.nsh',
                 },
                 linux: {
-                    target: !skipPackaging ? ["AppImage", "tar.gz", "deb", "rpm", "pacman"] : "dir",
-                    icon: "src/assets/icon",
-                    maintainer: "ebkr",
-                    vendor: "ebkr",
-                    synopsis: "Risk of Rain 2 Mod Manager",
-                    category: "Game",
-                    mimeTypes: ["x-scheme-handler/ror2mm"],
+                    target: !skipPackaging
+                        ? ['AppImage', 'tar.gz', 'deb', 'rpm', 'pacman']
+                        : 'dir',
+                    icon: 'src/assets/icon',
+                    maintainer: 'ebkr',
+                    vendor: 'ebkr',
+                    synopsis: 'Risk of Rain 2 Mod Manager',
+                    category: 'Game',
+                    mimeTypes: ['x-scheme-handler/ror2mm'],
                 },
                 mac: {
-                    category: "games",
-                    icon: "src/assets/icon",
+                    category: 'games',
+                    icon: 'src/assets/icon',
                 },
             },
 
