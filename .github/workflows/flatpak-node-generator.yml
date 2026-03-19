@@ -32,11 +32,6 @@ jobs:
       - name: Generate Flatpak node sources
         run: |
           mkdir -p flatpak-sources
-          flatpak-node-generator yarn yarn.lock --output flatpak-sources/generated-sources.json
+          flatpak-node-generator yarn yarn.lock --output flatpak/generated-sources.json
 
-      - name: Append node-sources to releases
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG_NAME: ${{ github.event.release.tag_name }}
-        run: |
-          gh release upload $TAG_NAME flatpak-sources/generated-sources.json
+      - uses: stefanzweifel/git-auto-commit-action@v7
