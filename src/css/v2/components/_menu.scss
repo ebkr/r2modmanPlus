@@ -12,11 +12,13 @@
     }
 
     a {
-        border-radius: 2px;
+        border-radius: 6px;
         color: var(--v2-inactive-menu-item-color);
         display: block;
-        padding: 0.5em 0.75em;
+        padding: 0.55em 0.75em;
         border: 0;
+        position: relative;
+        overflow: hidden;
 
         &:hover {
             background-color: var(--menu-item-hover-background-color,#e9eaed);
@@ -24,8 +26,18 @@
         }
 
         &.is-active {
-            background-color: #485fc7;
-            color: var(--v2-active-menu-item-color) !important;
+            background-color: var(--menu-item-active-background-color);
+            color: var(--text) !important;
+
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 3px;
+                background-color: var(--scheme-primary, #3273dc);
+            }
         }
     }
 }

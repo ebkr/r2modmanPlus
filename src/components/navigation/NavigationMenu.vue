@@ -3,14 +3,14 @@
         <aside class="menu">
             <div id="menu__top">
                 <p class="menu-label">{{ activeGame.displayName }}</p>
-                <ul class="menu-list">
-                    <li>
-                        <a href="#" @click="launchGame(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
-                    </li>
-                    <li>
-                        <a href="#" @click="launchGame(LaunchMode.VANILLA)"><i class="far fa-play-circle icon--margin-right"/>Start vanilla</a>
-                    </li>
-                </ul>
+                <div class="launch-control">
+                    <button class="button is-info" @click="launchGame(selectedMode)">Start</button>
+                    <div class="launch-modes">
+                        <span class="launch-mode" :class="{'launch-mode--active': selectedMode === LaunchMode.MODDED}" @click="selectedMode = LaunchMode.MODDED">Modded</span>
+                        <span class="launch-mode" :class="{'launch-mode--active': selectedMode === LaunchMode.VANILLA}" @click="selectedMode = LaunchMode.VANILLA">Vanilla</span>
+                    </div>
+                </div>
+                <hr/>
                 <p class="menu-label">Mods</p>
                 <div>
                     <ul class="menu-list">
@@ -35,6 +35,7 @@
                         </li>
                     </ul>
                 </div>
+                <hr/>
                 <p class='menu-label'>Other</p>
                 <ul class='menu-list'>
                     <li>
@@ -84,6 +85,8 @@ import ProtocolProvider from '../../providers/generic/protocol/ProtocolProvider'
 const store = getStore<State>();
 const router = useRouter();
 
+const selectedMode = ref<LaunchMode>(LaunchMode.MODDED);
+
 const activeGame = computed<Game>(() => store.state.activeGame);
 const profile = computed<Profile>(() => store.getters['profile/activeProfile']);
 const localModCount = computed<number>(() => store.state.profile.modList.length);
@@ -119,6 +122,50 @@ async function launchGame(mode: LaunchMode) {
 </script>
 
 <style lang="scss" scoped>
+
+hr {
+    background-color: var(--nav-hr-background-color);
+    margin: 1rem 0;
+}
+
+.launch-control {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.25rem 0 0;
+}
+
+.launch-modes {
+    display: flex;
+    flex-direction: row;
+    gap: 0.2rem;
+    width: 100%;
+}
+
+.launch-mode {
+    margin-top: 0.25rem;
+    display: block;
+    font-size: 0.95rem;
+    cursor: pointer;
+    color: var(--text);
+    opacity: 0.65;
+    transition: opacity 0.1s ease, background-color 0.1s ease;
+    user-select: none;
+    padding: 0.5em 0.5em;
+    border-radius: 6px;
+    flex: 1;
+    text-align: center;
+
+    &--active {
+        opacity: 1;
+        color: var(--nav-active-text-color);
+        background-color: var(--nav-active-color);
+    }
+
+    &:hover:not(&--active) {
+        opacity: 0.8;
+    }
+}
 
 .menu-list a a {
     padding: 0;
