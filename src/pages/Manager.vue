@@ -1,27 +1,26 @@
 <template>
     <Teleport to="#activity-bar">
         <div class="activity-bar--left">
-            <div>
-                <button id="game-switch-button" class="button">
+            <div class="activity-bar__group">
+                <button class="activity-bar__context-item" id="game-switch-button" @click.prevent.stop="changeGame">
                     <img class="game-icon" :src="ProtocolProvider.getPublicAssetUrl(`/images/game_selection/${activeGame.gameImage}`)" alt="Game icon"/>
-                    {{ activeGame.displayName }}
+                    <span>{{ activeGame.displayName }}</span>
                 </button>
-            </div>
-            <div>
-                <button class="button flex-button">
+                <span class="activity-bar__item-label non-selectable">/</span>
+                <button class="activity-bar__context-item" @click.prevent.stop="changeProfile">
+                    <span class="icon is-small"><i class="fa fa-layer-group fa-xs"></i></span>
                     <span>{{ profile.profileName }}</span>
-                    <span class="tag is-inactive-link">Profile</span>
-                </button>
-            </div>
-            <div>
-                <button class="button" v-tooltip.top="{content: 'Share profile', distance: 10}">
-                    <span><i class="fa fa-share-alt fa-sm margin-right--half-width"></i> Share</span>
                 </button>
             </div>
             <div class="vertical-break"></div>
-            <div>
-                <button class="button" v-tooltip.top="{content: 'Import a local mod', distance: 10}">
-                    <span>Import</span>
+            <div class="activity-bar__group">
+                <button class="activity-bar__action" v-tooltip.top="{content: 'Share profile', distance: 10}">
+                    <span class="icon is-small"><i class="fa fa-share-alt fa-xs"></i></span>
+                    <span>Export profile</span>
+                </button>
+                <button class="activity-bar__action" v-tooltip.top="{content: 'Import a local mod', distance: 10}">
+                    <span class="icon is-small"><i class="fa fa-file-import fa-xs"></i></span>
+                    <span>Import mod</span>
                 </button>
             </div>
         </div>
@@ -203,6 +202,14 @@ const activeGame = computed(() => store.state.activeGame);
 const settings = computed(() => store.getters['settings']);
 const profile = computed(() => store.getters['profile/activeProfile']);
 const localModList = computed(() => store.state.profile.modList);
+
+function changeGame() {
+    router.push('/');
+}
+
+function changeProfile() {
+    router.push('/profiles');
+}
 
 function canRenderLaunchTypeModal() {
     return ['linux', 'darwin'].includes(appWindow.getPlatform());
@@ -557,41 +564,82 @@ onMounted(async () => {
     width: 100%;
 }
 
-.game-icon {
-    height: calc(100% - 4px);
-    padding-left: 2px;
-    border-radius: 2px;
-}
-
-#game-switch-button {
-    padding: 0 1rem 0 0;
-    display: flex;
-    gap: 0.5rem;
-
-    * {
-        flex: 1;
-    }
-}
-
-.flex-button {
-    display: flex;
-    gap: 0.5rem;
-}
-
 .activity-bar--left {
     flex: 1;
     display: flex;
     flex-direction: row;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.activity-bar__group {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+}
+
+.activity-bar__context-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--text, #4a4a4a);
+    line-height: 1.5;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: var(--menu-item-hover-background-color, #e9eaed);
+        color: var(--menu-item-hover-color, #363636);
+    }
+}
+
+.activity-bar__action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--border, #e1e1e1);
+    color: var(--text, #4a4a4a);
+    line-height: 1.5;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: var(--menu-item-hover-background-color, #e9eaed);
+        border-color: var(--border-hover, #b5b5b5);
+        color: var(--menu-item-hover-color, #363636);
+    }
+}
+
+.activity-bar__item-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.5;
+    line-height: 1;
+}
+
+.game-icon {
+    height: 1.125rem;
+    border-radius: 2px;
 }
 
 .vertical-break {
-    height: 2rem;
-    width: 2px;
+    height: 1.25rem;
+    width: 1px;
     margin: 0 0.25rem;
-    background-color: var(--preview-panel-background-color);
+    background-color: var(--border, #e1e1e1);
     border-radius: 5px;
     align-self: center;
+    flex-shrink: 0;
 }
 </style>

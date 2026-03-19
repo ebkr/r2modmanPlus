@@ -182,12 +182,17 @@ main {
 }
 
 #activity-bar {
-    height: min-content;
-    background-color: #16222c;
-    padding: 0.25rem 1rem;
     display: flex;
-    gap: 0.25rem;
     flex-direction: row;
     width: 100%;
+    align-items: center;
+
+    &:has(> *) {
+        background-color: var(--preview-panel-background-color);
+        border-top: 1px solid var(--border, #e1e1e1);
+        padding: 0.25rem 0.75rem;
+        gap: 0.5rem;
+        overflow: hidden;
+    }
 }
 </style>
