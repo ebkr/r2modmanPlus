@@ -1,8 +1,11 @@
 name: Generate Flatpak Node Sources
 
 on:
-  release:
-    types: [released]
+  push:
+    branches:
+      - develop
+    paths:
+      - "yarn.lock"
 
 jobs:
   generate-flatpak-node-sources:
