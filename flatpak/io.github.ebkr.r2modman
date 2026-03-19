@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ -n "$WAYLAND_DISPLAY" ]; then
+  exec zypak-wrapper /app/r2modman \
+    --no-sandbox \
+    --enable-features=UseOzonePlatform \
+    --ozone-platform=wayland \
+    "$@"
+else
+  exec zypak-wrapper /app/r2modman --no-sandbox "$@"
+fi

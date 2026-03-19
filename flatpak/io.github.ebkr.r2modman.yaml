@@ -1,0 +1,80 @@
+id: io.github.ebkr.r2modman
+runtime: org.freedesktop.Platform
+runtime-version: "25.08"
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.node22
+base: org.electronjs.Electron2.BaseApp
+base-version: "25.08"
+command: io.github.ebkr.r2modman
+
+modules:
+  - name: r2modmanPlus
+    buildsystem: simple
+    build-options:
+      # Add the node bin directory.
+      append-path: /usr/lib/sdk/node22/bin
+      env:
+        XDG_CACHE_HOME: /run/build/r2modmanPlus/flatpak-node/cache
+        npm_config_nodedir: /usr/lib/sdk/node22
+        # more verbose
+        YARN_ENABLE_INLINE_BUILDS: "1"
+        # disable telemetry
+        YARN_ENABLE_TELEMETRY: "0"
+        # disable network access
+        YARN_ENABLE_NETWORK: "0"
+        # disable global cache
+        YARN_ENABLE_GLOBAL_CACHE: "0"
+        # set yarn global folder
+        YARN_GLOBAL_FOLDER: /run/build/r2modmanPlus/flatpak-node/yarn-berry
+    sources:
+      - type: git
+        url: https://github.com/TB516/flathub-prep.git
+        tag: v3.2.14
+
+      - generated-sources.json
+
+      - type: file
+        path: io.github.ebkr.r2modman.desktop
+
+      - type: file
+        path: io.github.ebkr.r2modman.metainfo.xml
+
+      - type: file
+        path: io.github.ebkr.r2modman
+
+    build-commands:
+      # Setup yarn for flatpak
+      - yarn plugin import $FLATPAK_BUILDER_BUILDDIR/flatpak-node/flatpak-yarn.js
+
+      # prepare yarn cache
+      - yarn convertToZip $(which yarn)
+
+      - yarn install
+      - yarn build-linux-unpacked
+
+      - cp -r dist/electron/Packaged/linux-unpacked/* /app/
+
+      - install -Dm644 src/assets/icon/128x128.png /app/share/icons/hicolor/128x128/apps/io.github.ebkr.r2modman.png
+      - install -Dm644 src/assets/icon/256x256.png /app/share/icons/hicolor/256x256/apps/io.github.ebkr.r2modman.png
+
+      - install -Dm644 io.github.ebkr.r2modman.desktop /app/share/applications/io.github.ebkr.r2modman.desktop
+      - install -Dm644 io.github.ebkr.r2modman.metainfo.xml /app/share/metainfo/io.github.ebkr.r2modman.metainfo.xml
+      - install -Dm755 io.github.ebkr.r2modman /app/bin/io.github.ebkr.r2modman
+
+finish-args:
+  # Graphics
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+
+  # Flatpak spawn for steam deck
+  - --talk-name=org.freedesktop.Flatpak
+
+  # Network access
+  - --share=network
+  - --share=ipc
+
+  # File system to find Steam and games
+  - --filesystem=~/.var/app/com.valvesoftware.Steam:rw
+  - --filesystem=~/.local/share/Steam:rw
