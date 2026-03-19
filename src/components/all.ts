@@ -4,6 +4,7 @@ import ExpandableCard from './ExpandableCard.vue';
 import ModalCard from './ModalCard.vue';
 import DeferredInput from './DeferredInput.vue';
 import ExternalLink from './v2/ExternalLink.vue';
+import ActivityDropdown from './v2/ActivityDropdown.vue';
 
 export {
     Hero,
@@ -12,4 +13,5 @@ export {
     ModalCard,
     DeferredInput,
     ExternalLink,
+    ActivityDropdown,
 }

@@ -99,10 +99,6 @@ function getTagLinkClasses(routeNames: string[]) {
     return router && router.currentRoute.value && routeNames.includes(router.currentRoute.value.name as string || "") ? [...base, "is-link"] : [...base, "is-inactive-link"];
 }
 
-function openProfileManagementModal() {
-    store.commit("openProfileManagementModal");
-}
-
 async function launchGame(mode: LaunchMode) {
     try {
         await setGameDirIfUnset(activeGame.value);

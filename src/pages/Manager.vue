@@ -6,18 +6,26 @@
                     <img class="game-icon" :src="ProtocolProvider.getPublicAssetUrl(`/images/game_selection/${activeGame.gameImage}`)" alt="Game icon"/>
                     <span>{{ activeGame.displayName }}</span>
                 </button>
-                <span class="activity-bar__item-label non-selectable">/</span>
+                <span class="activity-bar__item-label non-selectable activity-bar__item-divider">/</span>
                 <button class="activity-bar__context-item" @click.prevent.stop="changeProfile">
-                    <span class="icon is-small"><i class="fa fa-layer-group fa-xs"></i></span>
+                    <i class="fa fa-layer-group fa-xs"></i>
                     <span>{{ profile.profileName }}</span>
                 </button>
             </div>
             <div class="vertical-break"></div>
             <div class="activity-bar__group">
-                <button class="activity-bar__action" v-tooltip.top="{content: 'Share profile', distance: 10}">
-                    <span class="icon is-small"><i class="fa fa-share-alt fa-xs"></i></span>
-                    <span>Export profile</span>
-                </button>
+                <ActivityDropdown>
+                    <button class="activity-bar__action">
+                        <span class="icon is-small"><i class="fa fa-share-alt fa-xs"></i></span>
+                        <span>Export profile</span>
+                    </button>
+                    <template #popper>
+                        <ul class="menu-list">
+                            <li><a href="#"><i class="fa fa-fw fa-code icon--margin-right"></i>Export to code</a></li>
+                            <li><a href="#"><i class="fa fa-fw fa-file-download icon--margin-right"></i>Export to file</a></li>
+                        </ul>
+                    </template>
+                </ActivityDropdown>
                 <button class="activity-bar__action" v-tooltip.top="{content: 'Import a local mod', distance: 10}">
                     <span class="icon is-small"><i class="fa fa-file-import fa-xs"></i></span>
                     <span>Import mod</span>
@@ -183,7 +191,7 @@ import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vu
 import appWindow from '../providers/node/app/app_window';
 import GameInstructionParser from "../r2mm/launching/instructions/GameInstructionParser";
 import ProtocolProvider from 'src/providers/generic/protocol/ProtocolProvider';
-import { ExternalLink } from 'components/all';
+import { ActivityDropdown } from 'components/all';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -552,6 +560,7 @@ onMounted(async () => {
 </script>
 
 <style lang="scss">
+
 .manager-main-view {
     display: flex;
     flex: 1;
@@ -578,11 +587,18 @@ onMounted(async () => {
     gap: 0.125rem;
 }
 
+.activity-bar__context-item,
+.activity-bar__action {
+    .icon {
+        height: auto;
+    }
+}
+
 .activity-bar__context-item {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
-    padding: 0.2rem 0.5rem;
+    padding: 0.4rem 0.5rem;
     border-radius: 4px;
     font-size: 0.875rem;
     cursor: pointer;
@@ -602,7 +618,7 @@ onMounted(async () => {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
-    padding: 0.2rem 0.5rem;
+    padding: 0.4rem 0.5rem;
     border-radius: 4px;
     font-size: 0.875rem;
     cursor: pointer;
@@ -626,6 +642,10 @@ onMounted(async () => {
     letter-spacing: 0.04em;
     opacity: 0.5;
     line-height: 1;
+}
+
+.activity-bar__item-divider {
+    padding: 0 0.2rem;
 }
 
 .game-icon {
