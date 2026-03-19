@@ -1,5 +1,5 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
-import { addToStateFile } from "./InstallRuleInstaller";
+import { addToStateFile } from "./InstallRulePluginInstaller";
 import FsProvider from "../providers/generic/file/FsProvider";
 import FileUtils from "../utils/FileUtils";
 import FileTree from "../model/file/FileTree";
