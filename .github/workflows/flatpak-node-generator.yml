@@ -6,6 +6,7 @@ on:
       - develop
     paths:
       - "yarn.lock"
+  workflow_dispatch:
 
 jobs:
   generate-flatpak-node-sources:
