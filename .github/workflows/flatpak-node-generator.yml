@@ -34,4 +34,7 @@ jobs:
           mkdir -p flatpak-sources
           flatpak-node-generator yarn yarn.lock --output flatpak/generated-sources.json
 
-      - uses: stefanzweifel/git-auto-commit-action@v7
+      - name: Commit generated sources to repo
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "Update flatpak/generated-sources.json"
