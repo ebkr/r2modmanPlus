@@ -11,6 +11,7 @@
     "run": "quasar dev -m electron --modern",
     "dev": "quasar dev -m electron --modern --devtools",
     "sync": "tsx ./scripts/sync.ts",
+    "install-flatpak": "flatpak-builder --user --install --force-clean flatpak/dist flatpak/io.github.ebkr.r2modman.yaml",
     "build-win": "quasar build --mode electron -T win32",
     "build-linux": "quasar build --mode electron -T linux",
     "build-linux-unpacked": "SKIP_PACKING=true quasar build --mode electron -T linux",

@@ -18,6 +18,8 @@ yarn-error.log*
 log.txt
 .env.json
 
+flatpak/io.github.ebkr.r2modman.yaml
+
 # Editor directories and files
 .idea
 .vscode

@@ -30,7 +30,6 @@ modules:
     sources:
       - type: git
         url: https://github.com/TB516/flathub-prep.git
-        tag: v3.2.14
 
       - generated-sources.json
 
