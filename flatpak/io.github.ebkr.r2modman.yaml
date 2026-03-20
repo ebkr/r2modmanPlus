@@ -28,8 +28,8 @@ modules:
         # set yarn global folder
         YARN_GLOBAL_FOLDER: /run/build/r2modmanPlus/flatpak-node/yarn-berry
     sources:
-      - type: git
-        url: https://github.com/TB516/flathub-prep.git
+      - type: dir
+        path: ..
 
       - generated-sources.json
 

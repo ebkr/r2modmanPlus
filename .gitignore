@@ -18,7 +18,7 @@ yarn-error.log*
 log.txt
 .env.json
 
-flatpak/io.github.ebkr.r2modman.yaml
+flatpak/io.github.ebkr.r2modman.release.yaml
 
 # Editor directories and files
 .idea
