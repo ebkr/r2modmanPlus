@@ -11,6 +11,8 @@
     "run": "quasar dev -m electron --modern",
     "dev": "quasar dev -m electron --modern --devtools",
     "sync": "tsx ./scripts/sync.ts",
+    "generate-local-manifest": "node flatpak/manifest-generator.js local",
+    "generate-release-manifest": "node flatpak/manifest-generator.js release",
     "install-flatpak": "flatpak-builder --user --install --force-clean flatpak/dist flatpak/io.github.ebkr.r2modman.yaml",
     "build-win": "quasar build --mode electron -T win32",
     "build-linux": "quasar build --mode electron -T linux",
