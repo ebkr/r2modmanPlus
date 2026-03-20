@@ -43,8 +43,16 @@ modules:
       - type: file
         path: io.github.ebkr.r2modman
 
+      - type: file
+        url: https://repo.yarnpkg.com/4.11.0/packages/yarnpkg-cli/bin/yarn.js
+        dest-filename: yarn.cjs
+        sha256: b0efc6597348fab50c777d2ff4b09e814974058cf012c3d687c9e80bca824358
+
     build-commands:
-      # Setup yarn for flatpak
+      # Set up yarn
+      - chmod +x yarn.cjs
+      - >-
+        echo "yarnPath: yarn.cjs" >> .yarnrc.yml
       - yarn plugin import $FLATPAK_BUILDER_BUILDDIR/flatpak-node/flatpak-yarn.js
 
       # prepare yarn cache
