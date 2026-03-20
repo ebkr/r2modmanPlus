@@ -26,18 +26,10 @@
         }
 
         &.is-active {
-            background-color: var(--menu-item-active-background-color);
+            background-color: var(--nav-active-color);
             color: var(--text) !important;
 
-            &::before {
-                content: '';
-                position: absolute;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                width: 3px;
-                background-color: var(--scheme-primary, #3273dc);
-            }
+
         }
     }
 }
