@@ -159,7 +159,7 @@ hr {
     &--active {
         opacity: 1;
         color: var(--nav-active-text-color);
-        background-color: var(--nav-active-color);
+        background-color: var(--nav-active-secondary-color);
     }
 
     &:hover:not(&--active) {
