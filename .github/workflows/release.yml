@@ -55,3 +55,43 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: core.setFailed('It seems the build process failed silently. See previous step for more info.')
+
+  release-flatpak:
+    name: Release for Flatpak
+    needs: release
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-49
+      options: --privileged
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: jdx/mise-action@v3
+      with:
+        install: true
+        cache: true
+        log_level: debug
+
+    - name: Install Yarn dependencies
+      run: yarn install --immutable
+
+    - name: Generate release manifest
+      run: yarn generate-release-manifest
+
+    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+      with:
+        bundle: r2modman.flatpak
+        manifest-path: flatpak/io.github.ebkr.r2modman.release.yaml
+
+    - name: Compute release tag
+      id: tag
+      run: echo "tag=v$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+    - name: Append standalone flatpak to release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TAG_NAME: ${{ steps.tag.outputs.tag }}
+      run: |
+        gh release upload "$TAG_NAME" r2modman.flatpak --clobber
