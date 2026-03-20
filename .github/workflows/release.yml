@@ -89,6 +89,9 @@ jobs:
       id: tag
       run: echo "tag=v$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 
+    - name: Mark checkout as safe for git
+      run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
     - name: Append standalone flatpak to release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
