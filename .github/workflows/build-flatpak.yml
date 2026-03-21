@@ -1,0 +1,31 @@
+name: Build Flatpak
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-flatpak:
+    name: Build the Flatpak app
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-49
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jdx/mise-action@v3
+        with:
+          install: true
+          cache: true
+          log_level: debug
+
+      - name: Install Yarn dependencies
+        run: yarn install --immutable
+
+      - name: Generate release manifest
+        run: yarn generate-release-manifest
+
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+            bundle: r2modman.flatpak
+            manifest-path: flatpak/io.github.ebkr.r2modman.release.yaml
