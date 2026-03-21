@@ -22,6 +22,7 @@ Files for the r2modman flatpak release. Contains all the files needed for a full
     - This file is regenerated any time there is a change to [`yarn.lock`](../yarn.lock)
 
 - [`generate-release-manifest.js`](./generate-release-manifest.js) is a small script to take the manifest that is in the git repo, and update the sources to pull from git instead of using the local file system
+    - This script does use the `yaml` package, which is already used by r2modman, but this means you need to have ran `yarn install` at least once
 
 
 ## Building locally
