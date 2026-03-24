@@ -1,34 +1,5 @@
 <template>
-    <Teleport to="#activity-bar">
-        <div class="activity-bar--left">
-            <div class="activity-bar__group">
-                <button class="activity-bar__context-item" id="game-switch-button" @click.prevent.stop="changeGame">
-                    <img class="game-icon" :src="ProtocolProvider.getPublicAssetUrl(`/images/game_selection/${activeGame.gameImage}`)" alt="Game icon"/>
-                    <span>{{ activeGame.displayName }}</span>
-                </button>
-                <span class="activity-bar__item-label non-selectable activity-bar__item-divider">/</span>
-                <button class="activity-bar__context-item" @click.prevent.stop="changeProfile">
-                    <i class="fa fa-layer-group fa-xs"></i>
-                    <span>{{ profile.profileName }}</span>
-                </button>
-            </div>
-            <div class="vertical-break"></div>
-            <div class="activity-bar__group">
-                <ActivityDropdown>
-                    <button class="activity-bar__action">
-                        <span class="icon is-small"><i class="fa fa-share-alt fa-xs"></i></span>
-                        <span>Export profile</span>
-                    </button>
-                    <template #popper>
-                        <ul class="menu-list">
-                            <li><a v-close-popper @click="store.dispatch('profileExport/exportProfileAsCode')"><i class="fa fa-fw fa-code icon--margin-right"></i>Export to code</a></li>
-                            <li><a v-close-popper @click="store.dispatch('profileExport/exportProfileAsFile')"><i class="fa fa-fw fa-file-download icon--margin-right"></i>Export to file</a></li>
-                        </ul>
-                    </template>
-                </ActivityDropdown>
-            </div>
-        </div>
-    </Teleport>
+    <ManagerActivityBar />
 	<div class="manager-main-view">
 		<div id='steamIncorrectDir' :class="['modal', {'is-active':(showSteamIncorrectDirectoryModal !== false)}]">
 			<div class="modal-background" @click="showSteamIncorrectDirectoryModal = false"></div>
@@ -186,8 +157,7 @@ import path from '../providers/node/path/path';
 import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
 import appWindow from '../providers/node/app/app_window';
 import GameInstructionParser from "../r2mm/launching/instructions/GameInstructionParser";
-import ProtocolProvider from 'src/providers/generic/protocol/ProtocolProvider';
-import { ActivityDropdown } from 'components/all';
+import ManagerActivityBar from '../components/navigation/ManagerActivityBar.vue';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -206,14 +176,6 @@ const activeGame = computed(() => store.state.activeGame);
 const settings = computed(() => store.getters['settings']);
 const profile = computed(() => store.getters['profile/activeProfile']);
 const localModList = computed(() => store.state.profile.modList);
-
-function changeGame() {
-    router.push('/');
-}
-
-function changeProfile() {
-    router.push('/profiles');
-}
 
 function canRenderLaunchTypeModal() {
     return ['linux', 'darwin'].includes(appWindow.getPlatform());
