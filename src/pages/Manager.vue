@@ -21,12 +21,12 @@
                     </button>
                     <template #popper>
                         <ul class="menu-list">
-                            <li><a href="#"><i class="fa fa-fw fa-code icon--margin-right"></i>Export to code</a></li>
-                            <li><a href="#"><i class="fa fa-fw fa-file-download icon--margin-right"></i>Export to file</a></li>
+                            <li><a v-close-popper @click="store.dispatch('profileExport/exportProfileAsCode')"><i class="fa fa-fw fa-code icon--margin-right"></i>Export to code</a></li>
+                            <li><a v-close-popper @click="store.dispatch('profileExport/exportProfileAsFile')"><i class="fa fa-fw fa-file-download icon--margin-right"></i>Export to file</a></li>
                         </ul>
                     </template>
                 </ActivityDropdown>
-                <button class="activity-bar__action" v-tooltip.top="{content: 'Import a local mod', distance: 10}">
+                <button class="activity-bar__action" v-tooltip.top="{content: 'Import a local mod', distance: 10}" @click="importingLocalMod = true">
                     <span class="icon is-small"><i class="fa fa-file-import fa-xs"></i></span>
                     <span>Import mod</span>
                 </button>
