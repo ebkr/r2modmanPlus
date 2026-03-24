@@ -52,6 +52,7 @@ import { NodeFsImplementation } from './providers/node/fs/NodeFsImplementation';
 import { useRouter } from 'vue-router';
 import { ProtocolProviderImplementation } from './providers/generic/protocol/ProtocolProviderImplementation';
 import { provideProtocolImplementation } from './providers/generic/protocol/ProtocolProvider';
+import contextMenu from './providers/node/context_menu/context_menu';
 
 const store = baseStore;
 const router = useRouter();
@@ -142,6 +143,23 @@ onMounted(async () => {
 
 watchEffect(() => {
     document.documentElement.classList.toggle('html--dark', quasar.dark.isActive);
+});
+
+document.addEventListener('contextmenu', e => {
+    if (e.target) {
+        const target = e.target as HTMLElement;
+        switch (true) {
+            case target instanceof HTMLInputElement: {
+                contextMenu.showContextMenu({ readonly: false });
+                break;
+            }
+            case ['code', 'pre'].includes(target.tagName.toLowerCase()): {
+                contextMenu.showContextMenu({ readonly: true });
+                break;
+            }
+            default: { break; }
+        }
+    }
 })
 </script>
 

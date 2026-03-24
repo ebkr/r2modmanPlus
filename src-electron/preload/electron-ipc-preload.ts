@@ -34,3 +34,7 @@ export function copyToClipboard(value: string) {
 export async function getEnvironmentVariables() {
     return ipcRenderer.invoke('electron:getEnvironmentVariables');
 }
+
+export function showContextMenu(options: any) {
+    ipcRenderer.send('electron:showContextMenu', options);
+}
