@@ -4,10 +4,38 @@
             <div id="menu__top">
                 <p class="menu-label">{{ activeGame.displayName }}</p>
                 <div class="launch-control">
-                    <button class="button is-info" @click="launchGame(selectedMode)">Start</button>
-                    <div class="launch-modes">
-                        <span class="launch-mode" :class="{'launch-mode--active': selectedMode === LaunchMode.MODDED}" @click="selectedMode = LaunchMode.MODDED">Modded</span>
-                        <span class="launch-mode" :class="{'launch-mode--active': selectedMode === LaunchMode.VANILLA}" @click="selectedMode = LaunchMode.VANILLA">Vanilla</span>
+                    <div class="launch-split">
+                        <button class="launch-split__start" @click="launchGame(selectedMode)">
+                            <i class="fas fa-play fa-fw" />
+                            <span>
+                                Start {{ selectedMode === LaunchMode.MODDED ? 'modded' : 'vanilla' }}
+                            </span>
+                        </button>
+                        <ActivityDropdown trigger="click" placement="bottom-end">
+                            <template #default="{ shown }">
+                                <button class="launch-split__mode">
+                                    <p>
+                                        <i :class="['fas', shown ? 'fa-caret-up' : 'fa-caret-down']" />
+                                    </p>
+                                </button>
+                            </template>
+                            <template #popper>
+                                <ul class="menu-list">
+                                    <li v-if="selectedMode === LaunchMode.VANILLA">
+                                        <a v-close-popper @click="selectedMode = LaunchMode.MODDED">
+                                            <i class="fas fa-play fa-fw" />
+                                            Start modded
+                                        </a>
+                                    </li>
+                                    <li v-else>
+                                        <a v-close-popper @click="selectedMode = LaunchMode.VANILLA">
+                                            <i class="fas fa-play fa-fw" />
+                                            Start vanilla
+                                        </a>
+                                    </li>
+                                </ul>
+                            </template>
+                        </ActivityDropdown>
                     </div>
                 </div>
                 <hr/>
@@ -23,7 +51,7 @@
                         </li>
                         <li>
                             <router-link :to="{name: 'manager.online'}"
-                                         :class="['tagged-link', {'is-active': $route.name === 'downloads'}]">
+                                         :class="['tagged-link', {'is-active': router.currentRoute.value.name === 'downloads'}]">
                                 <i class="fas fa-globe tagged-link__icon icon--margin-right" />
                                 <span class="tagged-link__content">Online</span>
 
@@ -81,6 +109,7 @@ import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import VueRouter, { useRouter } from 'vue-router';
 import ProtocolProvider from '../../providers/generic/protocol/ProtocolProvider';
+import ActivityDropdown from '../v2/ActivityDropdown.vue';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -129,42 +158,59 @@ hr {
 }
 
 .launch-control {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
     padding: 0.25rem 0 0;
 }
 
-.launch-modes {
+.launch-split {
     display: flex;
-    flex-direction: row;
-    gap: 0.2rem;
+    border-radius: 6px;
+    overflow: hidden;
     width: 100%;
 }
 
-.launch-mode {
-    margin-top: 0.25rem;
-    display: block;
+.launch-split__start {
+    flex: 1;
+    background-color: var(--scheme-primary, #3273dc);
+    color: white;
+    border: none;
+    padding: 0.55em 1em;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+    display: flex;
+    text-align: left;
+    place-items: center;
+
+    &:hover { filter: brightness(1.12); }
+    &:active { filter: brightness(0.9); }
+
+    & > * {
+        flex: 1;
+    }
+
+    & > i {
+        flex: 0;
+        margin-right: 0.5rem;
+    }
+}
+
+.launch-split__mode {
+    background-color: var(--scheme-primary, #3273dc);
+    color: white;
+    border: none;
+    padding: 0.55em 0.75em;
     font-size: 0.95rem;
     cursor: pointer;
-    color: var(--text);
-    opacity: 0.65;
-    transition: opacity 0.1s ease, background-color 0.1s ease;
-    user-select: none;
-    padding: 0.5em 0.5em;
-    border-radius: 6px;
-    flex: 1;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    white-space: nowrap;
+    transition: filter 0.15s ease;
+    margin-left: 2px;
 
-    &--active {
-        opacity: 1;
-        color: var(--nav-active-text-color);
-        background-color: var(--nav-active-secondary-color);
-    }
-
-    &:hover:not(&--active) {
-        opacity: 0.8;
-    }
+    &:hover { filter: brightness(1.12); }
+    &:active { filter: brightness(0.9); }
 }
 
 .menu-list a a {
