@@ -25,29 +25,23 @@ function closeModal() {
             <div class='modal-content'>
                 <div class='notification is-info'>
 
-                    <h3 v-if="DownloadUtils.statusIsDownloadOrExtract(store.getters['download/currentDownload'].status)" class='title'>
-                        Downloading {{store.getters['download/currentDownload'].modName}}
+                    <h3 v-if="DownloadUtils.statusIsDownloadOrExtract(store.getters['download/currentDownload'].status)" class='title'> {{ $t('DownloadProgressModal.downloading') }} {{store.getters['download/currentDownload'].modName}}
                     </h3>
-                    <h3 v-else-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.INSTALLING" class='title'>
-                        Installing {{store.getters['download/currentDownload'].modName}}
+                    <h3 v-else-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.INSTALLING" class='title'> {{ $t('DownloadProgressModal.installing') }} {{store.getters['download/currentDownload'].modName}}
                     </h3>
 
 
                     <p v-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.DOWNLOADING">
-                        <i class="fas fa-download"/>
-                        Downloading: {{store.getters['download/currentDownload'].downloadProgress}}% of
-                        {{FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize)}}
+                        <i class="fas fa-download"/> {{ $t('DownloadProgressModal.downloading_1') }} {{store.getters['download/currentDownload'].downloadProgress}}{{ $t('DownloadProgressModal.of') }} {{FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize)}}
                     </p>
 
                     <p v-else-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTING || store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTED">
-                        <i class="fas fa-box-open"/>
-                        Extracting: {{store.getters['download/currentDownload'].downloadProgress}}% of
-                        {{FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize)}}
+                        <i class="fas fa-box-open"/> {{ $t('DownloadProgressModal.extracting') }} {{store.getters['download/currentDownload'].downloadProgress}}{{ $t('DownloadProgressModal.of') }} {{FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize)}}
                     </p>
 
                     <p v-else>
                         <i class="fas fa-check"/>
-                        Download complete
+                        {{ $t('DownloadProgressModal.download_complete') }}
                     </p>
 
                     <Progress
@@ -57,13 +51,11 @@ function closeModal() {
                     />
 
                     <p v-if="store.getters['download/currentDownload'].installProgress">
-                        <i class="fas fa-cog" spin />
-                        Installing: {{store.getters['download/currentDownload'].installProgress}}%
+                        <i class="fas fa-cog" spin /> {{ $t('DownloadProgressModal.installing_1') }} {{store.getters['download/currentDownload'].installProgress}}%
                     </p>
                     <p v-else>
                         <i class="fas fa-cog" />
-                        Installing: waiting for download to finish
-                    </p>
+                        {{ $t('DownloadProgressModal.installing') }}{{ $t('DownloadProgressModal.waiting_for_download_to_finis') }} </p>
 
                     <Progress
                         :max='100'

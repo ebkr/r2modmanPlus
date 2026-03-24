@@ -1,0 +1,297 @@
+{
+  "components/ModListUpdateBanner.vue": [
+    "Would you like to"
+  ],
+  "components/banner/ManagerUpdateBanner.vue": [
+    "update is available.",
+    "An"
+  ],
+  "components/config-components/ConfigEntryEditor.vue": [
+    "Select an option",
+    "Show less",
+    "Show more",
+    "hidden)"
+  ],
+  "components/config-components/ConfigSelectionLayout.vue": [
+    "Looking for config files",
+    "Edit Config",
+    "Open File",
+    "Delete"
+  ],
+  "components/importing/LocalFileImportModal.vue": [
+    "Zip files that contain a manifest file will have the some information pre-filled. If a manifest is not available, this will have to be entered manually.",
+    "Please select a zip or DLL to be imported.",
+    "Waiting for file. This may take a minute.",
+    "Enter the name of the mod",
+    "Description (optional)",
+    "Enter the author name",
+    "Enter a description",
+    "Import local mod",
+    "Select file",
+    "Mod name",
+    "Version",
+    "Author",
+    "Major",
+    "Minor",
+    "Patch"
+  ],
+  "components/modals/CategoryFilterModal.vue": [
+    "Mods must contain at least one of these categories",
+    "Mods cannot contain any of these categories",
+    "Mods must contain all of these categories",
+    "Allow NSFW (potentially explicit) mods",
+    "Show deprecated mods",
+    "Apply filters"
+  ],
+  "components/modals/GameRunningModal.vue": [
+    "is launching via Steam",
+    "is starting"
+  ],
+  "components/modals/ProfileCodeExportModal.vue": [
+    "has been copied to your clipboard. Just give it to a friend!",
+    "Your code:",
+    "Done"
+  ],
+  "components/modals/ProfileManagementModal.vue": [
+    "Close"
+  ],
+  "components/modals/SortModal.vue": [
+    "Sort behaviour",
+    "Sort direction",
+    "Close"
+  ],
+  "components/modals/launch-type/LaunchTypeModal.vue": [
+    "If you have not yet done this manually, please add the following launch arguments to the game's properties on Steam:",
+    "We were unable to determine if the required wrapper arguments have been set.",
+    "we have determined that",
+    "will be launched under",
+    "Copy launch arguments",
+    "By selecting",
+    "Native",
+    "Proton",
+    "Update",
+    "mode.",
+    "Auto"
+  ],
+  "components/profiles-modals/CreateProfileModal.vue": [
+    "This profile will store its own mods independently from other profiles.",
+    "\" is either already in use, or contains invalid characters",
+    "Profile name required",
+    "\" is available",
+    "Create"
+  ],
+  "components/profiles-modals/DeleteProfileModal.vue": [
+    "If this was an accident, click either the darkened area, or the cross inside located in the top right.",
+    "This will remove all mods, and their config files, installed within this profile.",
+    "Are you sure you'd like to delete this profile?",
+    "Delete profile"
+  ],
+  "components/profiles-modals/ImportProfileModal.vue": [
+    "Some of the packages in the profile are not recognized by the mod manager. Refreshing the online mod list might fix the problem. Please wait...",
+    "A file selection window will appear. Once a profile has been selected it may take a few moments.",
+    "These packages in the profile were not found on Thunderstore and will not be installed:",
+    "All contents of the profile will be overwritten with the contents of the code/file.",
+    "Waiting for mod downloads to finish before refreshing the online mod list...",
+    "This may take a while, as files are being downloaded, extracted, and copied.",
+    "Are you going to be updating an existing profile or creating a new one?",
+    "This profile will store its own mods independently from other profiles.",
+    "Ensure the profile is intended for the currently selected game.",
+    "\" is either already in use, or contains invalid characters",
+    "I understand that some of the mods won't be imported",
+    "These packages will be installed:",
+    "Invalid code, check for typos",
+    "Refreshing online mod list",
+    "Packages to be installed",
+    "Update existing profile",
+    "Select a profile below:",
+    "Enter the profile code",
+    "Profile name required",
+    "Please do not close",
+    "Import new profile",
+    "Import a profile",
+    "Update profile:",
+    "\" is available",
+    "Loading file",
+    "From file",
+    "From code",
+    "Import",
+    "Create"
+  ],
+  "components/profiles-modals/RenameProfileModal.vue": [
+    "This profile will store its own mods independently from other profiles.",
+    "\" is either already in use, or contains invalid characters",
+    "Profile name required",
+    "\" is available",
+    "Rename"
+  ],
+  "components/v2/OnlinePreviewPanel.vue": [
+    "Unable to fetch CHANGELOG for",
+    "Unable to fetch README for",
+    "has no dependencies",
+    "Dependencies (",
+    "Fetching",
+    "for",
+    "By"
+  ],
+  "components/views/DownloadModVersionSelectModal.vue": [
+    "It's recommended to select the latest version of all mods.",
+    "Using outdated versions may cause problems.",
+    "You need to select a version",
+    "is the recommended version",
+    "Download with dependencies",
+    "is an outdated version",
+    "is the latest version",
+    "Select a version of",
+    "to download"
+  ],
+  "components/views/DownloadProgressModal.vue": [
+    ": waiting for download to finish",
+    "Downloading:",
+    "Downloading",
+    "Extracting:",
+    "Installing:",
+    "Installing",
+    "% of"
+  ],
+  "components/views/InstalledModView.vue": [
+    "available mod update",
+    ". Would you like to",
+    "You have"
+  ],
+  "components/views/LocalModList/AssociatedModsModal.vue": [
+    "This mod has no dependencies or dependants.",
+    "Mods associated with",
+    "Dependencies",
+    "Dependants",
+    "Done"
+  ],
+  "components/views/LocalModList/DisableModModal.vue": [
+    "to disable dependent mods, otherwise they may cause errors.",
+    "Other mods depend on this mod. Select",
+    "Disable all (recommended)",
+    "Mods to be disabled",
+    "Disable all",
+    "Disabling",
+    "Disable",
+    "only"
+  ],
+  "components/views/LocalModList/LocalModCard.vue": [
+    "Download dependency",
+    "Installed on:",
+    "Associated",
+    "Uninstall",
+    "Disable",
+    "Website",
+    "Enable",
+    "Update",
+    "by"
+  ],
+  "components/views/LocalModList/SkeletonLocalModCard.vue": [
+    "by"
+  ],
+  "components/views/LocalModList/UninstallModModal.vue": [
+    "to uninstall dependent mods, otherwise they may cause errors.",
+    "Other mods depend on this mod. Select",
+    "Uninstall all (recommended)",
+    "Mods to be uninstalled",
+    "Uninstall all",
+    "Uninstalling",
+    "Uninstall",
+    "only"
+  ],
+  "components/views/OnlineModList.vue": [
+    "Last updated:",
+    "Categories:",
+    "Download",
+    "Website",
+    "by"
+  ],
+  "components/views/UpdateAllInstalledModsModal.vue": [
+    "Either all installed mods are up to date, or there are no installed mods.",
+    "All installed mods will be updated to their latest versions.",
+    "The following mods will be downloaded and installed:",
+    "Any missing dependencies will be installed.",
+    "Update all installed mods",
+    "will be updated to:",
+    "Update all",
+    "Close"
+  ],
+  "pages/DownloadMonitor.vue": [
+    "Waiting for download to finish",
+    "Download complete",
+    "Download failed",
+    "Clear finished",
+    "Downloading:",
+    "Extracting:",
+    "Installing:",
+    "% complete",
+    "100% of",
+    "% of"
+  ],
+  "pages/GameSelectionScreen.vue": [
+    "The options to select a game are disabled until the work has completed.",
+    "An update to the manager has occurred and needs to do background work.",
+    "Search for a game",
+    "Select platform",
+    "Set as default",
+    "Mod Logo",
+    "Select"
+  ],
+  "pages/Help.vue": [
+    "aren't directly supported through the manager however a solution is to instead copy the contents of your profile folder into your dedicated server folder yourself.",
+    "On GitHub there is a portable version that doesn't auto update. You are however prompted that an update is available.",
+    "That's because you don't legally own the game. The manager only supports legal copies.",
+    "The most common issues are solved by following the instructions exactly as listed",
+    "The manager updates automatically on close assuming an update is available.",
+    "If a problem occurs with an update, download and run the latest installer.",
+    "If it persists, force exit Steam and start modded with Steam closed.",
+    "Read the suggestion at the bottom of the red box.",
+    "A red box appears when I try to start the game",
+    "A text window appears and closes immediately.",
+    "Updates are downloaded in the background.",
+    "installation\" on the Settings screen.",
+    "I'm taken to the Steam store page",
+    "as an admin. This is the updater.",
+    "You may receive a prompt to run",
+    "I don't want updates",
+    "Potential solutions",
+    "Try running \"Reset",
+    "old_uninstaller",
+    "Auto-updates",
+    "here"
+  ],
+  "pages/LinuxNativeGameSetup.vue": [
+    "on Linux, you must first setup your Steam launch options correctly.",
+    "Please copy and paste the following to your",
+    "now uses a different wrapper script.",
+    "The Flatpak version of",
+    "To be able to launch",
+    "launch options:"
+  ],
+  "pages/Manager.vue": [
+    "Please note that these are called against the Steam executable. Be careful when entering custom launch parameters.",
+    "Please check the Steam window for validation progress. If the window has not yet appeared, please be patient.",
+    "You will not not be able to launch the game until Steam has verified the integrity of the game files.",
+    "Steam will be started and will attempt to verify the integrity of",
+    "These parameters will be available after installing a mod loader.",
+    "The executable must be either of the following: \"",
+    "Some arguments are provided by default:",
+    "Set custom launch parameters",
+    "Update launch parameters",
+    "installation directory",
+    "Dependency string list",
+    "Failed to set the",
+    "Enter parameters",
+    "Clearing the",
+    "I understand",
+    "Vanilla:",
+    "Modded:",
+    "folder",
+    "Close"
+  ],
+  "pages/Splash.vue": [
+    "modding discord server. Feel free to ping me if it doesn't get resolved.",
+    "Send a screenshot of the error in the",
+    "r2modman"
+  ]
+}

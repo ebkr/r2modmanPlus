@@ -56,20 +56,20 @@ const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
             <div class="no-padding-left card-header-title">
 
                 <div class="input-group input-group--flex margin-right">
-                    <label for="installed-search" class="non-selectable">Search</label>
+                    <label for="installed-search" class="non-selectable">{{ $t('SearchAndSort.search') }}</label>
                     <DeferredInput
                         :modelValue="search"
                         @update:modelValue="$event => (search = $event)"
                         id="installed-search"
                         class="input margin-right"
                         type="text"
-                        placeholder="Search for an installed mod"
+                        :placeholder="$t('SearchAndSort.search_for_an_installed_mod')"
                         autocomplete="off"
                     />
                 </div>
 
                 <div class="input-group margin-right">
-                    <label for="local-sort-order" class="non-selectable">Sort</label>
+                    <label for="local-sort-order" class="non-selectable">{{ $t('SearchAndSort.sort') }}</label>
                     <select
                         v-model="order"
                         id="local-sort-order"
@@ -89,7 +89,7 @@ const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
                 </div>
 
                 <div class="input-group">
-                    <label for="local-deprecated-position" class="non-selectable">Disabled</label>
+                    <label for="local-deprecated-position" class="non-selectable">{{ $t('SearchAndSort.disabled') }}</label>
                     <select
                         v-model="disabledPosition"
                         id="local-deprecated-position"

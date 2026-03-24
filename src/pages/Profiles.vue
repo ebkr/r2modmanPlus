@@ -6,14 +6,14 @@
     <!-- Content -->
     <div id="profile-body">
         <hero
-            title="Profile selection"
+            :title="$t('Profiles.profile_selection')"
             subtitle="Profiles help to organise mods easily"
             heroType="primary"
         />
         <div class='notification'>
             <div class="container">
                 <i class='fas fa-long-arrow-alt-left margin-right' />
-                <strong><a @click="backToGameSelection">Back to game selection</a></strong>
+                <strong><a @click="backToGameSelection">{{ $t('Profiles.back_to_game_selection') }}</a></strong>
             </div>
         </div>
         <div id="profile-list" class="margin-top">
@@ -34,15 +34,15 @@
         <div id="profile-actions">
             <div class="container" id="profile-actions-container">
                 <div id="profile-actions-row">
-                    <button class="button is-info" @click="moveToNextScreen()">Select profile</button>
+                    <button class="button is-info" @click="moveToNextScreen()">{{ $t('Profiles.select_profile') }}</button>
                     <button class="button" @click="openRenameProfileModal()" :disabled="activeProfileName === 'Default'">
-                        Rename
+                        {{ $t('Profiles.rename') }}
                     </button>
                     <button class="button" @click="openCreateProfileModal()">
-                        Create new
+                        {{ $t('Profiles.create_new') }}
                     </button>
-                    <button class="button" @click="openImportProfileModal()">Import / Update</button>
-                    <button class="button is-danger" @click="openDeleteProfileModal()">Delete</button>
+                    <button class="button" @click="openImportProfileModal()">{{ $t('Profiles.import_update') }}</button>
+                    <button class="button is-danger" @click="openDeleteProfileModal()">{{ $t('Profiles.delete') }}</button>
                 </div>
             </div>
         </div>

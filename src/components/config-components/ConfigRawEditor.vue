@@ -1,8 +1,8 @@
 <template>
     <div id="config-raw-editor">
         <div id="config-raw-editor-actions">
-            <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
-            <button class="button is-danger" @click="cancel">Cancel</button>
+            <button class="button is-info margin-right margin-right--half-width" @click="save">{{ $t('ConfigRawEditor.save') }}</button>
+            <button class="button is-danger" @click="cancel">{{ $t('ConfigRawEditor.cancel') }}</button>
         </div>
         <div id="config-raw-editor-component-wrapper" class="notification margin-right">
             <QuillEditor

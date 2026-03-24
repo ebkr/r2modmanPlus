@@ -56,11 +56,11 @@ async function createProfile() {
     <ModalCard id="create-profile-modal" v-if="isOpen" :is-active="isOpen" @close-modal="closeModal">
 
         <template v-slot:header>
-            <h2 class="modal-title">Create a profile</h2>
+            <h2 class="modal-title">{{ $t('CreateProfileModal.create_a_profile') }}</h2>
         </template>
 
         <template v-slot:body>
-            <p>This profile will store its own mods independently from other profiles.</p>
+            <p>{{ $t('CreateProfileModal.this_profile_will_store_its_ow') }}</p>
             <br/>
             <input
                 v-model="newProfileName"
@@ -71,20 +71,16 @@ async function createProfile() {
                 autocomplete="off"
             />
             <br/><br/>
-            <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
-                Profile name required
-            </span>
+            <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''"> {{ $t('CreateProfileModal.profile_name_required') }} </span>
             <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is available
-            </span>
+                "{{makeProfileNameSafe(newProfileName)}}{{ $t('CreateProfileModal.is_available') }} </span>
             <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
-            </span>
+                "{{makeProfileNameSafe(newProfileName)}}{{ $t('CreateProfileModal.is_either_already_in_use_or_c') }} </span>
         </template>
 
         <template v-slot:footer>
-            <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>Create</button>
-            <button id="modal-create-profile" class="button is-info" @click="createProfile()" :disabled="creatingInProgress" v-else>Create</button>
+            <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>{{ $t('CreateProfileModal.create') }}</button>
+            <button id="modal-create-profile" class="button is-info" @click="createProfile()" :disabled="creatingInProgress" v-else>{{ $t('CreateProfileModal.create') }}</button>
         </template>
 
     </ModalCard>

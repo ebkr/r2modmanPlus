@@ -21,7 +21,7 @@ const props = defineProps<LocalModCardProps>();
                 <span v-if="!mod.isEnabled()"
                       class="tag is-warning margin-right margin-right--half-width"
                       v-tooltip.right="'This mod will not be used in-game'">
-                    Disabled
+                    {{ $t('SkeletonLocalModCard.disabled') }}
                 </span>
                 <span class="card-title selectable">
                     <component :is="mod.isEnabled() ? 'span' : 'strike'" class="selectable">
@@ -29,8 +29,7 @@ const props = defineProps<LocalModCardProps>();
                         <span class="selectable card-byline">
                             v{{mod.getVersionNumber()}}
                         </span>
-                        <span :class="`card-byline ${mod.isEnabled() && 'selectable'}`">
-                            by {{mod.getAuthorName()}}
+                        <span :class="`card-byline ${mod.isEnabled() && 'selectable'}`"> {{ $t('SkeletonLocalModCard.by') }} {{mod.getAuthorName()}}
                         </span>
                     </component>
                 </span>

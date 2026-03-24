@@ -37,11 +37,11 @@ const isOpen = computed(() => store.state.modals.isOnlineSortModalOpen)
 <template>
     <ModalCard id="sort-modal" v-show="isOpen" :is-active="isOpen" :can-close="true" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title">Change the ordering of mods</h2>
+            <h2 class="modal-title">{{ $t('SortModal.change_the_ordering_of_mods') }}</h2>
         </template>
         <template v-slot:body>
             <div class="input-group">
-                <label>Sort behaviour</label>
+                <label>{{ $t('SortModal.sort_behaviour') }}</label>
                 <div class="input-group margin-bottom">
                     <select class="select select--content-spacing" v-model="selectedBehaviour">
                         <option v-for="(value, key) in SortingStyle" :value="value" :key="`sort-behaviour--${key}`">
@@ -51,7 +51,7 @@ const isOpen = computed(() => store.state.modals.isOnlineSortModalOpen)
                 </div>
             </div>
             <div class="input-group">
-                <label>Sort direction</label>
+                <label>{{ $t('SortModal.sort_direction') }}</label>
                 <div class="input-group margin-bottom">
                     <select class="select select--content-spacing" v-model="selectedDirection">
                         <option v-for="(value, key) in SortDirection" :value="value" :key="`sort-direction--${key}`">
@@ -62,9 +62,7 @@ const isOpen = computed(() => store.state.modals.isOnlineSortModalOpen)
             </div>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="closeModal">
-                Close
-            </button>
+            <button class="button is-info" @click="closeModal"> {{ $t('SortModal.close') }} </button>
         </template>
     </ModalCard>
 </template>

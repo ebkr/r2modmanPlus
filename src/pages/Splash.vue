@@ -2,7 +2,7 @@
     <div>
         <hero :title=heroTitle :subtitle='splashText' :heroType=heroType />
         <div class='notification is-warning'>
-            <p>Game updates may break mods. If a new update has been released, please be patient.</p>
+            <p>{{ $t('Splash.game_updates_may_break_mods_if') }}</p>
         </div>
         <Progress
             :max='store.state.splash.requests.length * 100'
@@ -11,10 +11,10 @@
         <div class='columns'>
             <div class='column is-one-quarter'>
                 <aside class='menu'>
-                    <p class='menu-label'>Help</p>
+                    <p class='menu-label'>{{ $t('Splash.help') }}</p>
                     <ul class='menu-list'>
-                        <li><a @click="view = 'about'" :class="[view === 'about' ? 'is-active' : '']">About</a></li>
-                        <li><a @click="view = 'faq'" :class="[view === 'faq' ? 'is-active' : '']">FAQ</a></li>
+                        <li><a @click="view = 'about'" :class="[view === 'about' ? 'is-active' : '']">{{ $t('Splash.about') }}</a></li>
+                        <li><a @click="view = 'faq'" :class="[view === 'faq' ? 'is-active' : '']">{{ $t('Splash.faq') }}</a></li>
                         <li>
                             <ExternalLink url="https://github.com/ebkr/r2modmanPlus">
                                 <i class='fab fa-github fa-lg' aria-hidden='true' />
@@ -30,7 +30,7 @@
                             <div class='content'>
                                 <div class='container' v-if="view !== 'main'">
                                     <i class='fas fa-long-arrow-alt-left margin-right' />
-                                    <strong><a @click="view = 'main'">Go back</a></strong>
+                                    <strong><a @click="view = 'main'">{{ $t('Splash.go_back') }}</a></strong>
                                     <br /><br />
                                 </div>
                                 <div class='container' v-if="view === 'main'">
@@ -38,21 +38,19 @@
                                         <span class='icon margin-right margin-right--half-width'>
                                           <i class='fas fa-info-circle' />
                                         </span>
-                                        <strong>Did you know?</strong>
+                                        <strong>{{ $t('Splash.did_you_know') }}</strong>
                                     </p>
                                     <ul class='margin-right'>
                                         <li>
                                             <p>
-                                                You can use the "Install with Mod Manager" button on
-                                                <ExternalLink url="https://thunderstore.io">Thunderstore</ExternalLink>
-                                                with r2modman.
+                                                {{ $t('Splash.you_can_use_the_install_with_m') }}
+                                                <ExternalLink url="https://thunderstore.io">{{ $t('Splash.thunderstore') }}</ExternalLink>
+                                                {{ $t('Splash.with_r2modman') }}
                                             </p>
                                         </li>
                                         <li>
                                             <p>
-                                                You can export the selected profile from the settings screen as either a
-                                                file, or a code.
-                                                This makes it easy to share your mod list with friends!
+                                                {{ $t('Splash.you_can_export_the_selected_pr') }}
                                             </p>
                                         </li>
                                     </ul>
@@ -60,28 +58,24 @@
                                         <span class='icon margin-right margin-right--half-width'>
                                           <i class='fas fa-question-circle' />
                                         </span>
-                                        <strong>Having trouble?</strong>
+                                        <strong>{{ $t('Splash.having_trouble') }}</strong>
                                     </p>
-                                    <p>
-                                        Send a screenshot of the error in the Thunderstore modding discord server. Feel
-                                        free to ping me
-                                        if it doesn't get resolved.
-                                    </p>
+                                    <p> {{ $t('Splash.send_a_screenshot_of_the_error_1') }} {{ $t('Splash.thunderstore') }} {{ $t('Splash.modding_discord_server_feel_fr') }} </p>
                                 </div>
                                 <div class='container' v-else-if="view === 'about'">
                                     <p>
                                         <span class='icon margin-right margin-right--half-width'>
                                           <i class='fas fa-address-card' />
                                         </span>
-                                        <strong>About r2modman</strong>
+                                        <strong>{{ $t('Splash.about') }} {{ $t('Splash.r2modman') }}</strong>
                                     </p>
-                                    <p>It's created by Ebkr, using Quasar.</p>
-                                    <p>Quasar provides the following development tools that r2modman is built upon:</p>
+                                    <p>{{ $t('Splash.it_s_created_by_ebkr_using_qua') }}</p>
+                                    <p>{{ $t('Splash.quasar_provides_the_following') }}</p>
                                     <ul>
-                                        <li>Electron</li>
-                                        <li>Node</li>
-                                        <li>Vue</li>
-                                        <li>TypeScript</li>
+                                        <li>{{ $t('Splash.electron') }}</li>
+                                        <li>{{ $t('Splash.node') }}</li>
+                                        <li>{{ $t('Splash.vue') }}</li>
+                                        <li>{{ $t('Splash.typescript') }}</li>
                                     </ul>
                                 </div>
                                 <div class='container' v-else-if="view === 'faq'">
@@ -89,21 +83,19 @@
                                         <span class='icon margin-right margin-right--half-width'>
                                           <i class='fas fa-question-circle' />
                                         </span>
-                                        <strong>FAQ</strong>
+                                        <strong>{{ $t('Splash.faq') }}</strong>
                                     </p>
                                     <ul>
                                         <li>
-                                            <p><strong>How do I get started?</strong></p>
+                                            <p><strong>{{ $t('Splash.how_do_i_get_started') }}</strong></p>
                                             <p>
-                                                Head on over to the online tab, and download BepInEx and R2API.
+                                                {{ $t('Splash.head_on_over_to_the_online_tab') }}
                                             </p>
                                         </li>
                                         <li>
-                                            <p><strong>Starting the game with mods</strong></p>
+                                            <p><strong>{{ $t('Splash.starting_the_game_with_mods') }}</strong></p>
                                             <p>
-                                                You have to start the game from within the manager. Starting through
-                                                Steam will not work
-                                                without taking manual steps.
+                                                {{ $t('Splash.you_have_to_start_the_game_fro') }}
                                             </p>
                                         </li>
                                     </ul>

@@ -288,31 +288,31 @@ function onContentOrPathNotSet() {
 <template>
     <ModalCard id="import-profile-from-file-or-code-modal" v-if="activeStep === 'FILE_CODE_SELECTION'" key="FILE_CODE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title" v-if="importUpdateSelection === 'CREATE'">How are you importing a profile?</h2>
-            <h2 class="modal-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</h2>
+            <h2 class="modal-title" v-if="importUpdateSelection === 'CREATE'">{{ $t('ImportProfileModal.how_are_you_importing_a_profil') }}</h2>
+            <h2 class="modal-title" v-if="importUpdateSelection === 'UPDATE'">{{ $t('ImportProfileModal.how_are_you_updating_your_prof') }}</h2>
         </template>
         <template v-slot:footer>
             <button id="modal-import-profile-file"
                     class="button is-info"
-                    @click="onFileOrCodeSelect('FILE')">From file</button>
+                    @click="onFileOrCodeSelect('FILE')">{{ $t('ImportProfileModal.from_file') }}</button>
             <button id="modal-import-profile-code"
                     class="button is-primary"
-                    @click="onFileOrCodeSelect('CODE')">From code</button>
+                    @click="onFileOrCodeSelect('CODE')">{{ $t('ImportProfileModal.from_code') }}</button>
         </template>
     </ModalCard>
 
     <ModalCard id="import-profile-from-file-modal" v-else-if="activeStep === 'IMPORT_FILE'" key="IMPORT_FILE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title">Loading file</h2>
+            <h2 class="modal-title">{{ $t('ImportProfileModal.loading_file') }}</h2>
         </template>
         <template v-slot:footer>
-            <p>A file selection window will appear. Once a profile has been selected it may take a few moments.</p>
+            <p>{{ $t('ImportProfileModal.a_file_selection_window_will_a') }}</p>
         </template>
     </ModalCard>
 
     <ModalCard id="import-profile-from-code-modal" v-else-if="activeStep === 'IMPORT_CODE'" :can-close="!importViaCodeInProgress" key="IMPORT_CODE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title">Enter the profile code</h2>
+            <h2 class="modal-title">{{ $t('ImportProfileModal.enter_the_profile_code') }}</h2>
         </template>
         <template v-slot:body>
             <input
@@ -322,14 +322,12 @@ function onContentOrPathNotSet() {
                 class="input"
                 type="text"
                 ref="profileCodeInput"
-                placeholder="Enter the profile code"
+                :placeholder="$t('ImportProfileModal.enter_the_profile_code')"
                 autocomplete="off"
             />
             <br />
             <br />
-            <span class="tag is-danger" v-if="profileImportCode !== '' && !isProfileCodeValid">
-                Invalid code, check for typos
-            </span>
+            <span class="tag is-danger" v-if="profileImportCode !== '' && !isProfileCodeValid"> {{ $t('ImportProfileModal.invalid_code_check_for_typos') }} </span>
         </template>
         <template v-slot:footer>
             <button
@@ -344,17 +342,12 @@ function onContentOrPathNotSet() {
 
     <ModalCard id="import-profile-refresh-mod-list-modal" v-else-if="activeStep === 'REFRESH_MOD_LIST'" key="REFRESH_MOD_LIST" :is-active="isOpen" :can-close="false">
         <template v-slot:header>
-            <h2 class="modal-title">Refreshing online mod list</h2>
+            <h2 class="modal-title">{{ $t('ImportProfileModal.refreshing_online_mod_list') }}</h2>
         </template>
         <template v-slot:footer>
             <div>
-                <p>
-                    Some of the packages in the profile are not recognized by the mod manager.
-                    Refreshing the online mod list might fix the problem. Please wait...
-                </p>
-                <p v-if="store.getters['download/activeDownloadCount'] > 0" class="margin-top">
-                    Waiting for mod downloads to finish before refreshing the online mod list...
-                </p>
+                <p> {{ $t('ImportProfileModal.some_of_the_packages_in_the_pr') }} </p>
+                <p v-if="store.getters['download/activeDownloadCount'] > 0" class="margin-top"> {{ $t('ImportProfileModal.waiting_for_mod_downloads_to_f') }} </p>
                 <p v-else class="margin-top">
                     {{store.state.tsMods.thunderstoreModListUpdateStatus}}
                 </p>
@@ -364,19 +357,17 @@ function onContentOrPathNotSet() {
 
     <ModalCard id="review-profile-import-modal" v-else-if="activeStep === 'REVIEW_IMPORT'" key="REVIEW_IMPORT" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title">Packages to be installed</h2>
+            <h2 class="modal-title">{{ $t('ImportProfileModal.packages_to_be_installed') }}</h2>
         </template>
         <template v-slot:body>
             <div v-if="knownProfileMods.length === 0 || profileMods.unknown.length > 0" class="notification is-warning">
-                <p>These packages in the profile were not found on Thunderstore and will not be installed:</p>
+                <p>{{ $t('ImportProfileModal.these_packages_in_the_profile') }}</p>
                 <p class="margin-top">{{ unknownProfileModNames }}</p>
 
-                <p v-if="knownProfileMods.length === 0" class="margin-top">
-                    Ensure the profile is intended for the currently selected game.
-                </p>
+                <p v-if="knownProfileMods.length === 0" class="margin-top"> {{ $t('ImportProfileModal.ensure_the_profile_is_intended') }} </p>
             </div>
 
-            <p v-if="knownProfileMods.length > 0 && profileMods.unknown.length > 0" class="margin-bottom">These packages will be installed:</p>
+            <p v-if="knownProfileMods.length > 0 && profileMods.unknown.length > 0" class="margin-bottom">{{ $t('ImportProfileModal.these_packages_will_be_install') }}</p>
             <OnlineModList
                 v-if="knownProfileMods.length > 0"
                 :paged-mod-list="knownProfileMods"
@@ -392,7 +383,7 @@ function onContentOrPathNotSet() {
                     class="is-checkradio has-background-color"
                     type="checkbox"
                 >
-                <label for="partialImportAllowedCheckbox">I understand that some of the mods won't be imported</label>
+                <label for="partialImportAllowedCheckbox">{{ $t('ImportProfileModal.i_understand_that_some_of_the') }}</label>
             </div>
 
             <button
@@ -401,37 +392,31 @@ function onContentOrPathNotSet() {
                 class="button is-info"
                 :disabled="knownProfileMods.length === 0 || (profileMods.unknown.length > 0 && !isPartialImportAllowed)"
                 @click="onProfileReviewConfirmed"
-            >
-                Import
-            </button>
+            > {{ $t('ImportProfileModal.import') }} </button>
 
         </template>
     </ModalCard>
 
     <ModalCard id="import-or-update-profile-selection-modal" v-else-if="activeStep === 'IMPORT_UPDATE_SELECTION'" key="IMPORT_UPDATE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title">Are you going to be updating an existing profile or creating a new one?</h2>
+            <h2 class="modal-title">{{ $t('ImportProfileModal.are_you_going_to_be_updating_a') }}</h2>
         </template>
         <template v-slot:footer>
             <button id="modal-import-new-profile"
                     class="button is-info"
-                    @click="onCreateOrUpdateSelect('CREATE')">
-                Import new profile
-            </button>
+                    @click="onCreateOrUpdateSelect('CREATE')"> {{ $t('ImportProfileModal.import_new_profile') }} </button>
             <button id="modal-update-existing-profile"
                     class="button is-primary"
-                    @click="onCreateOrUpdateSelect('UPDATE')">
-                Update existing profile
-            </button>
+                    @click="onCreateOrUpdateSelect('UPDATE')"> {{ $t('ImportProfileModal.update_existing_profile') }} </button>
         </template>
     </ModalCard>
 
     <ModalCard id="import-add-profile-modal" v-else-if="activeStep === 'ADDING_PROFILE'" key="ADDING_PROFILE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 v-if="importUpdateSelection === 'CREATE'" class="modal-title">Import a profile</h2>
+            <h2 v-if="importUpdateSelection === 'CREATE'" class="modal-title">{{ $t('ImportProfileModal.import_a_profile') }}</h2>
         </template>
         <template v-slot:body v-if="importUpdateSelection === 'CREATE'">
-            <p>This profile will store its own mods independently from other profiles.</p>
+            <p>{{ $t('ImportProfileModal.this_profile_will_store_its_ow') }}</p>
             <br/>
             <input
                 v-model="targetProfileName"
@@ -443,33 +428,29 @@ function onContentOrPathNotSet() {
                 autocomplete="off"
             />
             <br/><br/>
-            <span class="tag is-dark" v-if="makeProfileNameSafe(targetProfileName) === ''">
-                Profile name required
-            </span>
+            <span class="tag is-dark" v-if="makeProfileNameSafe(targetProfileName) === ''"> {{ $t('ImportProfileModal.profile_name_required') }} </span>
             <span class="tag is-success" v-else-if="!doesProfileExist(targetProfileName)">
-                "{{makeProfileNameSafe(targetProfileName)}}" is available
-            </span>
+                "{{makeProfileNameSafe(targetProfileName)}}{{ $t('ImportProfileModal.is_available') }} </span>
             <span class="tag is-danger" v-else>
-                "{{makeProfileNameSafe(targetProfileName)}}" is either already in use, or contains invalid characters
-            </span>
+                "{{makeProfileNameSafe(targetProfileName)}}{{ $t('ImportProfileModal.is_either_already_in_use_or_c') }} </span>
         </template>
         <template v-slot:body v-else-if="importUpdateSelection === 'UPDATE'">
             <div class="notification is-warning">
-                <p>All contents of the profile will be overwritten with the contents of the code/file.</p>
+                <p>{{ $t('ImportProfileModal.all_contents_of_the_profile_wi') }}</p>
             </div>
-            <p>Select a profile below:</p>
+            <p>{{ $t('ImportProfileModal.select_a_profile_below') }}</p>
             <br/>
             <select class="select" v-model="targetProfileName">
                 <option v-for="profile of profileList" :key="profile">{{ profile }}</option>
             </select>
         </template>
         <template v-slot:footer v-if="importUpdateSelection === 'CREATE'">
-            <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(targetProfileName)">Create</button>
-            <button id="modal-create-profile" class="button is-info" v-else @click="onImportTargetSelected()">Create</button>
+            <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(targetProfileName)">{{ $t('ImportProfileModal.create') }}</button>
+            <button id="modal-create-profile" class="button is-info" v-else @click="onImportTargetSelected()">{{ $t('ImportProfileModal.create') }}</button>
         </template>
         <template v-slot:footer v-else-if="importUpdateSelection === 'UPDATE'">
-            <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(targetProfileName)">Update profile: {{ targetProfileName }}</button>
-            <button id="modal-update-profile" class="button is-info" v-else @click="onImportTargetSelected()">Update profile: {{ targetProfileName }}</button>
+            <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(targetProfileName)">{{ $t('ImportProfileModal.update_profile') }} {{ targetProfileName }}</button>
+            <button id="modal-update-profile" class="button is-info" v-else @click="onImportTargetSelected()">{{ $t('ImportProfileModal.update_profile') }} {{ targetProfileName }}</button>
         </template>
     </ModalCard>
 
@@ -478,10 +459,7 @@ function onContentOrPathNotSet() {
             <h2 class="modal-title">{{importPhaseDescription}}</h2>
         </template>
         <template v-slot:footer>
-            <p>
-                This may take a while, as files are being downloaded, extracted, and copied.
-                <br><br>
-                Please do not close {{appName}}.
+            <p> {{ $t('ImportProfileModal.this_may_take_a_while_as_files') }} <br><br> {{ $t('ImportProfileModal.please_do_not_close') }} {{appName}}.
             </p>
         </template>
     </ModalCard>

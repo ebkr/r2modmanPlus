@@ -194,12 +194,12 @@ function dependencyStringToModName(x: string) {
                 <span v-if="isDeprecated"
                     class="tag is-danger margin-right margin-right--half-width"
                     v-tooltip.right="'This mod is deprecated and could be broken'">
-                    Deprecated
+                    {{ $t('LocalModCard.deprecated') }}
                 </span>
                 <span v-if="!mod.isEnabled()"
                     class="tag is-warning margin-right margin-right--half-width"
                     v-tooltip.right="'This mod will not be used in-game'">
-                    Disabled
+                    {{ $t('LocalModCard.disabled') }}
                 </span>
                 <span class="card-title selectable">
                     <component :is="mod.isEnabled() ? 'span' : 'strike'" class="selectable">
@@ -207,8 +207,7 @@ function dependencyStringToModName(x: string) {
                         <span class="selectable card-byline">
                             v{{mod.getVersionNumber()}}
                         </span>
-                        <span :class="`card-byline ${mod.isEnabled() && 'selectable'}`">
-                            by {{mod.getAuthorName()}}
+                        <span :class="`card-byline ${mod.isEnabled() && 'selectable'}`"> {{ $t('LocalModCard.by') }} {{mod.getAuthorName()}}
                         </span>
                     </component>
                 </span>
@@ -216,7 +215,7 @@ function dependencyStringToModName(x: string) {
         </template>
 
         <template v-slot:description>
-            <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0"><strong>Installed on:</strong> {{ getReadableDate(mod.getInstalledAtTime()) }}</p>
+            <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0"><strong>{{ $t('LocalModCard.installed_on') }}</strong> {{ getReadableDate(mod.getInstalledAtTime()) }}</p>
         </template>
 
         <!-- Show icon button row even when card is collapsed -->
@@ -248,40 +247,25 @@ function dependencyStringToModName(x: string) {
         </template>
 
         <!-- Show bottom button row -->
-        <button @click="uninstallMod()" class='button'>
-            Uninstall
-        </button>
+        <button @click="uninstallMod()" class='button'> {{ $t('LocalModCard.uninstall') }} </button>
 
-        <button v-if="canBeDisabled && mod.isEnabled()" @click="disableMod()" class='button'>
-            Disable
-        </button>
-        <button v-else-if="canBeDisabled && !mod.isEnabled()" @click="enableMod(mod)" class='button' >
-            Enable
-        </button>
+        <button v-if="canBeDisabled && mod.isEnabled()" @click="disableMod()" class='button'> {{ $t('LocalModCard.disable') }} </button>
+        <button v-else-if="canBeDisabled && !mod.isEnabled()" @click="enableMod(mod)" class='button' > {{ $t('LocalModCard.enable') }} </button>
 
-        <button @click="viewAssociatedMods()" class='button'>
-            Associated
-        </button>
+        <button @click="viewAssociatedMods()" class='button'> {{ $t('LocalModCard.associated') }} </button>
 
-        <ExternalLink :url="mod.getWebsiteUrl()" class="button">
-            Website
-            <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
+        <ExternalLink :url="mod.getWebsiteUrl()" class="button"> {{ $t('LocalModCard.website') }} <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
         </ExternalLink>
 
-        <button v-if="!isLatestVersion" @click="updateMod()" class='button'>
-            Update
-        </button>
+        <button v-if="!isLatestVersion" @click="updateMod()" class='button'> {{ $t('LocalModCard.update') }} </button>
 
         <button v-if="missingDependencies.length"
             @click="downloadDependency(missingDependencies[0])"
-            class='button'>
-            Download dependency
-        </button>
+            class='button'> {{ $t('LocalModCard.download_dependency') }} </button>
 
         <button v-if="disabledDependencies.length"
             @click="enableMod(disabledDependencies[0])"
-            class='button'>
-            Enable {{disabledDependencies[0].getDisplayName()}}
+            class='button'> {{ $t('LocalModCard.enable') }} {{disabledDependencies[0].getDisplayName()}}
         </button>
 
         <DonateButton v-if="tsMod" :mod="tsMod"/>

@@ -1,13 +1,11 @@
 <template>
     <ModalCard id="download-mod-version-select-modal" :is-active="isOpen" :can-close="true" v-if="thunderstoreMod !== null" @close-modal="closeModal()">
         <template v-slot:header>
-            <h2 class='modal-title' v-if="thunderstoreMod !== null">
-                Select a version of {{thunderstoreMod.getName()}} to download
-            </h2>
+            <h2 class='modal-title' v-if="thunderstoreMod !== null"> {{ $t('DownloadModVersionSelectModal.select_a_version_of') }} {{thunderstoreMod.getName()}} {{ $t('DownloadModVersionSelectModal.to_download') }} </h2>
         </template>
         <template v-slot:body>
-            <p>It's recommended to select the latest version of all mods.</p>
-            <p>Using outdated versions may cause problems.</p>
+            <p>{{ $t('DownloadModVersionSelectModal.it_s_recommended_to_select_the') }}</p>
+            <p>{{ $t('DownloadModVersionSelectModal.using_outdated_versions_may_ca') }}</p>
             <br/>
             <div class="columns is-vcentered">
                 <template v-if="currentVersion !== null">
@@ -30,23 +28,18 @@
                     </select>
                 </div>
                 <div class="column is-narrow">
-                    <span class="tag is-dark" v-if='selectedVersion === null'>
-                        You need to select a version
-                    </span>
+                    <span class="tag is-dark" v-if='selectedVersion === null'> {{ $t('DownloadModVersionSelectModal.you_need_to_select_a_version') }} </span>
                     <span class="tag is-success" v-else-if='recommendedVersion === selectedVersion'>
-                        {{selectedVersion}} is the recommended version
-                    </span>
+                        {{selectedVersion}} {{ $t('DownloadModVersionSelectModal.is_the_recommended_version') }} </span>
                     <span class="tag is-success" v-else-if='versionNumbers[0] === selectedVersion'>
-                        {{selectedVersion}} is the latest version
-                    </span>
+                        {{selectedVersion}} {{ $t('DownloadModVersionSelectModal.is_the_latest_version') }} </span>
                     <span class="tag is-danger" v-else-if='versionNumbers[0] !== selectedVersion'>
-                        {{selectedVersion}} is an outdated version
-                    </span>
+                        {{selectedVersion}} {{ $t('DownloadModVersionSelectModal.is_an_outdated_version') }} </span>
                 </div>
             </div>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="downloadMod">Download with dependencies</button>
+            <button class="button is-info" @click="downloadMod">{{ $t('DownloadModVersionSelectModal.download_with_dependencies') }}</button>
         </template>
     </ModalCard>
 </template>

@@ -32,33 +32,33 @@ async function updateAllToLatestVersion() {
 <template>
     <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-if="modsWithUpdates.length === 0" @close-modal="closeModal()">
         <template v-slot:header>
-            <h2 class='modal-title'>No mods to update</h2>
+            <h2 class='modal-title'>{{ $t('UpdateAllInstalledModsModal.no_mods_to_update') }}</h2>
         </template>
         <template v-slot:body>
-            <p>Either all installed mods are up to date, or there are no installed mods.</p>
+            <p>{{ $t('UpdateAllInstalledModsModal.either_all_installed_mods_are') }}</p>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="closeModal()">Close</button>
+            <button class="button is-info" @click="closeModal()">{{ $t('UpdateAllInstalledModsModal.close') }}</button>
         </template>
     </ModalCard>
     <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-else @close-modal="closeModal()">
         <template v-slot:header>
-            <h2 class='modal-title'>Update all installed mods</h2>
+            <h2 class='modal-title'>{{ $t('UpdateAllInstalledModsModal.update_all_installed_mods') }}</h2>
         </template>
         <template v-slot:body>
-            <p>All installed mods will be updated to their latest versions.</p>
-            <p>Any missing dependencies will be installed.</p>
-            <p>The following mods will be downloaded and installed:</p>
+            <p>{{ $t('UpdateAllInstalledModsModal.all_installed_mods_will_be_upd') }}</p>
+            <p>{{ $t('UpdateAllInstalledModsModal.any_missing_dependencies_will') }}</p>
+            <p>{{ $t('UpdateAllInstalledModsModal.the_following_mods_will_be_dow') }}</p>
             <br/>
             <ul class="list">
                 <li class="list-item" v-for='(mod, index) in modsWithUpdates'
                     :key='`to-update-${index}-${mod.getFullName()}`'>
-                    {{mod.getName()}} will be updated to: {{mod.getLatestVersion()}}
+                    {{mod.getName()}} {{ $t('UpdateAllInstalledModsModal.will_be_updated_to') }} {{mod.getLatestVersion()}}
                 </li>
             </ul>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="updateAllToLatestVersion()">Update all</button>
+            <button class="button is-info" @click="updateAllToLatestVersion()">{{ $t('UpdateAllInstalledModsModal.update_all') }}</button>
         </template>
     </ModalCard>
 </template>

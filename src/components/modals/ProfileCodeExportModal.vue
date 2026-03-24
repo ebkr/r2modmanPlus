@@ -17,17 +17,13 @@ function closeModal() {
 <template>
     <ModalCard id="profile-exported-modal" :is-active="isOpen" @close-modal="closeModal" :can-close="true">
         <template v-slot:header>
-            <h2 class='modal-title'>Profile exported</h2>
+            <h2 class='modal-title'>{{ $t('ProfileCodeExportModal.profile_exported') }}</h2>
         </template>
         <template v-slot:body>
-            <p>Your code: <strong>{{exportCode}}</strong> has been copied to your clipboard. Just give it to a
-                friend!
-            </p>
+            <p>{{ $t('ProfileCodeExportModal.your_code') }} <strong>{{exportCode}}</strong> {{ $t('ProfileCodeExportModal.has_been_copied_to_your_clipbo') }} </p>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="closeModal">
-                Done
-            </button>
+            <button class="button is-info" @click="closeModal"> {{ $t('ProfileCodeExportModal.done') }} </button>
         </template>
     </ModalCard>
 

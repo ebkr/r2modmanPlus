@@ -34,19 +34,19 @@ async function removeProfile() {
     <ModalCard id="delete-profile-modal" v-if="isOpen" :is-active="isOpen" @close-modal="closeDeleteProfileModal">
 
         <template v-slot:header>
-            <h2 class="modal-title">Delete profile</h2>
+            <h2 class="modal-title">{{ $t('DeleteProfileModal.delete_profile') }}</h2>
         </template>
         <template v-slot:body>
-            <p>This will remove all mods, and their config files, installed within this profile.</p>
-            <p>If this was an accident, click either the darkened area, or the cross inside located in the top right.</p>
-            <p>Are you sure you'd like to delete this profile?</p>
+            <p>{{ $t('DeleteProfileModal.this_will_remove_all_mods_and') }}</p>
+            <p>{{ $t('DeleteProfileModal.if_this_was_an_accident_click') }}</p>
+            <p>{{ $t('DeleteProfileModal.are_you_sure_you_d_like_to_del') }}</p>
         </template>
         <template v-slot:footer>
             <button
                 :disabled="deletingInProgress"
                 class="button is-danger"
                 @click="removeProfile()"
-            >Delete profile</button>
+            >{{ $t('DeleteProfileModal.delete_profile') }}</button>
         </template>
 
     </ModalCard>

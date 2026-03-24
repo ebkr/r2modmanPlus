@@ -194,34 +194,33 @@ function dragEnd(event: DragEvent) {
                 <h1 class="title">
                     {{ mod.getName() }}
                 </h1>
-                <h2 class="subtitle">
-                    By {{ mod.getOwner() }}
+                <h2 class="subtitle"> {{ $t('OnlinePreviewPanel.by') }} {{ mod.getOwner() }}
                 </h2>
                 <details id="package-preview-details" open="true">
-                    <summary class='card-timestamp non-selectable'>Package information</summary>
+                    <summary class='card-timestamp non-selectable'>{{ $t('OnlinePreviewPanel.package_information') }}</summary>
                     <div class="notification is-warning margin-top" v-if="isNsfw">
-                        <p>This mod may contain potentially explicit material</p>
+                        <p>{{ $t('OnlinePreviewPanel.this_mod_may_contain_potential') }}</p>
                     </div>
                     <div class="margin-top margin-bottom">
                         <p class="description">{{ mod.getDescription() }}</p>
                     </div>
-                    <p class='card-timestamp'><strong>Downloads:</strong> {{mod.getDownloadCount()}}</p>
-                    <p class='card-timestamp'><strong>Likes:</strong> {{mod.getRating()}}</p>
-                    <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(mod.getDateUpdated())}}</p>
-                    <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(mod)}}</p>
+                    <p class='card-timestamp'><strong>{{ $t('OnlinePreviewPanel.downloads') }}</strong> {{mod.getDownloadCount()}}</p>
+                    <p class='card-timestamp'><strong>{{ $t('OnlinePreviewPanel.likes') }}</strong> {{mod.getRating()}}</p>
+                    <p class='card-timestamp'><strong>{{ $t('OnlinePreviewPanel.last_updated') }}</strong> {{getReadableDate(mod.getDateUpdated())}}</p>
+                    <p class='card-timestamp'><strong>{{ $t('OnlinePreviewPanel.categories') }}</strong> {{getReadableCategories(mod)}}</p>
                 </details>
             </div>
             <div class="sticky-top sticky-top--no-shadow sticky-top--inherit no-margin sticky-top--no-padding">
                 <div class="button-group">
-                    <button class="button is-info" @click="showDownloadModal(mod)">Download</button>
-                    <ExternalLink tag="button" class="button" :url="props.mod.getPackageUrl()">View online</ExternalLink>
-                    <ExternalLink v-if="props.mod.getDonationLink()" tag="button" class="button" :url="props.mod.getDonationLink()">Donate</ExternalLink>
+                    <button class="button is-info" @click="showDownloadModal(mod)">{{ $t('OnlinePreviewPanel.download') }}</button>
+                    <ExternalLink tag="button" class="button" :url="props.mod.getPackageUrl()">{{ $t('OnlinePreviewPanel.view_online') }}</ExternalLink>
+                    <ExternalLink v-if="props.mod.getDonationLink()" tag="button" class="button" :url="props.mod.getDonationLink()">{{ $t('OnlinePreviewPanel.donate') }}</ExternalLink>
                 </div>
                 <div class="tabs margin-top">
                     <ul>
-                        <li :class="{'is-active': activeTab === 'README'}"><a @click="setActiveTab('README')">README</a></li>
-                        <li :class="{'is-active': activeTab === 'CHANGELOG'}"><a @click="setActiveTab('CHANGELOG')">CHANGELOG</a></li>
-                        <li :class="{'is-active': activeTab === 'Dependencies'}"><a @click="setActiveTab('Dependencies')">Dependencies ({{ dependencies.length }})</a></li>
+                        <li :class="{'is-active': activeTab === 'README'}"><a @click="setActiveTab('README')">{{ $t('OnlinePreviewPanel.readme') }}</a></li>
+                        <li :class="{'is-active': activeTab === 'CHANGELOG'}"><a @click="setActiveTab('CHANGELOG')">{{ $t('OnlinePreviewPanel.changelog') }}</a></li>
+                        <li :class="{'is-active': activeTab === 'Dependencies'}"><a @click="setActiveTab('Dependencies')">{{ $t('OnlinePreviewPanel.dependencies') }}{{ dependencies.length }})</a></li>
                     </ul>
                 </div>
             </div>
@@ -229,7 +228,7 @@ function dragEnd(event: DragEvent) {
                 <template v-if="loadingPanel">
                     <div class="notification">
                         <div class="container">
-                            <p>Fetching {{ activeTab }} for {{ props.mod.getFullName() }}</p>
+                            <p>{{ $t('OnlinePreviewPanel.fetching') }} {{ activeTab }} {{ $t('OnlinePreviewPanel.for') }} {{ props.mod.getFullName() }}</p>
                         </div>
                     </div>
                 </template>
@@ -240,7 +239,7 @@ function dragEnd(event: DragEvent) {
                     <template v-else>
                         <div class="notification">
                             <div class="container">
-                                <p>{{ props.mod.getName() }} has no dependencies</p>
+                                <p>{{ props.mod.getName() }} {{ $t('OnlinePreviewPanel.has_no_dependencies') }}</p>
                             </div>
                         </div>
                     </template>
@@ -248,7 +247,7 @@ function dragEnd(event: DragEvent) {
                 <template v-else-if="activeTab === 'README'">
                     <template v-if="readmeError !== null">
                         <div class="notification is-danger">
-                            <h2 class="title is-6">Unable to fetch README for {{ props.mod.getFullName() }}</h2>
+                            <h2 class="title is-6">{{ $t('OnlinePreviewPanel.unable_to_fetch_readme_for') }} {{ props.mod.getFullName() }}</h2>
                             <p>{{ readmeError.message }}</p>
                         </div>
                     </template>
@@ -259,7 +258,7 @@ function dragEnd(event: DragEvent) {
                 <template v-else-if="activeTab === 'CHANGELOG'">
                     <template v-if="changelogError !== null">
                         <div class="notification is-danger">
-                            <h2 class="title is-6">Unable to fetch CHANGELOG for {{ props.mod.getFullName() }}</h2>
+                            <h2 class="title is-6">{{ $t('OnlinePreviewPanel.unable_to_fetch_changelog_for') }} {{ props.mod.getFullName() }}</h2>
                             <p>{{ changelogError.message }}</p>
                         </div>
                     </template>

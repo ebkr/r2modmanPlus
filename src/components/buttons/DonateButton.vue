@@ -4,7 +4,7 @@
           class="button"
           v-tooltip.top="{content: 'Donate to the mod author', distance: 10}">
         <i class='fas fa-heart margin-right margin-right--half-width'></i>
-        Donate
+        {{ $t('DonateButton.donate') }}
     </ExternalLink>
 </template>
 

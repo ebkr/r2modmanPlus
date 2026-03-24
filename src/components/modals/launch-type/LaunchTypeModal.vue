@@ -49,49 +49,37 @@ async function updateAndClose() {
 <template>
     <ModalCard id="launch-type-modal" v-show="LaunchTypeModalOpen" :is-active="LaunchTypeModalOpen" :can-close="true" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title">Set launch behaviour</h2>
+            <h2 class="modal-title">{{ $t('LaunchTypeModal.set_launch_behaviour') }}</h2>
         </template>
         <template v-slot:body>
           <div>
               <input id="launch-type-option-auto" type="radio" name="launch-type-option" :value="LaunchType.AUTO" v-model="launchOption"/>
-              <label for="launch-type-option-auto"><span class="margin-right margin-right--half-width"/>Auto</label>
+              <label for="launch-type-option-auto"><span class="margin-right margin-right--half-width"/>{{ $t('LaunchTypeModal.auto') }}</label>
           </div>
           <div>
               <input id="launch-type-option-native" type="radio" name="launch-type-option" :value="LaunchType.NATIVE" v-model="launchOption"/>
-              <label for="launch-type-option-native"><span class="margin-right margin-right--half-width"/>Native</label>
+              <label for="launch-type-option-native"><span class="margin-right margin-right--half-width"/>{{ $t('LaunchTypeModal.native') }}</label>
           </div>
           <div>
               <input id="launch-type-option-proton" type="radio" name="launch-type-option" :value="LaunchType.PROTON" v-model="launchOption"/>
-              <label for="launch-type-option-proton"><span class="margin-right margin-right--half-width"/>Proton</label>
+              <label for="launch-type-option-proton"><span class="margin-right margin-right--half-width"/>{{ $t('LaunchTypeModal.proton') }}</label>
           </div>
-          <p v-if="launchOption === LaunchType.AUTO" class="margin-top">
-              By selecting <strong>Auto</strong> we have determined that {{ activeGame.displayName }} will be launched under
-              <strong class="tag">{{ determinedLaunchType }}</strong>
-              mode.
-          </p>
+          <p v-if="launchOption === LaunchType.AUTO" class="margin-top"> {{ $t('LaunchTypeModal.by_selecting') }} <strong>{{ $t('LaunchTypeModal.auto') }}</strong> {{ $t('LaunchTypeModal.we_have_determined_that') }} {{ activeGame.displayName }} {{ $t('LaunchTypeModal.will_be_launched_under') }} <strong class="tag">{{ determinedLaunchType }}</strong> {{ $t('LaunchTypeModal.mode') }} </p>
           <div v-if="determinedLaunchType === LaunchType.NATIVE && !wrapperProvided" class="margin-top">
-            <p>
-              We were unable to determine if the required wrapper arguments have been set.
-            </p>
-            <p>
-              If you have not yet done this manually, please add the following launch arguments to the game's properties on Steam:
-            </p>
+            <p> {{ $t('LaunchTypeModal.we_were_unable_to_determine_if') }} </p>
+            <p> {{ $t('LaunchTypeModal.if_you_have_not_yet_done_this') }} </p>
             <div>
               <code>
                 {{ launchArgs }}
               </code>
             </div>
             <div class="margin-top">
-              <CopyToClipboardButton :copy-value="launchArgs" id="launch-type-modal-copy-button">
-                Copy launch arguments
-              </CopyToClipboardButton>
+              <CopyToClipboardButton :copy-value="launchArgs" id="launch-type-modal-copy-button"> {{ $t('LaunchTypeModal.copy_launch_arguments') }} </CopyToClipboardButton>
             </div>
           </div>
         </template>
         <template v-slot:footer>
-            <button id="launch-type-modal-update-button" class="button is-info" @click="updateAndClose">
-                Update
-            </button>
+            <button id="launch-type-modal-update-button" class="button is-info" @click="updateAndClose"> {{ $t('LaunchTypeModal.update') }} </button>
         </template>
     </ModalCard>
 </template>

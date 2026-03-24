@@ -65,17 +65,14 @@ function onClose() {
 <template>
     <ModalCard id="disable-mod-modal" v-if="isOpen" :is-active="isOpen" :can-close="!isLocked" @close-modal="onClose">
         <template v-slot:header>
-            <h2 class="modal-title">Disabling {{mod.getName()}}</h2>
+            <h2 class="modal-title">{{ $t('DisableModModal.disabling') }} {{mod.getName()}}</h2>
         </template>
         <template v-slot:body>
             <div class="max-height-100 is-flex is-flex-direction-column">
                 <div class='notification is-warning'>
-                    <p>
-                        Other mods depend on this mod. Select <strong>Disable all</strong>
-                        to disable dependent mods, otherwise they may cause errors.
-                    </p>
+                    <p> {{ $t('DisableModModal.other_mods_depend_on_this_mod') }} <strong>{{ $t('DisableModModal.disable_all') }}</strong> {{ $t('DisableModModal.to_disable_dependent_mods_othe') }} </p>
                 </div>
-                <h3 class="subtitle mb-3">Mods to be disabled</h3>
+                <h3 class="subtitle mb-3">{{ $t('DisableModModal.mods_to_be_disabled') }}</h3>
                 <div class="is-flex-shrink-1 overflow-auto code-snippet">
                     <ul class="list">
                         <li class="list-item">{{mod.getName()}}</li>
@@ -86,7 +83,7 @@ function onClose() {
                     </ul>
                 </div>
                 <div v-if="isLocked" class="mt-3">
-                    <h3 class="subtitle mb-3">Disabling {{modBeingDisabled}}</h3>
+                    <h3 class="subtitle mb-3">{{ $t('DisableModModal.disabling') }} {{modBeingDisabled}}</h3>
                     <progress class="progress is-small is-info"/>
                 </div>
             </div>
@@ -94,14 +91,10 @@ function onClose() {
         <template v-slot:footer>
             <button class="button is-info"
                     :disabled="isLocked"
-                    @click="disableModIncludingDependants">
-                Disable all (recommended)
-            </button>
+                    @click="disableModIncludingDependants"> {{ $t('DisableModModal.disable_all_recommended') }} </button>
             <button class="button"
                     :disabled="isLocked"
-                    @click="disableModExcludingDependants">
-                Disable {{mod.getName()}} only
-            </button>
+                    @click="disableModExcludingDependants"> {{ $t('DisableModModal.disable') }} {{mod.getName()}} {{ $t('DisableModModal.only') }} </button>
         </template>
     </ModalCard>
 </template>
