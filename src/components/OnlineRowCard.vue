@@ -5,8 +5,8 @@
                 <header class='card-header is-shadowless' :id='id'>
                     <div class='card-header-icon mod-logo' v-if="image !== ''">
                         <figure class='image is-48x48 image-parent'>
-                            <img :src='image' alt='Mod Logo' class='image-overlap'/>
-                            <img v-if="store.state.profile.funkyMode" src='../assets/funky_mode.png' alt='Mod Logo' class='image-overlap'/>
+                            <img :src='image' :alt="$t('OnlineRowCard.mod_logo')" class='image-overlap'/>
+                            <img v-if="store.state.profile.funkyMode" src='../assets/funky_mode.png' :alt="$t('OnlineRowCard.mod_logo')" class='image-overlap'/>
                         </figure>
                     </div>
                     <span ref="title" class='card-header-title'><slot name='title'></slot></span>

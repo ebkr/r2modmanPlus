@@ -1,13 +1,13 @@
 <template>
     <div id="download-monitor-view">
-        <Hero title="Downloads" subtitle="Monitor progress of downloads" hero-type="primary"/>
+        <Hero :title="$t('DownloadMonitor.downloads')" subtitle="Monitor progress of downloads" hero-type="primary"/>
         <template v-if="store.state.download.allDownloads.length === 0">
             <div class='text-center top'>
                 <div class="margin-right">
                     <br/>
-                    <h3 class='title is-4'>You don't have anything downloading.</h3>
+                    <h3 class='title is-4'>{{ $t('DownloadMonitor.you_don_t_have_anything_downlo') }}</h3>
                     <h4 class='subtitle is-5'>
-                        Click <router-link :to="{name: 'manager.online'}">here</router-link> to download something.
+                        {{ $t('DownloadMonitor.click') }} <router-link :to="{name: 'manager.online'}">{{ $t('DownloadMonitor.here') }}</router-link> {{ $t('DownloadMonitor.to_download_something') }}
                     </h4>
                 </div>
             </div>
@@ -18,8 +18,7 @@
                     class="button ghost"
                     @click="store.commit('download/removeAllInactive')"
                 >
-                    <i class="fas fa-times mr-2" />Clear finished
-                </button>
+                    <i class="fas fa-times mr-2" />{{ $t('DownloadMonitor.clear_finished') }} </button>
             </div>
             <div v-for="(downloadObject, index) of store.getters['download/profileDownloadsNewestFirst']" :key="`download-progress-${index}`">
                 <div class="container">
@@ -30,9 +29,7 @@
                             <div class="row" v-if="downloadObject.status === DownloadStatusEnum.FAILED">
                                 <div class="col">
                                     <p>
-                                        <i class="fas fa-exclamation-triangle" />
-                                        Download failed
-                                    </p>
+                                        <i class="fas fa-exclamation-triangle" /> {{ $t('DownloadMonitor.download_failed') }} </p>
                                     <Progress
                                         :max='100'
                                         :value='100'
@@ -44,9 +41,7 @@
                             <div class="row" v-else-if="downloadObject.status === DownloadStatusEnum.INSTALLED">
                                 <div class="col">
                                     <p>
-                                        <i class="fas fa-check" />
-                                        Download complete
-                                    </p>
+                                        <i class="fas fa-check" /> {{ $t('DownloadMonitor.download_complete') }} </p>
                                     <Progress
                                         :max='100'
                                         :value='100'
@@ -59,16 +54,13 @@
 
                                 <div class="col">
                                     <p v-if="downloadObject.status === DownloadStatusEnum.DOWNLOADING">
-                                        <i class="fas fa-download" />
-                                        Downloading: {{ downloadObject.modName }}
+                                        <i class="fas fa-download" /> {{ $t('DownloadMonitor.downloading') }} {{ downloadObject.modName }}
                                     </p>
                                     <p v-else>
-                                        <i class="fas fa-box-open" />
-                                        Extracting: {{ downloadObject.modName }}
+                                        <i class="fas fa-box-open" /> {{ $t('DownloadMonitor.extracting') }} {{ downloadObject.modName }}
                                     </p>
                                     <p>
-                                        {{downloadObject.downloadProgress}}% of
-                                        {{FileUtils.humanReadableSize(downloadObject.totalDownloadSize)}}
+                                        {{downloadObject.downloadProgress}}{{ $t('DownloadMonitor.of') }} {{FileUtils.humanReadableSize(downloadObject.totalDownloadSize)}}
                                     </p>
                                     <Progress
                                         :max='100'
@@ -79,10 +71,8 @@
 
                                 <div class="col">
                                     <p>
-                                        <i class="fas fa-cog" />
-                                        Installing:
-                                    </p>
-                                    <p>Waiting for download to finish</p>
+                                        <i class="fas fa-cog" /> {{ $t('DownloadMonitor.installing') }} </p>
+                                    <p>{{ $t('DownloadMonitor.waiting_for_download_to_finish') }}</p>
                                     <Progress
                                         :max='100'
                                         :value='0'
@@ -94,18 +84,15 @@
                             <div v-else class="row">
                                 <div class="col">
                                     <p>
-                                        <i class="fas fa-check" />
-                                        Download complete
-                                    </p>
-                                    <p>100% of {{FileUtils.humanReadableSize(downloadObject.totalDownloadSize)}}</p>
+                                        <i class="fas fa-check" /> {{ $t('DownloadMonitor.download_complete') }} </p>
+                                    <p>{{ $t('DownloadMonitor.100_of') }} {{FileUtils.humanReadableSize(downloadObject.totalDownloadSize)}}</p>
                                     <Progress :max='100' :value='100' :className="['is-success']" />
                                 </div>
                                 <div class="col">
                                     <p>
-                                        <i class="fas fa-cog" spin />
-                                        Installing: {{ downloadObject.modName }}
+                                        <i class="fas fa-cog" spin /> {{ $t('DownloadMonitor.installing') }} {{ downloadObject.modName }}
                                     </p>
-                                    <p>{{Math.min(Math.floor(downloadObject.installProgress), 100)}}% complete</p>
+                                    <p>{{Math.min(Math.floor(downloadObject.installProgress), 100)}}{{ $t('DownloadMonitor.complete') }}</p>
                                     <Progress
                                         :max='100'
                                         :value='downloadObject.installProgress'

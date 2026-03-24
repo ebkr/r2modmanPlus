@@ -1,6 +1,6 @@
 <template>
     <div id="help-view">
-        <Hero title="Help" subtitle="Common problems and their potential solutions" hero-type="primary"/>
+        <Hero :title="$t('Help.help')" subtitle="Common problems and their potential solutions" hero-type="primary"/>
         <div
             class="tabs sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding has-background-">
             <ul>
@@ -14,41 +14,36 @@
         <div class="margin-right">
             <br/>
             <div ref="General" v-if="activeTab === 'General'">
-                <h2 class="title is-5">Getting started with installing mods</h2>
+                <h2 class="title is-5">{{ $t('Help.getting_started_with_installin') }}</h2>
                 <p>
-                    Go to the "Online" tab, find a mod, and hit download.
-                    It'll also download the dependencies saving you time.
+                    {{ $t('Help.go_to_the_online_tab_find_a_mo') }}
                 </p>
-                <p>Once you've installed the mods you'd like, just click <strong>Start modded</strong> in the top left.</p>
+                <p>{{ $t('Help.once_you_ve_installed_the_mods') }} <strong>{{ $t('Help.start_modded') }}</strong> {{ $t('Help.in_the_top_left') }}</p>
                 <hr/>
-                <h2 class='title is-5'>Slow game with mods / stuttering?</h2>
+                <h2 class='title is-5'>{{ $t('Help.slow_game_with_mods_stuttering') }}</h2>
                 <p>
-                    This is likely due to a mod throwing errors.
-                    One solution is to attempt to disable half of your mods and check to see if the issue persists.
+                    {{ $t('Help.this_is_likely_due_to_a_mod_th') }}
                     <br/>
-                    If the issue still remains then disable another half. Continue doing this until the issue is
-                    solved.
+                    {{ $t('Help.if_the_issue_still_remains_the') }}
                     <br/><br/>
-                    In the case of stuttering there may be optimization mods to help with this.
+                    {{ $t('Help.in_the_case_of_stuttering_ther') }}
                 </p>
                 <hr/>
-                <h2 class='title is-5'>Dedicated servers</h2>
+                <h2 class='title is-5'>{{ $t('Help.dedicated_servers') }}</h2>
                 <p>
-                    Dedicated servers aren't directly supported through the manager however a solution is to instead
-                    copy the contents of your profile folder into your dedicated server folder yourself.
-                </p>
+                    {{ $t('Help.dedicated_servers') }} {{ $t('Help.aren_t_directly_supported_thro') }} </p>
                 <hr/>
-                <h2 class='title is-5'>Launching the game from outside the mod manager</h2>
+                <h2 class='title is-5'>{{ $t('Help.launching_the_game_from_outsid') }}</h2>
                 <p>
-                    By design your experience by starting the game through Steam will be vanilla (un-modded).
+                    {{ $t('Help.by_design_your_experience_by_s') }}
                     <br/><br/>
-                    You will need to place the corresponding argument in your platform's relevant launch parameter area.
+                    {{ $t('Help.you_will_need_to_place_the_cor') }}
                     <br/>
-                    For Steam, this would be located in the game's properties.
+                    {{ $t('Help.for_steam_this_would_be_locate') }}
                     <br/><br/>
-                    Your current argument would be:
+                    {{ $t('Help.your_current_argument_would_be') }}
                     <code v-if="launchArgs.length > 0">{{ launchArgs }}</code>
-                    <code v-else>These parameters will be available after installing BepInEx.</code>
+                    <code v-else>{{ $t('Help.these_parameters_will_be_avail') }}</code>
                     <br/>
                 </p>
                 <br/>
@@ -56,44 +51,38 @@
                     <p>
                         <button class="button" @click="copyLaunchArgsToClipboard" v-if="!copyingDoorstopText">
                             <i class="fas fa-clipboard"></i>
-                            <span class="margin-left--half-width smaller-font">Copy launch arguments</span>
+                            <span class="margin-left--half-width smaller-font">{{ $t('Help.copy_launch_arguments') }}</span>
                         </button>
-                        <button class="button is-loading" v-else>Copy launch arguments</button>
+                        <button class="button is-loading" v-else>{{ $t('Help.copy_launch_arguments') }}</button>
                     </p>
                     <br/>
                 </template>
             </div>
             <div ref="Game won't start" v-if="activeTab === `Game won't start`">
-                <h2 class='title is-5'>A red box appears when I try to start the game</h2>
-                <p>Read the suggestion at the bottom of the red box.</p>
+                <h2 class='title is-5'>{{ $t('Help.a_red_box_appears_when_i_try_t') }}</h2>
+                <p>{{ $t('Help.read_the_suggestion_at_the_bot') }}</p>
                 <hr/>
-                <h2 class='title is-5'>I'm taken to the Steam store page</h2>
-                <p>That's because you don't legally own the game. The manager only supports legal copies.</p>
+                <h2 class='title is-5'>{{ $t('Help.i_m_taken_to_the_steam_store_p') }}</h2>
+                <p>{{ $t('Help.that_s_because_you_don_t_legal') }}</p>
                 <hr/>
-                <h2 class='title is-5'>A text window appears and closes immediately.</h2>
-                <p>Try running "Reset {{store.state.activeGame.displayName}} installation" on the Settings screen.</p>
-                <p>If it persists, force exit Steam and start modded with Steam closed.</p>
+                <h2 class='title is-5'>{{ $t('Help.a_text_window_appears_and_clos') }}</h2>
+                <p>{{ $t('Help.try_running_reset') }} {{store.state.activeGame.displayName}} {{ $t('Help.installation_on_the_settings_s') }}</p>
+                <p>{{ $t('Help.if_it_persists_force_exit_stea') }}</p>
             </div>
             <div ref="Mods not appearing" v-if="activeTab === 'Mods not appearing'">
-                <h2 class='title is-5'>Potential solutions</h2>
-                <p>The most common issues are solved by following the instructions exactly as listed
-                    <ExternalLink url="https://github.com/ebkr/r2modmanPlus/wiki/Why-aren't-my-mods-working%3F">
-                        here
-                    </ExternalLink>
+                <h2 class='title is-5'>{{ $t('Help.potential_solutions') }}</h2>
+                <p>{{ $t('Help.the_most_common_issues_are_sol') }} <ExternalLink url="https://github.com/ebkr/r2modmanPlus/wiki/Why-aren't-my-mods-working%3F"> {{ $t('Help.here') }} </ExternalLink>
                 </p>
             </div>
             <div ref="Updating" v-if="activeTab === 'Updating'">
-                <h2 class='title is-5'>Auto-updates</h2>
-                <p>The manager updates automatically on close assuming an update is available.</p>
-                <p>Updates are downloaded in the background.</p>
-                <p>You may receive a prompt to run <i>old_uninstaller</i> as an admin. This is the updater.</p>
-                <p>If a problem occurs with an update, download and run the latest installer.</p>
+                <h2 class='title is-5'>{{ $t('Help.auto_updates') }}</h2>
+                <p>{{ $t('Help.the_manager_updates_automatica') }}</p>
+                <p>{{ $t('Help.updates_are_downloaded_in_the') }}</p>
+                <p>{{ $t('Help.you_may_receive_a_prompt_to_ru') }} <i>{{ $t('Help.old_uninstaller') }}</i> {{ $t('Help.as_an_admin_this_is_the_update') }}</p>
+                <p>{{ $t('Help.if_a_problem_occurs_with_an_up') }}</p>
                 <hr/>
-                <h2 class='title is-5'>I don't want updates</h2>
-                <p>
-                    On GitHub there is a portable version that doesn't auto update. You are however prompted that an
-                    update is available.
-                </p>
+                <h2 class='title is-5'>{{ $t('Help.i_don_t_want_updates') }}</h2>
+                <p> {{ $t('Help.on_github_there_is_a_portable') }} </p>
             </div>
         </div>
     </div>

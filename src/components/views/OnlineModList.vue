@@ -9,19 +9,19 @@
                 <span v-if="key.isPinned()">
                     <span class="tag is-info margin-right margin-right--half-width"
                           v-tooltip.right="'Pinned on Thunderstore'">
-                        Pinned
+                        {{ $t('OnlineModList.pinned') }}
                     </span>
-                    <span class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></span>
+                    <span class="selectable">{{key.getName()}} <span class="card-byline">{{ $t('OnlineModList.by') }} {{key.getOwner()}}</span></span>
                 </span>
                 <span v-else-if="isModDeprecated(key)">
                     <span class="tag is-danger margin-right margin-right--half-width"
                           v-tooltip.right="'This mod is potentially broken'">
-                        Deprecated
+                        {{ $t('OnlineModList.deprecated') }}
                     </span>
-                    <strike class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></strike>
+                    <strike class="selectable">{{key.getName()}} <span class="card-byline">{{ $t('OnlineModList.by') }} {{key.getOwner()}}</span></strike>
                 </span>
                 <span v-else class='selectable'>
-                    {{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span>
+                    {{key.getName()}} <span class="card-byline">{{ $t('OnlineModList.by') }} {{key.getOwner()}}</span>
                 </span>
             </template>
             <template v-slot:other-icons>
@@ -31,12 +31,11 @@
                 </span>
             </template>
             <template v-slot:description>
-                <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(key.getDateUpdated())}}</p>
-                <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(key)}}</p>
+                <p class='card-timestamp'><strong>{{ $t('OnlineModList.last_updated') }}</strong> {{getReadableDate(key.getDateUpdated())}}</p>
+                <p class='card-timestamp'><strong>{{ $t('OnlineModList.categories') }}</strong> {{getReadableCategories(key)}}</p>
             </template>
-            <button class='button' v-if="!readOnly" @click='showDownloadModal(key)'>Download</button>
-            <ExternalLink :url="key.getPackageUrl()" class='button'>
-                Website <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
+            <button class='button' v-if="!readOnly" @click='showDownloadModal(key)'>{{ $t('OnlineModList.download') }}</button>
+            <ExternalLink :url="key.getPackageUrl()" class='button'> {{ $t('OnlineModList.website') }} <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
             </ExternalLink>
             <template v-if="!readOnly">
                 <DonateButton v-if="key" :mod="key"/>

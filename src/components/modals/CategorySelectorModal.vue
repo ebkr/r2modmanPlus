@@ -27,7 +27,7 @@ function emitDeselected(key: string) {
         <div class="input-group margin-bottom">
             <select class="select select--content-spacing" @change="emitSelected">
                 <option selected disabled>
-                    Select a category
+                    {{ $t('CategorySelectorModal.select_a_category') }}
                 </option>
                 <option v-for="(key, index) in selectableCategories" :key="`category--${key}-${index}`">
                     {{ key }}
@@ -46,7 +46,7 @@ function emitDeselected(key: string) {
         </div>
         <div class="field has-addons" v-else>
             <span class="tags">
-                <span class="tag">No categories selected</span>
+                <span class="tag">{{ $t('CategorySelectorModal.no_categories_selected') }}</span>
             </span>
         </div>
     </div>

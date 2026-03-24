@@ -26,12 +26,12 @@ function close() {
         <div class="modal-background" @click="close"></div>
         <div class="modal-content">
             <div class='notification is-info'>
-                <h3 class="title" v-if="isSteamGame">{{ activeGame.displayName }} is launching via Steam</h3>
-                <h3 class="title" v-else>{{ activeGame.displayName }} is starting</h3>
-                <h5 class="title is-5">Close this message to continue modding.</h5>
+                <h3 class="title" v-if="isSteamGame">{{ activeGame.displayName }} {{ $t('GameRunningModal.is_launching_via_steam') }}</h3>
+                <h3 class="title" v-else>{{ activeGame.displayName }} {{ $t('GameRunningModal.is_starting') }}</h3>
+                <h5 class="title is-5">{{ $t('GameRunningModal.close_this_message_to_continue') }}</h5>
                 <div v-if="isSteamGame">
-                    <p>If this is taking a while, it's likely due to Steam starting.</p>
-                    <p>Please be patient, and have fun!</p>
+                    <p>{{ $t('GameRunningModal.if_this_is_taking_a_while_it_s') }}</p>
+                    <p>{{ $t('GameRunningModal.please_be_patient_and_have_fun') }}</p>
                 </div>
             </div>
         </div>

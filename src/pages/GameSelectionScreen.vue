@@ -2,7 +2,7 @@
     <div>
         <ModalCard id="select-platform-modal" v-show="showPlatformModal" :is-active="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
             <template v-slot:header>
-                <h2 class='modal-title'>Which store manages your game?</h2>
+                <h2 class='modal-title'>{{ $t('GameSelectionScreen.which_store_manages_your_game') }}</h2>
             </template>
             <template v-slot:body>
                 <div v-if="selectedGame !== null">
@@ -13,9 +13,7 @@
                 </div>
             </template>
             <template v-slot:footer>
-                <button class='button is-info' @click='selectPlatform'>
-                    Select platform
-                </button>
+                <button class='button is-info' @click='selectPlatform'> {{ $t('GameSelectionScreen.select_platform') }} </button>
             </template>
         </ModalCard>
         <hero
@@ -29,8 +27,8 @@
         />
         <div class="notification is-warning is-square" v-if="runningMigration">
             <div class="container">
-                <p>An update to the manager has occurred and needs to do background work.</p>
-                <p>The options to select a game are disabled until the work has completed.</p>
+                <p>{{ $t('GameSelectionScreen.an_update_to_the_manager_has_o') }}</p>
+                <p>{{ $t('GameSelectionScreen.the_options_to_select_a_game_a') }}</p>
             </div>
         </div>
         <div class="columns">
@@ -46,7 +44,7 @@
                                             id="game-selection-list-search"
                                             class="input margin-right"
                                             type="text"
-                                            placeholder="Search for a game"
+                                            :placeholder="$t('GameSelectionScreen.search_for_a_game')"
                                             autocomplete="off"
                                         />
                                     </div>
@@ -54,11 +52,11 @@
                             </div>
                             <div class="margin-right">
                                 <button class="button is-info"
-                                   :disabled="!isAnyGameSelected() && !runningMigration" @click="selectGame(selectedGame)">Select {{ activeTab.toLowerCase() }}</button>
+                                   :disabled="!isAnyGameSelected() && !runningMigration" @click="selectGame(selectedGame)">{{ $t('GameSelectionScreen.select') }} {{ activeTab.toLowerCase() }}</button>
                             </div>
                             <div class="margin-right">
                                 <button class="button"
-                                   :disabled="!isAnyGameSelected() && !runningMigration" @click="selectDefaultGame(selectedGame)">Set as default</button>
+                                   :disabled="!isAnyGameSelected() && !runningMigration" @click="selectDefaultGame(selectedGame)">{{ $t('GameSelectionScreen.set_as_default') }}</button>
                             </div>
                             <div>
                                 <i class="button fas fa-th-large" @click="toggleViewMode"></i>
@@ -73,7 +71,7 @@
                                             id="game-selection-cards-search"
                                             class="input margin-right"
                                             type="text"
-                                            placeholder="Search for a game"
+                                            :placeholder="$t('GameSelectionScreen.search_for_a_game')"
                                             autocomplete="off"
                                         />
                                     </div>
@@ -141,16 +139,15 @@
                                                                     </p>
                                                                 </div>
                                                                 <div class="absolute-center text-center">
-                                                                    <button class="button is-info" @click="selectGame(game)" :class="[{'is-disabled': selectedGame === null}]">Select
-                                                                        {{ activeTab.toLowerCase() }}</button>
+                                                                    <button class="button is-info" @click="selectGame(game)" :class="[{'is-disabled': selectedGame === null}]">{{ $t('GameSelectionScreen.select') }} {{ activeTab.toLowerCase() }}</button>
                                                                     <br/><br/>
-                                                                    <button class="button" @click="selectDefaultGame(game)">Set as default</button>
+                                                                    <button class="button" @click="selectDefaultGame(game)">{{ $t('GameSelectionScreen.set_as_default') }}</button>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
                                                             <template v-if="activeTab === GameInstanceType.GAME">
-                                                                <img :src='getImageHref(`/images/game_selection/${game.gameImage}`)' alt='Mod Logo' class="rounded game-thumbnail"/>
+                                                                <img :src='getImageHref(`/images/game_selection/${game.gameImage}`)' :alt="$t('GameSelectionScreen.mod_logo')" class="rounded game-thumbnail"/>
                                                             </template>
                                                             <template v-else>
                                                                 <h2 style="height: 250px; width: 188px" class="text-center pad pad--sides">{{ game.displayName }}</h2>

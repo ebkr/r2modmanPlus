@@ -52,7 +52,7 @@ async function importLocalMod() {
 <template>
     <ModalCard id="profile-management-modal" :can-close="true" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class='modal-title non-selectable'>Profile</h2>
+            <h2 class='modal-title non-selectable'>{{ $t('ProfileManagementModal.profile') }}</h2>
         </template>
         <template v-slot:body>
             <SettingsItem
@@ -84,7 +84,7 @@ async function importLocalMod() {
             />
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="closeModal">Close</button>
+            <button class="button is-info" @click="closeModal">{{ $t('ProfileManagementModal.close') }}</button>
         </template>
     </ModalCard>
 </template>

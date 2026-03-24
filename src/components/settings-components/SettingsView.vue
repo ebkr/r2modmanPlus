@@ -390,7 +390,7 @@ function emitInvoke(invoked: string) {
 
 <template>
     <div id="settings-view">
-        <Hero title='Settings'
+        <Hero :title="$t('SettingsView.settings')"
               :subtitle='`Advanced options for ${appName}: ` + managerVersionNumber.toString()'
               heroType='primary'/>
         <div class="margin-right">
@@ -398,8 +398,8 @@ function emitInvoke(invoked: string) {
                 <div class='border-at-bottom'>
                     <div class='card is-shadowless is-square'>
                         <div class='card-header-title'>
-                            <span class="non-selectable margin-right">Search:</span>
-                            <input v-model='search' class="input" type="text" placeholder="Search for a setting"/>
+                            <span class="non-selectable margin-right">{{ $t('SettingsView.search') }}</span>
+                            <input v-model='search' class="input" type="text" :placeholder="$t('SettingsView.search_for_a_setting')"/>
                         </div>
                     </div>
                 </div>

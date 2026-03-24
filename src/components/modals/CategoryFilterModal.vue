@@ -75,12 +75,12 @@ const unselectedCategories = computed(() => store.getters["modFilters/unselected
 <template>
     <ModalCard id="mod-category-filter-modal" v-show="isOpen" :is-active="isOpen" :can-close="false">
         <template v-slot:header>
-            <h2 class="modal-title">Filter mod categories</h2>
+            <h2 class="modal-title">{{ $t('CategoryFilterModal.filter_mod_categories') }}</h2>
         </template>
         <template v-slot:body>
             <div>
                 <CategorySelectorModal
-                    title="Mods must contain at least one of these categories"
+                    :title="$t('CategoryFilterModal.mods_must_contain_at_least_one')"
                     :selected-categories="selectedCategoriesCompareOne"
                     :selectable-categories="unselectedCategories"
                     @selected-category="selectCompareOneCategory"
@@ -88,7 +88,7 @@ const unselectedCategories = computed(() => store.getters["modFilters/unselected
                 />
                 <hr/>
                 <CategorySelectorModal
-                    title="Mods must contain all of these categories"
+                    :title="$t('CategoryFilterModal.mods_must_contain_all_of_these')"
                     :selected-categories="selectedCategoriesCompareAll"
                     :selectable-categories="unselectedCategories"
                     @selected-category="selectCompareAllCategory"
@@ -96,7 +96,7 @@ const unselectedCategories = computed(() => store.getters["modFilters/unselected
                 />
                 <hr/>
                 <CategorySelectorModal
-                    title="Mods cannot contain any of these categories"
+                    :title="$t('CategoryFilterModal.mods_cannot_contain_any_of_the')"
                     :selected-categories="selectedCategoriesToExclude"
                     :selectable-categories="unselectedCategories"
                     @selected-category="selectToExcludeCategory"
@@ -113,7 +113,7 @@ const unselectedCategories = computed(() => store.getters["modFilters/unselected
                         type="checkbox"
                         :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
                     >
-                    <label for="nsfwCheckbox">Allow NSFW (potentially explicit) mods</label>
+                    <label for="nsfwCheckbox">{{ $t('CategoryFilterModal.allow_nsfw_potentially_explici') }}</label>
                 </div>
                 <div>
                     <input
@@ -123,14 +123,12 @@ const unselectedCategories = computed(() => store.getters["modFilters/unselected
                         type="checkbox"
                         :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
                     >
-                    <label for="showDeprecatedCheckbox">Show deprecated mods</label>
+                    <label for="showDeprecatedCheckbox">{{ $t('CategoryFilterModal.show_deprecated_mods') }}</label>
                 </div>
             </div>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="close">
-                Apply filters
-            </button>
+            <button class="button is-info" @click="close"> {{ $t('CategoryFilterModal.apply_filters') }} </button>
         </template>
     </ModalCard>
 </template>

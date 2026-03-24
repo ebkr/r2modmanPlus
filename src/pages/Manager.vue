@@ -4,9 +4,9 @@
 			<div class="modal-background" @click="showSteamIncorrectDirectoryModal = false"></div>
 			<div class='modal-content'>
 				<div class='notification is-danger'>
-					<h3 class='title'>Failed to set the Steam folder</h3>
-					<p>The steam executable was not selected.</p>
-					<p>If this error has appeared but the executable is correct, please run as administrator.</p>
+					<h3 class='title'>{{ $t('Manager.failed_to_set_the_steam_folder') }}</h3>
+					<p>{{ $t('Manager.the_steam_executable_was_not_s') }}</p>
+					<p>{{ $t('Manager.if_this_error_has_appeared_but') }}</p>
 				</div>
 			</div>
 			<button class="modal-close is-large" aria-label="close"
@@ -16,9 +16,9 @@
 			<div class="modal-background" @click="showRor2IncorrectDirectoryModal = false"></div>
 			<div class='modal-content'>
 				<div class='notification is-danger'>
-					<h3 class='title'>Failed to set the {{ activeGame.displayName }} folder</h3>
-					<p>The executable must be either of the following: "{{ activeGame.exeName.join('", "') }}".</p>
-					<p>If this error has appeared but the executable is correct, please run as administrator.</p>
+					<h3 class='title'>{{ $t('Manager.failed_to_set_the') }} {{ activeGame.displayName }} {{ $t('Manager.folder') }}</h3>
+					<p>{{ $t('Manager.the_executable_must_be_either') }}{{ activeGame.exeName.join('", "') }}".</p>
+					<p>{{ $t('Manager.if_this_error_has_appeared_but') }}</p>
 				</div>
 			</div>
 			<button class="modal-close is-large" aria-label="close"
@@ -26,34 +26,24 @@
 		</div>
 		<ModalCard id="steam-installation-validation-modal" :is-active="isValidatingSteamInstallation" @close-modal="closeSteamInstallationValidationModal" :can-close="true">
 			<template v-slot:header>
-				<h2 class='modal-title'>Clearing the {{activeGame.displayName}} installation directory</h2>
+				<h2 class='modal-title'>{{ $t('Manager.clearing_the') }} {{activeGame.displayName}} {{ $t('Manager.installation_directory') }}</h2>
 			</template>
 			<template v-slot:body>
 				<div class='notification is-warning'>
-					<p>
-						You will not not be able to launch the game until
-						Steam has verified the integrity of the game files.
-					</p>
+					<p> {{ $t('Manager.you_will_not_not_be_able_to_la') }} </p>
 				</div>
-				<p>
-					Steam will be started and will attempt to verify the
-					integrity of {{ activeGame.displayName }}.
+				<p> {{ $t('Manager.steam_will_be_started_and_will') }} {{ activeGame.displayName }}.
 				</p>
 				<br/>
-				<p>
-					Please check the Steam window for validation progress.
-					If the window has not yet appeared, please be patient.
-				</p>
+				<p> {{ $t('Manager.please_check_the_steam_window') }} </p>
 			</template>
 			<template v-slot:footer>
-				<button class="button is-info" @click="closeSteamInstallationValidationModal()">
-					I understand
-				</button>
+				<button class="button is-info" @click="closeSteamInstallationValidationModal()"> {{ $t('Manager.i_understand') }} </button>
 			</template>
 		</ModalCard>
         <ModalCard id="dependency-strings-modal" :is-active="showDependencyStrings" @close-modal="showDependencyStrings = false;" :can-close="true">
             <template v-slot:header>
-                <h2 class='modal-title'>Dependency string list</h2>
+                <h2 class='modal-title'>{{ $t('Manager.dependency_string_list') }}</h2>
             </template>
             <template v-slot:body>
                 <ul>
@@ -64,50 +54,43 @@
             </template>
             <template v-slot:footer>
                 <button class="button is-info"
-                        @click="showDependencyStrings = false;">
-                    Close
-                </button>
+                        @click="showDependencyStrings = false;"> {{ $t('Manager.close') }} </button>
             </template>
         </ModalCard>
 		<ModalCard id="launch-parameters-modal" :is-active="showLaunchParameterModal" @close-modal="() => {showLaunchParameterModal = false;}" :can-close="true">
 			<template v-slot:header>
-				<h2 class='modal-title'>Set custom launch parameters</h2>
+				<h2 class='modal-title'>{{ $t('Manager.set_custom_launch_parameters') }}</h2>
 			</template>
 			<template v-slot:body>
-				<p>Some arguments are provided by default:</p>
+				<p>{{ $t('Manager.some_arguments_are_provided_by') }}</p>
 				<br/>
-				<p>Modded:
-					<br/>
+				<p>{{ $t('Manager.modded') }} <br/>
 					<code v-if="doorstopTarget.length > 0">
 						{{ doorstopTarget }}
 					</code>
-                    <code v-else>These parameters will be available after installing a mod loader.</code>
+                    <code v-else>{{ $t('Manager.these_parameters_will_be_avail') }}</code>
 				</p>
 				<br/>
-				<p>Vanilla:
-					<br>
+				<p>{{ $t('Manager.vanilla') }} <br>
 					<code>
 						{{ vanillaLaunchArgs }}
 					</code>
 				</p>
 				<br/>
 				<p>
-					<strong>Please note that these are called against the Steam executable. Be careful when
-						entering custom launch parameters.</strong>
+					<strong>{{ $t('Manager.please_note_that_these_are_cal') }}</strong>
 				</p>
 				<br/>
 				<input
 					v-model='launchParametersModel'
 					id='launch-parameters-modal-input'
 					class='input'
-					placeholder='Enter parameters'
+					:placeholder="$t('Manager.enter_parameters')"
 					autocomplete='off'
 				/>
 			</template>
 			<template v-slot:footer>
-				<button class='button is-info' @click='updateLaunchParameters()'>
-					Update launch parameters
-				</button>
+				<button class='button is-info' @click='updateLaunchParameters()'> {{ $t('Manager.update_launch_parameters') }} </button>
 			</template>
 		</ModalCard>
 

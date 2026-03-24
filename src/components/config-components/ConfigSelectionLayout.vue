@@ -2,15 +2,14 @@
     <div class="config-editor-selection-body">
         <div class="non-flex-content">
             <Hero
-                title="Config editor"
+                :title="$t('ConfigSelectionLayout.config_editor')"
                 subtitle="Select a configuration file to edit"
                 hero-type="primary"
             />
             <div class="notification is-warning is-square">
                 <div class="container">
                     <p>
-                        Configuration files are generated after launching the game, with the mod installed, at least
-                        once.
+                        {{ $t('ConfigSelectionLayout.configuration_files_are_genera') }}
                     </p>
                 </div>
             </div>
@@ -18,19 +17,19 @@
                 <div class='no-padding-left card-header-title'>
 
                     <div class="input-group input-group--flex margin-right">
-                        <label for="config-search" class="non-selectable">Search</label>
+                        <label for="config-search" class="non-selectable">{{ $t('ConfigSelectionLayout.search') }}</label>
                         <input
                             v-model="filterText"
                             id="config-search"
                             class="input margin-right"
                             type="text"
-                            placeholder="Search for config files"
+                            :placeholder="$t('ConfigSelectionLayout.search_for_config_files')"
                             autocomplete="off"
                         />
                     </div>
 
                     <div class="input-group margin-right">
-                        <label for="config-sort-order" class="non-selectable">Sort</label>
+                        <label for="config-sort-order" class="non-selectable">{{ $t('ConfigSelectionLayout.sort') }}</label>
                         <select id="config-sort-order"
                                 class="select select--content-spacing margin-right margin-right--half-width"
                                 v-model="sortOrder">
@@ -59,12 +58,10 @@
                     <template v-slot:title>
                         <span>{{ file.getName() }}</span>
                     </template>
-                    <button class='button' @click="editConfig(file)">Edit Config</button>
-                    <button class='button' @click="openConfig(file)">Open File</button>
+                    <button class='button' @click="editConfig(file)">{{ $t('ConfigSelectionLayout.edit_config') }}</button>
+                    <button class='button' @click="openConfig(file)">{{ $t('ConfigSelectionLayout.open_file') }}</button>
                     <button class='button' @click="deleteConfig(file)">
-                        <i class="fas fa-trash margin-right margin-right--half-width"/>
-                        Delete
-                    </button>
+                        <i class="fas fa-trash margin-right margin-right--half-width"/> {{ $t('ConfigSelectionLayout.delete') }} </button>
                 </ExpandableCard>
             </div>
         </div>
@@ -73,7 +70,7 @@
                 <div class="fa-3x">
                     <i class="fas fa-circle-notch fa-spin"></i>
                 </div>
-                <p>Looking for config files</p>
+                <p>{{ $t('ConfigSelectionLayout.looking_for_config_files') }}</p>
             </div>
         </div>
     </div>

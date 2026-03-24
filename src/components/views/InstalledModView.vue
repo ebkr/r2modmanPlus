@@ -7,10 +7,10 @@
                         <i class="fas fa-exclamation fa-5x"></i>
                     </div>
                     <br/>
-                    <h3 class="title is-4">Looks like you don't have any mods installed</h3>
+                    <h3 class="title is-4">{{ $t('InstalledModView.looks_like_you_don_t_have_any') }}</h3>
                     <h4 class="subtitle is-5">
-                        Click the Online tab on the left, or click
-                        <a @click="$router.push({name: 'manager.online'})">here</a>.
+                        {{ $t('InstalledModView.click_the_online_tab_on_the_le') }}
+                        <a @click="$router.push({name: 'manager.online'})">{{ $t('InstalledModView.here') }}</a>.
                     </h4>
                 </div>
             </div>
@@ -20,9 +20,7 @@
                 <template v-slot:above-list v-if="numberOfModsWithUpdates > 0 && !dismissedUpdateAll">
                     <div class="margin-bottom">
                         <div class="notification is-warning margin-right">
-                            <span>
-                                You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}.
-                                Would you like to <a @click="store.commit('openUpdateAllModsModal')">update all</a>?
+                            <span> {{ $t('InstalledModView.you_have') }} {{ numberOfModsWithUpdates }} {{ $t('InstalledModView.available_mod_update') }}{{ numberOfModsWithUpdates > 1 ? "s" : ""}}{{ $t('InstalledModView.would_you_like_to') }} <a @click="store.commit('openUpdateAllModsModal')">{{ $t('InstalledModView.update_all') }}</a>?
                             </span>
                             <a class="float-right cursor-pointer" @click="store.commit('profile/dismissUpdateAll')">
                                 <i class="fas fa-times" />

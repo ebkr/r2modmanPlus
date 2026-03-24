@@ -62,17 +62,14 @@ function onClose() {
 <template>
     <ModalCard id="uninstall-mod-modal" v-if="isOpen" :is-active="true" :can-close="!isLocked" @close-modal="onClose">
         <template v-slot:header>
-            <h2 class='modal-title'>Uninstalling {{mod.getName()}}</h2>
+            <h2 class='modal-title'>{{ $t('UninstallModModal.uninstalling') }} {{mod.getName()}}</h2>
         </template>
         <template v-slot:body>
             <div class="max-height-100 is-flex is-flex-direction-column">
                 <div class='notification is-warning'>
-                    <p>
-                        Other mods depend on this mod. Select <strong>Uninstall all</strong>
-                        to uninstall dependent mods, otherwise they may cause errors.
-                    </p>
+                    <p> {{ $t('UninstallModModal.other_mods_depend_on_this_mod') }} <strong>{{ $t('UninstallModModal.uninstall_all') }}</strong> {{ $t('UninstallModModal.to_uninstall_dependent_mods_ot') }} </p>
                 </div>
-                <h3 class="subtitle mb-3">Mods to be uninstalled</h3>
+                <h3 class="subtitle mb-3">{{ $t('UninstallModModal.mods_to_be_uninstalled') }}</h3>
                 <div class="is-flex-shrink-1 overflow-auto code-snippet">
                     <ul class="list">
                         <li class="list-item">{{mod.getName()}}</li>
@@ -83,7 +80,7 @@ function onClose() {
                     </ul>
                 </div>
                 <div v-if="isLocked" class="mt-3">
-                    <h3 class="subtitle mb-3">Uninstalling {{modBeingUninstalled}}</h3>
+                    <h3 class="subtitle mb-3">{{ $t('UninstallModModal.uninstalling') }} {{modBeingUninstalled}}</h3>
                     <progress class="progress is-small is-info"/>
                 </div>
             </div>
@@ -91,14 +88,10 @@ function onClose() {
         <template v-slot:footer>
             <button class="button is-info"
                     :disabled="isLocked"
-                    @click="uninstallModIncludingDependants">
-                Uninstall all (recommended)
-            </button>
+                    @click="uninstallModIncludingDependants"> {{ $t('UninstallModModal.uninstall_all_recommended') }} </button>
             <button class="button"
                     :disabled="isLocked"
-                    @click="uninstallModExcludingDependants">
-                Uninstall {{mod.getDisplayName()}} only
-            </button>
+                    @click="uninstallModExcludingDependants"> {{ $t('UninstallModModal.uninstall') }} {{mod.getDisplayName()}} {{ $t('UninstallModModal.only') }} </button>
         </template>
     </ModalCard>
 </template>

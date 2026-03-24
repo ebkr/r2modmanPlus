@@ -31,11 +31,11 @@ function onClose() {
 <template>
     <ModalCard id="associated-mods-modal" v-if="isOpen" :is-active="true" @close-modal="onClose">
         <template v-slot:header>
-            <h2 class='modal-title'>Mods associated with {{mod.getName()}}</h2>
+            <h2 class='modal-title'>{{ $t('AssociatedModsModal.mods_associated_with') }} {{mod.getName()}}</h2>
         </template>
         <template v-slot:body>
             <div v-if="!!dependencies.size">
-                <h3 class="subtitle is-5">Dependencies</h3>
+                <h3 class="subtitle is-5">{{ $t('AssociatedModsModal.dependencies') }}</h3>
                 <ul class="list">
                     <li class="list-item" v-for='(mod) in dependencies'
                         :key='`dependency-${mod.getName()}`'>
@@ -45,7 +45,7 @@ function onClose() {
             </div>
             <br v-if="!!dependencies.size"/>
             <div v-if="!!dependants.size">
-                <h3 class="subtitle is-5">Dependants</h3>
+                <h3 class="subtitle is-5">{{ $t('AssociatedModsModal.dependants') }}</h3>
                 <ul class="list">
                     <li class="list-item" v-for='(mod) in dependants'
                         :key='`dependant-${mod.getName()}`'>
@@ -54,13 +54,11 @@ function onClose() {
                 </ul>
             </div>
             <div v-if="dependencies.size === 0 && dependants.size === 0">
-                <p>This mod has no dependencies or dependants.</p>
+                <p>{{ $t('AssociatedModsModal.this_mod_has_no_dependencies_o') }}</p>
             </div>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="onClose">
-                Done
-            </button>
+            <button class="button is-info" @click="onClose"> {{ $t('AssociatedModsModal.done') }} </button>
         </template>
     </ModalCard>
 </template>

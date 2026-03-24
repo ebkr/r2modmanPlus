@@ -2,22 +2,22 @@
     <div>
         <ModalCard id="import-mod-from-file-modal" :can-close="true" @close-modal="closeModal" :is-active="isOpen">
             <template v-slot:header>
-                <h2 class='modal-title'>Import mod from file</h2>
+                <h2 class='modal-title'>{{ $t('LocalFileImportModal.import_mod_from_file') }}</h2>
             </template>
             <template v-slot:footer v-if="fileToImport === null">
-                <button class="button is-info" @click="selectFile">Select file</button>
+                <button class="button is-info" @click="selectFile">{{ $t('LocalFileImportModal.select_file') }}</button>
             </template>
             <template v-slot:footer v-else>
-                <button class="button is-info" @click="importFile">Import local mod</button>
+                <button class="button is-info" @click="importFile">{{ $t('LocalFileImportModal.import_local_mod') }}</button>
             </template>
 
             <template slot="body" v-if="fileToImport === null">
                 <template v-if="!waitingForSelection">
-                    <p>Please select a zip or DLL to be imported.</p>
-                    <p>Zip files that contain a manifest file will have the some information pre-filled. If a manifest is not available, this will have to be entered manually.</p>
+                    <p>{{ $t('LocalFileImportModal.please_select_a_zip_or_dll_to') }}</p>
+                    <p>{{ $t('LocalFileImportModal.zip_files_that_contain_a_manif') }}</p>
                 </template>
                 <template v-else>
-                    <p>Waiting for file. This may take a minute.</p>
+                    <p>{{ $t('LocalFileImportModal.waiting_for_file_this_may_take') }}</p>
                 </template>
             </template>
 
@@ -26,57 +26,57 @@
                     <p>{{ validationMessage }}</p>
                 </div>
                 <div class="input-group input-group--flex margin-right">
-                    <label for="mod-name" class="non-selectable">Mod name</label>
+                    <label for="mod-name" class="non-selectable">{{ $t('LocalFileImportModal.mod_name') }}</label>
                     <input
                         v-model="modName"
                         id="mod-name"
                         class="input margin-right"
                         ref="mod-name"
                         type="text"
-                        placeholder="Enter the name of the mod"
+                        :placeholder="$t('LocalFileImportModal.enter_the_name_of_the_mod')"
                         autocomplete="off"
                     />
                 </div>
                 <br/>
                 <div class="input-group input-group--flex margin-right">
-                    <label for="mod-author" class="non-selectable">Author</label>
+                    <label for="mod-author" class="non-selectable">{{ $t('LocalFileImportModal.author') }}</label>
                     <input
                         v-model="modAuthor"
                         id="mod-author"
                         class="input margin-right"
                         ref="mod-author"
                         type="text"
-                        placeholder="Enter the author name"
+                        :placeholder="$t('LocalFileImportModal.enter_the_author_name')"
                         autocomplete="off"
                     />
                 </div>
                 <br/>
                 <div class="input-group input-group--flex margin-right">
-                    <label for="mod-author" class="non-selectable">Description (optional)</label>
+                    <label for="mod-author" class="non-selectable">{{ $t('LocalFileImportModal.description_optional') }}</label>
                     <input
                         v-model="modDescription"
                         id="mod-description"
                         class="input margin-right"
                         ref="mod-description"
                         type="text"
-                        placeholder="Enter a description"
+                        :placeholder="$t('LocalFileImportModal.enter_a_description')"
                         autocomplete="off"
                     />
                 </div>
                 <hr/>
-                <h3 class="title is-6">Version</h3>
+                <h3 class="title is-6">{{ $t('LocalFileImportModal.version') }}</h3>
                 <div class="input-group input-group--flex margin-right non-selectable">
                     <div class="is-flex">
                         <div class="margin-right margin-right--half-width">
-                            <label for="mod-version-major">Major</label>
+                            <label for="mod-version-major">{{ $t('LocalFileImportModal.major') }}</label>
                             <input id="mod-version-major" ref="mod-version" class="input margin-right" type="number" v-model="modVersionMajor" min="0" step="1" placeholder="0"/>
                         </div>
                         <div class="margin-right margin-right--half-width">
-                            <label for="mod-version-minor">Minor</label>
+                            <label for="mod-version-minor">{{ $t('LocalFileImportModal.minor') }}</label>
                             <input id="mod-version-minor" ref="mod-version" class="input margin-right" type="number" v-model="modVersionMinor" min="0" step="1" placeholder="0"/>
                         </div>
                         <div>
-                            <label for="mod-version-patch">Patch</label>
+                            <label for="mod-version-patch">{{ $t('LocalFileImportModal.patch') }}</label>
                             <input id="mod-version-patch" ref="mod-version" class="input margin-right" type="number" v-model="modVersionPatch" min="0" step="1" placeholder="0"/>
                         </div>
                     </div>

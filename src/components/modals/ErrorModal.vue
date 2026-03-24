@@ -21,11 +21,11 @@ function close() {
         <div class="modal-background" @click="close"></div>
         <div class="modal-content">
             <div class="notification is-danger">
-                <h3 class="title">Error</h3>
+                <h3 class="title">{{ $t('ErrorModal.error') }}</h3>
                 <h5 class="title is-5">{{name}}</h5>
                 <p>{{message}}</p>
                 <div v-if="solution">
-                    <h5 class="title is-5">Suggestion</h5>
+                    <h5 class="title is-5">{{ $t('ErrorModal.suggestion') }}</h5>
                     <p>{{solution}}</p>
                 </div>
                 <div class="mt-3 text-right" v-if="error.action">

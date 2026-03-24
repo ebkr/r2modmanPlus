@@ -60,10 +60,10 @@ async function performRename() {
     <ModalCard id="rename-profile-modal" v-if="isOpen" :is-active="isOpen" @close-modal="closeModal">
 
         <template v-slot:header>
-            <h2 class="modal-title">Rename a profile</h2>
+            <h2 class="modal-title">{{ $t('RenameProfileModal.rename_a_profile') }}</h2>
         </template>
         <template v-slot:body>
-            <p>This profile will store its own mods independently from other profiles.</p>
+            <p>{{ $t('RenameProfileModal.this_profile_will_store_its_ow') }}</p>
 
             <input
                 v-model="newProfileName"
@@ -74,19 +74,15 @@ async function performRename() {
                 autocomplete="off"
             />
 
-            <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
-                Profile name required
-            </span>
+            <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''"> {{ $t('RenameProfileModal.profile_name_required') }} </span>
             <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is available
-            </span>
+                "{{makeProfileNameSafe(newProfileName)}}{{ $t('RenameProfileModal.is_available') }} </span>
             <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
-            </span>
+                "{{makeProfileNameSafe(newProfileName)}}{{ $t('RenameProfileModal.is_either_already_in_use_or_c') }} </span>
         </template>
         <template v-slot:footer>
-            <button class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>Rename</button>
-            <button class="button is-info" @click="performRename()" :disabled="renamingInProgress" v-else>Rename</button>
+            <button class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>{{ $t('RenameProfileModal.rename') }}</button>
+            <button class="button is-info" @click="performRename()" :disabled="renamingInProgress" v-else>{{ $t('RenameProfileModal.rename') }}</button>
         </template>
 
     </ModalCard>
