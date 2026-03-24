@@ -2,7 +2,9 @@
     <div>
         <div class="main-wrapper">
             <main>
-                <router-view v-if="visible" class="router"/>
+                <div class="router" v-if="visible">
+                    <router-view />
+                </div>
             </main>
             <div id="activity-bar">
             </div>
