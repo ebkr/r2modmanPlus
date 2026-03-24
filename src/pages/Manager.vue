@@ -26,10 +26,6 @@
                         </ul>
                     </template>
                 </ActivityDropdown>
-                <button class="activity-bar__action" v-tooltip.top="{content: 'Import a local mod', distance: 10}" @click="importingLocalMod = true">
-                    <span class="icon is-small"><i class="fa fa-file-import fa-xs"></i></span>
-                    <span>Import mod</span>
-                </button>
             </div>
         </div>
     </Teleport>
