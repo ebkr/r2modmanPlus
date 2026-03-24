@@ -176,6 +176,10 @@ select {
     flex: 1;
 }
 
+.card-byline {
+    font-weight: 600;
+}
+
 .card-byline, .card-timestamp {
     color:$scheme-text-secondary;
 }
