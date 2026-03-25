@@ -1,4 +1,5 @@
 <template>
+    <ManagerActivityBar />
     <div id="help-view">
         <Hero title="Help" subtitle="Common problems and their potential solutions" hero-type="primary"/>
         <div
@@ -101,6 +102,7 @@
 
 <script lang="ts" setup>
 import {ExternalLink, Hero} from '../components/all';
+import ManagerActivityBar from '../components/navigation/ManagerActivityBar.vue';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import R2Error from '../model/errors/R2Error';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';

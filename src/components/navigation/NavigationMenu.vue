@@ -1,75 +1,64 @@
 <template>
     <div class="full-height">
-        <div class="sticky-top sticky-top--no-shadow sticky-top--no-padding">
-            <aside class="menu">
+        <aside class="menu">
+            <div id="menu__top">
+                <p class="menu-label">{{ activeGame.displayName }}</p>
+                <ul class="menu-list">
+                    <li>
+                        <a href="#" @click="launchGame(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
+                    </li>
+                    <li>
+                        <a href="#" @click="launchGame(LaunchMode.VANILLA)"><i class="far fa-play-circle icon--margin-right"/>Start vanilla</a>
+                    </li>
+                </ul>
+                <p class="menu-label">Mods</p>
                 <div>
-                    <p class="menu-label">{{ activeGame.displayName }}</p>
                     <ul class="menu-list">
                         <li>
-                            <a href="#" @click="launchGame(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
+                            <router-link :to="{name: 'manager.installed'}" class="tagged-link">
+                                <i class="fas fa-folder tagged-link__icon icon--margin-right" />
+                                <span class="tagged-link__content">Installed</span>
+                                <span :class="getTagLinkClasses(['manager.installed', 'manager'])">{{localModCount}}</span>
+                            </router-link>
                         </li>
                         <li>
-                            <a href="#" @click="launchGame(LaunchMode.VANILLA)"><i class="far fa-play-circle icon--margin-right"/>Start vanilla</a>
-                        </li>
-                    </ul>
-                    <p class="menu-label">Mods</p>
-                    <div>
-                        <ul class="menu-list">
-                            <li>
-                                <router-link :to="{name: 'manager.installed'}" class="tagged-link">
-                                    <i class="fas fa-folder tagged-link__icon icon--margin-right" />
-                                    <span class="tagged-link__content">Installed</span>
-                                    <span :class="getTagLinkClasses(['manager.installed', 'manager'])">{{localModCount}}</span>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link :to="{name: 'manager.online'}"
-                                             :class="['tagged-link', {'is-active': $route.name === 'downloads'}]">
-                                    <i class="fas fa-globe tagged-link__icon icon--margin-right" />
-                                    <span class="tagged-link__content">Online</span>
+                            <router-link :to="{name: 'manager.online'}"
+                                         :class="['tagged-link', {'is-active': $route.name === 'downloads'}]">
+                                <i class="fas fa-globe tagged-link__icon icon--margin-right" />
+                                <span class="tagged-link__content">Online</span>
 
-                                    <router-link :to="{name: 'downloads'}" class="margin-right--half-width">
-                                        <i class="tag fas fa-download is-primary" />
-                                    </router-link>
-                                    <span :class="getTagLinkClasses(['manager.online', 'downloads'])">{{thunderstoreModCount}}</span>
+                                <router-link :to="{name: 'downloads'}" class="margin-right--half-width">
+                                    <i class="tag fas fa-download is-primary" />
                                 </router-link>
-                            </li>
-                        </ul>
-                    </div>
-                    <p class='menu-label'>Other</p>
-                    <ul class='menu-list'>
-                        <li>
-                            <router-link :to="{name: 'config-editor'}">
-                                <i class="fas fa-edit icon--margin-right" />
-                                Config editor
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link :to="{name: 'manager.settings'}">
-                                <i class="fas fa-cog icon--margin-right" />
-                                Settings
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link :to="{name: 'help'}">
-                                <i class="fas fa-question-circle icon--margin-right" />
-                                Help
+                                <span :class="getTagLinkClasses(['manager.online', 'downloads'])">{{thunderstoreModCount}}</span>
                             </router-link>
                         </li>
                     </ul>
-                    <slot></slot>
                 </div>
-                <div class="menu-bottom">
-                    <div id="profile-switcher" @click="openProfileManagementModal">
-                        <img :src="ProtocolProvider.getPublicAssetUrl(`/images/game_selection/${activeGame.gameImage}`)" alt="Game icon"/>
-                        <div>
-                            <p>{{ profile.getProfileName() }}</p>
-                            <p class="sub-action">Profile</p>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-        </div>
+                <p class='menu-label'>Other</p>
+                <ul class='menu-list'>
+                    <li>
+                        <router-link :to="{name: 'config-editor'}">
+                            <i class="fas fa-edit icon--margin-right" />
+                            Config editor
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link :to="{name: 'manager.settings'}">
+                            <i class="fas fa-cog icon--margin-right" />
+                            Settings
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link :to="{name: 'help'}">
+                            <i class="fas fa-question-circle icon--margin-right" />
+                            Help
+                        </router-link>
+                    </li>
+                </ul>
+                <slot></slot>
+            </div>
+        </aside>
     </div>
 </template>
 
@@ -110,10 +99,6 @@ function getTagLinkClasses(routeNames: string[]) {
     return router && router.currentRoute.value && routeNames.includes(router.currentRoute.value.name as string || "") ? [...base, "is-link"] : [...base, "is-inactive-link"];
 }
 
-function openProfileManagementModal() {
-    store.commit("openProfileManagementModal");
-}
-
 async function launchGame(mode: LaunchMode) {
     try {
         await setGameDirIfUnset(activeGame.value);
@@ -142,15 +127,18 @@ async function launchGame(mode: LaunchMode) {
 .menu {
     display: flex;
     flex-direction: column;
-    height: calc(100vh);
-    //background-color: rgba(11, 20, 32, 0.46);
     padding-right: 1rem;
+    height: 100%;
 
     & > * {
         flex: 1;
     }
 
-    &-bottom {
+    &__top {
+        flex: 1;
+    }
+
+    &__bottom {
         flex: 0;
         padding-top: 1rem;
     }
