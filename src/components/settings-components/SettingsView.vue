@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import SettingsItem from './SettingsItem.vue';
 import SettingsRow from '../../model/settings/SettingsRow';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
@@ -13,7 +15,6 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import { Platform } from '../../model/schema/ThunderstoreSchema';
 import moment from 'moment';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import VueRouter from 'vue-router';
@@ -21,6 +22,7 @@ import {getLaunchType, LaunchType} from "../../model/real_enums/launch/LaunchTyp
 import {LaunchTypeModalOpen} from "../../components/modals/launch-type/LaunchTypeRefs";
 import appWindow from '../../providers/node/app/app_window';
 
+const { t } = useI18n();
 const store = getStore<State>();
 let router!: VueRouter;
 
@@ -43,8 +45,8 @@ const appName = computed(() => ManagerInformation.APP_NAME);
 let settingsList = [
     new SettingsRow(
         'Locations',
-        'Browse data folder',
-        'Open the folder where mods are stored for all games and profiles.',
+        t('SettingsView.items.browse_data_folder.action'),
+        t('SettingsView.items.browse_data_folder.description'),
         async () => PathResolver.ROOT,
         'fa-door-open',
         () => {
@@ -53,8 +55,8 @@ let settingsList = [
     ),
     new SettingsRow(
         'Locations',
-        `Change ${activeGame.value.displayName} folder`,
-        `Change the location of the ${activeGame.value.displayName} folder that ${appName.value} uses.`,
+        t('SettingsView.items.change_game_folder.action', {game: activeGame.value.displayName}),
+        t('SettingsView.items.change_game_folder.description', {game: activeGame.value.displayName, app: appName.value}),
         async () => {
             if (settings.value.getContext().gameSpecific.gameDirectory !== null) {
                 const directory = await GameDirectoryResolverProvider.instance.getDirectory(activeGame.value);
@@ -62,7 +64,7 @@ let settingsList = [
                     return directory;
                 }
             }
-            return 'Please set manually';
+            return t('SettingsView.items.change_game_folder.please_set_manually');
         },
         'fa-folder-open',
         () => {
@@ -76,8 +78,8 @@ let settingsList = [
     ),
     new SettingsRow(
         'Locations',
-        'Browse profile folder',
-        'Open the folder where mods are stored for the current profile.',
+        t('SettingsView.items.browse_profile_folder.action'),
+        t('SettingsView.items.browse_profile_folder.description'),
         async () => {
             return store.getters['profile/activeProfile'].getProfilePath();
         },
@@ -86,8 +88,8 @@ let settingsList = [
     ),
     new SettingsRow(
         'Locations',
-        'Change data folder',
-        'Change the folder where mods are stored for all games and profiles. The folder will not be deleted, and existing profiles will not carry across.',
+        t('SettingsView.items.change_data_folder.action'),
+        t('SettingsView.items.change_data_folder.description'),
         async () => {
             return PathResolver.ROOT;
         },
@@ -96,9 +98,9 @@ let settingsList = [
     ),
     new SettingsRow(
         'Debugging',
-        'Copy log file contents to clipboard',
-        'Copy the text inside the LogOutput.log file to the clipboard, with Discord formatting.',
-        async () => logOutput.value.exists ? 'Log file exists' : 'Log file does not exist',
+        t('SettingsView.items.copy_log_to_clipboard.action'),
+        t('SettingsView.items.copy_log_to_clipboard.description'),
+        async () => logOutput.value.exists ? t('SettingsView.items.copy_log_to_clipboard.exists') : t('SettingsView.items.copy_log_to_clipboard.not_exists'),
         'fa-clipboard',
         () => {
             if (logOutput.value.exists) {
@@ -108,182 +110,182 @@ let settingsList = [
     ),
     new SettingsRow(
         'Debugging',
-        'Copy troubleshooting information to clipboard',
-        'Copy settings and other information to the clipboard, with Discord formatting.',
-        async () => 'Share this information when requesting support on Discord.',
+        t('SettingsView.items.copy_troubleshooting_info.action'),
+        t('SettingsView.items.copy_troubleshooting_info.description'),
+        async () => t('SettingsView.items.copy_troubleshooting_info.share_info'),
         'fa-clipboard',
         () => emitInvoke('CopyTroubleshootingInfoToClipboard')
     ),
     new SettingsRow(
         'Debugging',
-        'Toggle download cache',
-        'Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.',
+        t('SettingsView.items.toggle_download_cache.action'),
+        t('SettingsView.items.toggle_download_cache.description'),
         async () => {
             return store.state.download.ignoreCache
-                ? 'Current: cache is disabled'
-                : 'Current: cache is enabled (recommended)';
+                ? t('SettingsView.items.toggle_download_cache.disabled')
+                : t('SettingsView.items.toggle_download_cache.enabled');
         },
         'fa-exchange-alt',
         () => emitInvoke('ToggleDownloadCache')
     ),
     new SettingsRow(
         'Debugging',
-        'Set launch parameters',
-        'Provide custom arguments used to start the game.',
-        async () => 'These commands are used against the Steam executable on game startup',
+        t('SettingsView.items.set_launch_parameters.action'),
+        t('SettingsView.items.set_launch_parameters.description'),
+        async () => t('SettingsView.items.set_launch_parameters.steam_exec'),
         'fa-wrench',
         () => emitInvoke('SetLaunchParameters')
     ),
     new SettingsRow(
         'Debugging',
-        'Clean mod cache',
-        'Free extra space caused by cached mods that are not currently in a profile.',
-        async () => 'Check all profiles for unused mods and clear cache',
+        t('SettingsView.items.clean_mod_cache.action'),
+        t('SettingsView.items.clean_mod_cache.description'),
+        async () => t('SettingsView.items.clean_mod_cache.check_profiles'),
         'fa-trash',
         () => emitInvoke('CleanCache')
     ),
     new SettingsRow(
         'Debugging',
-        'Clean online mod list',
-        'Deletes local copy of mod list, forcing the next refresh to fetch a new one.',
+        t('SettingsView.items.clean_online_mod_list.action'),
+        t('SettingsView.items.clean_online_mod_list.description'),
         async () => store.dispatch('tsMods/getActiveGameCacheStatus'),
         'fa-trash',
         () => store.dispatch('tsMods/resetActiveGameCache')
     ),
     new SettingsRow(
         'Debugging',
-        'Toggle preferred Thunderstore CDN',
-        'Switch the CDN until app is restarted. This might bypass issues with downloading mods.',
-        async () => `Current: ${CdnProvider.current.label} (${CdnProvider.current.url})`,
+        t('SettingsView.items.toggle_thunderstore_cdn.action'),
+        t('SettingsView.items.toggle_thunderstore_cdn.description'),
+        async () => t('SettingsView.items.toggle_thunderstore_cdn.current', {label: CdnProvider.current.label, url: CdnProvider.current.url}),
         'fa-exchange-alt',
         CdnProvider.togglePreferredCdn
     ),
     new SettingsRow(
         'Profile',
-        'Change profile',
-        'Change the mod profile.',
+        t('SettingsView.items.change_profile.action'),
+        t('SettingsView.items.change_profile.description'),
         async () => {
-            return `Current profile: ${store.getters['profile/activeProfile'].getProfileName()}`
+            return t('SettingsView.items.change_profile.current', {name: store.getters['profile/activeProfile'].getProfileName()});
         },
         'fa-file-import',
         () => emitInvoke('ChangeProfile')
     ),
     new SettingsRow(
         'Profile',
-        'Enable all mods',
-        'Enable all mods for the current profile',
-        async () => `${localModList.value.length - ProfileModList.getDisabledModCount(localModList.value)}/${localModList.value.length} enabled`,
+        t('SettingsView.items.enable_all_mods.action'),
+        t('SettingsView.items.enable_all_mods.description'),
+        async () => t('SettingsView.items.enable_all_mods.status', {enabled: localModList.value.length - ProfileModList.getDisabledModCount(localModList.value), total: localModList.value.length}),
         'fa-file-import',
         () => emitInvoke('EnableAll')
     ),
     new SettingsRow(
         'Profile',
-        'Disable all mods',
-        'Disable all mods for the current profile',
-        async () => `${ProfileModList.getDisabledModCount(localModList.value)}/${localModList.value.length} disabled`,
+        t('SettingsView.items.disable_all_mods.action'),
+        t('SettingsView.items.disable_all_mods.description'),
+        async () => t('SettingsView.items.disable_all_mods.status', {disabled: ProfileModList.getDisabledModCount(localModList.value), total: localModList.value.length}),
         'fa-file-import',
         () => emitInvoke('DisableAll')
     ),
     new SettingsRow(
         'Profile',
-        'Import local mod',
-        'Install a mod offline from your files.',
-        async () => 'Not all mods can be installed locally',
+        t('SettingsView.items.import_local_mod.action'),
+        t('SettingsView.items.import_local_mod.description'),
+        async () => t('SettingsView.items.import_local_mod.not_all_installable'),
         'fa-file-import',
         () => store.commit("openLocalFileImportModal")
     ),
     new SettingsRow(
         'Profile',
-        'Export profile as a file',
-        'Export your mod list and configs as a file.',
-        async () => 'The exported file can be shared with friends to get an identical profile quickly and easily',
+        t('SettingsView.items.export_profile_file.action'),
+        t('SettingsView.items.export_profile_file.description'),
+        async () => t('SettingsView.items.export_profile_file.share_easily'),
         'fa-file-export',
         () => store.dispatch("profileExport/exportProfileAsFile")
     ),
     new SettingsRow(
         'Profile',
-        'Export profile as a code',
-        'Export your mod list and configs as a code.',
-        async () => 'The exported code can be shared with friends to get an identical profile quickly and easily',
+        t('SettingsView.items.export_profile_code.action'),
+        t('SettingsView.items.export_profile_code.description'),
+        async () => t('SettingsView.items.export_profile_code.share_easily'),
         'fa-file-export',
         () => store.dispatch("profileExport/exportProfileAsCode")
     ),
     new SettingsRow(
         'Profile',
-        'Update all mods',
-        'Quickly update every installed mod to their latest versions.',
+        t('SettingsView.items.update_all_mods.action'),
+        t('SettingsView.items.update_all_mods.description'),
         async () => {
             const outdatedMods = store.getters['profile/modsWithUpdates'];
             if (outdatedMods.length === 1) {
-                return "1 mod has an update available";
+                return t('SettingsView.items.update_all_mods.one_update');
             }
-            return `${outdatedMods.length} mods have an update available`;
+            return t('SettingsView.items.update_all_mods.multi_updates', {count: outdatedMods.length});
         },
         'fa-cloud-upload-alt',
         () => emitInvoke('UpdateAllMods')
     ),
     new SettingsRow(
         'Other',
-        'Toggle funky mode',
-        'Enable/disable funky mode.',
+        t('SettingsView.items.funky_mode.action'),
+        t('SettingsView.items.funky_mode.description'),
         async () => {
             return settings.value.getContext().global.funkyModeEnabled
-                ? 'Current: enabled'
-                : 'Current: disabled (default)';
+                ? t('SettingsView.items.funky_mode.enabled')
+                : t('SettingsView.items.funky_mode.disabled');
         },
         'fa-exchange-alt',
         () => emitInvoke('ToggleFunkyMode')
     ),
     new SettingsRow(
         'Other',
-        'Switch theme',
-        'Switch between light and dark themes.',
+        t('SettingsView.items.switch_theme.action'),
+        t('SettingsView.items.switch_theme.description'),
         async () => {
             return settings.value.getContext().global.darkTheme
-                ? 'Current: dark theme'
-                : 'Current: light theme (default)';
+                ? t('SettingsView.items.switch_theme.dark')
+                : t('SettingsView.items.switch_theme.light');
         },
         'fa-exchange-alt',
         () => emitInvoke('SwitchTheme')
     ),
     new SettingsRow(
         'Other',
-        'Switch card display type',
-        'Switch between expanded or collapsed cards.',
+        t('SettingsView.items.switch_card_type.action'),
+        t('SettingsView.items.switch_card_type.description'),
         async () => {
             return settings.value.getContext().global.expandedCards
-                ? 'Current: expanded'
-                : 'Current: collapsed (default)';
+                ? t('SettingsView.items.switch_card_type.expanded')
+                : t('SettingsView.items.switch_card_type.collapsed');
         },
         'fa-exchange-alt',
         () => emitInvoke('SwitchCard')
     ),
     new SettingsRow(
         'Other',
-        'Refresh online mod list',
-        'Check for any new mod releases.',
+        t('SettingsView.items.refresh_online_mod_list.action'),
+        t('SettingsView.items.refresh_online_mod_list.description'),
         async () => {
                 if (store.state.tsMods.isThunderstoreModListUpdateInProgress) {
-                    return store.state.tsMods.thunderstoreModListUpdateStatus || "Refreshing...";
+                    return store.state.tsMods.thunderstoreModListUpdateStatus || t('SettingsView.items.refresh_online_mod_list.refreshing');
                 }
                 if (store.state.tsMods.thunderstoreModListUpdateError) {
-                    return `Error refreshing the mod list: ${store.state.tsMods.thunderstoreModListUpdateError.message}`;
+                    return t('SettingsView.items.refresh_online_mod_list.error', {error: store.state.tsMods.thunderstoreModListUpdateError.message});
                 }
                 if (store.getters['download/activeDownloadCount'] > 0) {
-                    return "Refreshing the mod list is disabled while there are active downloads.";
+                    return t('SettingsView.items.refresh_online_mod_list.disabled_downloads');
                 }
                 if (store.state.tsMods.modsLastUpdated !== undefined) {
-                    return "Cache date: " + moment(store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");
+                    return t('SettingsView.items.refresh_online_mod_list.cache_date', {date: moment(store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a")});
                 }
-                return "No API information available";
+                return t('SettingsView.items.refresh_online_mod_list.no_api');
             },
         'fa-exchange-alt',
         async () => await store.dispatch("tsMods/syncPackageList")
     ),
     new SettingsRow(
       'Other',
-      'Change game',
-      'Change the current game',
+      t('SettingsView.items.change_game.action'),
+      t('SettingsView.items.change_game.description'),
       async () => "",
         'fa-gamepad',
         async () => {
@@ -293,9 +295,9 @@ let settingsList = [
     ),
     new SettingsRow(
         'Modpacks',
-        'Show dependency strings',
-        'View a list of installed mods with their version strings. Used inside the dependencies array inside the manifest.json file.',
-        async () => `Show dependency strings for ${localModList.value.length} mod(s)`,
+        t('SettingsView.items.show_dependency_strings.action'),
+        t('SettingsView.items.show_dependency_strings.description'),
+        async () => t('SettingsView.items.show_dependency_strings.status', {count: localModList.value.length}),
         'fa-file-alt',
         () => emitInvoke('ShowDependencyStrings')
     ),
@@ -318,8 +320,8 @@ onMounted(async () => {
         settingsList.push(
             new SettingsRow(
                 'Locations',
-                'Change Steam folder',
-                `Change the location of the Steam folder that ${appName.value} uses.`,
+                t('SettingsView.items.change_steam_folder.action'),
+                t('SettingsView.items.change_steam_folder.description', {app: appName.value}),
                 async () => {
                     if (settings.value.getContext().global.steamDirectory !== null) {
                         const directory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
@@ -327,16 +329,16 @@ onMounted(async () => {
                             return directory;
                         }
                     }
-                    return 'Please set manually';
+                    return t('SettingsView.items.change_steam_folder.please_set_manually');
                 },
                 'fa-folder-open',
                 () => emitInvoke('ChangeSteamDirectory')
             ),
             new SettingsRow(
                 'Debugging',
-                `Reset ${activeGame.value.displayName} installation`,
-                'Fix problems caused by corrupted files or files left over from manual modding attempts.',
-                async () => `This will delete all contents of the ${activeGame.value.steamFolderName} folder, and verify the files through Steam`,
+                t('SettingsView.items.reset_installation.action', {game: activeGame.value.displayName}),
+                t('SettingsView.items.reset_installation.description'),
+                async () => t('SettingsView.items.reset_installation.status', {game: activeGame.value.displayName, folder: activeGame.value.steamFolderName}),
                 'fa-wrench',
                 () => emitInvoke('ValidateSteamInstallation')
             )
@@ -347,11 +349,11 @@ onMounted(async () => {
         settingsList.push(
             new SettingsRow(
                 'Debugging',
-                'Change launch behaviour',
-                'Select specific launch behaviour such as forcing Steam to launch with Proton',
+                t('SettingsView.items.change_launch_behaviour.action'),
+                t('SettingsView.items.change_launch_behaviour.description'),
                 async () => {
                     const launchType = await getLaunchType(activeGame.value);
-                    return `The current launch behaviour is set to: ${launchType}`;
+                    return t('SettingsView.items.change_launch_behaviour.current', {type: launchType});
                 },
                 'fa-gamepad',
                 () => {
@@ -376,6 +378,10 @@ onMounted(async () => {
 
 function changeTab(tab: string) {
     activeTab.value = tab;
+}
+
+function getTabDisplay(tab: string) {
+    return t(`SettingsView.tabs.${tab.toLowerCase()}`);
 }
 
 const emits = defineEmits<{
@@ -408,7 +414,7 @@ function emitInvoke(invoked: string) {
                         <li v-for="(key, index) in tabs" :key="`tab-${key}`"
                             :class="[{'is-active': activeTab === key}]"
                             @click="changeTab(key)">
-                            <a>{{key}}</a>
+                            <a>{{ getTabDisplay(key) }}</a>
                         </li>
                     </ul>
                 </div>

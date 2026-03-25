@@ -201,8 +201,159 @@ export default {
   },
   "SettingsView": {
     "settings": "設定",
+    "advanced_options": "{app} 的進階選項：{version}",
     "search": "搜尋：",
-    "search_for_a_setting": "搜尋設定"
+    "search_for_a_setting": "搜尋設定",
+    "tabs": {
+      "all": "全部",
+      "profile": "設定檔",
+      "locations": "位置",
+      "debugging": "除錯",
+      "modpacks": "模組包",
+      "other": "其他"
+    },
+    "items": {
+      "browse_data_folder": {
+        "action": "瀏覽資料資料夾",
+        "description": "開啟儲存所有遊戲與設定檔模組的資料夾。"
+      },
+      "change_game_folder": {
+        "action": "變更 {game} 資料夾",
+        "description": "變更 {app} 使用的 {game} 資料夾位置。",
+        "please_set_manually": "請手動設定"
+      },
+      "browse_profile_folder": {
+        "action": "瀏覽設定檔資料夾",
+        "description": "開啟目前設定檔儲存模組的資料夾。"
+      },
+      "change_data_folder": {
+        "action": "變更資料資料夾",
+        "description": "變更儲存所有遊戲與設定檔模組的資料夾。資料夾不會被刪除，且現有設定檔不會隨之移轉。"
+      },
+      "copy_log_to_clipboard": {
+        "action": "將日誌檔案內容複製到剪貼簿",
+        "description": "將 LogOutput.log 檔案中的文字複製到剪貼簿，並套用 Discord 格式。",
+        "exists": "日誌檔案存在",
+        "not_exists": "日誌檔案不存在"
+      },
+      "copy_troubleshooting_info": {
+        "action": "將疑難排解資訊複製到剪貼簿",
+        "description": "將設定與其他資訊複製到剪貼簿，並套用 Discord 格式。",
+        "share_info": "在 Discord 請求支援時請分享此資訊。"
+      },
+      "toggle_download_cache": {
+        "action": "切換下載快取",
+        "description": "下載模組時將忽略儲存在快取中的模組。模組仍會被放入快取中。",
+        "enabled": "目前：已啟用快取 (推薦)",
+        "disabled": "目前：已停用快取"
+      },
+      "set_launch_parameters": {
+        "action": "設定啟動參數",
+        "description": "提供用於啟動遊戲的自訂參數。",
+        "steam_exec": "這些命令在遊戲啟動時會針對 Steam 執行檔使用"
+      },
+      "clean_mod_cache": {
+        "action": "清理模組快取",
+        "description": "釋放由目前不在設定檔中的快取模組所佔用的額外空間。",
+        "check_profiles": "檢查所有設定檔中未使用的模組並清除快取"
+      },
+      "clean_online_mod_list": {
+        "action": "清理線上模組列表",
+        "description": "刪除本地模組列表副本，強制下次重新整理時獲取新列表。"
+      },
+      "toggle_thunderstore_cdn": {
+        "action": "切換偏好的 Thunderstore CDN",
+        "description": "切換 CDN 直到應用程式重啟。這可能有助於繞過模組下載問題。",
+        "current": "目前：{label} ({url})"
+      },
+      "change_profile": {
+        "action": "變更設定檔",
+        "description": "變更模組設定檔。",
+        "current": "目前設定檔：{name}"
+      },
+      "enable_all_mods": {
+        "action": "啟用所有模組",
+        "description": "啟用目前設定檔的所有模組",
+        "status": "{enabled}/{total} 已啟用"
+      },
+      "disable_all_mods": {
+        "action": "停用所有模組",
+        "description": "停用目前設定檔的所有模組",
+        "status": "{disabled}/{total} 已停用"
+      },
+      "import_local_mod": {
+        "action": "匯入本地模組",
+        "description": "從您的檔案離線安裝模組。",
+        "not_all_installable": "並非所有模組都能在本地安裝"
+      },
+      "export_profile_file": {
+        "action": "將設定檔匯出為檔案",
+        "description": "將您的模組列表與設定匯出為檔案。",
+        "share_easily": "匯出的檔案可以分享給朋友，以便快速輕鬆地獲取相同的設定檔"
+      },
+      "export_profile_code": {
+        "action": "將設定檔匯出為代碼",
+        "description": "將您的模組列表與設定匯出為代碼。",
+        "share_easily": "匯出的代碼可以分享給朋友，以便快速輕鬆地獲取相同的設定檔"
+      },
+      "update_all_mods": {
+        "action": "更新所有模組",
+        "description": "快速將每個已安裝的模組更新至最新版本。",
+        "one_update": "有 1 個模組有可用更新",
+        "multi_updates": "有 {count} 個模組有可用更新"
+      },
+      "funky_mode": {
+        "action": "切換酷炫模式",
+        "description": "啟用/停用酷炫模式。",
+        "enabled": "目前：已啟用",
+        "disabled": "目前：已停用 (預設)"
+      },
+      "switch_theme": {
+        "action": "切換主題",
+        "description": "在淺色與深色主題之間切換。",
+        "dark": "目前：深色主題",
+        "light": "目前：淺色主題 (預設)"
+      },
+      "switch_card_type": {
+        "action": "切換卡片顯示類型",
+        "description": "在展開或收合卡片之間切換。",
+        "expanded": "目前：展開",
+        "collapsed": "目前：收合 (預設)"
+      },
+      "refresh_online_mod_list": {
+        "action": "重新整理線上模組列表",
+        "description": "檢查是否有任何新的模組發布。",
+        "refreshing": "正在重新整理...",
+        "error": "重新整理模組列表時發生錯誤：{error}",
+        "disabled_downloads": "在有活動下載時，重新整理模組列表功能已停用。",
+        "cache_date": "快取日期：{date}",
+        "no_api": "無可用的 API 資訊"
+      },
+      "change_game": {
+        "action": "變更遊戲",
+        "description": "變更目前遊戲"
+      },
+      "show_dependency_strings": {
+        "action": "顯示依賴項目字串",
+        "description": "查看已安裝模組及其版本字串列表。用於 manifest.json 檔案中的 dependencies 陣列。",
+        "status": "顯示 {count} 個模組的依賴項目字串"
+      },
+      "change_steam_folder": {
+        "action": "變更 Steam 資料夾",
+        "description": "變更 {app} 使用的 Steam 資料夾位置。",
+        "please_set_manually": "請手動設定"
+      },
+      "reset_installation": {
+        "action": "重設 {game} 安裝",
+        "description": "修復因檔案損毀或手動修改殘留檔案所導致的問題。",
+        "status": "這將刪除 {folder} 資料夾的所有內容，並透過 Steam 驗證檔案完整性"
+      },
+      "change_launch_behaviour": {
+        "action": "變更啟動行為",
+        "description": "選擇特定的啟動行為，例如強制 Steam 使用 Proton 啟動",
+        "current": "目前的啟動行為設定為：{type}"
+      }
+    }
   },
   "OnlinePreviewPanel": {
     "by": "由",

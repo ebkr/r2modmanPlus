@@ -202,7 +202,157 @@ export default {
   "SettingsView": {
     "settings": "设置",
     "search": "搜索：",
-    "search_for_a_setting": "搜索设置"
+    "search_for_a_setting": "搜索设置",
+    "tabs": {
+      "all": "全部",
+      "profile": "配置方案",
+      "locations": "位置",
+      "debugging": "调试",
+      "modpacks": "模组包",
+      "other": "其他"
+    },
+    "items": {
+      "browse_data_folder": {
+        "action": "浏览数据文件夹",
+        "description": "打开存储所有游戏和配置方案模组的文件夹。"
+      },
+      "change_game_folder": {
+        "action": "更改 {game} 文件夹",
+        "description": "更改 {app} 使用的 {game} 文件夹位置。",
+        "please_set_manually": "请手动设置"
+      },
+      "browse_profile_folder": {
+        "action": "浏览配置方案文件夹",
+        "description": "打开存储当前配置方案模组的文件夹。"
+      },
+      "change_data_folder": {
+        "action": "更改数据文件夹",
+        "description": "更改存储所有游戏和配置方案模组的文件夹。该文件夹不会被删除，且现有的配置方案不会迁移。"
+      },
+      "copy_log_to_clipboard": {
+        "action": "复制日志文件内容到剪贴板",
+        "description": "将 LogOutput.log 文件中的文本复制到剪贴板，并带有 Discord 格式。",
+        "exists": "日志文件存在",
+        "not_exists": "日志文件不存在"
+      },
+      "copy_troubleshooting_info": {
+        "action": "复制故障排除信息到剪贴板",
+        "description": "将设置和其他信息复制到剪贴板，并带有 Discord 格式。",
+        "share_info": "在 Discord 上请求支持时分享此信息。"
+      },
+      "toggle_download_cache": {
+        "action": "切换下载缓存",
+        "description": "下载模组时将忽略存储在缓存中的模组。模组仍将被放入缓存中。",
+        "enabled": "当前：已启用缓存 (推荐)",
+        "disabled": "当前：已禁用缓存"
+      },
+      "set_launch_parameters": {
+        "action": "设置启动参数",
+        "description": "提供启动游戏时使用的自定义参数。",
+        "steam_exec": "这些命令在游戏启动时针对 Steam 可执行文件使用"
+      },
+      "clean_mod_cache": {
+        "action": "清理模组缓存",
+        "description": "释放由当前不在配置方案中的缓存模组占用的额外空间。",
+        "check_profiles": "检查所有配置方案中未使用的模组并清理缓存"
+      },
+      "clean_online_mod_list": {
+        "action": "清理线上模组列表",
+        "description": "删除模组列表的本地副本，强制下次刷新时获取新列表。"
+      },
+      "toggle_thunderstore_cdn": {
+        "action": "切换偏好的 Thunderstore CDN",
+        "description": "切换 CDN 直到应用重启。这可能会绕过下载模组时的问题。",
+        "current": "当前：{label} ({url})"
+      },
+      "change_profile": {
+        "action": "更改配置方案",
+        "description": "更改模组配置方案。",
+        "current": "当前配置方案：{name}"
+      },
+      "enable_all_mods": {
+        "action": "启用所有模组",
+        "description": "启用当前配置方案的所有模组",
+        "status": "{enabled}/{total} 已启用"
+      },
+      "disable_all_mods": {
+        "action": "禁用所有模组",
+        "description": "禁用当前配置方案的所有模组",
+        "status": "{disabled}/{total} 已禁用"
+      },
+      "import_local_mod": {
+        "action": "导入本地模组",
+        "description": "从您的文件中离线安装模组。",
+        "not_all_installable": "并非所有模组都可以本地安装"
+      },
+      "export_profile_file": {
+        "action": "将配置方案导出为文件",
+        "description": "将您的模组列表和配置导出为文件。",
+        "share_easily": "导出的文件可以轻松分享给朋友，以快速获得相同的配置方案"
+      },
+      "export_profile_code": {
+        "action": "将配置方案导出为代码",
+        "description": "将您的模组列表和配置导出为代码。",
+        "share_easily": "导出的代码可以轻松分享给朋友，以快速获得相同的配置方案"
+      },
+      "update_all_mods": {
+        "action": "更新所有模组",
+        "description": "快速将每个已安装的模组更新到最新版本。",
+        "one_update": "有 1 个模组可更新",
+        "multi_updates": "有 {count} 个模组可更新"
+      },
+      "funky_mode": {
+        "action": "切换酷炫模式",
+        "description": "启用/禁用酷炫模式。",
+        "enabled": "当前：已启用",
+        "disabled": "当前：已禁用 (默认)"
+      },
+      "switch_theme": {
+        "action": "切换主题",
+        "description": "在浅色和深色主题之间切换。",
+        "dark": "当前：深色主题",
+        "light": "当前：浅色主题 (默认)"
+      },
+      "switch_card_type": {
+        "action": "切换卡片显示类型",
+        "description": "在展开或折叠卡片之间切换。",
+        "expanded": "当前：已展开",
+        "collapsed": "当前：已折叠 (默认)"
+      },
+      "refresh_online_mod_list": {
+        "action": "刷新线上模组列表",
+        "description": "检查任何新的模组发布。",
+        "refreshing": "正在刷新...",
+        "error": "刷新模组列表时出错：{error}",
+        "disabled_downloads": "在有活动下载时禁用刷新模组列表。",
+        "cache_date": "缓存日期：{date}",
+        "no_api": "没有可用的 API 信息"
+      },
+      "change_game": {
+        "action": "更改游戏",
+        "description": "更改当前游戏"
+      },
+      "show_dependency_strings": {
+        "action": "显示依赖项字符串",
+        "description": "查看已安装模组及其版本字符串的列表。在 manifest.json 文件的 dependencies 数组内部使用。",
+        "status": "显示 {count} 个模组的依赖项字符串"
+      },
+      "change_steam_folder": {
+        "action": "更改 Steam 文件夹",
+        "description": "更改 {app} 使用的 Steam 文件夹位置。",
+        "please_set_manually": "请手动设置"
+      },
+      "reset_installation": {
+        "action": "重置 {game} 安装",
+        "description": "修复由损坏的文件或手动模组尝试留下的文件导致的问题。",
+        "status": "这将删除 {folder} 文件夹的所有内容，并通过 Steam 验证文件"
+      },
+      "change_launch_behaviour": {
+        "action": "更改启动行为",
+        "description": "选择特定的启动行为，例如强制 Steam 使用 Proton 启动",
+        "current": "当前启动行为设置为：{type}"
+      }
+    }
   },
   "OnlinePreviewPanel": {
     "by": "由",
