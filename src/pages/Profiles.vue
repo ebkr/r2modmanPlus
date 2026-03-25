@@ -140,6 +140,7 @@ onMounted( async () => {
     flex-direction: column;
     overflow-y: auto;
     max-height: 100vh;
+    flex: 1;
 }
 
 #profile-list {

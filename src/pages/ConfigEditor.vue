@@ -23,9 +23,11 @@ function bindEdit(editValue: ConfigFile | null) {
 
 <style lang="scss" scoped>
 #config-editor {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     grid-template-rows: 1fr;
     max-height: 100vh;
     width: 100%;
+    flex: 1;
 }
 </style>

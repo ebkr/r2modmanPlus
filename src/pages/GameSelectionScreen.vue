@@ -428,6 +428,9 @@ function capitalize(str: string) {
 
 #game-selection-screen {
     display: flex;
+    flex: 1;
     flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 </style>

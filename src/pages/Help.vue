@@ -12,7 +12,7 @@
                 </li>
             </ul>
         </div>
-        <div class="margin-right">
+        <div class="margin-right" id="help-content">
             <br/>
             <div ref="General" v-if="activeTab === 'General'">
                 <h2 class="title is-5">Getting started with installing mods</h2>
@@ -170,5 +170,14 @@ onMounted(() => {
 <style lang="scss" scoped>
 #help-view {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: hidden;
+}
+
+#help-content {
+    overflow-y: auto;
+    flex: 1;
 }
 </style>

@@ -178,8 +178,9 @@ main {
 }
 
 .router {
+    display: flex;
     flex: 1;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
 }
 
