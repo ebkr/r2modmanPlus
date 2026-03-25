@@ -1,5 +1,5 @@
 <template>
-	<div>
+    <div id="setup-body">
 		<Hero :title="`Getting started on ${platformName}`" subtitle="Let's configure the game properly" heroType="primary" />
 		<br/>
         <div class="container margin-bottom" v-if="alreadyHadValuesSet && isFlatpak">
@@ -81,3 +81,12 @@ async function acknowledge(){
     router.push({path: "/profiles"});
 }
 </script>
+
+<style lang="scss" scoped>
+#setup-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+}
+</style>
