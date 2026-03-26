@@ -1,4 +1,5 @@
 <template>
+    <ManagerActivityBar />
 	<div class="manager-main-view">
 		<div id='steamIncorrectDir' :class="['modal', {'is-active':(showSteamIncorrectDirectoryModal !== false)}]">
 			<div class="modal-background" @click="showSteamIncorrectDirectoryModal = false"></div>
@@ -156,6 +157,7 @@ import path from '../providers/node/path/path';
 import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
 import appWindow from '../providers/node/app/app_window';
 import GameInstructionParser from "../r2mm/launching/instructions/GameInstructionParser";
+import ManagerActivityBar from '../components/navigation/ManagerActivityBar.vue';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -516,6 +518,7 @@ onMounted(async () => {
 </script>
 
 <style lang="scss">
+
 .manager-main-view {
     display: flex;
     flex: 1;
@@ -526,5 +529,95 @@ onMounted(async () => {
     display: flex;
     flex: 1;
     width: 100%;
+}
+
+.activity-bar--left {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.activity-bar__group {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+}
+
+.activity-bar__context-item,
+.activity-bar__action {
+    .icon {
+        height: auto;
+    }
+}
+
+.activity-bar__context-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--text, #4a4a4a);
+    line-height: 1.5;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: var(--menu-item-hover-background-color, #e9eaed);
+        color: var(--menu-item-hover-color, #363636);
+    }
+}
+
+.activity-bar__action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--border, #e1e1e1);
+    color: var(--text, #4a4a4a);
+    line-height: 1.5;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: var(--menu-item-hover-background-color, #e9eaed);
+        border-color: var(--border-hover, #b5b5b5);
+        color: var(--menu-item-hover-color, #363636);
+    }
+}
+
+.activity-bar__item-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.5;
+    line-height: 1;
+}
+
+.activity-bar__item-divider {
+    padding: 0 0.2rem;
+}
+
+.game-icon {
+    height: 1.125rem;
+    border-radius: 2px;
+}
+
+.vertical-break {
+    height: 1.25rem;
+    width: 1px;
+    margin: 0 0.25rem;
+    background-color: var(--border, #e1e1e1);
+    border-radius: 5px;
+    align-self: center;
+    flex-shrink: 0;
 }
 </style>

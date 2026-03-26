@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="splash-body">
         <hero :title=heroTitle :subtitle='splashText' :heroType=heroType />
         <div class='notification is-warning'>
             <p>Game updates may break mods. If a new update has been released, please be patient.</p>
@@ -205,3 +205,13 @@ onMounted(async () => {
     moveToNextScreen();
 })
 </script>
+
+<style lang="scss" scoped>
+#splash-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+</style>

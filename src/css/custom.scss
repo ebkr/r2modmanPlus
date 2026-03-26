@@ -42,6 +42,13 @@ select {
     color: $menu-item-active-color;
 }
 
+.menu-label {
+    color: var(--menu-label-color, #7a7a7a);
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+}
+
 .pagination-link.is-current {
     background-color: $pagination-current-background-color;
     border-color: $pagination-current-border-color !important;
@@ -513,4 +520,8 @@ code {
             background: $scrollbar-background-hover;
         }
     }
+}
+
+.v-popper__popper {
+    z-index: 100 !important;
 }

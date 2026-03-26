@@ -1626,7 +1626,7 @@
             ]
           }
         },
-        "wikiUrl": "https://atlyss.wiki.gg/wiki/ATLYSS_Wiki",
+        "wikiUrl": "https://github.com/AtlyssModding/ATLYSS-Modding-Resources",
         "discordUrl": "https://discord.gg/hQceRJ7pEW",
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
@@ -2606,7 +2606,7 @@
             ]
           }
         },
-        "discordUrl": "https://discord.gg/TmBBV2qRuq"
+        "discordUrl": "https://discord.gg/freesoulbrc"
       }
     },
     "bonelab": {
@@ -8034,6 +8034,9 @@
           },
           "tweaks-and-quality-of-life": {
             "label": "Tweaks & Quality Of Life"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
           }
         },
         "sections": {
@@ -10313,7 +10316,29 @@
             "幻兽帕鲁"
           ],
           "packageLoader": "shimloader",
-          "installRules": [],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
           "relativeFileExclusions": null
         }
       ],
@@ -10395,7 +10420,29 @@
             "恐慌核心"
           ],
           "packageLoader": "shimloader",
-          "installRules": [],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
           "relativeFileExclusions": null
         }
       ],
@@ -12067,6 +12114,9 @@
           },
           "server-side": {
             "label": "Server-side"
+          },
+          "mod-jam-1": {
+            "label": "Mod Jam 1 - Void"
           }
         },
         "sections": {
@@ -15497,11 +15547,17 @@
           "tools": {
             "label": "Tools"
           },
+          "cheats": {
+            "label": "Cheats"
+          },
           "misc": {
             "label": "Misc"
           },
           "0-62-branch": {
             "label": "0.62 Branch"
+          },
+          "0-66-branch": {
+            "label": "0.66 Branch"
           },
           "manual-dependencies": {
             "label": "Requires Manual Dependencies"
@@ -15512,7 +15568,8 @@
             "name": "Main Branch",
             "excludeCategories": [
               "modpacks",
-              "0-62-branch"
+              "0-62-branch",
+              "0-66-branch"
             ]
           },
           "main-modpacks": {
@@ -15521,7 +15578,8 @@
               "modpacks"
             ],
             "excludeCategories": [
-              "0-62-branch"
+              "0-62-branch",
+              "0-66-branch"
             ]
           },
           "0-62": {
@@ -15538,6 +15596,22 @@
             "requireCategories": [
               "modpacks",
               "0-62-branch"
+            ]
+          },
+          "0-66": {
+            "name": "0.66 Branch",
+            "requireCategories": [
+              "0-66-branch"
+            ],
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "0-66-modpacks": {
+            "name": "0.66 Branch Modpacks",
+            "requireCategories": [
+              "modpacks",
+              "0-66-branch"
             ]
           }
         },
@@ -17190,7 +17264,29 @@
             "虚空之声"
           ],
           "packageLoader": "shimloader",
-          "installRules": [],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
           "relativeFileExclusions": null
         }
       ],
@@ -18685,6 +18781,128 @@
       },
       "r2modman": null
     },
+    "a-gentlemens-dispute": {
+      "uuid": "ffe89e5e-c199-48d0-9ff5-48f0ad04c700",
+      "label": "a-gentlemens-dispute",
+      "meta": {
+        "displayName": "A Gentlemen's Dispute",
+        "iconUrl": "a-gentlemens-dispute.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2820700"
+            }
+          ],
+          "steamFolderName": "A Gentlemen's Dispute",
+          "dataFolderName": "A Gentlemen's Dispute_Data",
+          "exeNames": [
+            "A Gentlemen's Dispute.exe",
+            "AGentlemensDispute.app"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "A Gentlemen's Dispute",
+            "iconUrl": "a-gentlemens-dispute.webp"
+          },
+          "settingsIdentifier": "AgentlemensDispute",
+          "internalFolderName": "AgentlemensDispute",
+          "packageIndex": "https://thunderstore.io/c/a-gentlemens-dispute/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "AGD",
+            "礼帽大乱斗"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "A Gentlemen's Dispute",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Polite mayhem awaits! Hurl traps, swing bats, and detonate all in sight as you vie to be the last gentleman standing. Refined chaos for up to 8 players - anything goes, so long as it's done with class!"
+      }
+    },
     "aeruta": {
       "uuid": "70e4bc07-8642-44f1-a0a5-575eac59bd60",
       "label": "aeruta",
@@ -18886,7 +19104,67 @@
         "displayName": "Astroneer",
         "iconUrl": null
       },
-      "distributions": [],
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "361420"
+        }
+      ],
+      "r2modman": [
+        {
+          "meta": {
+            "displayName": "Astroneer",
+            "iconUrl": "astroneer.webp"
+          },
+          "internalFolderName": "Astroneer",
+          "dataFolderName": "Astro",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "361420"
+            }
+          ],
+          "settingsIdentifier": "Astroneer",
+          "packageIndex": "https://thunderstore.io/c/astroneer/api/v1/package-listing-index/",
+          "steamFolderName": "ASTRONEER",
+          "exeNames": [
+            "Astro.exe"
+          ],
+          "gameInstanceType": "game",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "异星探险家",
+            "异星旅人"
+          ],
+          "packageLoader": "shimloader",
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".pak"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
       "thunderstore": {
         "displayName": "Astroneer",
         "categories": {
@@ -18919,9 +19197,10 @@
         },
         "wikiUrl": "https://astroneermodding.readthedocs.io/en/latest/",
         "discordUrl": "https://discord.gg/astroneer-modding-774729322674126858",
-        "autolistPackageIds": []
-      },
-      "r2modman": null
+        "autolistPackageIds": [
+          "Thunderstore-unreal_shimloader"
+        ]
+      }
     },
     "baby-steps": {
       "uuid": "02ecb2ec-5bd1-402c-ab52-b87b3abc5d90",
@@ -18953,7 +19232,7 @@
           "settingsIdentifier": "BabySteps",
           "internalFolderName": "BabySteps",
           "packageIndex": "https://thunderstore.io/c/baby-steps/api/v1/package-listing-index/",
-          "gameSelectionDisplayMode": "hidden",
+          "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
             "一步一脚印"
           ],
@@ -19189,10 +19468,10 @@
           "distributions": [
             {
               "platform": "steam",
-              "identifier": "3821880"
+              "identifier": "4231580"
             }
           ],
-          "steamFolderName": "BeetleBall Playtest",
+          "steamFolderName": "Beetleball Demo",
           "dataFolderName": "Beetleball_Data",
           "exeNames": [
             "Beetleball.exe"
@@ -19213,6 +19492,7 @@
       ],
       "thunderstore": {
         "displayName": "Beetleball",
+        "shortDescription": "Score goals with dungballs in Beetleball, the Greatest Online Multiplayer Class-based Dung Beetle Soccer Game TO EVER EXIST",
         "categories": {
           "mods": {
             "label": "Mods"
@@ -19453,6 +19733,86 @@
         ]
       }
     },
+    "big-ambitions": {
+      "uuid": "2c4ef1aa-08bb-4ed8-9b74-4a23b390915c",
+      "label": "big-ambitions",
+      "meta": {
+        "displayName": "Big Ambitions",
+        "iconUrl": "big-ambitions.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1331550"
+            }
+          ],
+          "steamFolderName": "Big Ambitions",
+          "dataFolderName": "Big Ambitions_Data",
+          "exeNames": [
+            "Big Ambitions.exe",
+            "Big Ambitions.app"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Big Ambitions",
+            "iconUrl": "big-ambitions.webp"
+          },
+          "settingsIdentifier": "BigAmbitions",
+          "internalFolderName": "BigAmbitions",
+          "packageIndex": "https://thunderstore.io/c/big-ambitions/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Big Ambitions",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/hovgaardgames",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Big Ambitions is a revolutionary role-playing business sim. Go from nothing to the biggest entrepreneur in New York by opening small businesses or slowly building huge corporations any way you like."
+      }
+    },
     "broforce": {
       "uuid": "dcebc888-06d8-436f-b7e7-ed08713f68bd",
       "label": "broforce",
@@ -19590,7 +19950,9 @@
           "internalFolderName": "CarrierDeck",
           "packageIndex": "https://thunderstore.io/c/carrier-deck/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "甲板指挥官"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -20238,6 +20600,7 @@
       ],
       "thunderstore": {
         "displayName": "Crawlspace 2",
+        "discordUrl": "https://discord.gg/BDZ6NjegeR",
         "categories": {
           "mods": {
             "label": "Mods"
@@ -20275,6 +20638,125 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "crawlspace": {
+      "uuid": "52f15796-8648-4247-8a84-9ef16ea2103c",
+      "label": "crawlspace",
+      "meta": {
+        "displayName": "Crawlspace",
+        "iconUrl": "crawlspace.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1787860"
+            }
+          ],
+          "steamFolderName": "Crawlspace",
+          "dataFolderName": "Crawlspace_Data",
+          "exeNames": [
+            "Crawlspace.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Crawlspace",
+            "iconUrl": "crawlspace.webp"
+          },
+          "settingsIdentifier": "Crawlspace",
+          "internalFolderName": "Crawlspace",
+          "packageIndex": "https://thunderstore.io/c/crawlspace/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Crawlspace",
+        "discordUrl": "https://discord.gg/BDZ6NjegeR",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "You saw an Ad about someone needing help with an odd job, retrieving his daughters missing dolls. Sounding like easy cash, you leave a message telling him you are interested. but as the nights progress, you realize why nobody else wanted to take this job."
       }
     },
     "crime-simulator": {
@@ -20396,6 +20878,163 @@
         ]
       }
     },
+    "cryo": {
+      "uuid": "000d475a-d3d2-45e3-9059-2994929441a8",
+      "label": "cryo",
+      "meta": {
+        "displayName": "CRYO",
+        "iconUrl": "cryo.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2564910"
+            }
+          ],
+          "steamFolderName": "CRYO",
+          "dataFolderName": "Cryo_Data",
+          "exeNames": [
+            "Cryo.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "CRYO",
+            "iconUrl": "cryo.webp"
+          },
+          "settingsIdentifier": "Cryo",
+          "internalFolderName": "Cryo",
+          "packageIndex": "https://thunderstore.io/c/cryo/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "CRYO",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "CRYO is a multiplayer co-op survival horror for 1-4 players. You have been deployed by your company to various locations around the Antarctic due to communication issues. What awaits you in these dark, remote regions is far more sinister than a technical fault..."
+      }
+    },
+    "cursed-words": {
+      "uuid": "4363e08e-0e9d-4578-a8ab-9c28ce866280",
+      "label": "cursed-words",
+      "meta": {
+        "displayName": "Cursed Words",
+        "iconUrl": "cursed-words.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "4264890"
+            }
+          ],
+          "steamFolderName": "Cursed Words Demo",
+          "dataFolderName": "Cursed Words_Data",
+          "exeNames": [
+            "Cursed Words.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Cursed Words",
+            "iconUrl": "cursed-words.webp"
+          },
+          "settingsIdentifier": "CursedWords",
+          "internalFolderName": "CursedWords",
+          "packageIndex": "https://thunderstore.io/c/cursed-words/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Cursed Words",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/7vqFuNCE8v",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Starts as Boggle, ends as Schrodinger - Cursed Words is a roguelike adventure about writing words... for a while, until words become NUM83R5, or chess pieces, or the infinite void."
+      }
+    },
     "darkwater": {
       "uuid": "fde8a66c-d967-4505-adf3-5d9fe27bcc58",
       "label": "darkwater",
@@ -20514,6 +21153,125 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "deadly-delivery": {
+      "uuid": "1fd29521-6a2d-4206-abc8-bc2f3a61ac83",
+      "label": "deadly-delivery",
+      "meta": {
+        "displayName": "Deadly Delivery",
+        "iconUrl": "deadly-delivery.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3743090"
+            }
+          ],
+          "steamFolderName": "Deadly Delivery",
+          "dataFolderName": "Deadly Delivery_Data",
+          "exeNames": [
+            "Deadly Delivery.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Deadly Delivery",
+            "iconUrl": "deadly-delivery.webp"
+          },
+          "settingsIdentifier": "DeadlyDelivery",
+          "internalFolderName": "DeadlyDelivery",
+          "packageIndex": "https://thunderstore.io/c/deadly-delivery/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Deadly Delivery",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/vxaFQr9jqC",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "An online VR co-op horror game about delivering parcels into haunted mines. Avoid monsters, drop off packages, and pray you reach the quota! Team up with up to 3 other delivery goblins, survive your shift and pay back your student loans."
       }
     },
     "dicey-dungeons": {
@@ -20664,6 +21422,86 @@
         ]
       },
       "r2modman": null
+    },
+    "ducks-can-drive": {
+      "uuid": "5bbaccc5-d8fe-4fab-877d-7dec9db01630",
+      "label": "ducks-can-drive",
+      "meta": {
+        "displayName": "Ducks Can Drive",
+        "iconUrl": "ducks-can-drive.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2472840"
+            }
+          ],
+          "steamFolderName": "Ducks Can Drive",
+          "dataFolderName": "Ducks Can Drive_Data",
+          "exeNames": [
+            "Ducks Can Drive.exe",
+            "DuckDrive.x86_64",
+            "Ducks Can Drive.app"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Ducks Can Drive",
+            "iconUrl": "ducks-can-drive.webp"
+          },
+          "settingsIdentifier": "DucksCanDrive",
+          "internalFolderName": "DucksCanDrive",
+          "packageIndex": "https://thunderstore.io/c/ducks-can-drive/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Ducks Can Drive",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Ducks like to race, even in their own cars! Earn money by delivering food to fellow ducks in the city, then use this money to upgrade your vehicle. The better the vehicle, the better chance you have to win the race at the end of the day!"
+      }
     },
     "easy-delivery-co": {
       "uuid": "3f5f3de7-0056-48d1-b5fe-55bb4f395874",
@@ -20864,7 +21702,9 @@
           "internalFolderName": "FactoryPlanner",
           "packageIndex": "https://thunderstore.io/c/factory-planner/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "卡牌工厂"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -21446,6 +22286,207 @@
         ]
       }
     },
+    "gorilla-tag": {
+      "uuid": "f82a5eb3-c8b7-49af-99d8-a812ab87f8fc",
+      "label": "gorilla-tag",
+      "meta": {
+        "displayName": "Gorilla Tag",
+        "iconUrl": "gorilla-tag.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1533390"
+            }
+          ],
+          "steamFolderName": "Gorilla Tag",
+          "dataFolderName": "Gorilla Tag_Data",
+          "exeNames": [
+            "Gorilla Tag.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Gorilla Tag",
+            "iconUrl": "gorilla-tag.webp"
+          },
+          "settingsIdentifier": "GorillaTag",
+          "internalFolderName": "GorillaTag",
+          "packageIndex": "https://thunderstore.io/c/gorilla-tag/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "GT"
+          ],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Gorilla Tag",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/5rTmMjtECf",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Run, jump, and climb using only your hands. Play tag or infection with people online. Run away from the infected players, or outmaneuver the survivors to catch them. Embrace your inner ape."
+      }
+    },
+    "granny-chapter-two": {
+      "uuid": "e0c90bc6-675a-4ae7-a60e-57696d4a2205",
+      "label": "granny-chapter-two",
+      "meta": {
+        "displayName": "Granny: Chapter Two",
+        "iconUrl": "granny-chapter-two.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1205040"
+            }
+          ],
+          "steamFolderName": "Granny Chapter Two",
+          "dataFolderName": "Granny Chapter Two_Data",
+          "exeNames": [
+            "Granny Chapter Two.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Granny: Chapter Two",
+            "iconUrl": "granny-chapter-two.webp"
+          },
+          "settingsIdentifier": "GrannyChapterTwo",
+          "internalFolderName": "GrannyChapterTwo",
+          "packageIndex": "https://thunderstore.io/c/granny-chapter-two/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "恐怖奶奶2"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Granny: Chapter Two",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "You have to escape Granny and Grandpa...You have five days..."
+      }
+    },
     "grey-hack": {
       "uuid": "40ea6b48-e390-42f9-9454-d49ade3212eb",
       "label": "grey-hack",
@@ -22018,6 +23059,128 @@
         "wikiUrl": "https://hytalemodding.dev/",
         "discordUrl": "https://discord.gg/hytalemodding",
         "autolistPackageIds": []
+      }
+    },
+    "jump-scare-mansion": {
+      "uuid": "bd792010-c61e-454a-bf51-b3c28243e14f",
+      "label": "jump-scare-mansion",
+      "meta": {
+        "displayName": "Spooky's Jump Scare Mansion: HD Renovation",
+        "iconUrl": "jump-scare-mansion.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "577690"
+            }
+          ],
+          "steamFolderName": "Spooky's Jump Scare Mansion HD Renovation",
+          "dataFolderName": "SpookyUnity_Data",
+          "exeNames": [
+            "SpookyUnity.exe",
+            "SpookyUnity.app"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Spooky's Jump Scare Mansion: HD Renovation",
+            "iconUrl": "jump-scare-mansion.webp"
+          },
+          "settingsIdentifier": "SpookysJumpScareMansionHdRenovation",
+          "internalFolderName": "SpookysJumpScareMansionHdRenovation",
+          "packageIndex": "https://thunderstore.io/c/jump-scare-mansion/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "SJSM",
+            "Spookys"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Spooky's Jump Scare Mansion: HD Renovation",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Can you survive 1000 rooms of cute terror? Or will you break once the cuteness starts to fade off and you're running for your life from the unspeakable hideous beings that shake and writhe in bowels of this house? They wait for you, they wait and hunger for meeting you."
       }
     },
     "jump-space": {
@@ -23023,6 +24186,54 @@
         ]
       }
     },
+    "mewgenics": {
+      "uuid": "5f9befbe-f606-4498-a1c1-f4dabcd8d5c2",
+      "label": "mewgenics",
+      "meta": {
+        "displayName": "Mewgenics",
+        "iconUrl": "mewgenics.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Mewgenics",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "shortDescription": "Build the ultimate cat army through tactical breeding and send them into deep, challenging turn-based adventures. Draft abilities, collect items, and manipulate genetics across generations in this roguelike tactics game from the creators of The Binding of Isaac and The End is Nigh."
+      }
+    },
     "mimesis": {
       "uuid": "aeebfea4-fe72-4535-9cea-0b880b5d270c",
       "label": "mimesis",
@@ -23718,7 +24929,8 @@
           "steamFolderName": "On-Together/On-Together",
           "dataFolderName": "On-Together_Data",
           "exeNames": [
-            "On-Together.exe"
+            "On-Together.exe",
+            "OnTogether.exe"
           ],
           "packageLoader": "bepinex",
           "meta": {
@@ -23729,7 +24941,9 @@
           "internalFolderName": "OnTogetherVirtualCoWorking",
           "packageIndex": "https://thunderstore.io/c/on-together/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "随时在一起：云自习"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -24256,6 +25470,56 @@
         ]
       }
     },
+    "paradiddle": {
+      "uuid": "7bdd9e41-0144-4fa0-9727-580134489cfb",
+      "label": "paradiddle",
+      "meta": {
+        "displayName": "Paradiddle",
+        "iconUrl": "paradiddle.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Paradiddle",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/paradiddle",
+        "wikiUrl": "https://github.com/kasapoli/ParadiddleWorkshop",
+        "shortDescription": "So much more than a VR drum kit. Learn to drum step by step, flex your skills with the built-in rhythm game, and build your own custom kit from a library of 60+ percussive instruments without the limitations of money or physical space. Fun, intuitive drumming for pros and newcomers alike!"
+      }
+    },
     "patapon-1-2-replay": {
       "uuid": "d6dfad59-d6df-4398-b5d8-84dbbbace85f",
       "label": "patapon-1-2-replay",
@@ -24559,6 +25823,87 @@
         ]
       }
     },
+    "pit-of-goblin": {
+      "uuid": "642cb413-e757-4276-a329-5b7539e527e1",
+      "label": "pit-of-goblin",
+      "meta": {
+        "displayName": "Pit of Goblin",
+        "iconUrl": "pit-of-goblin.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3253530"
+            }
+          ],
+          "steamFolderName": "Pit of Goblin",
+          "dataFolderName": "Pit of Goblin_Data",
+          "exeNames": [
+            "Pit of Goblin.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Pit of Goblin",
+            "iconUrl": "pit-of-goblin.webp"
+          },
+          "settingsIdentifier": "PitOfGoblin",
+          "internalFolderName": "PitOfGoblin",
+          "packageIndex": "https://thunderstore.io/c/pit-of-goblin/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "POG",
+            "PoG"
+          ],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Pit of Goblin",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "In this online horror co-op, you play as a scrappy goblin, scavenging dungeons, dodging traps, and fleeing monsters to feed the Goblin King-Queen. Team up with goblin pals, or go rogue, as you dive deep and cause chaos! Fail to feed them, and you might be the next meal!"
+      }
+    },
     "project-arrhythmia": {
       "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
       "label": "project-arrhythmia",
@@ -24591,7 +25936,8 @@
           "packageIndex": "https://thunderstore.io/c/project-arrhythmia/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "PA"
+            "PA",
+            "心律失常"
           ],
           "installRules": [
             {
@@ -25323,8 +26669,32 @@
           "internalFolderName": "RvThereYet",
           "packageIndex": "https://thunderstore.io/c/rv-there-yet/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
-          "installRules": [],
+          "additionalSearchStrings": [
+            "我们到了吗？"
+          ],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
           "relativeFileExclusions": null
         }
       ],
@@ -25739,6 +27109,114 @@
         ]
       }
     },
+    "soulcalibur-vi": {
+      "uuid": "cc86a7a4-1f50-4c49-bbd6-d2eb960fb894",
+      "label": "soulcalibur-vi",
+      "meta": {
+        "displayName": "SOULCALIBUR VI",
+        "iconUrl": "soulcalibur-vi.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "544750"
+            }
+          ],
+          "steamFolderName": "SoulcaliburVI",
+          "dataFolderName": "SoulcaliburVI",
+          "exeNames": [
+            "SoulcaliburVI.exe"
+          ],
+          "packageLoader": "shimloader",
+          "meta": {
+            "displayName": "SOULCALIBUR VI",
+            "iconUrl": "soulcalibur-vi.webp"
+          },
+          "settingsIdentifier": "SoulcaliburVi",
+          "internalFolderName": "SoulcaliburVi",
+          "packageIndex": "https://thunderstore.io/c/soulcalibur-vi/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "SC6",
+            "SCVI",
+            "Soul Calibur",
+            "灵魂能力6",
+            "刀魂6",
+            "剑魂6"
+          ],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "SOULCALIBUR VI",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/jsJ7XpP",
+        "autolistPackageIds": [
+          "Thunderstore-unreal_shimloader"
+        ],
+        "shortDescription": "Bring more than your fists to the fight! Featuring all-new battle mechanics and characters, SOULCALIBUR VI marks a new era of the historic franchise. Welcome back to the stage of history!"
+      }
+    },
     "spaghetti-kart": {
       "uuid": "e9398d86-9fc8-4a68-83e0-90bdacc50289",
       "label": "spaghetti-kart",
@@ -25917,7 +27395,9 @@
           "internalFolderName": "StolenRealm",
           "packageIndex": "https://thunderstore.io/c/stolen-realm/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "失落王国"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -26002,6 +27482,149 @@
           "BepInEx-BepInExPack"
         ],
         "shortDescription": "Stolen Realm is a simultaneous turn-based tactical dungeon crawling looter with action RPG elements where you control up to 6 heroes, solo or through online co-op, venturing forth in adventures set in a high-fantasy, low-poly world."
+      }
+    },
+    "super-battle-golf": {
+      "uuid": "ff4d426c-8315-4e7c-b942-ce9d60dc2082",
+      "label": "super-battle-golf",
+      "meta": {
+        "displayName": "Super Battle Golf",
+        "iconUrl": "super-battle-golf.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "4069520"
+            }
+          ],
+          "steamFolderName": "Super Battle Golf",
+          "dataFolderName": "Super Battle Golf_Data",
+          "exeNames": [
+            "Super Battle Golf.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Super Battle Golf",
+            "iconUrl": "super-battle-golf.webp"
+          },
+          "settingsIdentifier": "SuperBattleGolf",
+          "internalFolderName": "SuperBattleGolf",
+          "packageIndex": "https://thunderstore.io/c/super-battle-golf/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "SBG",
+            "超级高尔夫大乱斗"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Super Battle Golf",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "items": {
+            "label": "Items"
+          },
+          "qol": {
+            "label": "Quality of Life"
+          },
+          "cosmetics": {
+            "label": "Cosmetics"
+          },
+          "courses": {
+            "label": "Courses"
+          },
+          "clientside": {
+            "label": "Client-Side"
+          },
+          "hostonly": {
+            "label": "Host-Only"
+          },
+          "allclients": {
+            "label": "All Clients Required"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/CCcvS2JDjH",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "An online 1-8 player golf game where everyone plays at the same time. Swing, shoot, sabotage, and finish first by any means necessary in a free-for-all rush to the hole."
       }
     },
     "super-fantasy-kingdom": {
@@ -26253,7 +27876,9 @@
           "internalFolderName": "TheFarmerWasReplaced",
           "packageIndex": "https://thunderstore.io/c/the-farmer-was-replaced/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "编程农场"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -26536,6 +28161,126 @@
         "autolistPackageIds": [
           "LavaGang-MelonLoader"
         ]
+      }
+    },
+    "very-very-valet": {
+      "uuid": "f5e40d47-b6b6-46a0-b8e1-cefcd851e796",
+      "label": "very-very-valet",
+      "meta": {
+        "displayName": "Very Very Valet",
+        "iconUrl": "very-very-valet.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1448840"
+            }
+          ],
+          "steamFolderName": "Very Very Valet/windows",
+          "dataFolderName": "VeryVeryValet_Release_Data",
+          "exeNames": [
+            "VeryVeryValet_Release.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Very Very Valet",
+            "iconUrl": "very-very-valet.webp"
+          },
+          "settingsIdentifier": "VeryVeryValet",
+          "internalFolderName": "VeryVeryValet",
+          "packageIndex": "https://thunderstore.io/c/very-very-valet/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "VVV"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Very Very Valet",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Your next chaotic couch co-op party game is here! Drive, boost, and crash like wild with friends in this parking palooza"
       }
     },
     "vigil": {
@@ -26876,6 +28621,30 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "client": {
+            "label": "Client Side"
+          },
+          "all": {
+            "label": "All Clients"
+          },
+          "host": {
+            "label": "Host Only"
+          },
+          "wands": {
+            "label": "Wands"
+          },
+          "robes": {
+            "label": "Robes"
+          },
+          "items": {
+            "label": "Items"
+          },
+          "qol": {
+            "label": "Quality Of Life"
+          },
+          "contracts": {
+            "label": "Contracts"
           }
         },
         "sections": {
@@ -26894,7 +28663,8 @@
         },
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
-        ]
+        ],
+        "discordUrl": "https://discord.gg/kzKBmD8HrB"
       }
     },
     "zelda-64-recompiled": {
@@ -27391,7 +29161,7 @@
           ]
         }
       },
-      "wikiUrl": "https://atlyss.wiki.gg/wiki/ATLYSS_Wiki",
+      "wikiUrl": "https://github.com/AtlyssModding/ATLYSS-Modding-Resources",
       "discordUrl": "https://discord.gg/hQceRJ7pEW",
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
@@ -27702,7 +29472,7 @@
           ]
         }
       },
-      "discordUrl": "https://discord.gg/TmBBV2qRuq"
+      "discordUrl": "https://discord.gg/freesoulbrc"
     },
     "bopl-battle": {
       "displayName": "Bopl Battle",
@@ -29177,6 +30947,9 @@
         },
         "tweaks-and-quality-of-life": {
           "label": "Tweaks & Quality Of Life"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
         }
       },
       "sections": {
@@ -30338,6 +32111,9 @@
         },
         "server-side": {
           "label": "Server-side"
+        },
+        "mod-jam-1": {
+          "label": "Mod Jam 1 - Void"
         }
       },
       "sections": {
@@ -31205,11 +32981,17 @@
         "tools": {
           "label": "Tools"
         },
+        "cheats": {
+          "label": "Cheats"
+        },
         "misc": {
           "label": "Misc"
         },
         "0-62-branch": {
           "label": "0.62 Branch"
+        },
+        "0-66-branch": {
+          "label": "0.66 Branch"
         },
         "manual-dependencies": {
           "label": "Requires Manual Dependencies"
@@ -31220,7 +33002,8 @@
           "name": "Main Branch",
           "excludeCategories": [
             "modpacks",
-            "0-62-branch"
+            "0-62-branch",
+            "0-66-branch"
           ]
         },
         "main-modpacks": {
@@ -31229,7 +33012,8 @@
             "modpacks"
           ],
           "excludeCategories": [
-            "0-62-branch"
+            "0-62-branch",
+            "0-66-branch"
           ]
         },
         "0-62": {
@@ -31246,6 +33030,22 @@
           "requireCategories": [
             "modpacks",
             "0-62-branch"
+          ]
+        },
+        "0-66": {
+          "name": "0.66 Branch",
+          "requireCategories": [
+            "0-66-branch"
+          ],
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "0-66-modpacks": {
+          "name": "0.66 Branch Modpacks",
+          "requireCategories": [
+            "modpacks",
+            "0-66-branch"
           ]
         }
       },
@@ -32188,6 +33988,47 @@
       "discordUrl": "https://discord.com/invite/shipofharkinian",
       "autolistPackageIds": []
     },
+    "a-gentlemens-dispute": {
+      "displayName": "A Gentlemen's Dispute",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Polite mayhem awaits! Hurl traps, swing bats, and detonate all in sight as you vie to be the last gentleman standing. Refined chaos for up to 8 players - anything goes, so long as it's done with class!"
+    },
     "aeruta": {
       "displayName": "Aeruta",
       "categories": {
@@ -32298,7 +34139,9 @@
       },
       "wikiUrl": "https://astroneermodding.readthedocs.io/en/latest/",
       "discordUrl": "https://discord.gg/astroneer-modding-774729322674126858",
-      "autolistPackageIds": []
+      "autolistPackageIds": [
+        "Thunderstore-unreal_shimloader"
+      ]
     },
     "baby-steps": {
       "displayName": "Baby Steps",
@@ -32424,6 +34267,7 @@
     },
     "beetleball": {
       "displayName": "Beetleball",
+      "shortDescription": "Score goals with dungballs in Beetleball, the Greatest Online Multiplayer Class-based Dung Beetle Soccer Game TO EVER EXIST",
       "categories": {
         "mods": {
           "label": "Mods"
@@ -32542,6 +34386,48 @@
       "autolistPackageIds": [
         "LavaGang-MelonLoader"
       ]
+    },
+    "big-ambitions": {
+      "displayName": "Big Ambitions",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/hovgaardgames",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Big Ambitions is a revolutionary role-playing business sim. Go from nothing to the biggest entrepreneur in New York by opening small businesses or slowly building huge corporations any way you like."
     },
     "broforce": {
       "displayName": "Broforce",
@@ -32858,6 +34744,7 @@
     },
     "crawlspace-2": {
       "displayName": "Crawlspace 2",
+      "discordUrl": "https://discord.gg/BDZ6NjegeR",
       "categories": {
         "mods": {
           "label": "Mods"
@@ -32895,6 +34782,48 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "crawlspace": {
+      "displayName": "Crawlspace",
+      "discordUrl": "https://discord.gg/BDZ6NjegeR",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "You saw an Ad about someone needing help with an odd job, retrieving his daughters missing dolls. Sounding like easy cash, you leave a message telling him you are interested. but as the nights progress, you realize why nobody else wanted to take this job."
     },
     "crime-simulator": {
       "displayName": "Crime Simulator",
@@ -32936,6 +34865,89 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "cryo": {
+      "displayName": "CRYO",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "CRYO is a multiplayer co-op survival horror for 1-4 players. You have been deployed by your company to various locations around the Antarctic due to communication issues. What awaits you in these dark, remote regions is far more sinister than a technical fault..."
+    },
+    "cursed-words": {
+      "displayName": "Cursed Words",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/7vqFuNCE8v",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Starts as Boggle, ends as Schrodinger - Cursed Words is a roguelike adventure about writing words... for a while, until words become NUM83R5, or chess pieces, or the infinite void."
+    },
     "darkwater": {
       "displayName": "Darkwater",
       "categories": {
@@ -32975,6 +34987,48 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "deadly-delivery": {
+      "displayName": "Deadly Delivery",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/vxaFQr9jqC",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "An online VR co-op horror game about delivering parcels into haunted mines. Avoid monsters, drop off packages, and pray you reach the quota! Team up with up to 3 other delivery goblins, survive your shift and pay back your student loans."
     },
     "dicey-dungeons": {
       "displayName": "Dicey Dungeons",
@@ -33094,6 +35148,47 @@
       "autolistPackageIds": [
         "Thunderstore-unreal_shimloader"
       ]
+    },
+    "ducks-can-drive": {
+      "displayName": "Ducks Can Drive",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Ducks like to race, even in their own cars! Earn money by delivering food to fellow ducks in the city, then use this money to upgrade your vehicle. The better the vehicle, the better chance you have to win the race at the end of the day!"
     },
     "easy-delivery-co": {
       "displayName": "Easy Delivery Co",
@@ -33410,6 +35505,89 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "gorilla-tag": {
+      "displayName": "Gorilla Tag",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/5rTmMjtECf",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Run, jump, and climb using only your hands. Play tag or infection with people online. Run away from the infected players, or outmaneuver the survivors to catch them. Embrace your inner ape."
+    },
+    "granny-chapter-two": {
+      "displayName": "Granny: Chapter Two",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "You have to escape Granny and Grandpa...You have five days..."
+    },
     "grey-hack": {
       "displayName": "Grey Hack",
       "categories": {
@@ -33713,6 +35891,47 @@
       "wikiUrl": "https://hytalemodding.dev/",
       "discordUrl": "https://discord.gg/hytalemodding",
       "autolistPackageIds": []
+    },
+    "jump-scare-mansion": {
+      "displayName": "Spooky's Jump Scare Mansion: HD Renovation",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Can you survive 1000 rooms of cute terror? Or will you break once the cuteness starts to fade off and you're running for your life from the unspeakable hideous beings that shake and writhe in bowels of this house? They wait for you, they wait and hunger for meeting you."
     },
     "jump-space": {
       "displayName": "Jump Space",
@@ -34096,6 +36315,44 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack_IL2CPP"
       ]
+    },
+    "mewgenics": {
+      "displayName": "Mewgenics",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "shortDescription": "Build the ultimate cat army through tactical breeding and send them into deep, challenging turn-based adventures. Draft abilities, collect items, and manipulate genetics across generations in this roguelike tactics game from the creators of The Binding of Isaac and The End is Nigh."
     },
     "mimesis": {
       "displayName": "Mimesis",
@@ -34602,6 +36859,46 @@
         "BepInEx-BepInExPack_IL2CPP"
       ]
     },
+    "paradiddle": {
+      "displayName": "Paradiddle",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/paradiddle",
+      "wikiUrl": "https://github.com/kasapoli/ParadiddleWorkshop",
+      "shortDescription": "So much more than a VR drum kit. Learn to drum step by step, flex your skills with the built-in rhythm game, and build your own custom kit from a library of 60+ percussive instruments without the limitations of money or physical space. Fun, intuitive drumming for pros and newcomers alike!"
+    },
     "patapon-1-2-replay": {
       "displayName": "PATAPON 1+2 REPLAY",
       "categories": {
@@ -34737,6 +37034,47 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "pit-of-goblin": {
+      "displayName": "Pit of Goblin",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "In this online horror co-op, you play as a scrappy goblin, scavenging dungeons, dodging traps, and fleeing monsters to feed the Goblin King-Queen. Team up with goblin pals, or go rogue, as you dive deep and cause chaos! Fail to feed them, and you might be the next meal!"
     },
     "project-arrhythmia": {
       "displayName": "Project Arrhythmia",
@@ -35285,6 +37623,48 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "soulcalibur-vi": {
+      "displayName": "SOULCALIBUR VI",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/jsJ7XpP",
+      "autolistPackageIds": [
+        "Thunderstore-unreal_shimloader"
+      ],
+      "shortDescription": "Bring more than your fists to the fight! Featuring all-new battle mechanics and characters, SOULCALIBUR VI marks a new era of the historic franchise. Welcome back to the stage of history!"
+    },
     "spaghetti-kart": {
       "displayName": "Spaghetti Kart",
       "categories": {
@@ -35442,6 +37822,69 @@
         "BepInEx-BepInExPack"
       ],
       "shortDescription": "Stolen Realm is a simultaneous turn-based tactical dungeon crawling looter with action RPG elements where you control up to 6 heroes, solo or through online co-op, venturing forth in adventures set in a high-fantasy, low-poly world."
+    },
+    "super-battle-golf": {
+      "displayName": "Super Battle Golf",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "qol": {
+          "label": "Quality of Life"
+        },
+        "cosmetics": {
+          "label": "Cosmetics"
+        },
+        "courses": {
+          "label": "Courses"
+        },
+        "clientside": {
+          "label": "Client-Side"
+        },
+        "hostonly": {
+          "label": "Host-Only"
+        },
+        "allclients": {
+          "label": "All Clients Required"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/CCcvS2JDjH",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "An online 1-8 player golf game where everyone plays at the same time. Swing, shoot, sabotage, and finish first by any means necessary in a free-for-all rush to the hole."
     },
     "super-fantasy-kingdom": {
       "displayName": "Super Fantasy Kingdom",
@@ -35685,6 +38128,47 @@
         "LavaGang-MelonLoader"
       ]
     },
+    "very-very-valet": {
+      "displayName": "Very Very Valet",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Your next chaotic couch co-op party game is here! Drive, boost, and crash like wild with friends in this parking palooza"
+    },
     "vigil": {
       "displayName": "Vigil",
       "categories": {
@@ -35823,6 +38307,30 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "client": {
+          "label": "Client Side"
+        },
+        "all": {
+          "label": "All Clients"
+        },
+        "host": {
+          "label": "Host Only"
+        },
+        "wands": {
+          "label": "Wands"
+        },
+        "robes": {
+          "label": "Robes"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "qol": {
+          "label": "Quality Of Life"
+        },
+        "contracts": {
+          "label": "Contracts"
         }
       },
       "sections": {
@@ -35841,7 +38349,8 @@
       },
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
-      ]
+      ],
+      "discordUrl": "https://discord.gg/kzKBmD8HrB"
     },
     "zelda-64-recompiled": {
       "displayName": "Zelda 64: Recompiled",

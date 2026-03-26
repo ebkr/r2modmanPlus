@@ -2,7 +2,7 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
 import ecosystem from "../../assets/data/ecosystem.json";
-import { ThunderstoreEcosystem }  from "../../assets/data/ecosystemTypes";
+import { R2Modman, ThunderstoreEcosystem } from "../../assets/data/ecosystemTypes";
 import jsonSchema from "../../assets/data/ecosystemJsonSchema.json";
 import R2Error from "../errors/R2Error";
 
@@ -43,14 +43,17 @@ export class EcosystemSchema {
     }
 
     /**
-     * Get a list of r2modman entries i.e. games supported by the mod manager.
+     * Get a list of [identifier, r2modman] entries i.e. games supported by the mod manager.
      */
     static get supportedGames() {
-        return Object.values(this.ecosystem.games).flatMap(
-            (game) => game.r2modman
-        ).filter(
-            (r2modman): r2modman is NonNullable<typeof r2modman> => r2modman != null
-        );
+        const result: [string, R2Modman][] = []
+        for (const [identifier, game] of Object.entries(this.ecosystem.games)) {
+            if (game.r2modman == null) continue;
+            for (const entry of game.r2modman) {
+                result.push([identifier, entry]);
+            }
+        }
+        return result;
     }
 
     static get modloaderPackages() {

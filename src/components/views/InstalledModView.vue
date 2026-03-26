@@ -58,6 +58,7 @@ const numberOfModsWithUpdates = computed<number>(() => store.getters['profile/mo
     display: flex;
     flex: 1;
     width: 100%;
+    margin-bottom: 1rem;
 }
 
 #no-mods-installed-info {

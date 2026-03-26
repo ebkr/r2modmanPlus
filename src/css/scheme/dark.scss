@@ -33,6 +33,7 @@
     --text-strong: #{$night-e};
 
     --hr-background-color: #{$night-2};
+    --nav-hr-background-color: #2e3a4c;
 
     --code-background: #{$night-2};
 
@@ -44,7 +45,12 @@
     --menu-item-color: #{$night-b};
     --menu-item-hover-background-color: #{$night-2};
     --menu-item-hover-color: #{$night-d};
-    --menu-label-color: #{$night-9};
+    --menu-item-active-background-color: rgba(85, 150, 255, 0.12);
+    --menu-label-color: #{$night-b};
+
+    --nav-active-color: rgba(0, 9, 25, 0.34);
+    --nav-active-secondary-color: rgba(105, 109, 119, 0.34);
+    --nav-active-text-color: #ffffff;
 
     --tabs-link-color: #{$night-b};
     --tabs-link-hover-color: #{$night-d};

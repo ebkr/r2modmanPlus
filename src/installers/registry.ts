@@ -1,8 +1,9 @@
 import { BepInExInstaller } from './BepInExInstaller';
 import { GodotMLInstaller } from './GodotMLInstaller';
 import { MelonLoaderInstaller } from './MelonLoaderInstaller';
+import { NoOpInstaller } from './NoOpInstaller';
 import { PackageInstaller } from './PackageInstaller';
-import { ShimloaderInstaller, ShimloaderPluginInstaller } from './ShimloaderInstaller';
+import { ShimloaderInstaller } from './ShimloaderInstaller';
 import { LovelyInstaller, LovelyPluginInstaller } from './LovelyInstaller';
 import { NorthstarInstaller } from './NorthstarInstaller';
 import { ReturnOfModdingInstaller, ReturnOfModdingPluginInstaller } from './ReturnOfModdingInstaller';
@@ -17,36 +18,34 @@ import { PackageLoader } from '../model/schema/ThunderstoreSchema';
 /**
  * Package loader installer registry
  */
-type LoaderInstallers = Exclude<PackageLoader, PackageLoader.NONE>;
 
-const PackageLoaderInstallers: Record<LoaderInstallers, PackageInstaller> = {
+export const PackageLoaderInstallers: Record<PackageLoader, PackageInstaller> = {
     [PackageLoader.BEPINEX]: new BepInExInstaller(),
     [PackageLoader.BEPISLOADER]: new BepisLoaderInstaller(),
     [PackageLoader.GDWEAVE]: new GDWeaveInstaller(),
     [PackageLoader.GODOTML]: new GodotMLInstaller(),
     [PackageLoader.LOVELY]: new LovelyInstaller(),
     [PackageLoader.MELONLOADER]: new MelonLoaderInstaller(),
+    [PackageLoader.NONE]: new NoOpInstaller(),
     [PackageLoader.NORTHSTAR]: new NorthstarInstaller(),
     [PackageLoader.RECURSIVE_MELONLOADER]: new RecursiveMelonLoaderInstaller(),
     [PackageLoader.RETURN_OF_MODDING]: new ReturnOfModdingInstaller(),
+    [PackageLoader.RIVET]: new RivetInstaller(),
     [PackageLoader.SHIMLOADER]: new ShimloaderInstaller(),
     [PackageLoader.UMM]: new UMMInstaller(),
-    [PackageLoader.RIVET]: new RivetInstaller(),
 };
-
-export function getPackageLoaderInstaller(loader: PackageLoader): PackageInstaller|null {
-    if (loader === PackageLoader.NONE) {
-        return null;
-    }
-
-    return PackageLoaderInstallers[loader];
-}
-
 
 /**
  * Plugin installer registry
  */
-type InstallRuleInstallers = PackageLoader.BEPINEX | PackageLoader.BEPISLOADER | PackageLoader.GODOTML | PackageLoader.MELONLOADER | PackageLoader.NORTHSTAR | PackageLoader.UMM;
+type InstallRuleInstallers =
+  | PackageLoader.BEPINEX
+  | PackageLoader.BEPISLOADER
+  | PackageLoader.GODOTML
+  | PackageLoader.MELONLOADER
+  | PackageLoader.NORTHSTAR
+  | PackageLoader.SHIMLOADER
+  | PackageLoader.UMM;
 type PluginInstallers = Exclude<PackageLoader, InstallRuleInstallers>;
 
 const PluginInstallers: Record<PluginInstallers, PackageInstaller> = {
@@ -55,7 +54,6 @@ const PluginInstallers: Record<PluginInstallers, PackageInstaller> = {
     [PackageLoader.NONE]: new DirectCopyInstaller(),
     [PackageLoader.RECURSIVE_MELONLOADER]: new RecursiveMelonLoaderPluginInstaller(),
     [PackageLoader.RETURN_OF_MODDING]: new ReturnOfModdingPluginInstaller(),
-    [PackageLoader.SHIMLOADER]: new ShimloaderPluginInstaller(),
     [PackageLoader.RIVET]: new RivetPluginInstaller(),
 };
 
@@ -66,6 +64,7 @@ function isPluginInstaller(loader: PackageLoader): loader is PluginInstallers {
         loader === PackageLoader.GODOTML ||
         loader === PackageLoader.MELONLOADER ||
         loader === PackageLoader.NORTHSTAR ||
+        loader === PackageLoader.SHIMLOADER ||
         loader === PackageLoader.UMM
     );
 }

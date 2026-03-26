@@ -1,4 +1,5 @@
 <template>
+    <ManagerActivityBar />
     <div id="config-editor">
         <ConfigSelectionLayout v-show="editing === null" @edit="bindEdit($event)"/>
         <ConfigEditLayout :config-file="editing" @changed="editing = null" v-if="editing"/>
@@ -9,6 +10,7 @@
 import ConfigSelectionLayout from '../components/config-components/ConfigSelectionLayout.vue';
 import ConfigFile from '../model/file/ConfigFile';
 import ConfigEditLayout from '../components/config-components/ConfigEditLayout.vue';
+import ManagerActivityBar from '../components/navigation/ManagerActivityBar.vue';
 import { ref } from 'vue';
 
 const editing = ref<ConfigFile | null>(null);
@@ -21,9 +23,11 @@ function bindEdit(editValue: ConfigFile | null) {
 
 <style lang="scss" scoped>
 #config-editor {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     grid-template-rows: 1fr;
     max-height: 100vh;
     width: 100%;
+    flex: 1;
 }
 </style>

@@ -7,7 +7,6 @@
             <router-view />
         </div>
         <GameRunningModal :activeGame="store.state.activeGame" />
-        <ProfileManagementModal />
     </div>
 </template>
 
@@ -15,7 +14,6 @@
 
 import NavigationMenu from './NavigationMenu.vue';
 import GameRunningModal from '../modals/GameRunningModal.vue';
-import ProfileManagementModal from '../modals/ProfileManagementModal.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 
@@ -30,7 +28,7 @@ const store = getStore<State>();
     padding: 0;
     margin-left: 0.75rem;
     overflow: hidden;
-    overflow-y: auto;
+    overflow-y: hidden;
     width: 100%;
 }
 
@@ -38,5 +36,6 @@ const store = getStore<State>();
     padding: 0;
     max-width: 100vw;
     display: flex;
+    flex: 1;
 }
 </style>
