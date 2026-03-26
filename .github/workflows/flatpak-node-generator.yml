@@ -1,3 +1,9 @@
+# This regenerates the generated-sources.json file 
+# It does this whenever the yarn lockfile is changed
+#
+# generated-sources.json needs to be up to date with the yarn lockfile
+# as it maps the yarn packages to downloadable tar.gz files
+# that are used by flatpak-builder (because flatpak-builder doesn't have network access when building the .flatpak)
 name: Generate Flatpak Node Sources
 
 on:
