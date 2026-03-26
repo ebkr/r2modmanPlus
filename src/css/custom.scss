@@ -521,3 +521,7 @@ code {
         }
     }
 }
+
+.v-popper__popper {
+    z-index: 100 !important;
+}
