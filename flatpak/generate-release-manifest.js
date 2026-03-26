@@ -45,9 +45,12 @@ function parseArgs(argv) {
 const { input, output, repo, commit } = parseArgs(process.argv);
 
 const raw = fs.readFileSync(input, 'utf8');
-const manifest = YAML.parse(raw);
 
-if (!manifest || typeof manifest !== 'object') {
+let manifest;
+
+try {
+  manifest = YAML.parse(raw);
+} catch {
   fail('Invalid YAML manifest');
 }
 
