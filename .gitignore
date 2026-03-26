@@ -19,6 +19,10 @@ log.txt
 .env.json
 
 flatpak/io.github.ebkr.r2modman.release.yaml
+flatpak/repo
+flatpak/build
+.flatpak-builder
+flatpak/r2modman.flatpak
 
 # Editor directories and files
 .idea
