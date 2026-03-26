@@ -28,7 +28,7 @@ const store = getStore<State>();
     padding: 0;
     margin-left: 0.75rem;
     overflow: hidden;
-    overflow-y: auto;
+    overflow-y: hidden;
     width: 100%;
 }
 
@@ -36,5 +36,6 @@ const store = getStore<State>();
     padding: 0;
     max-width: 100vw;
     display: flex;
+    flex: 1;
 }
 </style>

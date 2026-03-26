@@ -1,13 +1,15 @@
 <template>
     <VDropdown
         theme="activity-action"
-        :triggers="['hover']"
-        :popper-triggers="['hover']"
+        :triggers="[trigger]"
+        :popper-triggers="[trigger]"
         :placement="placement"
         :distance="8"
-        :delay="{ show: 0, hide: 200 }"
+        :delay="trigger === 'hover' ? { show: 0, hide: 200 } : 0"
     >
-        <slot />
+        <template #default="slotProps">
+            <slot v-bind="slotProps" />
+        </template>
         <template #popper>
             <slot name="popper" />
         </template>
@@ -16,9 +18,11 @@
 
 <script lang="ts" setup>
 withDefaults(defineProps<{
-    placement?: string
+    placement?: string,
+    trigger?: string
 }>(), {
-    placement: 'top-start'
+    placement: 'top-start',
+    trigger: 'hover'
 });
 </script>
 

@@ -3,14 +3,42 @@
         <aside class="menu">
             <div id="menu__top">
                 <p class="menu-label">{{ activeGame.displayName }}</p>
-                <ul class="menu-list">
-                    <li>
-                        <a href="#" @click="launchGame(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
-                    </li>
-                    <li>
-                        <a href="#" @click="launchGame(LaunchMode.VANILLA)"><i class="far fa-play-circle icon--margin-right"/>Start vanilla</a>
-                    </li>
-                </ul>
+                <div class="launch-control">
+                    <div class="launch-split">
+                        <button class="launch-split__start" @click="launchGame(selectedMode)">
+                            <i class="fas fa-play fa-fw" />
+                            <span>
+                                Start {{ selectedMode === LaunchMode.MODDED ? 'modded' : 'vanilla' }}
+                            </span>
+                        </button>
+                        <ActivityDropdown trigger="click" placement="bottom-end">
+                            <template #default="{ shown }">
+                                <button class="launch-split__mode">
+                                    <p>
+                                        <i :class="['fas', shown ? 'fa-caret-up' : 'fa-caret-down']" />
+                                    </p>
+                                </button>
+                            </template>
+                            <template #popper>
+                                <ul class="menu-list">
+                                    <li v-if="selectedMode === LaunchMode.VANILLA">
+                                        <a v-close-popper @click="selectedMode = LaunchMode.MODDED">
+                                            <i class="fas fa-play fa-fw" />
+                                            Start modded
+                                        </a>
+                                    </li>
+                                    <li v-else>
+                                        <a v-close-popper @click="selectedMode = LaunchMode.VANILLA">
+                                            <i class="fas fa-play fa-fw" />
+                                            Start vanilla
+                                        </a>
+                                    </li>
+                                </ul>
+                            </template>
+                        </ActivityDropdown>
+                    </div>
+                </div>
+                <hr/>
                 <p class="menu-label">Mods</p>
                 <div>
                     <ul class="menu-list">
@@ -23,7 +51,7 @@
                         </li>
                         <li>
                             <router-link :to="{name: 'manager.online'}"
-                                         :class="['tagged-link', {'is-active': $route.name === 'downloads'}]">
+                                         :class="['tagged-link', {'is-active': router.currentRoute.value.name === 'downloads'}]">
                                 <i class="fas fa-globe tagged-link__icon icon--margin-right" />
                                 <span class="tagged-link__content">Online</span>
 
@@ -35,6 +63,7 @@
                         </li>
                     </ul>
                 </div>
+                <hr/>
                 <p class='menu-label'>Other</p>
                 <ul class='menu-list'>
                     <li>
@@ -80,9 +109,12 @@ import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import VueRouter, { useRouter } from 'vue-router';
 import ProtocolProvider from '../../providers/generic/protocol/ProtocolProvider';
+import ActivityDropdown from '../v2/ActivityDropdown.vue';
 
 const store = getStore<State>();
 const router = useRouter();
+
+const selectedMode = ref<LaunchMode>(LaunchMode.MODDED);
 
 const activeGame = computed<Game>(() => store.state.activeGame);
 const profile = computed<Profile>(() => store.getters['profile/activeProfile']);
@@ -119,6 +151,67 @@ async function launchGame(mode: LaunchMode) {
 </script>
 
 <style lang="scss" scoped>
+
+hr {
+    background-color: var(--nav-hr-background-color);
+    margin: 1rem 0;
+}
+
+.launch-control {
+    padding: 0.25rem 0 0;
+}
+
+.launch-split {
+    display: flex;
+    border-radius: 6px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.launch-split__start {
+    flex: 1;
+    background-color: var(--scheme-primary, #3273dc);
+    color: white;
+    border: none;
+    padding: 0.55em 1em;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+    display: flex;
+    text-align: left;
+    place-items: center;
+
+    &:hover { filter: brightness(1.12); }
+    &:active { filter: brightness(0.9); }
+
+    & > * {
+        flex: 1;
+    }
+
+    & > i {
+        flex: 0;
+        margin-right: 0.5rem;
+    }
+}
+
+.launch-split__mode {
+    background-color: var(--scheme-primary, #3273dc);
+    color: white;
+    border: none;
+    padding: 0.55em 0.75em;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    white-space: nowrap;
+    transition: filter 0.15s ease;
+    margin-left: 2px;
+
+    &:hover { filter: brightness(1.12); }
+    &:active { filter: brightness(0.9); }
+}
 
 .menu-list a a {
     padding: 0;
