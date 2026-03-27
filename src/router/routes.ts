@@ -1,16 +1,35 @@
 import { RouteRecordRaw } from 'vue-router';
 import Profile from '../model/Profile';
 import ManagerInformation from '../_managerinf/ManagerInformation';
+import { Breadcrumb } from '../components/breadcrumbs/Breadcrumb';
 
 const appTitle = () => `${ManagerInformation.APP_NAME} (${ManagerInformation.VERSION.toString()})`;
 const profileTitle = () => `${appTitle()} - ${Profile.getActiveProfile().getProfileName()}`;
+
+const gameSelectionBreadcrumb: Breadcrumb = {
+    name: () => 'Games',
+    path: '/',
+}
+
+const profilesBreadcrumb: Breadcrumb = {
+    name: () => 'Profiles',
+    path: '/profiles/'
+}
+
+const managerMainViewBreadcrumb: Breadcrumb = {
+    name: () => Profile.getActiveAsImmutableProfile().getProfileName(),
+    path: '/manager/'
+}
 
 const routes: RouteRecordRaw[] = [
     {
         name: 'index',
         path: '/',
         component: () => import("pages/GameSelectionScreen.vue"),
-        meta: {title: appTitle}
+        meta: {
+            title: appTitle,
+            breadcrumbs: [{...gameSelectionBreadcrumb, isActive: true}],
+        }
     },
     {
         name: 'splash',
@@ -30,7 +49,10 @@ const routes: RouteRecordRaw[] = [
         name: 'profiles',
         path: '/profiles/',
         component: () => import('pages/Profiles.vue'),
-        meta: {title: appTitle}
+        meta: {
+            title: appTitle,
+            breadcrumbs: [gameSelectionBreadcrumb, {...profilesBreadcrumb, isActive: true}]
+        }
     },
     {
         path: '/',
@@ -41,7 +63,10 @@ const routes: RouteRecordRaw[] = [
                 name: 'manager',
                 path: 'manager/',
                 component: () => import('pages/Manager.vue'),
-                meta: {title: () => profileTitle()},
+                meta: {
+                    title: () => profileTitle(),
+                    breadcrumbs: [gameSelectionBreadcrumb, profilesBreadcrumb, {...managerMainViewBreadcrumb, isActive: true}]
+                },
                 children: [
                     {
                         name: 'manager.installed',

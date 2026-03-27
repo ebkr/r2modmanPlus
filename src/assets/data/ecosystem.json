@@ -1626,7 +1626,7 @@
             ]
           }
         },
-        "wikiUrl": "https://atlyss.wiki.gg/wiki/ATLYSS_Wiki",
+        "wikiUrl": "https://github.com/AtlyssModding/ATLYSS-Modding-Resources",
         "discordUrl": "https://discord.gg/hQceRJ7pEW",
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
@@ -8034,6 +8034,9 @@
           },
           "tweaks-and-quality-of-life": {
             "label": "Tweaks & Quality Of Life"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
           }
         },
         "sections": {
@@ -12111,6 +12114,9 @@
           },
           "server-side": {
             "label": "Server-side"
+          },
+          "mod-jam-1": {
+            "label": "Mod Jam 1 - Void"
           }
         },
         "sections": {
@@ -15541,11 +15547,17 @@
           "tools": {
             "label": "Tools"
           },
+          "cheats": {
+            "label": "Cheats"
+          },
           "misc": {
             "label": "Misc"
           },
           "0-62-branch": {
             "label": "0.62 Branch"
+          },
+          "0-66-branch": {
+            "label": "0.66 Branch"
           },
           "manual-dependencies": {
             "label": "Requires Manual Dependencies"
@@ -15556,7 +15568,8 @@
             "name": "Main Branch",
             "excludeCategories": [
               "modpacks",
-              "0-62-branch"
+              "0-62-branch",
+              "0-66-branch"
             ]
           },
           "main-modpacks": {
@@ -15565,7 +15578,8 @@
               "modpacks"
             ],
             "excludeCategories": [
-              "0-62-branch"
+              "0-62-branch",
+              "0-66-branch"
             ]
           },
           "0-62": {
@@ -15582,6 +15596,22 @@
             "requireCategories": [
               "modpacks",
               "0-62-branch"
+            ]
+          },
+          "0-66": {
+            "name": "0.66 Branch",
+            "requireCategories": [
+              "0-66-branch"
+            ],
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "0-66-modpacks": {
+            "name": "0.66 Branch Modpacks",
+            "requireCategories": [
+              "modpacks",
+              "0-66-branch"
             ]
           }
         },
@@ -19703,6 +19733,86 @@
         ]
       }
     },
+    "big-ambitions": {
+      "uuid": "2c4ef1aa-08bb-4ed8-9b74-4a23b390915c",
+      "label": "big-ambitions",
+      "meta": {
+        "displayName": "Big Ambitions",
+        "iconUrl": "big-ambitions.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1331550"
+            }
+          ],
+          "steamFolderName": "Big Ambitions",
+          "dataFolderName": "Big Ambitions_Data",
+          "exeNames": [
+            "Big Ambitions.exe",
+            "Big Ambitions.app"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Big Ambitions",
+            "iconUrl": "big-ambitions.webp"
+          },
+          "settingsIdentifier": "BigAmbitions",
+          "internalFolderName": "BigAmbitions",
+          "packageIndex": "https://thunderstore.io/c/big-ambitions/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Big Ambitions",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/hovgaardgames",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Big Ambitions is a revolutionary role-playing business sim. Go from nothing to the biggest entrepreneur in New York by opening small businesses or slowly building huge corporations any way you like."
+      }
+    },
     "broforce": {
       "uuid": "dcebc888-06d8-436f-b7e7-ed08713f68bd",
       "label": "broforce",
@@ -20528,6 +20638,125 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "crawlspace": {
+      "uuid": "52f15796-8648-4247-8a84-9ef16ea2103c",
+      "label": "crawlspace",
+      "meta": {
+        "displayName": "Crawlspace",
+        "iconUrl": "crawlspace.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1787860"
+            }
+          ],
+          "steamFolderName": "Crawlspace",
+          "dataFolderName": "Crawlspace_Data",
+          "exeNames": [
+            "Crawlspace.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Crawlspace",
+            "iconUrl": "crawlspace.webp"
+          },
+          "settingsIdentifier": "Crawlspace",
+          "internalFolderName": "Crawlspace",
+          "packageIndex": "https://thunderstore.io/c/crawlspace/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Crawlspace",
+        "discordUrl": "https://discord.gg/BDZ6NjegeR",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "You saw an Ad about someone needing help with an odd job, retrieving his daughters missing dolls. Sounding like easy cash, you leave a message telling him you are interested. but as the nights progress, you realize why nobody else wanted to take this job."
       }
     },
     "crime-simulator": {
@@ -28932,7 +29161,7 @@
           ]
         }
       },
-      "wikiUrl": "https://atlyss.wiki.gg/wiki/ATLYSS_Wiki",
+      "wikiUrl": "https://github.com/AtlyssModding/ATLYSS-Modding-Resources",
       "discordUrl": "https://discord.gg/hQceRJ7pEW",
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
@@ -30718,6 +30947,9 @@
         },
         "tweaks-and-quality-of-life": {
           "label": "Tweaks & Quality Of Life"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
         }
       },
       "sections": {
@@ -31879,6 +32111,9 @@
         },
         "server-side": {
           "label": "Server-side"
+        },
+        "mod-jam-1": {
+          "label": "Mod Jam 1 - Void"
         }
       },
       "sections": {
@@ -32746,11 +32981,17 @@
         "tools": {
           "label": "Tools"
         },
+        "cheats": {
+          "label": "Cheats"
+        },
         "misc": {
           "label": "Misc"
         },
         "0-62-branch": {
           "label": "0.62 Branch"
+        },
+        "0-66-branch": {
+          "label": "0.66 Branch"
         },
         "manual-dependencies": {
           "label": "Requires Manual Dependencies"
@@ -32761,7 +33002,8 @@
           "name": "Main Branch",
           "excludeCategories": [
             "modpacks",
-            "0-62-branch"
+            "0-62-branch",
+            "0-66-branch"
           ]
         },
         "main-modpacks": {
@@ -32770,7 +33012,8 @@
             "modpacks"
           ],
           "excludeCategories": [
-            "0-62-branch"
+            "0-62-branch",
+            "0-66-branch"
           ]
         },
         "0-62": {
@@ -32787,6 +33030,22 @@
           "requireCategories": [
             "modpacks",
             "0-62-branch"
+          ]
+        },
+        "0-66": {
+          "name": "0.66 Branch",
+          "requireCategories": [
+            "0-66-branch"
+          ],
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "0-66-modpacks": {
+          "name": "0.66 Branch Modpacks",
+          "requireCategories": [
+            "modpacks",
+            "0-66-branch"
           ]
         }
       },
@@ -34128,6 +34387,48 @@
         "LavaGang-MelonLoader"
       ]
     },
+    "big-ambitions": {
+      "displayName": "Big Ambitions",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/hovgaardgames",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Big Ambitions is a revolutionary role-playing business sim. Go from nothing to the biggest entrepreneur in New York by opening small businesses or slowly building huge corporations any way you like."
+    },
     "broforce": {
       "displayName": "Broforce",
       "categories": {
@@ -34481,6 +34782,48 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "crawlspace": {
+      "displayName": "Crawlspace",
+      "discordUrl": "https://discord.gg/BDZ6NjegeR",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "You saw an Ad about someone needing help with an odd job, retrieving his daughters missing dolls. Sounding like easy cash, you leave a message telling him you are interested. but as the nights progress, you realize why nobody else wanted to take this job."
     },
     "crime-simulator": {
       "displayName": "Crime Simulator",

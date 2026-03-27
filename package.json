@@ -1,6 +1,6 @@
 {
   "name": "r2modman",
-  "version": "3.2.14",
+  "version": "3.2.15",
   "description": "A simple and easy to use mod manager for many games using Thunderstore.",
   "productName": "r2modman",
   "author": "ebkr",
@@ -108,6 +108,9 @@
     "vitest": "^3.2.4",
     "vue": "^3.5.16",
     "wallaby-vue-compiler": "^1.0.3"
+  },
+  "optionalDependencies": {
+    "electron-installer-flatpak": "^0.8.0"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0",

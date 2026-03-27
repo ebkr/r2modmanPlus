@@ -1,3 +1,37 @@
+### 3.2.15
+
+#### UI Changes
+
+- Includes a bottom bar which allows for:
+  - Faster game changing
+  - Faster profile switching
+  - Easier access to profile exporting
+- The "Start" action is now more distinguishable
+- Navbar sections are clearer
+
+#### Games added
+
+- Astroneer
+- Deadly Delivery
+- Granny: Chapter Two
+- Soulcalibur VI
+- A Gentleman's Dispute
+- Super Battle Golf
+- Cursed Words
+- Ducks Can Drive
+- Gorilla Tag
+- Jump Scare Mansion
+- Pit of Goblin
+- Very Very Valet
+- Cryo
+- Crawlspace
+- Big Ambitions
+
+#### Fixes
+
+- Actions on the profile selection screen are properly aligned
+- Several fixes for mod installation behaviours
+
 ### 3.2.14
 #### Games added
 - Carrier Deck

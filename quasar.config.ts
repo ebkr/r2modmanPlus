@@ -2,7 +2,6 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
 import { defineConfig } from '#q-app/wrappers';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig((ctx) => {
     const skipPackaging = process.env.SKIP_PACKING === 'true';
@@ -62,11 +61,16 @@ export default defineConfig((ctx) => {
             // env: {},
             // rawDefine: {}
             // ignorePublicFolder: true,
-            minify: 'esbuild',
             polyfillModulePreload: true,
             // distDir
 
-            // extendViteConf (viteConf) {},
+            cssMinify: 'esbuild',
+            minify: 'esbuild',
+
+            extendViteConf (viteConf) {
+                // Force Vite to use esbuild for CSS, overriding any defaults
+                viteConf.build!.cssMinify = 'esbuild';
+            },
             viteVuePluginOptions: {
                 template: {
                     compilerOptions: {

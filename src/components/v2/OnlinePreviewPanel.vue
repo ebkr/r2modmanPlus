@@ -296,7 +296,7 @@ function dragEnd(event: DragEvent) {
 }
 
 .c-preview-panel {
-    height: calc(100vh - 2.75rem);
+    height: calc(100% - 1rem);
     display: flex;
     flex-flow: column;
     margin: 1rem;

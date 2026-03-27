@@ -196,10 +196,11 @@ function openConfig(file: ConfigFile) {
 
 <style lang="scss" scoped>
 .config-editor-selection-body {
-    display: grid;
+    display: flex;
     grid-template-rows: min-content 1fr;
-    height: 100vh;
     overflow-y: hidden;
+    flex: 1;
+    flex-direction: column;
 }
 
 .config-editor-selection-items {

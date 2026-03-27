@@ -12,7 +12,7 @@ import StateTracker from '../../../../../src/model/installing/StateTracker';
 import GenericProfileInstaller from '../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import GameManager from '../../../../../src/model/game/GameManager';
 import ConflictManagementProvider from '../../../../../src/providers/generic/installing/ConflictManagementProvider';
-import { addToStateFile } from '../../../../../src/installers/InstallRuleInstaller';
+import { addToStateFile } from '../../../../../src/installers/InstallRulePluginInstaller';
 import { describe, beforeEach, afterEach, test, expect } from 'vitest';
 import {providePathImplementation} from "../../../../../src/providers/node/path/path";
 import {TestPathProvider} from "../../../stubs/providers/node/Node.Path.Provider";
