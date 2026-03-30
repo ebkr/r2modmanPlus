@@ -20600,6 +20600,7 @@
       ],
       "thunderstore": {
         "displayName": "Crawlspace 2",
+        "wikiUrl": "https://misterbubb.github.io/ModdingWiki/",
         "discordUrl": "https://discord.gg/BDZ6NjegeR",
         "categories": {
           "mods": {
@@ -26986,6 +26987,85 @@
           }
         },
         "autolistPackageIds": []
+      }
+    },
+    "sledding-game": {
+      "uuid": "b9a26634-8303-4c60-b170-b9a1f26654b5",
+      "label": "sledding-game",
+      "meta": {
+        "displayName": "Sledding Game",
+        "iconUrl": "sledding-game.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "4029310"
+            }
+          ],
+          "steamFolderName": "Sledding Game Demo",
+          "dataFolderName": "Sledding Game Demo_Data",
+          "exeNames": [
+            "Sledding Game Demo.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Sledding Game",
+            "iconUrl": "sledding-game.webp"
+          },
+          "settingsIdentifier": "SleddingGame",
+          "internalFolderName": "SleddingGame",
+          "packageIndex": "https://thunderstore.io/c/sledding-game/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Sledding Game",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/nJhEZ2u46h",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "A game about sledding and hanging out with friends :)"
       }
     },
     "smushi-come-home": {
@@ -34744,6 +34824,7 @@
     },
     "crawlspace-2": {
       "displayName": "Crawlspace 2",
+      "wikiUrl": "https://misterbubb.github.io/ModdingWiki/",
       "discordUrl": "https://discord.gg/BDZ6NjegeR",
       "categories": {
         "mods": {
@@ -37581,6 +37662,48 @@
         }
       },
       "autolistPackageIds": []
+    },
+    "sledding-game": {
+      "displayName": "Sledding Game",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/nJhEZ2u46h",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "A game about sledding and hanging out with friends :)"
     },
     "smushi-come-home": {
       "displayName": "Smushi Come Home",
