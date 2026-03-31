@@ -156,6 +156,7 @@ const store = getStore<State>();
 #download-monitor-view {
     width: 100%;
     flex: 1;
+    overflow-y: auto;
 }
 
 .download-item-action-button {
