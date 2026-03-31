@@ -22772,6 +22772,125 @@
         "autolistPackageIds": []
       }
     },
+    "hot-lava": {
+      "uuid": "0653f513-b2ad-4fe0-99ec-78ce4beb674f",
+      "label": "hot-lava",
+      "meta": {
+        "displayName": "Hot Lava",
+        "iconUrl": "hot-lava.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "382560"
+            }
+          ],
+          "steamFolderName": "Hot Lava/archive/build",
+          "dataFolderName": "hotlava_Data",
+          "exeNames": [
+            "hotlava.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Hot Lava",
+            "iconUrl": "hot-lava.webp"
+          },
+          "settingsIdentifier": "HotLava",
+          "internalFolderName": "HotLava",
+          "packageIndex": "https://thunderstore.io/c/hot-lava/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Hot Lava",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/hotlava",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "The Floor is Hot Lava! Run, jump, climb, and surf across nostalgia-packed environments flooded with hot molten lava. Explore alone, or join your friends. And whatever you do, don't touch the floor."
+      }
+    },
     "house-of-legacy": {
       "uuid": "3e5e018e-6d47-45cd-80eb-31317287ddb4",
       "label": "house-of-legacy",
@@ -35772,6 +35891,48 @@
         }
       },
       "autolistPackageIds": []
+    },
+    "hot-lava": {
+      "displayName": "Hot Lava",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/hotlava",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "The Floor is Hot Lava! Run, jump, climb, and surf across nostalgia-packed environments flooded with hot molten lava. Explore alone, or join your friends. And whatever you do, don't touch the floor."
     },
     "house-of-legacy": {
       "displayName": "House of Legacy",

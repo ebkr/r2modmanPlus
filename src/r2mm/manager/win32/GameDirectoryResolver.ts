@@ -158,7 +158,8 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             const folderName = parsedVdf.AppState.installdir;
             const riskOfRain2Path = path.join(manifestLocation, 'common', folderName);
             if (await fs.exists(riskOfRain2Path)) {
-                if (riskOfRain2Path.endsWith(path.dirname(GameManager.activeGame.steamFolderName))) {
+                const hasNestedSteamFolder = GameManager.activeGame.steamFolderName.startsWith(`${folderName}/`);
+                if (hasNestedSteamFolder) {
                     const dir = path.dirname(riskOfRain2Path);
                     return path.join(dir, GameManager.activeGame.steamFolderName);
                 } else {
