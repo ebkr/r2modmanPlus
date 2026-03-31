@@ -18,9 +18,9 @@
 </template>
 
 <script lang='ts' setup>
-import { onMounted } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
+import { useModCardSettings } from '../composables/useModCardSettings';
 
 const store = getStore<State>();
 
@@ -32,9 +32,7 @@ type OnlineRowCardProps = {
 
 const props = defineProps<OnlineRowCardProps>();
 
-onMounted(async () => {
-    await store.dispatch('profile/loadModCardSettings');
-});
+useModCardSettings();
 </script>
 
 

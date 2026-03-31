@@ -42,12 +42,14 @@
 </template>
 
 <script lang='ts' setup>
-import { computed, onMounted, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
+import { useModCardSettings } from '../composables/useModCardSettings';
 
 const store = getStore<State>();
+const { expandedByDefault } = useModCardSettings();
 
 type ExpandableCardProps = {
     image?: string;
@@ -69,17 +71,12 @@ const visible = ref<boolean>(false);
 const showSort = computed<boolean>(() => props.allowSorting && store.getters["profile/canSortMods"]);
 
 watchEffect(() => {
-    visible.value = store.state.profile.expandedByDefault;
+    visible.value = expandedByDefault.value;
 })
 
 function toggleVisibility() {
     visible.value = !visible.value;
 }
-
-onMounted(async () => {
-    await store.dispatch('profile/loadModCardSettings');
-    visible.value = store.state.profile.expandedByDefault;
-});
 </script>
 
 <style lang="scss" scoped>
