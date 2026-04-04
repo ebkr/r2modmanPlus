@@ -23,6 +23,7 @@ flatpak/repo
 flatpak/build
 .flatpak-builder
 flatpak/r2modman.flatpak
+flatpak/generated-sources.json
 
 # Editor directories and files
 .idea
