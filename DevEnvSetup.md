@@ -7,6 +7,7 @@
 3. Run `mise install`
 4. Re-open the terminal
 5. Run `yarn install`
+6. Run `yarn install-flatpak-node-generator`
 
 ### For development builds
 #### Without Vue Devtools (recommended)
