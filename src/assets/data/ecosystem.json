@@ -20600,6 +20600,7 @@
       ],
       "thunderstore": {
         "displayName": "Crawlspace 2",
+        "wikiUrl": "https://misterbubb.github.io/ModdingWiki/",
         "discordUrl": "https://discord.gg/BDZ6NjegeR",
         "categories": {
           "mods": {
@@ -22769,6 +22770,125 @@
           }
         },
         "autolistPackageIds": []
+      }
+    },
+    "hot-lava": {
+      "uuid": "0653f513-b2ad-4fe0-99ec-78ce4beb674f",
+      "label": "hot-lava",
+      "meta": {
+        "displayName": "Hot Lava",
+        "iconUrl": "hot-lava.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "382560"
+            }
+          ],
+          "steamFolderName": "Hot Lava/archive/build",
+          "dataFolderName": "hotlava_Data",
+          "exeNames": [
+            "hotlava.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Hot Lava",
+            "iconUrl": "hot-lava.webp"
+          },
+          "settingsIdentifier": "HotLava",
+          "internalFolderName": "HotLava",
+          "packageIndex": "https://thunderstore.io/c/hot-lava/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Hot Lava",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/hotlava",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "The Floor is Hot Lava! Run, jump, climb, and surf across nostalgia-packed environments flooded with hot molten lava. Explore alone, or join your friends. And whatever you do, don't touch the floor."
       }
     },
     "house-of-legacy": {
@@ -26986,6 +27106,85 @@
           }
         },
         "autolistPackageIds": []
+      }
+    },
+    "sledding-game": {
+      "uuid": "b9a26634-8303-4c60-b170-b9a1f26654b5",
+      "label": "sledding-game",
+      "meta": {
+        "displayName": "Sledding Game",
+        "iconUrl": "sledding-game.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "4029310"
+            }
+          ],
+          "steamFolderName": "Sledding Game Demo",
+          "dataFolderName": "Sledding Game Demo_Data",
+          "exeNames": [
+            "Sledding Game Demo.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Sledding Game",
+            "iconUrl": "sledding-game.webp"
+          },
+          "settingsIdentifier": "SleddingGame",
+          "internalFolderName": "SleddingGame",
+          "packageIndex": "https://thunderstore.io/c/sledding-game/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Sledding Game",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/nJhEZ2u46h",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "A game about sledding and hanging out with friends :)"
       }
     },
     "smushi-come-home": {
@@ -34744,6 +34943,7 @@
     },
     "crawlspace-2": {
       "displayName": "Crawlspace 2",
+      "wikiUrl": "https://misterbubb.github.io/ModdingWiki/",
       "discordUrl": "https://discord.gg/BDZ6NjegeR",
       "categories": {
         "mods": {
@@ -35691,6 +35891,48 @@
         }
       },
       "autolistPackageIds": []
+    },
+    "hot-lava": {
+      "displayName": "Hot Lava",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/hotlava",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "The Floor is Hot Lava! Run, jump, climb, and surf across nostalgia-packed environments flooded with hot molten lava. Explore alone, or join your friends. And whatever you do, don't touch the floor."
     },
     "house-of-legacy": {
       "displayName": "House of Legacy",
@@ -37581,6 +37823,48 @@
         }
       },
       "autolistPackageIds": []
+    },
+    "sledding-game": {
+      "displayName": "Sledding Game",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/nJhEZ2u46h",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "A game about sledding and hanging out with friends :)"
     },
     "smushi-come-home": {
       "displayName": "Smushi Come Home",
