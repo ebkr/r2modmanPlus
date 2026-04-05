@@ -11,7 +11,7 @@
     "run": "quasar dev -m electron --modern",
     "dev": "quasar dev -m electron --modern --devtools",
     "sync": "tsx ./scripts/sync.ts",
-    "install-flatpak-node-generator": "pipx install git+https://github.com/flatpak/flatpak-builder-tools.git#subdirectory=node",
+    "install-flatpak-node-generator": "uv tool install git+https://github.com/flatpak/flatpak-builder-tools.git#subdirectory=node",
     "generate-release-manifest": "node flatpak/generate-release-manifest.js --input flatpak/io.github.ebkr.r2modman.yaml --output flatpak/io.github.ebkr.r2modman.release.yaml --repo https://github.com/ebkr/r2modmanPlus.git --commit $GITHUB_SHA",
     "generate-node-sources": "flatpak-node-generator yarn yarn.lock --output flatpak/generated-sources.json",
     "build-flatpak-repo": "flatpak-builder --force-clean --repo=flatpak/repo flatpak/build flatpak/io.github.ebkr.r2modman.yaml",

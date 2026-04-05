@@ -1,4 +1,4 @@
 [tools]
 node = '22'
-pipx = "latest"
+uv = "0.11.3"
 yarn = "4.11.0"
