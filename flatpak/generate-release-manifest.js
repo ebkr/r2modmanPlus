@@ -70,8 +70,12 @@ if (!Array.isArray(module.sources) || module.sources.length === 0) {
   fail('Module has no sources');
 }
 
-// Replace ONLY the first source entry
-module.sources[0] = {
+const dirIndex = module.sources.findIndex((source) => {
+  return source.type === "dir" && source.path === "..";
+});
+
+
+module.sources[dirIndex] = {
   type: 'git',
   url: repo,
   commit: commit,
