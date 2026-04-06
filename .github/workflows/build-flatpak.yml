@@ -25,24 +25,28 @@ jobs:
       - name: Generate release manifest
         run: yarn generate-release-manifest
 
-      - name: Inspect resolved flatpak-node-generator
+      - name: Compare source tree vs installed package
         env:
           UV_CACHE_DIR: /tmp/uv-cache
         run: |
-          rm -rf "$UV_CACHE_DIR"
+          rm -rf "$UV_CACHE_DIR" /tmp/flatpak-builder-tools
+          git clone https://github.com/flatpak/flatpak-builder-tools.git /tmp/flatpak-builder-tools
+          git -C /tmp/flatpak-builder-tools checkout caca92bc6898ea40d6521b581fef2402ba3b3aae
 
+          echo "=== source tree ==="
+          grep -n "Only yarn v1 lockfiles are supported" /tmp/flatpak-builder-tools/node/flatpak_node_generator/providers/yarn.py || true
+          grep -n "__metadata" /tmp/flatpak-builder-tools/node/flatpak_node_generator/providers/yarn.py || true
+
+          echo "=== installed package ==="
           uv run --with 'git+https://github.com/flatpak/flatpak-builder-tools.git@caca92bc6898ea40d6521b581fef2402ba3b3aae#subdirectory=node' \
             python - <<'PY'
           import flatpak_node_generator.providers.yarn as y
           from pathlib import Path
-
           p = Path(y.__file__)
+          print(p)
           text = p.read_text(encoding="utf-8")
-
-          print("provider file:", p)
-          print("contains old error:", "Only yarn v1 lockfiles are supported" in text)
-          print("contains __metadata:", "__metadata" in text)
-          print("contains cacheKey:", "cacheKey" in text)
+          print("old error:", "Only yarn v1 lockfiles are supported" in text)
+          print("__metadata:", "__metadata" in text)
           PY
 
       - name: Build flatpak
