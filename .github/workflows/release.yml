@@ -61,7 +61,7 @@ jobs:
     needs: release
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome:50
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-50
       options: --privileged
     permissions:
       contents: write
