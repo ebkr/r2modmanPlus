@@ -16,7 +16,7 @@ jobs:
       - uses: jdx/mise-action@v3
         with:
           install: true
-          cache: false
+          cache: true
           log_level: debug
 
       - name: Install Yarn dependencies
