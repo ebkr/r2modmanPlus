@@ -25,11 +25,28 @@ jobs:
       - name: Generate release manifest
         run: yarn generate-release-manifest
 
-      - name: Compare source tree vs installed package
+      - name: Debug uv-installed flatpak-node-generator
+        env:
+          UV_CACHE_DIR: /tmp/uv-cache
+          FBT_COMMIT: caca92bc6898ea40d6521b581fef2402ba3b3aae
         run: |
-          uv --version
-          python3 --version
-          uv cache dir
+          set -euxo pipefail
+
+          rm -rf "$UV_CACHE_DIR"
+
+          uv run --with "git+https://github.com/flatpak/flatpak-builder-tools.git@${FBT_COMMIT}#subdirectory=node" \
+            python - <<'PY'
+          import flatpak_node_generator.providers.yarn as y
+          from pathlib import Path
+
+          p = Path(y.__file__)
+          text = p.read_text(encoding="utf-8")
+
+          print("installed file:", p)
+          print("old error:", "Only yarn v1 lockfiles are supported" in text)
+          print("__metadata:", "__metadata" in text)
+          print("cacheKey:", "cacheKey" in text)
+          PY
 
       - name: Build flatpak
         env:
