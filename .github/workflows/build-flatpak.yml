@@ -25,5 +25,13 @@ jobs:
       - name: Generate release manifest
         run: yarn generate-release-manifest
 
+      - name: Generate node sources fresh
+        env:
+          UV_CACHE_DIR: /tmp/uv-cache
+        run: |
+          rm -rf "$UV_CACHE_DIR"
+          uvx --from 'git+https://github.com/flatpak/flatpak-builder-tools.git@caca92bc6898ea40d6521b581fef2402ba3b3aae#subdirectory=node' \
+            flatpak-node-generator yarn yarn.lock --output flatpak/generated-sources.json
+
       - name: Build flatpak
         run: yarn build-flatpak
