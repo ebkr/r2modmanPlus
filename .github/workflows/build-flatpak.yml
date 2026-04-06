@@ -22,9 +22,6 @@ jobs:
       - name: Install Yarn dependencies
         run: yarn install --immutable
 
-      - name: test
-        run: ls && cat yarn.lock
-
       - name: Generate release manifest
         run: yarn generate-release-manifest
 
