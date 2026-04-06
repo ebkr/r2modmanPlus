@@ -25,13 +25,25 @@ jobs:
       - name: Generate release manifest
         run: yarn generate-release-manifest
 
-      - name: Generate node sources fresh
+      - name: Inspect resolved flatpak-node-generator
         env:
           UV_CACHE_DIR: /tmp/uv-cache
         run: |
           rm -rf "$UV_CACHE_DIR"
-          uvx --from 'git+https://github.com/flatpak/flatpak-builder-tools.git@caca92bc6898ea40d6521b581fef2402ba3b3aae#subdirectory=node' \
-            flatpak-node-generator yarn yarn.lock --output flatpak/generated-sources.json
+
+          uv run --with 'git+https://github.com/flatpak/flatpak-builder-tools.git@caca92bc6898ea40d6521b581fef2402ba3b3aae#subdirectory=node' \
+            python - <<'PY'
+          import flatpak_node_generator.providers.yarn as y
+          from pathlib import Path
+
+          p = Path(y.__file__)
+          text = p.read_text(encoding="utf-8")
+
+          print("provider file:", p)
+          print("contains old error:", "Only yarn v1 lockfiles are supported" in text)
+          print("contains __metadata:", "__metadata" in text)
+          print("contains cacheKey:", "cacheKey" in text)
+          PY
 
       - name: Build flatpak
         run: yarn build-flatpak
