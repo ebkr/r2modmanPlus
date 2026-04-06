@@ -61,7 +61,7 @@ jobs:
     needs: release
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-50
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-25.08
       options: --privileged
     permissions:
       contents: write
@@ -80,8 +80,14 @@ jobs:
       - name: Generate release manifest
         run: yarn generate-release-manifest
 
+      - name: Generate node sources
+        run: yarn generate-node-sources
+
       - name: Build flatpak
-        run: yarn build-flatpak
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: r2modman.flatpak
+          manifest-path: flatpak/io.github.ebkr.r2modman.release.yaml
 
       - name: Compute release tag
         id: tag
