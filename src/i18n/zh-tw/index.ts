@@ -109,7 +109,26 @@ export default {
   },
   "ProfileManagementModal": {
     "profile": "設定檔",
-    "close": "關閉"
+    "close": "關閉",
+    "items": {
+      "change_profile": {
+        "action": "變更設定檔",
+        "description": "返回設定檔選擇畫面"
+      },
+      "export_file": {
+        "action": "將設定檔匯出為檔案",
+        "description": "將您的模組清單與配置匯出為檔案"
+      },
+      "export_code": {
+        "action": "將設定檔匯出為代碼",
+        "description": "將您的模組清單與配置匯出為代碼"
+      },
+      "import_local": {
+        "action": "匯入本地模組",
+        "description": "從您的檔案離線安裝模組",
+        "not_all_installable": "並非所有模組都能在本地安裝"
+      }
+    }
   },
   "SortModal": {
     "change_the_ordering_of_mods": "更改模組排序",

@@ -56,30 +56,30 @@ async function importLocalMod() {
         </template>
         <template v-slot:body>
             <SettingsItem
-                action="Change profile"
-                description="Return to the profile selection screen"
+                :action="$t('ProfileManagementModal.items.change_profile.action')"
+                :description="$t('ProfileManagementModal.items.change_profile.description')"
                 icon="fa-file-import"
                 :value="async () => undefined"
                 @click="changeProfile" />
             <SettingsItem
-                action="Export profile as a file"
-                description="Export your mod list and configs as a file"
+                :action="$t('ProfileManagementModal.items.export_file.action')"
+                :description="$t('ProfileManagementModal.items.export_file.description')"
                 icon="fa-file-alt"
                 :value="async () => undefined"
                 @click="exportProfileAsFile"
             />
             <SettingsItem
-                action="Export profile as code"
-                description="Export your mod list and configs as a code"
+                :action="$t('ProfileManagementModal.items.export_code.action')"
+                :description="$t('ProfileManagementModal.items.export_code.description')"
                 icon="fa-cloud-upload-alt"
                 :value="async () => undefined"
                 @click="exportProfileAsCode"
             />
             <SettingsItem
-                action="Import local mod"
-                description="Install a mod offline from your files"
+                :action="$t('ProfileManagementModal.items.import_local.action')"
+                :description="$t('ProfileManagementModal.items.import_local.description')"
                 icon="fa-file-import"
-                :value="async () => 'Not all mods can be installed locally'"
+                :value="async () => $t('ProfileManagementModal.items.import_local.not_all_installable')"
                 @click="importLocalMod"
             />
         </template>

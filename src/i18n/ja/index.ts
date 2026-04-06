@@ -109,7 +109,26 @@ export default {
   },
   "ProfileManagementModal": {
     "profile": "プロファイル",
-    "close": "閉じる"
+    "close": "閉じる",
+    "items": {
+      "change_profile": {
+        "action": "Change profile",
+        "description": "Return to the profile selection screen"
+      },
+      "export_file": {
+        "action": "Export profile as a file",
+        "description": "Export your mod list and configs as a file"
+      },
+      "export_code": {
+        "action": "Export profile as code",
+        "description": "Export your mod list and configs as a code"
+      },
+      "import_local": {
+        "action": "Import local mod",
+        "description": "Install a mod offline from your files",
+        "not_all_installable": "Not all mods can be installed locally"
+      }
+    }
   },
   "SortModal": {
     "change_the_ordering_of_mods": "Modの並び順を変更",

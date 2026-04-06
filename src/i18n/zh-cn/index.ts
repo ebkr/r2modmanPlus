@@ -109,7 +109,26 @@ export default {
   },
   "ProfileManagementModal": {
     "profile": "配置方案",
-    "close": "关闭"
+    "close": "关闭",
+    "items": {
+      "change_profile": {
+        "action": "切换配置方案",
+        "description": "返回配置方案选择界面"
+      },
+      "export_file": {
+        "action": "将配置方案导出为文件",
+        "description": "将您的模组列表和配置文件导出为文件"
+      },
+      "export_code": {
+        "action": "将配置方案导出为代码",
+        "description": "将您的模组列表和配置文件导出为代码"
+      },
+      "import_local": {
+        "action": "导入本地模组",
+        "description": "从本地文件离线安装模组",
+        "not_all_installable": "并非所有模组都支持本地安装"
+      }
+    }
   },
   "SortModal": {
     "change_the_ordering_of_mods": "更改模组排序",

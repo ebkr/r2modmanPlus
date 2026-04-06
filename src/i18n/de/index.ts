@@ -109,7 +109,26 @@ export default {
   },
   "ProfileManagementModal": {
     "profile": "Profil",
-    "close": "Schließen"
+    "close": "Schließen",
+    "items": {
+      "change_profile": {
+        "action": "Profil ändern",
+        "description": "Zurück zum Profil-Auswahlbildschirm"
+      },
+      "export_file": {
+        "action": "Profil als Datei exportieren",
+        "description": "Mod-Liste und Konfigurationen als Datei exportieren"
+      },
+      "export_code": {
+        "action": "Profil als Code exportieren",
+        "description": "Mod-Liste und Konfigurationen als Code exportieren"
+      },
+      "import_local": {
+        "action": "Lokale Mod importieren",
+        "description": "Eine Mod offline von Ihren Dateien installieren",
+        "not_all_installable": "Nicht alle Mods können lokal installiert werden"
+      }
+    }
   },
   "SortModal": {
     "change_the_ordering_of_mods": "Mod-Reihenfolge ändern",
@@ -201,156 +220,157 @@ export default {
   },
   "SettingsView": {
     "settings": "Einstellungen",
+    "advanced_options": "Erweiterte Optionen für {app}: {version}",
     "search": "Suche:",
     "search_for_a_setting": "Einstellung suchen",
     "tabs": {
-      "all": "All",
-      "profile": "Profile",
-      "locations": "Locations",
+      "all": "Alle",
+      "profile": "Profil",
+      "locations": "Verzeichnisse",
       "debugging": "Debugging",
-      "modpacks": "Modpacks",
-      "other": "Other"
+      "modpacks": "Mod-Packs",
+      "other": "Sonstiges"
     },
     "items": {
       "browse_data_folder": {
-        "action": "Browse data folder",
-        "description": "Open the folder where mods are stored for all games and profiles."
+        "action": "Datenordner durchsuchen",
+        "description": "Öffnen Sie den Ordner, in dem Mods für alle Spiele und Profile gespeichert sind."
       },
       "change_game_folder": {
-        "action": "Change {game} folder",
-        "description": "Change the location of the {game} folder that {app} uses.",
-        "please_set_manually": "Please set manually"
+        "action": "{game}-Ordner ändern",
+        "description": "Ändern Sie das Verzeichnis des {game}-Ordners, den {app} verwendet.",
+        "please_set_manually": "Bitte manuell festlegen"
       },
       "browse_profile_folder": {
-        "action": "Browse profile folder",
-        "description": "Open the folder where mods are stored for the current profile."
+        "action": "Profilordner durchsuchen",
+        "description": "Öffnen Sie den Ordner, in dem Mods für das aktuelle Profil gespeichert sind."
       },
       "change_data_folder": {
-        "action": "Change data folder",
-        "description": "Change the folder where mods are stored for all games and profiles. The folder will not be deleted, and existing profiles will not carry across."
+        "action": "Datenordner ändern",
+        "description": "Ändern Sie den Ordner, in dem Mods für alle Spiele und Profile gespeichert werden. Der Ordner wird nicht gelöscht, und bestehende Profile werden nicht übernommen."
       },
       "copy_log_to_clipboard": {
-        "action": "Copy log file contents to clipboard",
-        "description": "Copy the text inside the LogOutput.log file to the clipboard, with Discord formatting.",
-        "exists": "Log file exists",
-        "not_exists": "Log file does not exist"
+        "action": "Inhalt der Protokolldatei in die Zwischenablage kopieren",
+        "description": "Kopieren Sie den Text aus der Datei LogOutput.log mit Discord-Formatierung in die Zwischenablage.",
+        "exists": "Protokolldatei existiert",
+        "not_exists": "Protokolldatei existiert nicht"
       },
       "copy_troubleshooting_info": {
-        "action": "Copy troubleshooting information to clipboard",
-        "description": "Copy settings and other information to the clipboard, with Discord formatting.",
-        "share_info": "Share this information when requesting support on Discord."
+        "action": "Fehlerbehebungsinformationen in die Zwischenablage kopieren",
+        "description": "Kopieren Sie Einstellungen und andere Informationen mit Discord-Formatierung in die Zwischenablage.",
+        "share_info": "Teilen Sie diese Informationen, wenn Sie Unterstützung auf Discord anfordern."
       },
       "toggle_download_cache": {
-        "action": "Toggle download cache",
-        "description": "Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.",
-        "enabled": "Current: cache is enabled (recommended)",
-        "disabled": "Current: cache is disabled"
+        "action": "Download-Cache umschalten",
+        "description": "Das Herunterladen einer Mod ignoriert im Cache gespeicherte Mods. Mods werden weiterhin im Cache abgelegt.",
+        "enabled": "Aktuell: Cache ist aktiviert (empfohlen)",
+        "disabled": "Aktuell: Cache ist deaktiviert"
       },
       "set_launch_parameters": {
-        "action": "Set launch parameters",
-        "description": "Provide custom arguments used to start the game.",
-        "steam_exec": "These commands are used against the Steam executable on game startup"
+        "action": "Startparameter festlegen",
+        "description": "Geben Sie benutzerdefinierte Argumente zum Starten des Spiels an.",
+        "steam_exec": "Diese Befehle werden beim Spielstart gegen die Steam-Executable ausgeführt"
       },
       "clean_mod_cache": {
-        "action": "Clean mod cache",
-        "description": "Free extra space caused by cached mods that are not currently in a profile.",
-        "check_profiles": "Check all profiles for unused mods and clear cache"
+        "action": "Mod-Cache bereinigen",
+        "description": "Geben Sie zusätzlichen Speicherplatz frei, der durch im Cache gespeicherte Mods belegt wird, die sich derzeit nicht in einem Profil befinden.",
+        "check_profiles": "Alle Profile nach ungenutzten Mods durchsuchen und Cache leeren"
       },
       "clean_online_mod_list": {
-        "action": "Clean online mod list",
-        "description": "Deletes local copy of mod list, forcing the next refresh to fetch a new one."
+        "action": "Online-Mod-Liste bereinigen",
+        "description": "Löscht die lokale Kopie der Mod-Liste und erzwingt beim nächsten Aktualisieren das Abrufen einer neuen."
       },
       "toggle_thunderstore_cdn": {
-        "action": "Toggle preferred Thunderstore CDN",
-        "description": "Switch the CDN until app is restarted. This might bypass issues with downloading mods.",
-        "current": "Current: {label} ({url})"
+        "action": "Bevorzugtes Thunderstore CDN umschalten",
+        "description": "Wechseln Sie das CDN, bis die App neu gestartet wird. Dies kann Probleme beim Herunterladen von Mods umgehen.",
+        "current": "Aktuell: {label} ({url})"
       },
       "change_profile": {
-        "action": "Change profile",
-        "description": "Change the mod profile.",
-        "current": "Current profile: {name}"
+        "action": "Profil ändern",
+        "description": "Mod-Profil ändern.",
+        "current": "Aktuelles Profil: {name}"
       },
       "enable_all_mods": {
-        "action": "Enable all mods",
-        "description": "Enable all mods for the current profile",
-        "status": "{enabled}/{total} enabled"
+        "action": "Alle Mods aktivieren",
+        "description": "Alle Mods für das aktuelle Profil aktivieren",
+        "status": "{enabled}/{total} aktiviert"
       },
       "disable_all_mods": {
-        "action": "Disable all mods",
-        "description": "Disable all mods for the current profile",
-        "status": "{disabled}/{total} disabled"
+        "action": "Alle Mods deaktivieren",
+        "description": "Alle Mods für das aktuelle Profil deaktivieren",
+        "status": "{disabled}/{total} deaktiviert"
       },
       "import_local_mod": {
-        "action": "Import local mod",
-        "description": "Install a mod offline from your files.",
+        "action": "Lokale Mod importieren",
+        "description": "Eine Mod offline von Ihren Dateien installieren.",
         "not_all_installable": "Not all mods can be installed locally"
       },
       "export_profile_file": {
-        "action": "Export profile as a file",
-        "description": "Export your mod list and configs as a file.",
-        "share_easily": "The exported file can be shared with friends to get an identical profile quickly and easily"
+        "action": "Profil als Datei exportieren",
+        "description": "Exportieren Sie Ihre Mod-Liste und Konfigurationen als Datei.",
+        "share_easily": "Die exportierte Datei kann mit Freunden geteilt werden, um schnell und einfach ein identisches Profil zu erhalten"
       },
       "export_profile_code": {
-        "action": "Export profile as a code",
-        "description": "Export your mod list and configs as a code.",
-        "share_easily": "The exported code can be shared with friends to get an identical profile quickly and easily"
+        "action": "Profil als Code exportieren",
+        "description": "Exportieren Sie Ihre Mod-Liste und Konfigurationen als Code.",
+        "share_easily": "Der exportierte Code kann mit Freunden geteilt werden, um schnell und einfach ein identisches Profil zu erhalten"
       },
       "update_all_mods": {
-        "action": "Update all mods",
-        "description": "Quickly update every installed mod to their latest versions.",
-        "one_update": "1 mod has an update available",
-        "multi_updates": "{count} mods have an update available"
+        "action": "Alle Mods aktualisieren",
+        "description": "Aktualisieren Sie schnell jede installierte Mod auf die neueste Version.",
+        "one_update": "1 Mod hat ein Update verfügbar",
+        "multi_updates": "{count} Mods haben ein Update verfügbar"
       },
       "funky_mode": {
-        "action": "Toggle funky mode",
-        "description": "Enable/disable funky mode.",
-        "enabled": "Current: enabled",
-        "disabled": "Current: disabled (default)"
+        "action": "Funky-Modus umschalten",
+        "description": "Aktivieren/Deaktivieren des Funky-Modus.",
+        "enabled": "Aktuell: aktiviert",
+        "disabled": "Aktuell: deaktiviert (Standard)"
       },
       "switch_theme": {
-        "action": "Switch theme",
-        "description": "Switch between light and dark themes.",
-        "dark": "Current: dark theme",
-        "light": "Current: light theme (default)"
+        "action": "Design wechseln",
+        "description": "Zwischen hellem und dunklem Design wechseln.",
+        "dark": "Aktuell: dunkles Design",
+        "light": "Aktuell: helles Design (Standard)"
       },
       "switch_card_type": {
-        "action": "Switch card display type",
-        "description": "Switch between expanded or collapsed cards.",
-        "expanded": "Current: expanded",
-        "collapsed": "Current: collapsed (default)"
+        "action": "Kartenanzeigetyp wechseln",
+        "description": "Zwischen erweiterten oder reduzierten Karten wechseln.",
+        "expanded": "Aktuell: erweitert",
+        "collapsed": "Aktuell: reduziert (Standard)"
       },
       "refresh_online_mod_list": {
-        "action": "Refresh online mod list",
-        "description": "Check for any new mod releases.",
-        "refreshing": "Refreshing...",
-        "error": "Error refreshing the mod list: {error}",
-        "disabled_downloads": "Refreshing the mod list is disabled while there are active downloads.",
-        "cache_date": "Cache date: {date}",
-        "no_api": "No API information available"
+        "action": "Online-Mod-Liste aktualisieren",
+        "description": "Nach neuen Mod-Veröffentlichungen suchen.",
+        "refreshing": "Aktualisierung...",
+        "error": "Fehler beim Aktualisieren der Mod-Liste: {error}",
+        "disabled_downloads": "Das Aktualisieren der Mod-Liste ist deaktiviert, während Downloads aktiv sind.",
+        "cache_date": "Cache-Datum: {date}",
+        "no_api": "Keine API-Informationen verfügbar"
       },
       "change_game": {
-        "action": "Change game",
-        "description": "Change the current game"
+        "action": "Spiel wechseln",
+        "description": "Aktuelles Spiel wechseln"
       },
       "show_dependency_strings": {
-        "action": "Show dependency strings",
-        "description": "View a list of installed mods with their version strings. Used inside the dependencies array inside the manifest.json file.",
-        "status": "Show dependency strings for {count} mod(s)"
+        "action": "Abhängigkeitszeichenfolgen anzeigen",
+        "description": "Zeigen Sie eine Liste der installierten Mods mit ihren Versionszeichenfolgen an. Wird im Abhängigkeits-Array in der Datei manifest.json verwendet.",
+        "status": "Abhängigkeitszeichenfolgen für {count} Mod(s) anzeigen"
       },
       "change_steam_folder": {
-        "action": "Change Steam folder",
-        "description": "Change the location of the Steam folder that {app} uses.",
-        "please_set_manually": "Please set manually"
+        "action": "Steam-Ordner ändern",
+        "description": "Ändern Sie das Verzeichnis des Steam-Ordners, den {app} verwendet.",
+        "please_set_manually": "Bitte manuell festlegen"
       },
       "reset_installation": {
-        "action": "Reset {game} installation",
-        "description": "Fix problems caused by corrupted files or files left over from manual modding attempts.",
-        "status": "This will delete all contents of the {folder} folder, and verify the files through Steam"
+        "action": "{game}-Installation zurücksetzen",
+        "description": "Beheben Sie Probleme, die durch beschädigte Dateien oder Überreste manueller Modding-Versuche verursacht wurden.",
+        "status": "Dies löscht alle Inhalte des Ordners {folder} und überprüft die Dateien über Steam"
       },
       "change_launch_behaviour": {
-        "action": "Change launch behaviour",
-        "description": "Select specific launch behaviour such as forcing Steam to launch with Proton",
-        "current": "The current launch behaviour is set to: {type}"
+        "action": "Startverhalten ändern",
+        "description": "Wählen Sie ein spezifisches Startverhalten aus, z. B. das Erzwingen des Starts von Steam mit Proton",
+        "current": "Das aktuelle Startverhalten ist eingestellt auf: {type}"
       }
     }
   },

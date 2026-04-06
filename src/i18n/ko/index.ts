@@ -109,7 +109,26 @@ export default {
   },
   "ProfileManagementModal": {
     "profile": "프로필",
-    "close": "닫기"
+    "close": "닫기",
+    "items": {
+      "change_profile": {
+        "action": "Change profile",
+        "description": "Return to the profile selection screen"
+      },
+      "export_file": {
+        "action": "Export profile as a file",
+        "description": "Export your mod list and configs as a file"
+      },
+      "export_code": {
+        "action": "Export profile as code",
+        "description": "Export your mod list and configs as a code"
+      },
+      "import_local": {
+        "action": "Import local mod",
+        "description": "Install a mod offline from your files",
+        "not_all_installable": "Not all mods can be installed locally"
+      }
+    }
   },
   "SortModal": {
     "change_the_ordering_of_mods": "모드 정렬 순서 변경",
