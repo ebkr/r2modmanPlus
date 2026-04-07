@@ -2,9 +2,10 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
 import ecosystem from "../../assets/data/ecosystem.json";
-import { R2Modman, ThunderstoreEcosystem } from "../../assets/data/ecosystemTypes";
+import {ModloaderPackage, R2Modman, ThunderstoreEcosystem} from "../../assets/data/ecosystemTypes";
 import jsonSchema from "../../assets/data/ecosystemJsonSchema.json";
 import R2Error from "../errors/R2Error";
+import {ref} from "@vue/reactivity";
 
 // Re-export generated types/Enums to avoid having the whole codebase
 // tightly coupled with the generated ecosystemTypes.
@@ -15,6 +16,9 @@ export {
     TrackingMethod,
     Platform,
 } from "../../assets/data/ecosystemTypes";
+
+export const EcosystemSupportedGames = ref<[string, R2Modman][]>([]);
+export const EcosystemModloaderPackages = ref<ModloaderPackage[]>([]);
 
 export class EcosystemSchema {
     private static _isValidated: boolean = false;
