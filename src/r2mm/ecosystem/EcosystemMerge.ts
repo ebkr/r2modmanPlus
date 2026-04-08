@@ -17,7 +17,7 @@ async function getMergedEcosystemPath(): Promise<string> {
     return path.join(PathResolver.MOD_ROOT, "ecosystem-merge.json");
 }
 
-async function updateLatestMergedEcosystemSchema(): Promise<void> {
+export async function updateLatestMergedEcosystemSchema(): Promise<void> {
     const bundledSchema = await loadBundledSchema();
     const latestSchema = await fetchLatestSchema();
     const mergedSchema: ThunderstoreEcosystem = {
@@ -46,6 +46,17 @@ async function updateLatestMergedEcosystemSchema(): Promise<void> {
         ...bundledSchema.packageInstallers,
         ...latestSchema.packageInstallers,
     };
+    await writeLatestMergedEcosystemSchema(mergedSchema);
+    await internalUpdateEcosystemReactives(mergedSchema);
+}
+
+async function writeLatestMergedEcosystemSchema(schema: ThunderstoreEcosystem): Promise<void> {
+    const asMergedSchema: MergedThunderstoreEcosystem = {
+        ...schema,
+        version: ManagerInformation.VERSION.toString(),
+    };
+    const writable = JSON.stringify(asMergedSchema);
+    return FsProvider.instance.writeFile(await getMergedEcosystemPath(), writable);
 }
 
 async function getLastSavedMergedEcosystemSchema(): Promise<MergedThunderstoreEcosystem> {
@@ -86,15 +97,22 @@ async function resolveMergedEcosystemSchema(): Promise<MergedThunderstoreEcosyst
     return content;
 }
 
-export async function updateEcosystemReactives() {
-    const mergedSchema = await resolveMergedEcosystemSchema();
+async function internalUpdateEcosystemReactives(schema: ThunderstoreEcosystem): Promise<void> {
     const result: [string, R2Modman][] = []
-    for (const [identifier, game] of Object.entries(mergedSchema.games)) {
+    for (const [identifier, game] of Object.entries(schema.games)) {
         if (game.r2modman == null) continue;
         for (const entry of game.r2modman) {
             result.push([identifier, entry]);
         }
     }
     EcosystemSupportedGames.value = result;
-    EcosystemModloaderPackages.value = mergedSchema.modloaderPackages;
+    EcosystemModloaderPackages.value = schema.modloaderPackages;
+}
+
+export async function updateEcosystemReactives() {
+    const mergedSchema = await resolveMergedEcosystemSchema();
+    await internalUpdateEcosystemReactives(mergedSchema);
+    return new Promise(resolve => {
+        setTimeout(resolve, 3000);
+    });
 }

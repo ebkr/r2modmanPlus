@@ -189,6 +189,7 @@ import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import { useRouter } from 'vue-router';
 import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
+import {updateEcosystemReactives, updateLatestMergedEcosystemSchema} from "src/r2mm/ecosystem/EcosystemMerge";
 
 const store = getStore<State>();
 const router = useRouter();
@@ -203,7 +204,6 @@ const settings = ref<ManagerSettings | undefined>(undefined);
 const isSettingDefaultPlatform = ref<boolean>(false);
 const viewMode = ref<GameSelectionViewMode>(GameSelectionViewMode.LIST);
 const activeTab = ref<GameInstanceType>(GameInstanceType.GAME);
-const gameImages = reactive({});
 
 const filteredGameList = computed(() => {
     const displayNameInAdditionalSearch = (game: Game, filterText: string): boolean => {
@@ -369,6 +369,10 @@ onMounted(async () => {
 
     await store.dispatch('resetLocalState');
 
+    updateEcosystemReactives()
+        // TODO - Allow updating latest schema
+        // .then(updateLatestMergedEcosystemSchema);
+
     settings.value = await ManagerSettings.getSingleton(GameManager.defaultGame);
     const globalSettings = settings.value.getContext().global;
     favourites.value = globalSettings.favouriteGames || [];
@@ -384,12 +388,12 @@ onMounted(async () => {
     }
 
     // Skip game selection view if valid default game & platform are set.
-    const {defaultGame, defaultPlatform} = ManagerUtils.getDefaults(settings.value);
+    const {defaultGame, defaultPlatform} = ManagerUtils.getDefaults(settings.value!);
 
     if (defaultGame && defaultPlatform) {
         selectedGame.value = defaultGame;
         selectedPlatform.value = defaultPlatform;
-        proceed();
+        return proceed();
     }
 })
 
