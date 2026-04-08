@@ -14,7 +14,7 @@ import {EcosystemModloaderPackages, EcosystemSupportedGames} from "../../model/s
 export type MergedThunderstoreEcosystem = ThunderstoreEcosystem & {version: string};
 
 async function getMergedEcosystemPath(): Promise<string> {
-    return path.join(PathResolver.MOD_ROOT, "ecosystem-merge.json");
+    return path.join(PathResolver.ROOT, "ecosystem-merge.json");
 }
 
 export async function updateLatestMergedEcosystemSchema(): Promise<void> {
@@ -81,7 +81,13 @@ async function loadBundledSchema(): Promise<ThunderstoreEcosystem> {
 
 async function fetchLatestSchema(): Promise<ThunderstoreEcosystem> {
     // TODO - Implement fetching of latest resource
-    return {} as ThunderstoreEcosystem;
+    return {
+        schemaVersion: "",
+        communities: {},
+        games: {},
+        modloaderPackages: [],
+        packageInstallers: {},
+    };
 }
 
 async function resolveMergedEcosystemSchema(): Promise<MergedThunderstoreEcosystem> {
