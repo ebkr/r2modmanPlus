@@ -9678,7 +9678,7 @@
       },
       "distributions": [
         {
-          "platform": "steam-direct",
+          "platform": "steam",
           "identifier": "1237970"
         },
         {
@@ -9696,7 +9696,7 @@
           "dataFolderName": "",
           "distributions": [
             {
-              "platform": "steam-direct",
+              "platform": "steam",
               "identifier": "1237970"
             },
             {
@@ -16818,13 +16818,35 @@
           },
           "cosmetics": {
             "label": "Cosmetics"
+          },
+          "soundpacks": {
+            "label": "Sound Packs"
+          },
+          "qol": {
+            "label": "Quality Of Life"
+          },
+          "gameplay": {
+            "label": "Gameplay"
+          },
+          "utility": {
+            "label": "Utility"
+          },
+          "skins": {
+            "label": "Skins"
           }
         },
         "sections": {
           "mods": {
             "name": "Mods",
             "excludeCategories": [
-              "modpacks"
+              "modpacks",
+              "soundpacks"
+            ]
+          },
+          "soundpacks": {
+            "name": "Sound Packs",
+            "requireCategories": [
+              "soundpacks"
             ]
           },
           "modpacks": {
@@ -19095,6 +19117,86 @@
         "autolistPackageIds": [
           "LavaGang-MelonLoader"
         ]
+      }
+    },
+    "angry-birds-vr-isle-of-pigs": {
+      "uuid": "e036d5db-ba60-420d-b151-3a56eb8183ab",
+      "label": "angry-birds-vr-isle-of-pigs",
+      "meta": {
+        "displayName": "Angry Birds VR: Isle of Pigs",
+        "iconUrl": "angry-birds-vr-isle-of-pigs.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1001140"
+            }
+          ],
+          "steamFolderName": "Angry Birds VR Isle of Pigs",
+          "dataFolderName": "angry-birds-vr-isle-of-pigs_Data",
+          "exeNames": [
+            "angry-birds-vr-isle-of-pigs.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Angry Birds VR: Isle of Pigs",
+            "iconUrl": "angry-birds-vr-isle-of-pigs.webp"
+          },
+          "settingsIdentifier": "AngryBirdsVrIsleOfPigs",
+          "internalFolderName": "AngryBirdsVrIsleOfPigs",
+          "packageIndex": "https://thunderstore.io/c/angry-birds-vr-isle-of-pigs/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "ABVR"
+          ],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Angry Birds VR: Isle of Pigs",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Join Red, Chuck, Bomb & the Blues to save the stolen eggs in Angry Birds VR: Isle of Pigs, an immersive VR adventure! Discover the island where the greedy pigs vacation, slingshot your way to defeat Dr. Frankenswine & create/share/discover an infinite number of levels with the online level builder."
       }
     },
     "astroneer": {
@@ -23181,6 +23283,128 @@
         "autolistPackageIds": []
       }
     },
+    "island-market-simulator": {
+      "uuid": "61a62561-13d8-4e32-9d1c-25f77acf702e",
+      "label": "island-market-simulator",
+      "meta": {
+        "displayName": "Island Market Simulator",
+        "iconUrl": "island-market-simulator.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3391510"
+            }
+          ],
+          "steamFolderName": "Island Market Simulator",
+          "dataFolderName": "Island Market Simulator_Data",
+          "exeNames": [
+            "Island Market Simulator.exe",
+            "IslandMarketSimulator.x86_64"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Island Market Simulator",
+            "iconUrl": "island-market-simulator.webp"
+          },
+          "settingsIdentifier": "IslandMarketSimulator",
+          "internalFolderName": "IslandMarketSimulator",
+          "packageIndex": "https://thunderstore.io/c/island-market-simulator/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "IMS"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Island Market Simulator",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/mKPBe6KccK",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "Team up with your friends and build a thriving trade empire in this CO-OP strategy and economy simulation set on a lively island. Begin with a small market, share tasks, manage production chains, raise livestock, and dominate the economy together through changing seasons and dynamic festivals!"
+      }
+    },
     "jump-scare-mansion": {
       "uuid": "bd792010-c61e-454a-bf51-b3c28243e14f",
       "label": "jump-scare-mansion",
@@ -26145,6 +26369,125 @@
         ]
       }
     },
+    "project-gorgon": {
+      "uuid": "91fea4ea-4642-4afe-b906-4d45fc8ca1a1",
+      "label": "project-gorgon",
+      "meta": {
+        "displayName": "Project Gorgon",
+        "iconUrl": "project-gorgon.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "342940"
+            }
+          ],
+          "steamFolderName": "Project Gorgon",
+          "dataFolderName": "WindowsPlayer_Data",
+          "exeNames": [
+            "WindowsPlayer.exe",
+            "ProjectGorgon"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Project Gorgon",
+            "iconUrl": "project-gorgon.webp"
+          },
+          "settingsIdentifier": "ProjectGorgon",
+          "internalFolderName": "ProjectGorgon",
+          "packageIndex": "https://thunderstore.io/c/project-gorgon/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Project Gorgon",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "Project: Gorgon is a fantasy MMORPG that allows you to forge your own path through exploration and discovery."
+      }
+    },
     "pushing-it-together-sisyphus": {
       "uuid": "ca4df913-b688-459c-bb60-f56951a5b6a0",
       "label": "pushing-it-together-sisyphus",
@@ -26262,6 +26605,85 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "puttler": {
+      "uuid": "70737eb2-1b22-4b65-bddb-cf805e070606",
+      "label": "puttler",
+      "meta": {
+        "displayName": "Puttler",
+        "iconUrl": "puttler.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3198680"
+            }
+          ],
+          "steamFolderName": "Puttler",
+          "dataFolderName": "Puttler_Data",
+          "exeNames": [
+            "Puttler.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Puttler",
+            "iconUrl": "puttler.webp"
+          },
+          "settingsIdentifier": "Puttler",
+          "internalFolderName": "Puttler",
+          "packageIndex": "https://thunderstore.io/c/puttler/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Puttler",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/gJuva6EWbe",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Puttler is a mini-golf puzzle game featuring wacky obstacles and a charming backstory. Build contraptions to score the golf ball under par across 15 courses and over 250 unique holes to solve."
       }
     },
     "r5reloaded": {
@@ -33555,13 +33977,35 @@
         },
         "cosmetics": {
           "label": "Cosmetics"
+        },
+        "soundpacks": {
+          "label": "Sound Packs"
+        },
+        "qol": {
+          "label": "Quality Of Life"
+        },
+        "gameplay": {
+          "label": "Gameplay"
+        },
+        "utility": {
+          "label": "Utility"
+        },
+        "skins": {
+          "label": "Skins"
         }
       },
       "sections": {
         "mods": {
           "name": "Mods",
           "excludeCategories": [
-            "modpacks"
+            "modpacks",
+            "soundpacks"
+          ]
+        },
+        "soundpacks": {
+          "name": "Sound Packs",
+          "requireCategories": [
+            "soundpacks"
           ]
         },
         "modpacks": {
@@ -34305,6 +34749,47 @@
       "autolistPackageIds": [
         "LavaGang-MelonLoader"
       ]
+    },
+    "angry-birds-vr-isle-of-pigs": {
+      "displayName": "Angry Birds VR: Isle of Pigs",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Join Red, Chuck, Bomb & the Blues to save the stolen eggs in Angry Birds VR: Isle of Pigs, an immersive VR adventure! Discover the island where the greedy pigs vacation, slingshot your way to defeat Dr. Frankenswine & create/share/discover an infinite number of levels with the online level builder."
     },
     "astroneer": {
       "displayName": "Astroneer",
@@ -36134,6 +36619,48 @@
       "discordUrl": "https://discord.gg/hytalemodding",
       "autolistPackageIds": []
     },
+    "island-market-simulator": {
+      "displayName": "Island Market Simulator",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/mKPBe6KccK",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "Team up with your friends and build a thriving trade empire in this CO-OP strategy and economy simulation set on a lively island. Begin with a small market, share tasks, manage production chains, raise livestock, and dominate the economy together through changing seasons and dynamic festivals!"
+    },
     "jump-scare-mansion": {
       "displayName": "Spooky's Jump Scare Mansion: HD Renovation",
       "categories": {
@@ -37359,6 +37886,47 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "project-gorgon": {
+      "displayName": "Project Gorgon",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "Project: Gorgon is a fantasy MMORPG that allows you to forge your own path through exploration and discovery."
+    },
     "pushing-it-together-sisyphus": {
       "displayName": "Pushing it! Together - Sisyphus Co-op",
       "categories": {
@@ -37398,6 +37966,48 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "puttler": {
+      "displayName": "Puttler",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/gJuva6EWbe",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Puttler is a mini-golf puzzle game featuring wacky obstacles and a charming backstory. Build contraptions to score the golf ball under par across 15 courses and over 250 unique holes to solve."
     },
     "r5reloaded": {
       "displayName": "R5Reloaded",
