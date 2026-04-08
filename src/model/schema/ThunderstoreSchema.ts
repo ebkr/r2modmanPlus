@@ -23,6 +23,11 @@ export const EcosystemModloaderPackages = ref<ModloaderPackage[]>([]);
 export class EcosystemSchema {
     private static _isValidated: boolean = false;
 
+    public static init() {
+        EcosystemSupportedGames.value = this.supportedGames;
+        EcosystemModloaderPackages.value = this.modloaderPackages;
+    }
+
     /**
      * Get a validated instance of the ecosystem schema.
      */
