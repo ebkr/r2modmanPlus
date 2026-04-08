@@ -1,4 +1,4 @@
-import { EcosystemSchema, TrackingMethod } from '../../model/schema/ThunderstoreSchema';
+import {EcosystemSupportedGames, TrackingMethod} from '../../model/schema/ThunderstoreSchema';
 import path from '../../providers/node/path/path';
 
 export type CoreRuleType = {
@@ -37,7 +37,7 @@ export default class InstallationRules {
     }
 
     public static apply() {
-        this._RULES = EcosystemSchema.supportedGames.map(([_, x]) => ({
+        this._RULES = EcosystemSupportedGames.value.map(([_, x]) => ({
             gameName: x.internalFolderName,
             rules: x.installRules,
             relativeFileExclusions: x.relativeFileExclusions,

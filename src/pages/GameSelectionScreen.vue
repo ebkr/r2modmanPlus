@@ -369,8 +369,7 @@ onMounted(async () => {
 
     await store.dispatch('resetLocalState');
 
-    updateEcosystemReactives()
-        .then(updateLatestMergedEcosystemSchema);
+    updateLatestMergedEcosystemSchema();
 
     settings.value = await ManagerSettings.getSingleton(GameManager.defaultGame);
     const globalSettings = settings.value.getContext().global;

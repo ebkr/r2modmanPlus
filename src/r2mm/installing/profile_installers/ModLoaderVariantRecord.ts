@@ -1,11 +1,15 @@
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
 import VersionNumber from '../../../model/VersionNumber';
-import { EcosystemSchema, PackageLoader } from '../../../model/schema/ThunderstoreSchema';
+import {
+    EcosystemModloaderPackages,
+    EcosystemSupportedGames,
+    PackageLoader
+} from '../../../model/schema/ThunderstoreSchema';
 
 /**
  * A set of modloader packages read from the ecosystem schema.
  */
-export const MODLOADER_PACKAGES = EcosystemSchema.modloaderPackages.map((x) =>
+export const MODLOADER_PACKAGES = EcosystemModloaderPackages.value.map((x) =>
     new ModLoaderPackageMapping(
         x.packageId,
         x.rootFolder,
@@ -29,7 +33,7 @@ const OVERRIDES: Modloaders = {
 }
 
 export const MOD_LOADER_VARIANTS: Modloaders = Object.fromEntries(
-    EcosystemSchema.supportedGames
+    EcosystemSupportedGames.value
         .map(([_, game]) => [
             game.internalFolderName,
             OVERRIDES[game.internalFolderName] || MODLOADER_PACKAGES
@@ -37,7 +41,7 @@ export const MOD_LOADER_VARIANTS: Modloaders = Object.fromEntries(
 );
 
 export const getModLoaderPackageNames = () => {
-    const deduplicated = new Set(EcosystemSchema.modloaderPackages.map((x) => x.packageId));
+    const deduplicated = new Set(EcosystemModloaderPackages.value.map((x) => x.packageId));
     const names = Array.from(deduplicated);
     names.sort();
     return names;

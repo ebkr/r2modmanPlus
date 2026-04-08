@@ -118,7 +118,4 @@ async function internalUpdateEcosystemReactives(schema: ThunderstoreEcosystem): 
 export async function updateEcosystemReactives() {
     const mergedSchema = await resolveMergedEcosystemSchema();
     await internalUpdateEcosystemReactives(mergedSchema);
-    return new Promise(resolve => {
-        setTimeout(resolve, 3000);
-    });
 }
