@@ -1,4 +1,4 @@
-import { InstallArgs, PackageInstaller } from "./PackageInstaller";
+import { InstallArgs, PackageInstaller, uninstallModLoader } from "./PackageInstaller";
 import path from "../providers/node/path/path";
 import FsProvider from "../providers/generic/file/FsProvider";
 import FileTree from "../model/file/FileTree";
@@ -51,5 +51,9 @@ export class ShimloaderInstaller implements PackageInstaller {
         if (!await fs.exists(configDir)) {
             await fs.mkdirs(configDir);
         }
+    }
+
+    async uninstall(args: InstallArgs) {
+        await uninstallModLoader(args.mod, args.profile);
     }
 }
