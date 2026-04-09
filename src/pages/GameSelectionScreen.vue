@@ -189,7 +189,7 @@ import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import { useRouter } from 'vue-router';
 import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
-import {updateEcosystemReactives, updateLatestMergedEcosystemSchema} from "src/r2mm/ecosystem/EcosystemMerge";
+import {updateEcosystemReactives, updateLatestEcosystemSchema} from "src/r2mm/ecosystem/EcosystemSchema";
 
 const store = getStore<State>();
 const router = useRouter();
@@ -369,7 +369,7 @@ onMounted(async () => {
 
     await store.dispatch('resetLocalState');
 
-    updateLatestMergedEcosystemSchema();
+    updateLatestEcosystemSchema();
 
     settings.value = await ManagerSettings.getSingleton(GameManager.defaultGame);
     const globalSettings = settings.value.getContext().global;

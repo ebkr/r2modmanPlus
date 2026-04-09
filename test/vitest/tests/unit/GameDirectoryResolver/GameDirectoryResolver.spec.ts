@@ -6,7 +6,7 @@ import GameDirectoryResolverImpl from '../../../../../src/r2mm/manager/win32/Gam
 import InMemoryFsProvider from '../../../stubs/providers/InMemory.FsProvider';
 import { providePathImplementation } from '../../../../../src/providers/node/path/path';
 import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
-import {updateEcosystemReactives} from "src/r2mm/ecosystem/EcosystemMerge";
+import {updateEcosystemReactives} from "src/r2mm/ecosystem/EcosystemSchema";
 
 describe.skipIf(process.platform !== 'win32')('GameDirectoryResolver', () => {
     const steamRoot = 'TEST_STEAM_PATH';

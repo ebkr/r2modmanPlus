@@ -12,47 +12,20 @@ import ManagerInformation from "../../_managerinf/ManagerInformation";
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from "../../model/schema/ThunderstoreSchema";
 import {updateModLoaderExports} from "../installing/profile_installers/ModLoaderVariantRecord";
 
-export type MergedThunderstoreEcosystem = ThunderstoreEcosystem & {version: string};
+export type VersionedThunderstoreEcosystem = ThunderstoreEcosystem & {version: string};
 
 async function getMergedEcosystemPath(): Promise<string> {
-    return path.join(PathResolver.ROOT, "ecosystem-merge.json");
+    return path.join(PathResolver.ROOT, "latest-ecosystem-schema.json");
 }
 
-export async function updateLatestMergedEcosystemSchema(): Promise<void> {
-    const bundledSchema = await loadBundledSchema();
+export async function updateLatestEcosystemSchema(): Promise<void> {
     const latestSchema = await fetchLatestSchema();
-    const mergedSchema: ThunderstoreEcosystem = {
-        schemaVersion: "",
-        communities: {},
-        games: {},
-        modloaderPackages: [],
-        packageInstallers: {},
-    };
-    mergedSchema.schemaVersion = latestSchema.schemaVersion;
-    mergedSchema.communities = {
-        ...bundledSchema.communities,
-        ...latestSchema.communities,
-    }
-    mergedSchema.games = {
-        ...bundledSchema.games,
-        ...latestSchema.games,
-    };
-    // Convert to map to handle duplicate keys nicely
-    const modloaderMap = new Map(
-        [...bundledSchema.modloaderPackages, ...latestSchema.modloaderPackages]
-            .map(pkg => [pkg.packageId, pkg])
-    );
-    mergedSchema.modloaderPackages = [...modloaderMap.values()];
-    mergedSchema.packageInstallers = {
-        ...bundledSchema.packageInstallers,
-        ...latestSchema.packageInstallers,
-    };
-    await writeLatestMergedEcosystemSchema(mergedSchema);
-    await internalUpdateEcosystemReactives(mergedSchema);
+    await writeLatestEcosystemSchema(latestSchema);
+    await internalUpdateEcosystemReactives(latestSchema);
 }
 
-async function writeLatestMergedEcosystemSchema(schema: ThunderstoreEcosystem): Promise<void> {
-    const asMergedSchema: MergedThunderstoreEcosystem = {
+async function writeLatestEcosystemSchema(schema: ThunderstoreEcosystem): Promise<void> {
+    const asMergedSchema: VersionedThunderstoreEcosystem = {
         ...schema,
         version: ManagerInformation.VERSION.toString(),
     };
@@ -60,7 +33,7 @@ async function writeLatestMergedEcosystemSchema(schema: ThunderstoreEcosystem): 
     return FsProvider.instance.writeFile(await getMergedEcosystemPath(), writable);
 }
 
-async function getLastSavedMergedEcosystemSchema(): Promise<MergedThunderstoreEcosystem> {
+async function getLastSavedEcosystemSchema(): Promise<VersionedThunderstoreEcosystem> {
     const contentBuffer = await FsProvider.instance.readFile(await getMergedEcosystemPath());
     const content = contentBuffer.toString("utf8");
     return JSON.parse(content);
@@ -91,13 +64,13 @@ async function fetchLatestSchema(): Promise<ThunderstoreEcosystem> {
     };
 }
 
-async function resolveMergedEcosystemSchema(): Promise<MergedThunderstoreEcosystem> {
+async function resolveCachedEcosystemSchema(): Promise<VersionedThunderstoreEcosystem> {
     const mergeFilePath = await getMergedEcosystemPath();
     const bundledSchema = async () => ({...(await loadBundledSchema()), version: ManagerInformation.VERSION.toString()});
     if (!(await FsProvider.instance.exists(mergeFilePath))) {
         return bundledSchema();
     }
-    const content = await getLastSavedMergedEcosystemSchema();
+    const content = await getLastSavedEcosystemSchema();
     if (!new VersionNumber(content.version).isEqualTo(ManagerInformation.VERSION)) {
         return bundledSchema();
     }
@@ -118,6 +91,6 @@ async function internalUpdateEcosystemReactives(schema: ThunderstoreEcosystem): 
 }
 
 export async function updateEcosystemReactives() {
-    const mergedSchema = await resolveMergedEcosystemSchema();
+    const mergedSchema = await resolveCachedEcosystemSchema();
     await internalUpdateEcosystemReactives(mergedSchema);
 }
