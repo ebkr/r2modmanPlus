@@ -16,7 +16,7 @@ import { providePathImplementation } from '../../../../../src/providers/node/pat
 import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
 import { provideAppWindowImplementation } from '../../../../../src/providers/node/app/app_window';
 import { TestAppWindowProvider } from '../../../stubs/providers/node/AppWindow.Provider';
-import {updateEcosystemReactives} from "src/r2mm/ecosystem/EcosystemMerge";
+import {updateEcosystemReactives} from "src/r2mm/ecosystem/EcosystemSchema";
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {

@@ -19,7 +19,7 @@ import PathResolver from '../../../src/r2mm/manager/PathResolver';
 import {providePathImplementation} from "../../../src/providers/node/path/path";
 import {TestPathProvider} from "../stubs/providers/node/Node.Path.Provider";
 import {expect} from 'vitest';
-import {updateEcosystemReactives} from "../../../src/r2mm/ecosystem/EcosystemMerge";
+import {updateEcosystemReactives} from "../../../src/r2mm/ecosystem/EcosystemSchema";
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {

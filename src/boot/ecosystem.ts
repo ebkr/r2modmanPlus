@@ -1,5 +1,5 @@
 import { defineBoot } from '#q-app/wrappers';
-import {updateEcosystemReactives} from "src/r2mm/ecosystem/EcosystemMerge";
+import {updateEcosystemReactives} from "src/r2mm/ecosystem/EcosystemSchema";
 import FsProvider from "src/providers/generic/file/FsProvider";
 import {NodeFsImplementation} from "src/providers/node/fs/NodeFsImplementation";
 

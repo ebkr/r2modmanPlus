@@ -17,7 +17,7 @@ import {describe, beforeEach, afterEach, test, expect, beforeAll} from 'vitest';
 import {providePathImplementation} from "../../../../../src/providers/node/path/path";
 import {TestPathProvider} from "../../../stubs/providers/node/Node.Path.Provider";
 import StubProfileProvider from '../../../stubs/providers/stub.ProfileProvider';
-import {updateEcosystemReactives} from "../../../../../src/r2mm/ecosystem/EcosystemMerge";
+import {updateEcosystemReactives} from "src/r2mm/ecosystem/EcosystemSchema";
 import InMemoryFsProvider from "../../../stubs/providers/InMemory.FsProvider";
 
 providePathImplementation(() => TestPathProvider);
