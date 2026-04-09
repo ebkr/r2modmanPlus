@@ -10,6 +10,7 @@ import FsProvider from "../../providers/generic/file/FsProvider";
 import VersionNumber from "../../model/VersionNumber";
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from "../../model/schema/ThunderstoreSchema";
+import {updateModLoaderExports} from "../installing/profile_installers/ModLoaderVariantRecord";
 
 export type MergedThunderstoreEcosystem = ThunderstoreEcosystem & {version: string};
 
@@ -113,6 +114,7 @@ async function internalUpdateEcosystemReactives(schema: ThunderstoreEcosystem): 
     }
     EcosystemSupportedGames.value = result;
     EcosystemModloaderPackages.value = schema.modloaderPackages;
+    updateModLoaderExports();
 }
 
 export async function updateEcosystemReactives() {
