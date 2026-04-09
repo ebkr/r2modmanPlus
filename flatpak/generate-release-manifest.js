@@ -31,7 +31,7 @@ function parseArgs(argv) {
   if (!args.input || !args.output || !args.repo || !args.commit) {
     fail(`
       Usage:
-        node script.mjs \
+        node generate-release-manifest.js \
           --input <path> \
           --output <path> \
           --repo <git-url> \
