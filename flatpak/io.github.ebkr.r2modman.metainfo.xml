@@ -21,8 +21,6 @@
     <p>**Some Flatpak overrides might be needed!**</p>
 
     <ul>
-      <li>You must ensure that the r2modman Flatpak has permissions to access the directory containing the game files for the game you want to mod. The only default supported locations are <code>~/.local/share/Steam</code> and <code>~/.var/app/com.valvesoftware.Steam</code></li>
-
       <li>When using a Flatpak game launcher, like Flatpak Steam, you must ensure that it has access to your r2modman data directory. The default location is in <code>~/.var/app/io.github.ebkr.r2modman</code>.</li>
     </ul>
   </description>
