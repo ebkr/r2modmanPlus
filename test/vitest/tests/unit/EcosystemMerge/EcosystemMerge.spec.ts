@@ -45,19 +45,23 @@ describe('EcosystemMerge', () => {
         test('falls back to bundled schema when no cache file exists', async () => {
             expect(EcosystemSupportedGames.value).toHaveLength(0);
             expect(EcosystemModloaderPackages.value).toHaveLength(0);
+            expect(await FsProvider.instance.exists(mergeFilePath)).toBe(false);
 
             await updateEcosystemReactives();
 
+            expect(await FsProvider.instance.exists(mergeFilePath)).toBe(false);
             expect(EcosystemSupportedGames.value.length).toBeGreaterThan(0);
             expect(EcosystemModloaderPackages.value.length).toBeGreaterThan(0);
         });
 
         test('loads from cache when version matches', async () => {
             expect(EcosystemSupportedGames.value).toHaveLength(0);
-            await writeCacheFile({games: {}, modloaderPackages: []});
+            expect(await FsProvider.instance.exists(mergeFilePath)).toBe(false);
 
+            await writeCacheFile({games: {}, modloaderPackages: []});
             await updateEcosystemReactives();
 
+            expect(await FsProvider.instance.exists(mergeFilePath)).toBe(true);
             expect(EcosystemSupportedGames.value).toHaveLength(0);
         });
 
