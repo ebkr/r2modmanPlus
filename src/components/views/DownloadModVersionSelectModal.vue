@@ -83,18 +83,19 @@ function closeModal() {
 
 watch(() => store.state.modals.downloadModalMod, async () => {
     currentVersion.value = null;
-    if (thunderstoreMod.value !== null) {
+    const mod = thunderstoreMod.value;
+    if (mod !== null) {
         const activeGame: Game = store.state.activeGame;
-        selectedVersion.value = thunderstoreMod.value.getLatestVersion();
+        selectedVersion.value = mod.getLatestVersion();
         recommendedVersion.value = null;
 
         versionNumbers.value = await PackageDb.getPackageVersionNumbers(
             activeGame.internalFolderName,
-            thunderstoreMod.value.getFullName()
+            mod.getFullName()
         );
 
         const foundRecommendedVersion = MOD_LOADER_VARIANTS[activeGame.internalFolderName]
-            .find(value => value.packageName === thunderstoreMod.value!.getFullName());
+            .find(value => value.packageName === mod.getFullName());
 
         if (foundRecommendedVersion && foundRecommendedVersion.recommendedVersion) {
             recommendedVersion.value = foundRecommendedVersion.recommendedVersion.toString();
@@ -110,7 +111,7 @@ watch(() => store.state.modals.downloadModalMod, async () => {
 
         const modListResult = await ProfileModList.getModList(store.getters['profile/activeProfile'].asImmutableProfile());
         if (!(modListResult instanceof R2Error)) {
-            const manifestMod = modListResult.find((local: ManifestV2) => local.getName() === thunderstoreMod.value!.getFullName());
+            const manifestMod = modListResult.find((local: ManifestV2) => local.getName() === mod.getFullName());
             if (manifestMod !== undefined) {
                 currentVersion.value = manifestMod.getVersionNumber().toString();
             }
