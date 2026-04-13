@@ -11855,6 +11855,9 @@
           },
           "cosmetics": {
             "label": "Cosmetics"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
           }
         },
         "sections": {
@@ -24824,6 +24827,125 @@
       },
       "r2modman": null
     },
+    "modulus-factory-automation": {
+      "uuid": "f971c560-4cd8-49dd-9bc2-f00011ea6cd7",
+      "label": "modulus-factory-automation",
+      "meta": {
+        "displayName": "Modulus: Factory Automation",
+        "iconUrl": "modulus-factory-automation.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2779120"
+            }
+          ],
+          "steamFolderName": "Modulus",
+          "dataFolderName": "Modulus_Data",
+          "exeNames": [
+            "Modulus.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Modulus: Factory Automation",
+            "iconUrl": "modulus-factory-automation.webp"
+          },
+          "settingsIdentifier": "ModulusFactoryAutomation",
+          "internalFolderName": "ModulusFactoryAutomation",
+          "packageIndex": "https://thunderstore.io/c/modulus-factory-automation/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Modulus: Factory Automation",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "discordUrl": "https://discord.gg/modulus",
+        "shortDescription": "Build, automate, & optimize production lines across sky islands with real spatial constraints. Every production line is an open-ended puzzle: which operators to use, how to route your belts and how to fit your factory into the landscape. Your solutions, like your factories, are uniquely your own."
+      }
+    },
     "my-winter-car": {
       "uuid": "2c1534b9-6b36-4f54-90bb-65615478cac5",
       "label": "my-winter-car",
@@ -27178,6 +27300,124 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "roadside-research": {
+      "uuid": "7b33c310-2147-45c6-b621-4ecfe90e3a0d",
+      "label": "roadside-research",
+      "meta": {
+        "displayName": "Roadside Research",
+        "iconUrl": "roadside-research.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3643170"
+            }
+          ],
+          "steamFolderName": "Roadside Research",
+          "dataFolderName": "Roadside Research_Data",
+          "exeNames": [
+            "Roadside Research.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Roadside Research",
+            "iconUrl": "roadside-research.webp"
+          },
+          "settingsIdentifier": "RoadsideResearch",
+          "internalFolderName": "RoadsideResearch",
+          "packageIndex": "https://thunderstore.io/c/roadside-research/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Roadside Research",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "Roadside Research is a 1 to 4 player co-op gas station simulator. Except you're aliens. And undercover. Do very human things like restocking shelves while preparing for the invasion. Just don't get caught."
       }
     },
     "rv-there-yet": {
@@ -32604,6 +32844,9 @@
         },
         "cosmetics": {
           "label": "Cosmetics"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
         }
       },
       "sections": {
@@ -37243,6 +37486,48 @@
       },
       "discordUrl": "https://discord.gg/gV8QW6F"
     },
+    "modulus-factory-automation": {
+      "displayName": "Modulus: Factory Automation",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "discordUrl": "https://discord.gg/modulus",
+      "shortDescription": "Build, automate, & optimize production lines across sky islands with real spatial constraints. Every production line is an open-ended puzzle: which operators to use, how to route your belts and how to fit your factory into the landscape. Your solutions, like your factories, are uniquely your own."
+    },
     "my-winter-car": {
       "displayName": "My Winter Car",
       "categories": {
@@ -38272,6 +38557,47 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "roadside-research": {
+      "displayName": "Roadside Research",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "Roadside Research is a 1 to 4 player co-op gas station simulator. Except you're aliens. And undercover. Do very human things like restocking shelves while preparing for the invasion. Just don't get caught."
     },
     "rv-there-yet": {
       "displayName": "RV There Yet?",
