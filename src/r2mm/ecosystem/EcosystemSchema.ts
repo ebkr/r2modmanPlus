@@ -11,6 +11,7 @@ import VersionNumber from "../../model/VersionNumber";
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from "../../model/schema/ThunderstoreSchema";
 import {updateModLoaderExports} from "../installing/profile_installers/ModLoaderVariantRecord";
+import {getGameSupportStatus} from "../../model/game/GameSupportStatus";
 import LoggerProvider, {LogSeverity} from "../../providers/ror2/logging/LoggerProvider";
 
 export type VersionedThunderstoreEcosystem = ThunderstoreEcosystem & {version: string};
@@ -97,6 +98,7 @@ async function internalUpdateEcosystemReactives(schema: ThunderstoreEcosystem): 
     for (const [identifier, game] of Object.entries(schema.games)) {
         if (game.r2modman == null) continue;
         for (const entry of game.r2modman) {
+            if (getGameSupportStatus(entry, schema.modloaderPackages) !== "supported") continue;
             result.push([identifier, entry]);
         }
     }
