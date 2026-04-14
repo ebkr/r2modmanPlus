@@ -50,6 +50,11 @@ async function extractConfigsToImportedProfile(
                 outputPath = path.join(outputPath, 'BepInEx');
             }
 
+            if (['.dll', '.exe'].some(value => entry.entryName.toLowerCase().endsWith(value.toLowerCase()))) {
+                console.warn(`Unsafe file [${entry.entryName}] in import. Skipped.`);
+                continue;
+            }
+
             await ZipProvider.instance.extractEntryTo(file, entry.entryName, outputPath);
         }
 
