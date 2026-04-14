@@ -78,7 +78,7 @@ const status = computed<IndicatorStatus>(() => {
     }
 
     return {
-        text: "Ready",
+        text: "You have the latest game list",
         iconClass: "fas fa-check",
         severity: "info",
     };

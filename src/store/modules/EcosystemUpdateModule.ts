@@ -1,4 +1,4 @@
-import { ActionTree, GetterTree, MutationTree } from 'vuex';
+import { GetterTree, MutationTree } from 'vuex';
 
 import { State as RootState } from '../../store';
 
@@ -34,19 +34,6 @@ export const EcosystemUpdateModule = {
         },
         setError(state, error: Error) {
             state.error = error instanceof Error ? error : new Error(String(error));
-        },
-    },
-
-    actions: <ActionTree<EcosystemUpdateState, RootState>>{
-        async simulateUpdate({ commit }, { fail = false, duration = 3000 } = {}) {
-            commit('startUpdate');
-
-            await new Promise<void>((resolve) => setTimeout(resolve, duration));
-
-            if (fail) {
-                commit('setError', new Error("Simulated ecosystem update failure"));
-            }
-            commit('finishUpdate');
         },
     },
 };

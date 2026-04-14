@@ -7,7 +7,7 @@
                 </div>
             </main>
             <div id="activity-bar">
-                <StatusIndicator />
+                <StatusIndicator v-if="router.currentRoute.value.path === '/'" />
             </div>
         </div>
         <ErrorModal />
@@ -65,10 +65,6 @@ import StatusIndicator from './components/navigation/StatusIndicator.vue';
 const store = baseStore;
 const router = useRouter();
 provideStoreImplementation(() => store);
-
-if (import.meta.env.DEV) {
-    (window as any).__store = store;
-}
 
 const quasar = useQuasar();
 
@@ -200,6 +196,7 @@ main {
         background-color: var(--preview-panel-background-color);
         border-top: 1px solid var(--border, #e1e1e1);
         padding: 0.25rem 0.75rem;
+        min-height: 45px;
         gap: 0.5rem;
         overflow: hidden;
     }
