@@ -7,6 +7,7 @@
                 </div>
             </main>
             <div id="activity-bar">
+                <StatusIndicator />
             </div>
         </div>
         <ErrorModal />
@@ -59,10 +60,15 @@ import { useRouter } from 'vue-router';
 import { ProtocolProviderImplementation } from './providers/generic/protocol/ProtocolProviderImplementation';
 import { provideProtocolImplementation } from './providers/generic/protocol/ProtocolProvider';
 import BreadcrumbNavigator from 'components/breadcrumbs/BreadcrumbNavigator.vue';
+import StatusIndicator from './components/navigation/StatusIndicator.vue';
 
 const store = baseStore;
 const router = useRouter();
 provideStoreImplementation(() => store);
+
+if (import.meta.env.DEV) {
+    (window as any).__store = store;
+}
 
 const quasar = useQuasar();
 
@@ -196,6 +202,12 @@ main {
         padding: 0.25rem 0.75rem;
         gap: 0.5rem;
         overflow: hidden;
+    }
+
+    > .status-indicator {
+        margin-left: auto;
+        flex-shrink: 0;
+        order: 999;
     }
 }
 </style>

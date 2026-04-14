@@ -15,6 +15,7 @@ import R2Error from '../model/errors/R2Error';
 import { getModLoaderPackageNames } from '../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { SplashModule } from './modules/SplashModule';
+import { EcosystemUpdateModule } from './modules/EcosystemUpdateModule';
 
 export interface State {
     activeGame: Game;
@@ -127,6 +128,7 @@ export const store = {
     modules: {
         error: ErrorModule,
         download: DownloadModule,
+        ecosystemUpdate: EcosystemUpdateModule,
         modals: ModalsModule,
         modFilters: ModFilterModule,
         profile: ProfileModule,
