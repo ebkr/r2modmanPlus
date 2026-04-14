@@ -11,6 +11,7 @@ import VersionNumber from "../../model/VersionNumber";
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from "../../model/schema/ThunderstoreSchema";
 import {updateModLoaderExports} from "../installing/profile_installers/ModLoaderVariantRecord";
+import LoggerProvider, {LogSeverity} from "src/providers/ror2/logging/LoggerProvider";
 
 export type VersionedThunderstoreEcosystem = ThunderstoreEcosystem & {version: string};
 
@@ -70,7 +71,17 @@ async function resolveCachedEcosystemSchema(): Promise<VersionedThunderstoreEcos
     if (!(await FsProvider.instance.exists(mergeFilePath))) {
         return bundledSchema();
     }
-    const content = await getLastSavedEcosystemSchema();
+    let content: VersionedThunderstoreEcosystem;
+    try {
+        content = await getLastSavedEcosystemSchema();
+    } catch (e) {
+        const err = e as unknown as Error;
+        LoggerProvider.instance.Log(
+            LogSeverity.ERROR,
+            `Failed to load cached ecosystem schema, falling back to bundled schema\n${err.message}`
+        );
+        return bundledSchema();
+    }
     if (!new VersionNumber(content.version).isEqualTo(ManagerInformation.VERSION)) {
         return bundledSchema();
     }
