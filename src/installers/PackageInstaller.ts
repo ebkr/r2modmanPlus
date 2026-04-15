@@ -5,7 +5,9 @@ import GameManager from "../model/game/GameManager";
 import { ImmutableProfile } from "../model/Profile";
 import ManifestV2 from "../model/ManifestV2";
 import FsProvider from "../providers/generic/file/FsProvider";
+import path from "../providers/node/path/path";
 import { MOD_LOADER_VARIANTS } from "../r2mm/installing/profile_installers/ModLoaderVariantRecord";
+import PathResolver from "../r2mm/manager/PathResolver";
 
 export type InstallArgs = {
     mod: ManifestV2;
@@ -15,7 +17,9 @@ export type InstallArgs = {
 
 export interface PackageInstaller {
     install(args: InstallArgs): Promise<void>;
-    uninstall?(args: InstallArgs): Promise<void>;
+    uninstall(args: InstallArgs): Promise<void>;
+
+    // Plugin installers only.
     enable?(args: InstallArgs): Promise<void>;
     disable?(args: InstallArgs): Promise<void>;
 }
@@ -47,6 +51,12 @@ export async function enableModByRenamingFiles(folderName: string) {
             );
         }
     }
+}
+
+export function getInstallArgs(mod: ManifestV2, profile: ImmutableProfile): InstallArgs {
+    const cacheDirectory = path.join(PathResolver.MOD_ROOT, "cache");
+    const packagePath = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
+    return {mod, profile, packagePath};
 }
 
 // Implementation shared by BepInExInstaller, MelonLoaderInstaller and others.

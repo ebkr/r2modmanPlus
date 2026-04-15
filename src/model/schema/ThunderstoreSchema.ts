@@ -2,7 +2,7 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
 import ecosystem from "../../assets/data/ecosystem.json";
-import { R2Modman, ThunderstoreEcosystem } from "../../assets/data/ecosystemTypes";
+import { R2Modman as GameConfig, ThunderstoreEcosystem } from "../../assets/data/ecosystemTypes";
 import jsonSchema from "../../assets/data/ecosystemJsonSchema.json";
 import R2Error from "../errors/R2Error";
 
@@ -43,10 +43,10 @@ export class EcosystemSchema {
     }
 
     /**
-     * Get a list of [identifier, r2modman] entries i.e. games supported by the mod manager.
+     * Get a list of [identifier, GameConfig] entries i.e. games supported by the mod manager.
      */
     static get supportedGames() {
-        const result: [string, R2Modman][] = []
+        const result: [string, GameConfig][] = []
         for (const [identifier, game] of Object.entries(this.ecosystem.games)) {
             if (game.r2modman == null) continue;
             for (const entry of game.r2modman) {
@@ -58,5 +58,13 @@ export class EcosystemSchema {
 
     static get modloaderPackages() {
         return this.ecosystem.modloaderPackages;
+    }
+
+    static getGameConfigBySettingsIdentifier(settingsIdentifier: string): GameConfig | undefined {
+        const config = this.supportedGames.find(
+            ([_id, config]) => config.settingsIdentifier === settingsIdentifier
+        );
+
+        return config ? config[1] : undefined;
     }
 }

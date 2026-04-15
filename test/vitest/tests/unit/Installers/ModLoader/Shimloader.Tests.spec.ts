@@ -5,11 +5,14 @@ import {
     expectFilesToBeRemoved,
     installLogicBeforeEach
 } from '../../../../utils/InstallLogicUtils';
-import R2Error from '../../../../../../src/model/errors/R2Error';
+import { PluginInstallers } from '../../../../../../src/installers/registry';
+import { InstallRulePluginInstaller } from '../../../../../../src/installers/InstallRulePluginInstaller';
+import { PackageLoader } from '../../../../../../src/model/schema/ThunderstoreSchema';
 import Profile from '../../../../../../src/model/Profile';
+import R2Error from '../../../../../../src/model/errors/R2Error';
 import ProfileInstallerProvider from '../../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
 import GenericProfileInstaller from '../../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
-import InstallationRules, { RuleSubtype } from '../../../../../../src/r2mm/installing/InstallationRules';
+import { RuleSubtype } from '../../../../../../src/r2mm/installing/InstallationRules';
 import { TrackingMethod } from '../../../../../../src/model/schema/ThunderstoreSchema';
 import {describe, beforeEach, test, expect} from 'vitest';
 
@@ -37,27 +40,16 @@ function getShimloaderRules(includePakExtension: boolean): RuleSubtype[] {
     ];
 }
 
-function setPalworldInstallRules(rules: RuleSubtype[]) {
-    const existingRules = InstallationRules.RULES;
-    const palworldIdx = existingRules.findIndex((rule) => rule.gameName === 'Palworld');
-
-    if (palworldIdx === -1) {
-        throw new Error('Palworld install rules not found');
-    }
-
-    existingRules[palworldIdx] = {
-        ...existingRules[palworldIdx],
-        rules,
-    };
-    InstallationRules.RULES = existingRules;
-}
-
 describe('Shimloader Installer Tests', () => {
     describe('Schema-defined installRules', () => {
 
         beforeEach(async () => {
             await installLogicBeforeEach('Palworld');
-            setPalworldInstallRules(getShimloaderRules(false));
+            PluginInstallers[PackageLoader.SHIMLOADER] = new InstallRulePluginInstaller({
+                gameName: 'Palworld',
+                rules: getShimloaderRules(false),
+                relativeFileExclusions: null,
+            });
         });
 
         test('Installs and uninstalls a package', async () => {
@@ -107,7 +99,11 @@ describe('Shimloader Installer Tests', () => {
 
         beforeEach(async () => {
             await installLogicBeforeEach('Palworld');
-            setPalworldInstallRules(getShimloaderRules(true));
+            PluginInstallers[PackageLoader.SHIMLOADER] = new InstallRulePluginInstaller({
+                gameName: 'Palworld',
+                rules: getShimloaderRules(true),
+                relativeFileExclusions: null,
+            });
         });
 
         test('Loose .pak files route to shimloader/pak when schema defines .pak extension', async () => {
