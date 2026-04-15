@@ -1,7 +1,7 @@
 import * as path from 'path';
 import {beforeEach, describe, expect, test} from 'vitest';
 
-import {VersionedThunderstoreEcosystem, updateEcosystemReactives, updateLatestEcosystemSchema} from 'src/r2mm/ecosystem/EcosystemSchema';
+import {VersionedThunderstoreEcosystem, updateEcosystemReactives, updateLatestEcosystemSchema} from '../../../../../src/r2mm/ecosystem/EcosystemSchema';
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from '../../../../../src/model/schema/ThunderstoreSchema';
 import {MODLOADER_PACKAGES, MOD_LOADER_VARIANTS, updateModLoaderExports} from '../../../../../src/r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import InMemoryFsProvider from '../../../stubs/providers/InMemory.FsProvider';

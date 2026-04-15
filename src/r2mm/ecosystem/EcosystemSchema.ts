@@ -11,7 +11,7 @@ import VersionNumber from "../../model/VersionNumber";
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from "../../model/schema/ThunderstoreSchema";
 import {updateModLoaderExports} from "../installing/profile_installers/ModLoaderVariantRecord";
-import LoggerProvider, {LogSeverity} from "src/providers/ror2/logging/LoggerProvider";
+import LoggerProvider, {LogSeverity} from "../../providers/ror2/logging/LoggerProvider";
 
 export type VersionedThunderstoreEcosystem = ThunderstoreEcosystem & {version: string};
 
@@ -37,10 +37,12 @@ async function writeLatestEcosystemSchema(schema: ThunderstoreEcosystem): Promis
 async function getLastSavedEcosystemSchema(): Promise<VersionedThunderstoreEcosystem> {
     const contentBuffer = await FsProvider.instance.readFile(await getMergedEcosystemPath());
     const content = contentBuffer.toString("utf8");
-    return JSON.parse(content);
+    const parsedContent = JSON.parse(content);
+    await validateSchema(parsedContent);
+    return parsedContent;
 }
 
-async function loadBundledSchema(): Promise<ThunderstoreEcosystem> {
+async function validateSchema(schema: any): Promise<void> {
     const ajv = new Ajv();
     addFormats(ajv);
 
@@ -50,7 +52,10 @@ async function loadBundledSchema(): Promise<ThunderstoreEcosystem> {
     if (!isOk) {
         throw new R2Error("Schema validation error", ajv.errorsText(validate.errors));
     }
+}
 
+async function loadBundledSchema(): Promise<ThunderstoreEcosystem> {
+    await validateSchema(bundledEcosystem);
     return bundledEcosystem as ThunderstoreEcosystem;
 }
 
