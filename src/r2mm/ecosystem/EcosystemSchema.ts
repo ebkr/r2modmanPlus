@@ -71,9 +71,12 @@ async function resolveCachedEcosystemSchema(): Promise<VersionedThunderstoreEcos
     if (!(await FsProvider.instance.exists(mergeFilePath))) {
         return bundledSchema();
     }
-    let content: VersionedThunderstoreEcosystem;
     try {
-        content = await getLastSavedEcosystemSchema();
+        let content = await getLastSavedEcosystemSchema();
+        if (!new VersionNumber(content.version).isEqualTo(ManagerInformation.VERSION)) {
+            return bundledSchema();
+        }
+        return content;
     } catch (e) {
         const err = e as unknown as Error;
         LoggerProvider.instance.Log(
@@ -82,10 +85,6 @@ async function resolveCachedEcosystemSchema(): Promise<VersionedThunderstoreEcos
         );
         return bundledSchema();
     }
-    if (!new VersionNumber(content.version).isEqualTo(ManagerInformation.VERSION)) {
-        return bundledSchema();
-    }
-    return content;
 }
 
 async function internalUpdateEcosystemReactives(schema: ThunderstoreEcosystem): Promise<void> {
