@@ -64,7 +64,7 @@
                                 <i class="button fas fa-th-large" @click="toggleViewMode"></i>
                             </div>
                         </nav>
-                        <nav class="level mb-2" v-else>
+                        <nav class="level mb-0" v-else>
                             <div class="level-item">
                                 <div class="card-header-title">
                                     <div class="input-group input-group--flex margin-right">
@@ -83,6 +83,56 @@
                                 <i class="button fas fa-list" @click="toggleViewMode"></i>
                             </div>
                         </nav>
+                        <div class="level mb-2">
+                            <div class="level-left" style="padding-left: 1rem">
+                                <div class="level-item">
+                                    <button
+                                        :class="['button is-small', {'is-success': showOnlyInstalled}]"
+                                        :disabled="isScanning"
+                                        @click="showOnlyInstalled = !showOnlyInstalled"
+                                    >
+                                        <span v-if="isScanning">Scanning...</span>
+                                        <span v-else>Installed only</span>
+                                    </button>
+                                </div>
+                                <div class="level-item" v-if="!isScanning && installedAppIds.size > 0">
+                                    <span class="is-size-7 has-text-grey">{{ installedAppIds.size }} app{{ installedAppIds.size !== 1 ? 's' : '' }} detected</span>
+                                </div>
+                                <div class="level-item" v-if="scanError">
+                                    <span class="is-size-7 has-text-danger">{{ scanError }}</span>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    <button :class="['button is-small', {'is-warning': usingCustomPath}]" @click="showCustomPathInput = !showCustomPathInput">
+                                        Steam Library Path
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="level mb-2" v-if="showCustomPathInput">
+                            <div class="level-left" style="padding-left: 1rem; flex: 1; min-width: 0">
+                                <div class="level-item" style="width: 100%">
+                                    <div class="input-group input-group--flex" style="width: 100%">
+                                        <input
+                                            v-model="customScanPath"
+                                            class="input"
+                                            type="text"
+                                            placeholder="Path to Steam folder"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="level-right" style="margin-left: 0.25rem">
+                                <div class="level-item">
+                                    <div style="display: flex; gap: 0.25rem">
+                                        <button class="button is-info" :disabled="isScanning" @click="rescan(customScanPath)">Scan</button>
+                                        <button class="button" :disabled="isScanning" @click="rescan()">Reset to default</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="level">
                             <div class="level-item">
                                 <div class="tabs">
@@ -113,6 +163,7 @@
                                                         <i class="far fa-star" v-else></i>
                                                     </a>
                                                     {{ game.displayName }}
+                                                    <span v-if="isInstalledInSteam(game)" class="tag is-success is-small margin-left">Installed</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -131,6 +182,9 @@
                                                             <div class="card-action-overlay rounded">
                                                                 <div class="absolute-top card-header-title">
                                                                     <p class="text-left title is-5 has-text-white">{{ game.displayName }}</p>
+                                                                </div>
+                                                                <div v-if="isInstalledInSteam(game)" style="position: absolute; bottom: 0.75rem; right: 0.75rem">
+                                                                    <span class="tag is-success is-small">Installed</span>
                                                                 </div>
                                                                 <div class="absolute-top-right card-header-title">
                                                                     <p class="text-left title is-5">
@@ -189,6 +243,7 @@ import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import { useRouter } from 'vue-router';
 import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
+import { getDefaultSteamPath, getInstalledSteamAppIds } from '../utils/SteamLibraryScanner';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -205,6 +260,37 @@ const viewMode = ref<GameSelectionViewMode>(GameSelectionViewMode.LIST);
 const activeTab = ref<GameInstanceType>(GameInstanceType.GAME);
 const gameImages = reactive({});
 
+const installedAppIds = ref<Set<string>>(new Set());
+const isScanning = ref<boolean>(false);
+const showOnlyInstalled = ref<boolean>(false);
+const customScanPath = ref<string>('');
+const scanError = ref<string | null>(null);
+const showCustomPathInput = ref<boolean>(false);
+const usingCustomPath = ref<boolean>(false);
+
+function isInstalledInSteam(game: Game): boolean {
+    return game.storePlatformMetadata
+        .filter(m => m.storePlatform === Platform.STEAM || m.storePlatform === Platform.STEAM_DIRECT)
+        .some(m => m.storeIdentifier != null && installedAppIds.value.has(m.storeIdentifier));
+}
+
+async function rescan(customPath?: string) {
+    isScanning.value = true;
+    scanError.value = null;
+    const isCustom = !!(customPath && customPath.trim().length > 0);
+    if (!isCustom) {
+        customScanPath.value = (await getDefaultSteamPath()) ?? '';
+    }
+    try {
+        installedAppIds.value = await getInstalledSteamAppIds(isCustom ? customPath : undefined);
+        usingCustomPath.value = isCustom;
+    } catch {
+        scanError.value = 'Could not read Steam library';
+    } finally {
+        isScanning.value = false;
+    }
+}
+
 const filteredGameList = computed(() => {
     const displayNameInAdditionalSearch = (game: Game, filterText: string): boolean => {
         return game.additionalSearchStrings.find(value => value.toLowerCase().trim().indexOf(filterText.toLowerCase().trim()) >= 0) !== undefined;
@@ -215,20 +301,20 @@ const filteredGameList = computed(() => {
             || filterText.value.trim().length === 0
             || displayNameInAdditionalSearch(value, filterText.value))
         .filter(value => value.displayMode === GameSelectionDisplayMode.VISIBLE)
-        .filter(value => value.instanceType === activeTab.value);
+        .filter(value => value.instanceType === activeTab.value)
+        .filter(value => !showOnlyInstalled.value || isInstalledInSteam(value));
 });
 
 const gameList = computed<Game[]>(() => {
     return GameManager.gameList.sort((a, b) => {
-        if (favourites.value.includes(a.settingsIdentifier)) {
-            if (favourites.value.includes(b.settingsIdentifier)) {
-                return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
-            } else {
-                return -1;
-            }
-        } else if (favourites.value.includes(b.settingsIdentifier)) {
-            return 1;
-        }
+        const aFav = favourites.value.includes(a.settingsIdentifier);
+        const bFav = favourites.value.includes(b.settingsIdentifier);
+        if (aFav !== bFav) return aFav ? -1 : 1;
+
+        const aInstalled = isInstalledInSteam(a);
+        const bInstalled = isInstalledInSteam(b);
+        if (aInstalled !== bInstalled) return aInstalled ? -1 : 1;
+
         return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
     });
 });
@@ -373,6 +459,8 @@ onMounted(async () => {
     const globalSettings = settings.value.getContext().global;
     favourites.value = globalSettings.favouriteGames || [];
     selectedGame.value = GameManager.findByFolderName(globalSettings.lastSelectedGame) || null;
+
+    rescan();
 
     switch(globalSettings.gameSelectionViewMode) {
         case GameSelectionViewMode.LIST:
