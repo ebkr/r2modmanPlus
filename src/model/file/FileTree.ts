@@ -21,7 +21,21 @@ export default class FileTree {
         try {
             const dir = await fs.readdir(location);
             for (const file of dir) {
-                if ((await fs.lstat(path.join(location, file))).isDirectory()) {
+                const filePath = path.join(location, file);
+                let stat;
+                try {
+                    stat = await fs.lstat(filePath);
+                } catch (e) {
+                    if (!(await fs.exists(filePath))) {
+                        return new R2Error(
+                            `File vanished while reading folder: ${location}`,
+                            `Expected to find '${file}' but it had been removed by the time the manager tried to read it.`,
+                            'This is typically caused by antivirus software, a cloud-sync client (e.g. OneDrive, Dropbox), or another process removing or moving files while the manager is reading them. Try pausing such tools and retrying.'
+                        );
+                    }
+                    throw e;
+                }
+                if (stat.isDirectory()) {
                     const directoryAddError = await currentTree.addDirectory(location, file);
                     if (directoryAddError instanceof R2Error) {
                         return directoryAddError;
