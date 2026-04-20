@@ -27,8 +27,8 @@
                         :key="game.settingsIdentifier"
                         :game="game"
                         :is-selected="isGameSelected(game)"
-                        :is-favourited="false"
-                        :are-hidden="true"
+                        :is-favourited="isFavourited(game)"
+                        :mark-hidden="true"
                         @click="markAsSelectedGame(game)"
                         @toggle-favourite="toggleFavourite(game)"
                     />
@@ -57,7 +57,7 @@
 
 
                         <template v-if="nonFavouriteGameList.length > 0">
-                            <hr/>
+                            <hr v-if="favouriteGameList.length > 0"/>
                             <GameSelectionSection
                                 :title="`${capitalize(activeTab)}s`"
                                 :count="nonFavouriteGameList.length"
@@ -102,11 +102,10 @@
                     </template>
 
                     <template v-if="hiddenGameList.length > 0">
-                        <hr/>
+                        <hr v-if="favouriteGameList.length > 0 || nonFavouriteGameList.length > 0" />
                         <GameSelectionSection
                             title="Hidden games"
                             :count="hiddenGameList.length"
-                            v-if="hiddenGameList.length > 0"
                         >
                             <div class="notification is-warning">
                                 These games are no longer supported.
