@@ -48,7 +48,7 @@
                         </template>
 
                         <GameSelectionSection
-                            :title="`Other ${activeTab}s`"
+                            :title="`${capitalize(activeTab)}s`"
                             :count="nonFavouriteGameList.length"
                         >
                             <div class="game-cards-container">
@@ -102,6 +102,7 @@ import GameSelectionCard from './GameSelectionCard.vue';
 import GameSelectionListItem from './GameSelectionListItem.vue';
 import GameSelectionSection from './GameSelectionSection.vue';
 import Game from '../../model/game/Game';
+import { capitalize } from '../../utils/StringUtils';
 
 const emit = defineEmits<{
     'select-game': [game: Game];

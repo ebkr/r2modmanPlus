@@ -94,6 +94,8 @@ import { onMounted, provide, ref } from 'vue';
 import { useGameSelectionComposable, gameSelectionKey } from '../components/composables/GameSelectionComposable';
 import GameSelectionList from '../components/game-selection/GameSelectionList.vue';
 import Game from '../model/game/Game';
+import { capitalize } from '../utils/StringUtils';
+
 
 const gameSelection = useGameSelectionComposable();
 provide(gameSelectionKey, gameSelection);
@@ -164,11 +166,7 @@ function selectPlatform() {
 onMounted(async () => {
     window.app.checkForApplicationUpdates();
     await initialize();
-})
-
-function capitalize(str: string) {
-    return str.slice(0, 1).toUpperCase() + str.slice(1);
-}
+});
 </script>
 
 
