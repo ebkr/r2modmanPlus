@@ -52,20 +52,24 @@ export function useGameSelectionComposable() {
     const filteredGameList = computed(() => {
         return gameList.value
             .filter(matchesSearch)
-            .filter((value: Game) => value.displayMode === GameSelectionDisplayMode.VISIBLE)
             .filter((value: Game) => value.instanceType === activeTab.value);
     });
 
+    const hiddenGameList = computed(() => {
+        return filteredGameList.value
+            .filter((value: Game) => value.displayMode === GameSelectionDisplayMode.HIDDEN);
+    });
+
     const favouriteGameList = computed(() => {
-        return filteredGameList.value.filter(
-            (value: Game) => favourites.value.includes(value.settingsIdentifier)
-        );
+        return filteredGameList.value
+            .filter((value: Game) => !hiddenGameList.value.includes(value))
+            .filter((value: Game) => favourites.value.includes(value.settingsIdentifier));
     });
 
     const nonFavouriteGameList = computed(() => {
-        return filteredGameList.value.filter(
-            (value: Game) => !favourites.value.includes(value.settingsIdentifier)
-        );
+        return filteredGameList.value
+            .filter((value: Game) => !hiddenGameList.value.includes(value))
+            .filter((value: Game) => !favourites.value.includes(value.settingsIdentifier));
     });
 
     function isFavourited(game: Game): boolean {
@@ -184,6 +188,7 @@ export function useGameSelectionComposable() {
         settings,
         runningMigration,
         isSettingDefaultPlatform,
+        hiddenGameList,
         favouriteGameList,
         nonFavouriteGameList,
         isFavourited,

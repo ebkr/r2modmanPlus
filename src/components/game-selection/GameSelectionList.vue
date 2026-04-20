@@ -64,12 +64,14 @@
                                 </div>
                             </div>
                         </GameSelectionSection>
+                        <hr v-if="nonFavouriteGameList.length > 0"/>
                     </template>
                     <template v-else>
                         <GameSelectionSection
                             title="Search results"
                             :count="mergedGameList.length"
                             :default-open="true"
+                            v-if="mergedGameList.length > 0"
                         >
                             <div class="game-cards-container">
                                 <div v-for="game of mergedGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
@@ -84,7 +86,31 @@
                                 </div>
                             </div>
                         </GameSelectionSection>
+                        <hr v-if="mergedGameList.length > 0"/>
                     </template>
+
+                    <GameSelectionSection
+                        title="Hidden games"
+                        :count="hiddenGameList.length"
+                    >
+                        <div class="notification is-warning">
+                            These games are no longer supported.
+                        </div>
+                        <div class="game-cards-container">
+                            <div v-for="game of hiddenGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
+                                <GameSelectionCard
+                                    :game="game"
+                                    :is-selected="isGameSelected(game)"
+                                    :is-favourited="isFavourited(game)"
+                                    :active-tab="activeTab"
+                                    :highlight-favourite="true"
+                                    @select="emit('select-game', $event)"
+                                    @set-default="emit('set-default-game', $event)"
+                                    @toggle-favourite="toggleFavourite($event)"
+                                />
+                            </div>
+                        </div>
+                    </GameSelectionSection>
                 </div>
             </template>
 
@@ -114,6 +140,7 @@ const mergedGameList = computed(() => {
 })
 
 const {
+    hiddenGameList,
     favouriteGameList,
     nonFavouriteGameList,
     activeTab,
