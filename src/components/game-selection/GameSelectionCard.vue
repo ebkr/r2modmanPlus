@@ -1,40 +1,28 @@
 <template>
-    <div class="inline">
-        <div class="card is-shadowless">
-            <div class="cursor-pointer">
-                <header class="card-header is-shadowless is-relative has-background-black">
-                    <div class="absolute-full z-fab flex">
-                        <div class="card-action-overlay rounded">
-                            <div class="absolute-top card-header-title">
-                                <p class="text-left title is-5 has-text-white">{{ game.displayName }}</p>
-                            </div>
-                            <div class="absolute-top-right card-header-title">
-                                <p class="text-left title is-5">
-                                    <a :id="`${game.settingsIdentifier}-star`" href="#" @click.prevent="emit('toggle-favourite', game)">
-                                        <i class="fas fa-star text-warning" v-if="isFavourited"></i>
-                                        <i class="far fa-star" v-else></i>
-                                    </a>
-                                </p>
-                            </div>
-                            <div class="absolute-center text-center">
-                                <button class="button is-info" @click="emit('select', game)">
-                                    Select {{ activeTab.toLowerCase() }}
-                                </button>
-                                <br/><br/>
-                                <button class="button" @click="emit('set-default', game)">Set as default</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': props.isFavourited && props.highlightFavourite}]">
-                        <template v-if="activeTab === GameInstanceType.GAME">
-                            <img :src="getImageHref(`/images/game_selection/${game.gameImage}`)" alt="Game Logo" class="rounded game-thumbnail"/>
-                        </template>
-                        <template v-else>
-                            <h2 style="height: 250px; width: 188px" class="text-center pad pad--sides">{{ game.displayName }}</h2>
-                        </template>
-                    </div>
-                </header>
+    <div class="game-card" :class="{'game-card--highlighted': props.isFavourited && props.highlightFavourite}">
+        <div class="game-card__image">
+            <template v-if="activeTab === GameInstanceType.GAME">
+                <img :src="getImageHref(`/images/game_selection/${game.gameImage}`)" alt="Game Logo" class="game-card__thumbnail"/>
+            </template>
+            <template v-else>
+                <div class="game-card__placeholder">{{ game.displayName }}</div>
+            </template>
+        </div>
+        <div class="game-card__overlay">
+            <div class="game-card__overlay-header">
+                <p class="title is-5 has-text-white">{{ game.displayName }}</p>
+                <a :id="`${game.settingsIdentifier}-star`" href="#" @click.prevent="emit('toggle-favourite', game)">
+                    <i class="fas fa-star fa-lg text-warning" v-if="isFavourited"></i>
+                    <i class="far fa-star fa-lg" v-else></i>
+                </a>
             </div>
+            <div class="game-card__overlay-body">
+                <button class="button is-info" @click="emit('select', game)">
+                    Select {{ activeTab.toLowerCase() }}
+                </button>
+                <button class="button" @click="emit('set-default', game)">Set as default</button>
+            </div>
+            <div class="game-card__overlay-spacer"></div>
         </div>
     </div>
 </template>
@@ -67,9 +55,84 @@ function getImageHref(image: string) {
 </script>
 
 <style scoped lang="scss">
-.game-thumbnail {
+.game-card {
+    position: relative;
+    display: inline-block;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+
+    &--highlighted {
+        box-shadow: 0px 0px 4px 2px $warning;
+        outline: 2px solid $warning;
+    }
+}
+
+.game-card__image {
+    display: block;
+    background-color: black;
+}
+
+.game-card__thumbnail {
+    display: block;
     width: 188px;
     height: 250px;
     object-fit: cover;
+}
+
+.game-card__placeholder {
+    width: 188px;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1rem;
+}
+
+.game-card__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.1s linear;
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+        opacity: 1;
+    }
+}
+
+.game-card__overlay-header {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0.75rem;
+
+    .title {
+        margin: 0;
+    }
+}
+
+.game-card__overlay-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.game-card__overlay-spacer {
+    flex: 1;
+}
+
+.button {
+    height: min-content;
 }
 </style>
