@@ -22,6 +22,16 @@
                         @click="markAsSelectedGame(game)"
                         @toggle-favourite="toggleFavourite(game)"
                     />
+                    <GameSelectionListItem
+                        v-for="game of hiddenGameList"
+                        :key="game.settingsIdentifier"
+                        :game="game"
+                        :is-selected="isGameSelected(game)"
+                        :is-favourited="false"
+                        :are-hidden="true"
+                        @click="markAsSelectedGame(game)"
+                        @toggle-favourite="toggleFavourite(game)"
+                    />
                 </div>
             </template>
 

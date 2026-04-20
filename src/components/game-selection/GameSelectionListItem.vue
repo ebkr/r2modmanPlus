@@ -3,6 +3,7 @@
         <div class="border-at-bottom cursor-pointer">
             <div class="card is-shadowless">
                 <p :class="['card-header-title', {'has-text-info': isSelected}]">
+                    <i v-if="areHidden" class="fas fa-eye-slash margin-right--half-width"></i>
                     <a :id="`${game.settingsIdentifier}-star`" href="#" class="margin-right" @click.prevent="emit('toggle-favourite', game)">
                         <i class="fas fa-star text-warning" v-if="isFavourited"></i>
                         <i class="far fa-star" v-else></i>
@@ -21,9 +22,12 @@ type Props = {
     game: Game;
     isSelected: boolean;
     isFavourited: boolean;
+    areHidden?: boolean;
 };
 
-defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+    areHidden: false,
+});
 
 const emit = defineEmits<{
     click: [game: Game];
