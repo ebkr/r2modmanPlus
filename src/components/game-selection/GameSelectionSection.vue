@@ -7,7 +7,9 @@
                     <i :class="['fas', isOpen ? 'fa-angle-down' : 'fa-angle-right']"></i>
                 </h3>
             </summary>
-            <slot/>
+            <div v-if="$slots.default" class="margin-top">
+                <slot/>
+            </div>
         </details>
     </div>
 </template>
@@ -34,6 +36,7 @@ const isOpen = ref(props.defaultOpen);
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin-bottom: 0;
 }
 
 .section-toggle {

@@ -43,28 +43,31 @@
                                     </div>
                                 </div>
                             </GameSelectionSection>
-                            <hr/>
                         </template>
 
-                        <GameSelectionSection
-                            :title="`${capitalize(activeTab)}s`"
-                            :count="nonFavouriteGameList.length"
-                            :default-open="true"
-                        >
-                            <div class="game-cards-container">
-                                <div v-for="game of nonFavouriteGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
-                                    <GameSelectionCard
-                                        :game="game"
-                                        :is-favourited="false"
-                                        :active-tab="activeTab"
-                                        @select="emit('select-game', $event)"
-                                        @set-default="emit('set-default-game', $event)"
-                                        @toggle-favourite="toggleFavourite($event)"
-                                    />
+
+                        <template v-if="nonFavouriteGameList.length > 0">
+                            <hr/>
+                            <GameSelectionSection
+                                :title="`${capitalize(activeTab)}s`"
+                                :count="nonFavouriteGameList.length"
+                                :default-open="true"
+                            >
+                                <div class="game-cards-container">
+                                    <div v-for="game of nonFavouriteGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
+                                        <GameSelectionCard
+                                            :game="game"
+                                            :is-selected="isGameSelected(game)"
+                                            :is-favourited="false"
+                                            :active-tab="activeTab"
+                                            @select="emit('select-game', $event)"
+                                            @set-default="emit('set-default-game', $event)"
+                                            @toggle-favourite="toggleFavourite($event)"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        </GameSelectionSection>
-                        <hr v-if="nonFavouriteGameList.length > 0"/>
+                            </GameSelectionSection>
+                        </template>
                     </template>
                     <template v-else>
                         <GameSelectionSection
@@ -86,31 +89,34 @@
                                 </div>
                             </div>
                         </GameSelectionSection>
-                        <hr v-if="mergedGameList.length > 0"/>
                     </template>
 
-                    <GameSelectionSection
-                        title="Hidden games"
-                        :count="hiddenGameList.length"
-                    >
-                        <div class="notification is-warning">
-                            These games are no longer supported.
-                        </div>
-                        <div class="game-cards-container">
-                            <div v-for="game of hiddenGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
-                                <GameSelectionCard
-                                    :game="game"
-                                    :is-selected="isGameSelected(game)"
-                                    :is-favourited="isFavourited(game)"
-                                    :active-tab="activeTab"
-                                    :highlight-favourite="true"
-                                    @select="emit('select-game', $event)"
-                                    @set-default="emit('set-default-game', $event)"
-                                    @toggle-favourite="toggleFavourite($event)"
-                                />
+                    <template v-if="hiddenGameList.length > 0">
+                        <hr/>
+                        <GameSelectionSection
+                            title="Hidden games"
+                            :count="hiddenGameList.length"
+                            v-if="hiddenGameList.length > 0"
+                        >
+                            <div class="notification is-warning">
+                                These games are no longer supported.
                             </div>
-                        </div>
-                    </GameSelectionSection>
+                            <div class="game-cards-container">
+                                <div v-for="game of hiddenGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
+                                    <GameSelectionCard
+                                        :game="game"
+                                        :is-selected="isGameSelected(game)"
+                                        :is-favourited="isFavourited(game)"
+                                        :active-tab="activeTab"
+                                        :highlight-favourite="true"
+                                        @select="emit('select-game', $event)"
+                                        @set-default="emit('set-default-game', $event)"
+                                        @toggle-favourite="toggleFavourite($event)"
+                                    />
+                                </div>
+                            </div>
+                        </GameSelectionSection>
+                    </template>
                 </div>
             </template>
 
@@ -164,5 +170,9 @@ const {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+}
+
+h3 {
+    margin-bottom: 0 !important;
 }
 </style>
