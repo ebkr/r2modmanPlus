@@ -6,9 +6,7 @@
                     <router-view />
                 </div>
             </main>
-            <div id="activity-bar">
-                <StatusIndicator v-if="router.currentRoute.value.path === '/'" />
-            </div>
+            <div id="activity-bar"></div>
         </div>
         <ErrorModal />
     </div>
@@ -60,7 +58,6 @@ import { useRouter } from 'vue-router';
 import { ProtocolProviderImplementation } from './providers/generic/protocol/ProtocolProviderImplementation';
 import { provideProtocolImplementation } from './providers/generic/protocol/ProtocolProvider';
 import BreadcrumbNavigator from 'components/breadcrumbs/BreadcrumbNavigator.vue';
-import StatusIndicator from './components/navigation/StatusIndicator.vue';
 
 const store = baseStore;
 const router = useRouter();
@@ -196,15 +193,8 @@ main {
         background-color: var(--preview-panel-background-color);
         border-top: 1px solid var(--border, #e1e1e1);
         padding: 0.25rem 0.75rem;
-        min-height: 45px;
         gap: 0.5rem;
         overflow: hidden;
-    }
-
-    > .status-indicator {
-        margin-left: auto;
-        flex-shrink: 0;
-        order: 999;
     }
 }
 </style>
