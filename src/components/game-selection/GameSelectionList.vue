@@ -29,12 +29,11 @@
                 <div class="content pad--sides pad--top-none">
                     <template v-if="filterText.length === 0">
                         <template v-if="favouriteGameList.length > 0">
-                            <GameSelectionSection title="Favourites" :count="favouriteGameList.length">
+                            <GameSelectionSection title="Favourites" :count="favouriteGameList.length" :default-open="true">
                                 <div class="game-cards-container">
                                     <div v-for="game of favouriteGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
                                         <GameSelectionCard
                                             :game="game"
-                                            :is-selected="isGameSelected(game)"
                                             :is-favourited="true"
                                             :active-tab="activeTab"
                                             @select="emit('select-game', $event)"
@@ -50,12 +49,12 @@
                         <GameSelectionSection
                             :title="`${capitalize(activeTab)}s`"
                             :count="nonFavouriteGameList.length"
+                            :default-open="true"
                         >
                             <div class="game-cards-container">
                                 <div v-for="game of nonFavouriteGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
                                     <GameSelectionCard
                                         :game="game"
-                                        :is-selected="isGameSelected(game)"
                                         :is-favourited="false"
                                         :active-tab="activeTab"
                                         @select="emit('select-game', $event)"
@@ -70,12 +69,12 @@
                         <GameSelectionSection
                             title="All games"
                             :count="mergedGameList.length"
+                            :default-open="true"
                         >
                             <div class="game-cards-container">
                                 <div v-for="game of mergedGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
                                     <GameSelectionCard
                                         :game="game"
-                                        :is-selected="isGameSelected(game)"
                                         :is-favourited="isFavourited(game)"
                                         :active-tab="activeTab"
                                         :highlight-favourite="true"

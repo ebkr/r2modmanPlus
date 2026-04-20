@@ -46,7 +46,6 @@ import ProtocolProvider from '../../providers/generic/protocol/ProtocolProvider'
 
 type Props = {
     game: Game;
-    isSelected: boolean;
     isFavourited: boolean;
     activeTab: GameInstanceType;
     highlightFavourite?: boolean;

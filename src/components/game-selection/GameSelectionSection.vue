@@ -1,12 +1,14 @@
 <template>
     <div>
-        <a class="section-toggle" @click="isOpen = !isOpen">
-            <h3 class="section-header">
-                {{ title }} <span class="tag is-inactive-link">{{ count }}</span>
-                <i :class="['fas', isOpen ? 'fa-angle-down' : 'fa-angle-right']"></i>
-            </h3>
-        </a>
-        <slot v-if="isOpen" />
+        <details :open="isOpen" @toggle="isOpen = ($event.target as HTMLDetailsElement).open">
+            <summary class="section-toggle">
+                <h3 class="section-header">
+                    {{ title }} <span class="tag is-inactive-link">{{ count }}</span>
+                    <i :class="['fas', isOpen ? 'fa-angle-down' : 'fa-angle-right']"></i>
+                </h3>
+            </summary>
+            <slot/>
+        </details>
     </div>
 </template>
 
@@ -23,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
     defaultOpen: true
 });
 
-const isOpen = ref(props.defaultOpen ?? true);
+const isOpen = ref(props.defaultOpen);
 </script>
 
 <style scoped lang="scss">
