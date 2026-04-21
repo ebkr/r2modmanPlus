@@ -19918,6 +19918,53 @@
         "shortDescription": "Big Ambitions is a revolutionary role-playing business sim. Go from nothing to the biggest entrepreneur in New York by opening small businesses or slowly building huge corporations any way you like."
       }
     },
+    "bomberman-64-recompiled": {
+      "uuid": "cef75c51-19b4-49cd-86b6-7eab099c8d4f",
+      "label": "bomberman-64-recompiled",
+      "meta": {
+        "displayName": "Bomberman 64: Recompiled",
+        "iconUrl": "bomberman-64-recompiled.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Bomberman 64: Recompiled",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        }
+      }
+    },
     "broforce": {
       "uuid": "dcebc888-06d8-436f-b7e7-ed08713f68bd",
       "label": "broforce",
@@ -20022,6 +20069,86 @@
         "wikiUrl": "https://github.com/alexneargarder/BroforceMods/wiki",
         "discordUrl": "https://discord.com/invite/freelives",
         "autolistPackageIds": []
+      }
+    },
+    "brutalistick-vr": {
+      "uuid": "5f4143f0-c9c1-4fae-9f72-055e3c5edd8d",
+      "label": "brutalistick-vr",
+      "meta": {
+        "displayName": "BRUTALISTICK VR",
+        "iconUrl": "brutalistick-vr.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2669380"
+            }
+          ],
+          "steamFolderName": "BRUTALISTICK VR",
+          "dataFolderName": "BrutalistickVR_Data",
+          "exeNames": [
+            "BrutalistickVR.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "BRUTALISTICK VR",
+            "iconUrl": "brutalistick-vr.webp"
+          },
+          "settingsIdentifier": "BrutalistickVr",
+          "internalFolderName": "BrutalistickVr",
+          "packageIndex": "https://thunderstore.io/c/brutalistick-vr/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "BRUTALISTICK VR",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://github.com/Kubunautilus/BrutalistickVR_ModFramework/wiki",
+        "discordUrl": "https://discord.gg/CxEtWnDAv4",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "The golden age of violent flash games now in your VR headset. Fully physics based combat with melee and firearms featuring copious amounts of blood, gore and destruction."
       }
     },
     "carrier-deck": {
@@ -24482,6 +24609,53 @@
         ]
       }
     },
+    "mega-man-64-recompiled": {
+      "uuid": "4bb22717-7479-46da-9c27-26270b421fe4",
+      "label": "mega-man-64-recompiled",
+      "meta": {
+        "displayName": "Mega Man 64: Recompiled",
+        "iconUrl": "mega-man-64-recompiled.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Mega Man 64: Recompiled",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        }
+      }
+    },
     "megabonk": {
       "uuid": "861f9f61-8f2d-4d32-bf15-c2fdd1b5e0f5",
       "label": "megabonk",
@@ -24847,6 +25021,84 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "minos": {
+      "uuid": "f96148a5-903f-4d0b-8bb4-42b6e9d0c3ee",
+      "label": "minos",
+      "meta": {
+        "displayName": "MINOS",
+        "iconUrl": "minos.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3181650"
+            }
+          ],
+          "steamFolderName": "Minos",
+          "dataFolderName": "Minos",
+          "exeNames": [
+            "Minos.exe"
+          ],
+          "packageLoader": "shimloader",
+          "meta": {
+            "displayName": "MINOS",
+            "iconUrl": "minos.webp"
+          },
+          "settingsIdentifier": "Minos",
+          "internalFolderName": "Minos",
+          "packageIndex": "https://thunderstore.io/c/minos/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "MINOS",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "Thunderstore-unreal_shimloader"
+        ],
+        "shortDescription": "Minos is a maze-building roguelite where you, the fabled Minotaur, must defend your sanctuary from bloodthirsty adventurers. Design and re-design deadly labyrinths, set traps, and turn every brave fool into your next victim."
       }
     },
     "mirrors-edge": {
@@ -28846,6 +29098,126 @@
         },
         "discordUrl": "https://discord.gg/5uskscDR3m",
         "autolistPackageIds": []
+      }
+    },
+    "super-psycho-baseball": {
+      "uuid": "447a553c-c682-4493-8677-ae894e110f05",
+      "label": "super-psycho-baseball",
+      "meta": {
+        "displayName": "Super Psycho Baseball",
+        "iconUrl": "super-psycho-baseball.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2216960"
+            }
+          ],
+          "steamFolderName": "Super Psycho Baseball",
+          "dataFolderName": "SuperPsychoBaseball_Data",
+          "exeNames": [
+            "SuperPsychoBaseball.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Super Psycho Baseball",
+            "iconUrl": "super-psycho-baseball.webp"
+          },
+          "settingsIdentifier": "SuperPsychoBaseball",
+          "internalFolderName": "SuperPsychoBaseball",
+          "packageIndex": "https://thunderstore.io/c/super-psycho-baseball/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "SPB"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Super Psycho Baseball",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Welcome to Super Psycho Baseball, a sadistic home-run hitting roguelike in which you try to conquer a gang of pitch-slinging bosses, each more psychotic than the last. Come face five fully-realized pitchers, rack up powerups, and reach the top!"
       }
     },
     "the-choicer-voicer": {
@@ -35547,6 +35919,43 @@
       ],
       "shortDescription": "Big Ambitions is a revolutionary role-playing business sim. Go from nothing to the biggest entrepreneur in New York by opening small businesses or slowly building huge corporations any way you like."
     },
+    "bomberman-64-recompiled": {
+      "displayName": "Bomberman 64: Recompiled",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      }
+    },
     "broforce": {
       "displayName": "Broforce",
       "categories": {
@@ -35589,6 +35998,49 @@
       "wikiUrl": "https://github.com/alexneargarder/BroforceMods/wiki",
       "discordUrl": "https://discord.com/invite/freelives",
       "autolistPackageIds": []
+    },
+    "brutalistick-vr": {
+      "displayName": "BRUTALISTICK VR",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://github.com/Kubunautilus/BrutalistickVR_ModFramework/wiki",
+      "discordUrl": "https://discord.gg/CxEtWnDAv4",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "The golden age of violent flash games now in your VR headset. Fully physics based combat with melee and firearms featuring copious amounts of blood, gore and destruction."
     },
     "carrier-deck": {
       "displayName": "Carrier Deck",
@@ -37538,6 +37990,43 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "mega-man-64-recompiled": {
+      "displayName": "Mega Man 64: Recompiled",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      }
+    },
     "megabonk": {
       "displayName": "Megabonk",
       "categories": {
@@ -37698,6 +38187,47 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "minos": {
+      "displayName": "MINOS",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "Thunderstore-unreal_shimloader"
+      ],
+      "shortDescription": "Minos is a maze-building roguelite where you, the fabled Minotaur, must defend your sanctuary from bloodthirsty adventurers. Design and re-design deadly labyrinths, set traps, and turn every brave fool into your next victim."
     },
     "mirrors-edge": {
       "displayName": "Mirror's Edge",
@@ -39477,6 +40007,47 @@
       },
       "discordUrl": "https://discord.gg/5uskscDR3m",
       "autolistPackageIds": []
+    },
+    "super-psycho-baseball": {
+      "displayName": "Super Psycho Baseball",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Welcome to Super Psycho Baseball, a sadistic home-run hitting roguelike in which you try to conquer a gang of pitch-slinging bosses, each more psychotic than the last. Come face five fully-realized pitchers, rack up powerups, and reach the top!"
     },
     "the-choicer-voicer": {
       "displayName": "The Choicer Voicer",
