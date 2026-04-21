@@ -1,28 +1,33 @@
 <template>
-    <div class="game-card" :class="{'game-card--highlighted': props.isFavourited && props.highlightFavourite}">
-        <div class="game-card__image">
-            <template v-if="activeTab === GameInstanceType.GAME">
-                <img :src="getImageHref(`/images/game_selection/${game.gameImage}`)" alt="Game Logo" class="game-card__thumbnail"/>
-            </template>
-            <template v-else>
-                <div class="game-card__placeholder">{{ game.displayName }}</div>
-            </template>
+    <div class="game-card-wrapper">
+        <div class="game-card" :class="{'game-card--highlighted': props.isFavourited && props.highlightFavourite}">
+            <div class="game-card__image">
+                <template v-if="activeTab === GameInstanceType.GAME">
+                    <img :src="getImageHref(`/images/game_selection/${game.gameImage}`)" alt="Game Logo" class="game-card__thumbnail"/>
+                </template>
+                <template v-else>
+                    <div class="game-card__placeholder">{{ game.displayName }}</div>
+                </template>
+            </div>
+            <div class="game-card__overlay">
+                <div class="game-card__overlay-spacer"></div>
+                <div class="game-card__overlay-body">
+                    <button class="button is-info" @click="emit('select', game)">
+                        Select {{ activeTab.toLowerCase() }}
+                    </button>
+                    <button class="button" @click="emit('set-default', game)">Set as default</button>
+                </div>
+                <div class="game-card__overlay-spacer"></div>
+            </div>
         </div>
-        <div class="game-card__overlay">
-            <div class="game-card__overlay-header">
-                <p class="title is-5 has-text-white">{{ game.displayName }}</p>
-                <a :id="`${game.settingsIdentifier}-star`" href="#" @click.prevent="emit('toggle-favourite', game)">
-                    <i class="fas fa-star fa-lg text-warning" v-if="isFavourited"></i>
-                    <i class="far fa-star fa-lg" v-else></i>
-                </a>
-            </div>
-            <div class="game-card__overlay-body">
-                <button class="button is-info" @click="emit('select', game)">
-                    Select {{ activeTab.toLowerCase() }}
-                </button>
-                <button class="button" @click="emit('set-default', game)">Set as default</button>
-            </div>
-            <div class="game-card__overlay-spacer"></div>
+        <div class="game-card-wrapper__footer">
+            <p>
+                {{ game.displayName }}
+            </p>
+            <a :id="`${game.settingsIdentifier}-star`" href="#" @click.prevent="emit('toggle-favourite', game)">
+                <i class="fas fa-star text-warning" v-if="isFavourited"></i>
+                <i class="far fa-star" v-else></i>
+            </a>
         </div>
     </div>
 </template>
@@ -55,6 +60,17 @@ function getImageHref(image: string) {
 </script>
 
 <style scoped lang="scss">
+.game-card-wrapper {
+    width: 188px;
+}
+
+.game-card-wrapper__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+
 .game-card {
     position: relative;
     display: inline-block;
@@ -110,7 +126,7 @@ function getImageHref(image: string) {
 .game-card__overlay-header {
     display: flex;
     flex: 1;
-    justify-content: space-between;
+    justify-content: right;
     align-items: flex-start;
     padding: 0.75rem;
 
