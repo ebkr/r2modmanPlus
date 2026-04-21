@@ -47,7 +47,7 @@ async function validateSchema(schema: any): Promise<void> {
     addFormats(ajv);
 
     const validate = ajv.compile(jsonSchema);
-    const isOk = validate(bundledEcosystem);
+    const isOk = validate(schema);
 
     if (!isOk) {
         throw new R2Error("Schema validation error", ajv.errorsText(validate.errors));
@@ -108,4 +108,9 @@ async function internalUpdateEcosystemReactives(schema: ThunderstoreEcosystem): 
 export async function updateEcosystemReactives() {
     const mergedSchema = await resolveCachedEcosystemSchema();
     await internalUpdateEcosystemReactives(mergedSchema);
+}
+
+export async function useBundledForEcosystemReactives() {
+    const bundledSchema = await loadBundledSchema();
+    await internalUpdateEcosystemReactives(bundledSchema);
 }
