@@ -1,6 +1,6 @@
 <template>
     <div class="game-card-wrapper">
-        <div class="game-card" :class="{'game-card--highlighted': props.isFavourited && props.highlightFavourite}">
+        <div class="game-card">
             <div class="game-card__image">
                 <template v-if="activeTab === GameInstanceType.GAME">
                     <img :src="getImageHref(`/images/game_selection/${game.gameImage}`)" alt="Game Logo" class="game-card__thumbnail"/>
@@ -41,12 +41,9 @@ type Props = {
     game: Game;
     isFavourited: boolean;
     activeTab: GameInstanceType;
-    highlightFavourite?: boolean;
 };
 
-const props = withDefaults(defineProps<Props>(), {
-    highlightFavourite: false,
-});
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
     select: [game: Game];

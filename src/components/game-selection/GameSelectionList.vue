@@ -67,7 +67,7 @@
                     </template>
                     <template v-else>
                         <GameSelectionSection
-                            title="All games"
+                            title="Search results"
                             :count="mergedGameList.length"
                             :default-open="true"
                         >
