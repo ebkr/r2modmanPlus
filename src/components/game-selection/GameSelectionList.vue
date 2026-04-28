@@ -77,7 +77,6 @@
                                         :game="game"
                                         :is-favourited="isFavourited(game)"
                                         :active-tab="activeTab"
-                                        :highlight-favourite="true"
                                         @select="emit('select-game', $event)"
                                         @set-default="emit('set-default-game', $event)"
                                         @toggle-favourite="toggleFavourite($event)"
