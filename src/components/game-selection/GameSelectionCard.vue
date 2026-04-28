@@ -74,11 +74,6 @@ function getImageHref(image: string) {
     border-radius: 4px;
     overflow: hidden;
     cursor: pointer;
-
-    &--highlighted {
-        box-shadow: 0px 0px 4px 2px $warning;
-        outline: 2px solid $warning;
-    }
 }
 
 .game-card__image {
