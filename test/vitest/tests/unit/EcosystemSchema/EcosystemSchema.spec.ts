@@ -34,10 +34,10 @@ describe('EcosystemSchema', () => {
     let mockJsonSchema: any = {};
 
     beforeEach(async () => {
+        mockJsonSchema = {};
         vi.mock('../../../../../src/assets/data/ecosystemJsonSchema.json', () => ({
             get default() { return mockJsonSchema; }
         }));
-        mockJsonSchema = {};
         providePathImplementation(() => TestPathProvider);
         InMemoryFsProvider.clear();
         FsProvider.provide(() => new InMemoryFsProvider());
