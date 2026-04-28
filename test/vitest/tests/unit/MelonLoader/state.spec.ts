@@ -13,10 +13,12 @@ import GenericProfileInstaller from '../../../../../src/r2mm/installing/profile_
 import GameManager from '../../../../../src/model/game/GameManager';
 import ConflictManagementProvider from '../../../../../src/providers/generic/installing/ConflictManagementProvider';
 import { addToStateFile } from '../../../../../src/installers/InstallRulePluginInstaller';
-import { describe, beforeEach, afterEach, test, expect } from 'vitest';
+import {describe, beforeEach, afterEach, test, expect, beforeAll} from 'vitest';
 import {providePathImplementation} from "../../../../../src/providers/node/path/path";
 import {TestPathProvider} from "../../../stubs/providers/node/Node.Path.Provider";
 import StubProfileProvider from '../../../stubs/providers/stub.ProfileProvider';
+import {updateEcosystemReactives} from "src/r2mm/ecosystem/EcosystemSchema";
+import InMemoryFsProvider from "../../../stubs/providers/InMemory.FsProvider";
 
 providePathImplementation(() => TestPathProvider);
 
@@ -40,6 +42,13 @@ let beforeSetup = () => {
 describe("State testing", () => {
 
     describe("State file", () => {
+
+        beforeAll(async () => {
+            const inMemoryFs = new InMemoryFsProvider();
+            FsProvider.provide(() => inMemoryFs);
+            InMemoryFsProvider.clear();
+            await updateEcosystemReactives();
+        })
 
         beforeEach(beforeSetup);
         afterEach(() => {
@@ -66,7 +75,7 @@ describe("State testing", () => {
                 profile
             );
 
-            const out = fsStub.writeFile.args[0][1] as unknown as string;
+            const out = fsStub.writeFile.args[0]![1] as unknown as string;
             const parsed = yaml.parse(out) as ModFileTracker;
             expect(parsed.modName).toBe(fakeMod.getName());
             // JSON serialization for speed comparison
@@ -135,7 +144,7 @@ describe("State testing", () => {
 
             const outputState = await processConflictManagement(modA, modFileTrackerA, modB, modFileTrackerB);
 
-            expect(outputState.currentState.join(",")).toBe([[modFileTrackerA.files[0][1], modA.getName()], [modFileTrackerB.files[0][1], modB.getName()]].join(","));
+            expect(outputState.currentState.join(",")).toBe([[modFileTrackerA.files[0]![1], modA.getName()], [modFileTrackerB.files[0]![1], modB.getName()]].join(","));
 
         });
 
@@ -159,7 +168,7 @@ describe("State testing", () => {
 
             const outputState = await processConflictManagement(modA, modFileTrackerA, modB, modFileTrackerB);
 
-            expect(outputState.currentState.join(",")).toBe([[modFileTrackerB.files[0][1], modB.getName()]].join(","));
+            expect(outputState.currentState.join(",")).toBe([[modFileTrackerB.files[0]![1], modB.getName()]].join(","));
         });
 
         // If a mod is disabled, the mod files should not exist if highest priority for those files.
@@ -182,7 +191,7 @@ describe("State testing", () => {
 
             const outputState = await processConflictManagement(modA, modFileTrackerA, modB, modFileTrackerB);
 
-            expect(outputState.currentState.join(",")).toBe([[`${modFileTrackerA.files[0][1]}.manager.disabled`, modA.getName()], [modFileTrackerB.files[0][1], modB.getName()]].join(","));
+            expect(outputState.currentState.join(",")).toBe([[`${modFileTrackerA.files[0]![1]}.manager.disabled`, modA.getName()], [modFileTrackerB.files[0]![1], modB.getName()]].join(","));
         });
 
         // If a mod is disabled, any lower priority files should not be overwritten.
@@ -205,7 +214,7 @@ describe("State testing", () => {
 
             const outputState = await processConflictManagement(modA, modFileTrackerA, modB, modFileTrackerB);
 
-            expect(outputState.currentState.join(",")).toBe([[modFileTrackerA.files[0][1], modA.getName()], [`${modFileTrackerB.files[0][1]}.manager.disabled`, modB.getName()]].join(","));
+            expect(outputState.currentState.join(",")).toBe([[modFileTrackerA.files[0]![1], modA.getName()], [`${modFileTrackerB.files[0]![1]}.manager.disabled`, modB.getName()]].join(","));
         });
 
     });
@@ -247,5 +256,5 @@ let processConflictManagement = async (modA: ManifestV2, modFileTrackerA: ModFil
 
     await conflictManagement.resolveConflicts([modA, modB], profile.asImmutableProfile());
 
-    return yaml.parse(fsStub.writeFile.args[0][1] as unknown as string) as StateTracker;
+    return yaml.parse(fsStub.writeFile.args[0]![1] as unknown as string) as StateTracker;
 }

@@ -12,7 +12,7 @@ import ModFileTracker from "../model/installing/ModFileTracker";
 import ConflictManagementProvider from "../providers/generic/installing/ConflictManagementProvider";
 import PathResolver from "../r2mm/manager/PathResolver";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
-import { EcosystemSchema, TrackingMethod } from "../model/schema/ThunderstoreSchema";
+import { getGameConfigBySettingsIdentifier, TrackingMethod } from "../model/schema/ThunderstoreSchema";
 import ModMode from "../model/enums/ModMode";
 import GameManager from "../model/game/GameManager";
 
@@ -385,7 +385,7 @@ export class InstallRulePluginInstaller implements PackageInstaller {
 
         // While it's not ideal that this same method is called repeatedly,
         // the code path below currently takes <1ms to execute so we should be fine.
-        const gameConfig = EcosystemSchema.getGameConfigBySettingsIdentifier(GameManager.activeGame.settingsIdentifier);
+        const gameConfig = getGameConfigBySettingsIdentifier(GameManager.activeGame.settingsIdentifier);
         if (gameConfig === undefined) {
             throw new Error(`Game config not found for ${GameManager.activeGame.settingsIdentifier}`);
         }

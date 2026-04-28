@@ -7,7 +7,7 @@ import GameManager from '../../../../../../src/model/game/GameManager';
 import GenericProfileInstaller from '../../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import InstallationRules from '../../../../../../src/r2mm/installing/InstallationRules';
 import { createManifest, installLogicBeforeEach } from '../../../../utils/InstallLogicUtils';
-import { EcosystemSchema, TrackingMethod } from '../../../../../../src/model/schema/ThunderstoreSchema';
+import { getGameConfigBySettingsIdentifier, TrackingMethod } from '../../../../../../src/model/schema/ThunderstoreSchema';
 import { describe, beforeEach, test, expect } from 'vitest';
 import { providePathImplementation } from '../../../../../../src/providers/node/path/path';
 import { TestPathProvider } from '../../../../stubs/providers/node/Node.Path.Provider';
@@ -186,7 +186,7 @@ describe('Installer Tests', () => {
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
-            const config = EcosystemSchema.getGameConfigBySettingsIdentifier(GameManager.activeGame.internalFolderName);
+            const config = getGameConfigBySettingsIdentifier(GameManager.activeGame.internalFolderName);
             if (config === undefined) {
                 throw new Error(`Game config not found for ${GameManager.activeGame.internalFolderName}`);
             }

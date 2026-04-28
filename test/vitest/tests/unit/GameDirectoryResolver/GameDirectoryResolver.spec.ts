@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from 'vitest';
+import {beforeAll, beforeEach, describe, expect, test} from 'vitest';
 import path from 'path';
 import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
 import GameManager from '../../../../../src/model/game/GameManager';
@@ -6,16 +6,21 @@ import GameDirectoryResolverImpl from '../../../../../src/r2mm/manager/win32/Gam
 import InMemoryFsProvider from '../../../stubs/providers/InMemory.FsProvider';
 import { providePathImplementation } from '../../../../../src/providers/node/path/path';
 import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
+import {updateEcosystemReactives} from "src/r2mm/ecosystem/EcosystemSchema";
 
 describe.skipIf(process.platform !== 'win32')('GameDirectoryResolver', () => {
     const steamRoot = 'TEST_STEAM_PATH';
     let resolver: GameDirectoryResolverImpl;
 
-    beforeEach(async () => {
-        providePathImplementation(() => TestPathProvider);
+    beforeAll(async () => {
         const inMemoryFs = new InMemoryFsProvider();
         FsProvider.provide(() => inMemoryFs);
         InMemoryFsProvider.clear();
+        providePathImplementation(() => TestPathProvider);
+        await updateEcosystemReactives();
+    })
+
+    beforeEach(async () => {
         resolver = new GameDirectoryResolverImpl();
         await FsProvider.instance.mkdirs(path.join(steamRoot, 'steamapps', 'common'));
     });
