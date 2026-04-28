@@ -87,7 +87,7 @@
 
 <script lang="ts" setup>
 import { Hero } from '../components/all';
-import { GameInstanceType, Platform } from '../model/schema/ThunderstoreSchema';
+import { GameInstanceType } from '../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import ModalCard from '../components/ModalCard.vue';
 import { onMounted, provide, ref } from 'vue';
@@ -95,6 +95,7 @@ import { useGameSelectionComposable, gameSelectionKey } from '../components/comp
 import GameSelectionList from '../components/game-selection/GameSelectionList.vue';
 import Game from '../model/game/Game';
 import { capitalize } from '../utils/StringUtils';
+import { StorePlatform as platformLabels } from '../model/platform/StorePlatform';
 
 
 const gameSelection = useGameSelectionComposable();
@@ -118,16 +119,6 @@ const {
 } = gameSelection;
 
 const showPlatformModal = ref<boolean>(false);
-
-const platformLabels = {
-    [Platform.STEAM]: "Steam",
-    [Platform.STEAM_DIRECT]: "Steam",
-    [Platform.EPIC_GAMES_STORE]: "Epic Games Store",
-    [Platform.OCULUS_STORE]: "Oculus Store",
-    [Platform.ORIGIN]: "Origin / EA Desktop",
-    [Platform.XBOX_GAME_PASS]: "Xbox Game Pass",
-    [Platform.OTHER]: "Other"
-}
 
 function selectGame(game: Game) {
     markAsSelectedGame(game);
