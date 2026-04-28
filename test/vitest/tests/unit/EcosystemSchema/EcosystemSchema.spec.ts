@@ -1,5 +1,11 @@
 import * as path from 'path';
 import {afterEach, beforeEach, describe, expect, MockInstance, test, vi} from 'vitest';
+
+let mockJsonSchema: object = {};
+vi.mock('../../../../../src/assets/data/ecosystemJsonSchema.json', () => ({
+    get default() { return mockJsonSchema; }
+}));
+
 import {VersionedThunderstoreEcosystem, updateEcosystemReactives, updateLatestEcosystemSchema} from '../../../../../src/r2mm/ecosystem/EcosystemSchema';
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from '../../../../../src/model/schema/ThunderstoreSchema';
 import {MODLOADER_PACKAGES, MOD_LOADER_VARIANTS, updateModLoaderExports} from '../../../../../src/r2mm/installing/profile_installers/ModLoaderVariantRecord';
@@ -31,13 +37,9 @@ async function writeCacheFile(schema: Partial<VersionedThunderstoreEcosystem>) {
 describe('EcosystemSchema', () => {
 
     let spyLogger: MockInstance;
-    let mockJsonSchema: any = {};
 
     beforeEach(async () => {
         mockJsonSchema = {};
-        vi.mock('../../../../../src/assets/data/ecosystemJsonSchema.json', () => ({
-            get default() { return mockJsonSchema; }
-        }));
         providePathImplementation(() => TestPathProvider);
         InMemoryFsProvider.clear();
         FsProvider.provide(() => new InMemoryFsProvider());
