@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest';
-import {getGameSupportStatus, GameSupportStatus} from 'src/model/game/GameSupportStatus';
-import {Loader, ModloaderPackage, Platform, R2Modman} from 'src/assets/data/ecosystemTypes';
+import {getGameSupportStatus} from 'src/model/game/GameSupportStatus';
+import {GameInstanceType, GameSelectionDisplayMode, Loader, ModloaderPackage, Platform, R2Modman} from 'src/assets/data/ecosystemTypes';
 
 function makeGame(overrides: Partial<R2Modman> = {}): R2Modman {
     return {
@@ -8,8 +8,8 @@ function makeGame(overrides: Partial<R2Modman> = {}): R2Modman {
         dataFolderName: "TestGame_Data",
         distributions: [{platform: Platform.STEAM, identifier: "12345"}],
         exeNames: ["TestGame.exe"],
-        gameInstanceType: "game" as any,
-        gameSelectionDisplayMode: "visible" as any,
+        gameInstanceType: GameInstanceType.GAME,
+        gameSelectionDisplayMode: GameSelectionDisplayMode.VISIBLE,
         installRules: [],
         internalFolderName: "TestGame",
         meta: {displayName: "Test Game", iconUrl: "test.webp"},
@@ -47,6 +47,15 @@ describe('getGameSupportStatus', () => {
     test('returns unsupported-loader when modloader packages list is empty', () => {
         const game = makeGame({packageLoader: Loader.BEPINEX});
         expect(getGameSupportStatus(game, [])).toBe("unsupported-loader");
+    });
+
+    test('returns unsupported-loader when loader is unknown to this build, even if schema lists it', () => {
+        const unknownLoader = "future-loader" as Loader;
+        const game = makeGame({packageLoader: unknownLoader});
+        const packages: ModloaderPackage[] = [
+            {packageId: "Future-Pack", loader: unknownLoader, rootFolder: "."},
+        ];
+        expect(getGameSupportStatus(game, packages)).toBe("unsupported-loader");
     });
 
     test('returns unsupported-store when game has no distributions', () => {

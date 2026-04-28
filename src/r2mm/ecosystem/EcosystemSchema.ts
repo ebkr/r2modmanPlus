@@ -94,7 +94,7 @@ async function resolveCachedEcosystemSchema(): Promise<VersionedThunderstoreEcos
 }
 
 async function internalUpdateEcosystemReactives(schema: ThunderstoreEcosystem): Promise<void> {
-    const result: [string, R2Modman][] = []
+    const result: [string, R2Modman][] = [];
     for (const [identifier, game] of Object.entries(schema.games)) {
         if (game.r2modman == null) continue;
         for (const entry of game.r2modman) {
