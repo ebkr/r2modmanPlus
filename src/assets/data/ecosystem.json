@@ -26840,7 +26840,7 @@
       "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
       "label": "project-arrhythmia",
       "meta": {
-        "displayName": "Project Arrhythmia",
+        "displayName": "Afterbeat",
         "iconUrl": "project-arrhythmia.webp"
       },
       "distributions": [],
@@ -26860,7 +26860,7 @@
           ],
           "packageLoader": "bepinex",
           "meta": {
-            "displayName": "Project Arrhythmia",
+            "displayName": "Afterbeat",
             "iconUrl": "project-arrhythmia.webp"
           },
           "settingsIdentifier": "ProjectArrhythmia",
@@ -26868,6 +26868,7 @@
           "packageIndex": "https://thunderstore.io/c/project-arrhythmia/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
+            "Project Arrhythmia",
             "PA",
             "心律失常"
           ],
@@ -26916,7 +26917,7 @@
         }
       ],
       "thunderstore": {
-        "displayName": "Project Arrhythmia",
+        "displayName": "Afterbeat",
         "categories": {
           "mods": {
             "label": "Mods"
@@ -39467,7 +39468,7 @@
       "shortDescription": "In this online horror co-op, you play as a scrappy goblin, scavenging dungeons, dodging traps, and fleeing monsters to feed the Goblin King-Queen. Team up with goblin pals, or go rogue, as you dive deep and cause chaos! Fail to feed them, and you might be the next meal!"
     },
     "project-arrhythmia": {
-      "displayName": "Project Arrhythmia",
+      "displayName": "Afterbeat",
       "categories": {
         "mods": {
           "label": "Mods"
