@@ -65,12 +65,12 @@ function getImageHref(image: string) {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-
+    margin-top: 0.4rem;
 }
 
 .game-card {
     position: relative;
-    display: inline-block;
+    display: block;
     border-radius: 4px;
     overflow: hidden;
     cursor: pointer;
@@ -94,13 +94,13 @@ function getImageHref(image: string) {
 }
 
 .game-card__placeholder {
-    width: 188px;
     height: 250px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     padding: 1rem;
+    background-color: var(--border-secondary, #c9d3ee);
 }
 
 .game-card__overlay {

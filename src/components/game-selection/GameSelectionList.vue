@@ -31,7 +31,7 @@
                         <template v-if="favouriteGameList.length > 0">
                             <GameSelectionSection title="Favourites" :count="favouriteGameList.length" :default-open="true">
                                 <div class="game-cards-container">
-                                    <div v-for="game of favouriteGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
+                                    <div v-for="game of favouriteGameList" :key="game.settingsIdentifier" class="inline-block margin-right">
                                         <GameSelectionCard
                                             :game="game"
                                             :is-favourited="true"
