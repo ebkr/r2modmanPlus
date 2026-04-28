@@ -1,6 +1,5 @@
 import * as path from 'path';
-import {beforeEach, describe, expect, test} from 'vitest';
-
+import {afterEach, beforeEach, describe, expect, MockInstance, test, vi} from 'vitest';
 import {VersionedThunderstoreEcosystem, updateEcosystemReactives, updateLatestEcosystemSchema} from '../../../../../src/r2mm/ecosystem/EcosystemSchema';
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from '../../../../../src/model/schema/ThunderstoreSchema';
 import {MODLOADER_PACKAGES, MOD_LOADER_VARIANTS, updateModLoaderExports} from '../../../../../src/r2mm/installing/profile_installers/ModLoaderVariantRecord';
@@ -10,6 +9,8 @@ import PathResolver from '../../../../../src/r2mm/manager/PathResolver';
 import {providePathImplementation} from '../../../../../src/providers/node/path/path';
 import {TestPathProvider} from '../../../stubs/providers/node/Node.Path.Provider';
 import ManagerInformation from '../../../../../src/_managerinf/ManagerInformation';
+import LoggerProvider from '../../../../../src/providers/ror2/logging/LoggerProvider';
+import StubLoggerProvider from '../../../stubs/providers/stub.LoggerProvider';
 
 const TEST_ROOT = 'TEST_ROOT';
 const latestSchemaFilePath = path.join(TEST_ROOT, 'latest-ecosystem-schema.json');
@@ -29,20 +30,35 @@ async function writeCacheFile(schema: Partial<VersionedThunderstoreEcosystem>) {
 
 describe('EcosystemSchema', () => {
 
+    let spyLogger: MockInstance;
+    let mockJsonSchema: any = {};
+
     beforeEach(async () => {
+        vi.mock('../../../../../src/assets/data/ecosystemJsonSchema.json', () => ({
+            get default() { return mockJsonSchema; }
+        }));
+        mockJsonSchema = {};
         providePathImplementation(() => TestPathProvider);
         InMemoryFsProvider.clear();
         FsProvider.provide(() => new InMemoryFsProvider());
         PathResolver.ROOT = TEST_ROOT;
         EcosystemSupportedGames.value = [];
         EcosystemModloaderPackages.value = [];
+        const loggerImpl = new StubLoggerProvider();
+        LoggerProvider.provide(() => loggerImpl);
+        spyLogger = vi.spyOn(LoggerProvider.instance, 'Log').mockImplementation(() => {});
         updateModLoaderExports();
         await FsProvider.instance.mkdirs(TEST_ROOT);
     });
 
+    afterEach(() => {
+        vi.restoreAllMocks();
+    })
+
     describe('updateEcosystemReactives', () => {
 
         test('falls back to bundled schema when no cache file exists', async () => {
+
             expect(EcosystemSupportedGames.value).toHaveLength(0);
             expect(EcosystemModloaderPackages.value).toHaveLength(0);
             expect(await FsProvider.instance.exists(latestSchemaFilePath)).toBe(false);
@@ -72,6 +88,15 @@ describe('EcosystemSchema', () => {
             await updateEcosystemReactives();
 
             expect(EcosystemSupportedGames.value.length).toBeGreaterThan(0);
+        });
+
+        test('falls back to bundled schema and logs error when cached content is invalid', async () => {
+            await FsProvider.instance.writeFile(latestSchemaFilePath, 'not valid json');
+
+            await updateEcosystemReactives();
+
+            expect(EcosystemSupportedGames.value.length).toBeGreaterThan(0);
+            expect(spyLogger).toHaveBeenCalledOnce();
         });
 
         test('populates mod loader exports after updating reactives', async () => {
