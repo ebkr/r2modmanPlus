@@ -19154,7 +19154,8 @@
           "packageIndex": "https://thunderstore.io/c/angry-birds-vr-isle-of-pigs/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "ABVR"
+            "ABVR",
+            "愤怒的小鸟VR：猪之岛"
           ],
           "installRules": [],
           "relativeFileExclusions": null
@@ -19870,7 +19871,9 @@
           "internalFolderName": "BigAmbitions",
           "packageIndex": "https://thunderstore.io/c/big-ambitions/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "雄心壮志"
+          ],
           "installRules": [],
           "relativeFileExclusions": null
         }
@@ -20974,7 +20977,9 @@
           "internalFolderName": "Crawlspace",
           "packageIndex": "https://thunderstore.io/c/crawlspace/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "爬行空间"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -22472,6 +22477,129 @@
       },
       "r2modman": null
     },
+    "getting-over-it": {
+      "uuid": "1b6e731a-13a2-42ed-99ac-d2dcf7cadc75",
+      "label": "getting-over-it",
+      "meta": {
+        "displayName": "Getting Over It with Bennett Foddy",
+        "iconUrl": "getting-over-it.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "240720"
+            }
+          ],
+          "steamFolderName": "Getting Over It",
+          "dataFolderName": "GettingOverIt_Data",
+          "exeNames": [
+            "GettingOverIt.exe",
+            "GettingOverIt.app",
+            "GettingOverIt.x86_64"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Getting Over It with Bennett Foddy",
+            "iconUrl": "getting-over-it.webp"
+          },
+          "settingsIdentifier": "GettingOverItWithBennettFoddy",
+          "internalFolderName": "GettingOverItWithBennettFoddy",
+          "packageIndex": "https://thunderstore.io/c/getting-over-it/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "GOI",
+            "GOIWBF"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Getting Over It with Bennett Foddy",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "A game I made for a certain kind of person. To hurt them."
+      }
+    },
     "goblin-buster": {
       "uuid": "055b8ac0-3163-41b7-a244-da5672210f37",
       "label": "goblin-buster",
@@ -23105,7 +23233,9 @@
           "internalFolderName": "HotLava",
           "packageIndex": "https://thunderstore.io/c/hot-lava/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "炽热熔岩"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -23516,7 +23646,8 @@
           "packageIndex": "https://thunderstore.io/c/island-market-simulator/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "IMS"
+            "IMS",
+            "我的海岛庄园"
           ],
           "installRules": [
             {
@@ -23639,7 +23770,10 @@
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
             "SJSM",
-            "Spookys"
+            "Spookys",
+            "惊吓幽灵屋HD",
+            "吓一跳的幽灵屋HD",
+            "幽灵洋楼HD"
           ],
           "installRules": [
             {
@@ -25054,7 +25188,9 @@
           "internalFolderName": "Minos",
           "packageIndex": "https://thunderstore.io/c/minos/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "牛头人迷阵"
+          ],
           "installRules": [],
           "relativeFileExclusions": null
         }
@@ -25180,7 +25316,9 @@
           "internalFolderName": "ModulusFactoryAutomation",
           "packageIndex": "https://thunderstore.io/c/modulus-factory-automation/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "模块工厂：自动化大亨"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -26644,7 +26782,9 @@
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
             "POG",
-            "PoG"
+            "PoG",
+            "地精之渊",
+            "哥布林深渊"
           ],
           "installRules": [],
           "relativeFileExclusions": null
@@ -26696,7 +26836,7 @@
       "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
       "label": "project-arrhythmia",
       "meta": {
-        "displayName": "Project Arrhythmia",
+        "displayName": "Afterbeat",
         "iconUrl": "project-arrhythmia.webp"
       },
       "distributions": [],
@@ -26716,7 +26856,7 @@
           ],
           "packageLoader": "bepinex",
           "meta": {
-            "displayName": "Project Arrhythmia",
+            "displayName": "Afterbeat",
             "iconUrl": "project-arrhythmia.webp"
           },
           "settingsIdentifier": "ProjectArrhythmia",
@@ -26724,6 +26864,7 @@
           "packageIndex": "https://thunderstore.io/c/project-arrhythmia/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
+            "Project Arrhythmia",
             "PA",
             "心律失常"
           ],
@@ -26772,7 +26913,7 @@
         }
       ],
       "thunderstore": {
-        "displayName": "Project Arrhythmia",
+        "displayName": "Afterbeat",
         "categories": {
           "mods": {
             "label": "Mods"
@@ -27655,7 +27796,9 @@
           "internalFolderName": "RoadsideResearch",
           "packageIndex": "https://thunderstore.io/c/roadside-research/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "宇宙牌加油站"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -28009,7 +28152,10 @@
           "internalFolderName": "SideEffects",
           "packageIndex": "https://thunderstore.io/c/side-effects/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "副作用",
+            "试药轮盘"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -29389,6 +29535,124 @@
         "shortDescription": "Program and optimize a drone to automate a farm and watch it do the work for you. Collect resources to unlock better technology and become the most efficient farmer in the world. Improve your problem solving and coding skills."
       }
     },
+    "the-spell-brigade": {
+      "uuid": "03a8892c-bab6-41dd-b604-8727b41d9554",
+      "label": "the-spell-brigade",
+      "meta": {
+        "displayName": "The Spell Brigade",
+        "iconUrl": "the-spell-brigade.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2904000"
+            }
+          ],
+          "steamFolderName": "The Spell Brigade",
+          "dataFolderName": "TheSpellBrigade_Data",
+          "exeNames": [
+            "TheSpellBrigade.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "The Spell Brigade",
+            "iconUrl": "the-spell-brigade.webp"
+          },
+          "settingsIdentifier": "TheSpellBrigade",
+          "internalFolderName": "TheSpellBrigade",
+          "packageIndex": "https://thunderstore.io/c/the-spell-brigade/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "The Spell Brigade",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "Survivors-like with ONLINE CO-OP for 1-4 players. Team up with your wizard friends to slay hordes of dark creatures. Complete team-based objectives, unlock new upgrades and create overpowered spell synergies. Friend nor foe is safe in this friendly fire bullet hell!"
+      }
+    },
     "unfair-flips": {
       "uuid": "747c7cd7-8b91-45fd-b734-72fb313cf39b",
       "label": "unfair-flips",
@@ -29506,6 +29770,133 @@
         ]
       }
     },
+    "vampire-crawlers": {
+      "uuid": "42bb337d-c169-476c-81fa-1a645de8c80f",
+      "label": "vampire-crawlers",
+      "meta": {
+        "displayName": "Vampire Crawlers",
+        "iconUrl": "vampire-crawlers.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3265700"
+            },
+            {
+              "platform": "epic-games-store",
+              "identifier": "6d4f12300a0844369205eb8ae9619ca0"
+            },
+            {
+              "platform": "xbox-game-pass",
+              "identifier": "poncle.VampireCrawlers"
+            }
+          ],
+          "steamFolderName": "Vampire Crawlers",
+          "dataFolderName": "Vampire Crawlers_Data",
+          "exeNames": [
+            "Vampire Crawlers.exe",
+            "Vampire Crawlers.app"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Vampire Crawlers",
+            "iconUrl": "vampire-crawlers.webp"
+          },
+          "settingsIdentifier": "VampireCrawlers",
+          "internalFolderName": "VampireCrawlers",
+          "packageIndex": "https://thunderstore.io/c/vampire-crawlers/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Vampire Crawlers",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "From the creators of Vampire Survivors comes a turbo-charged, turn-based roguelite deckbuilder! Deal world-ending combos, blitz through infested dungeons, and master the Turboturn to obliterate hordes of familiar foes with a chaotic hand of cards."
+      }
+    },
     "vellum": {
       "uuid": "940cd817-fa5b-464e-88a3-0de6d04388c0",
       "label": "vellum",
@@ -29619,7 +30010,9 @@
           "packageIndex": "https://thunderstore.io/c/very-very-valet/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "VVV"
+            "VVV",
+            "胡闹泊车",
+            "非常非常代客"
           ],
           "installRules": [
             {
@@ -29782,6 +30175,124 @@
         "autolistPackageIds": [
           "LavaGang-MelonLoader"
         ]
+      }
+    },
+    "voodoo-fishin": {
+      "uuid": "efdd5f11-1a2c-4865-bf0a-ca548c0c28a9",
+      "label": "voodoo-fishin",
+      "meta": {
+        "displayName": "Voodoo Fishin'",
+        "iconUrl": "voodoo-fishin.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3071240"
+            }
+          ],
+          "steamFolderName": "Voodoo Voyage",
+          "dataFolderName": "Voodoo Fishin'_Data",
+          "exeNames": [
+            "Voodoo Fishin'.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Voodoo Fishin'",
+            "iconUrl": "voodoo-fishin.webp"
+          },
+          "settingsIdentifier": "VoodooFishin",
+          "internalFolderName": "VoodooFishin",
+          "packageIndex": "https://thunderstore.io/c/voodoo-fishin/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Voodoo Fishin'",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "A creepy-cozy co-op fishing game for 1–4 players with proximity voice chat. Explore a haunted swamp for rare fish, sell your haul by the pound, and try to survive what hunts you in the dark."
       }
     },
     "will-you-snail": {
@@ -37096,6 +37607,47 @@
         }
       }
     },
+    "getting-over-it": {
+      "displayName": "Getting Over It with Bennett Foddy",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "A game I made for a certain kind of person. To hurt them."
+    },
     "goblin-buster": {
       "displayName": "Goblin Buster: Incremental Tower Defense",
       "categories": {
@@ -38912,7 +39464,7 @@
       "shortDescription": "In this online horror co-op, you play as a scrappy goblin, scavenging dungeons, dodging traps, and fleeing monsters to feed the Goblin King-Queen. Team up with goblin pals, or go rogue, as you dive deep and cause chaos! Fail to feed them, and you might be the next meal!"
     },
     "project-arrhythmia": {
-      "displayName": "Project Arrhythmia",
+      "displayName": "Afterbeat",
       "categories": {
         "mods": {
           "label": "Mods"
@@ -40129,6 +40681,47 @@
       ],
       "shortDescription": "Program and optimize a drone to automate a farm and watch it do the work for you. Collect resources to unlock better technology and become the most efficient farmer in the world. Improve your problem solving and coding skills."
     },
+    "the-spell-brigade": {
+      "displayName": "The Spell Brigade",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "Survivors-like with ONLINE CO-OP for 1-4 players. Team up with your wizard friends to slay hordes of dark creatures. Complete team-based objectives, unlock new upgrades and create overpowered spell synergies. Friend nor foe is safe in this friendly fire bullet hell!"
+    },
     "unfair-flips": {
       "displayName": "Unfair Flips",
       "categories": {
@@ -40168,6 +40761,47 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "vampire-crawlers": {
+      "displayName": "Vampire Crawlers",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "From the creators of Vampire Survivors comes a turbo-charged, turn-based roguelite deckbuilder! Deal world-ending combos, blitz through infested dungeons, and master the Turboturn to obliterate hordes of familiar foes with a chaotic hand of cards."
     },
     "vellum": {
       "displayName": "Vellum",
@@ -40291,6 +40925,47 @@
       "autolistPackageIds": [
         "LavaGang-MelonLoader"
       ]
+    },
+    "voodoo-fishin": {
+      "displayName": "Voodoo Fishin'",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "A creepy-cozy co-op fishing game for 1–4 players with proximity voice chat. Explore a haunted swamp for rare fish, sell your haul by the pound, and try to survive what hunts you in the dark."
     },
     "will-you-snail": {
       "displayName": "Will You Snail",
