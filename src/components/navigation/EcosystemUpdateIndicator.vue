@@ -1,6 +1,19 @@
 <template>
     <Teleport to="#activity-bar">
-        <div :class="['status-indicator', { 'status-indicator--error': status.isError }]">
+        <button
+            v-if="status.onClick"
+            type="button"
+            :class="['activity-bar__action', 'status-indicator', { 'status-indicator--error-action': status.isError }]"
+            :title="status.tooltip"
+            @click="status.onClick"
+        >
+            <i :class="status.iconClass"></i>
+            <span class="status-indicator__text">{{ status.text }}</span>
+        </button>
+        <div
+            v-else
+            :class="['status-indicator', { 'status-indicator--error': status.isError }]"
+        >
             <i :class="status.iconClass"></i>
             <span class="status-indicator__text">{{ status.text }}</span>
         </div>
@@ -14,12 +27,18 @@ import { State } from '../../store';
 
 const store = getStore<State>();
 
+function retryEcosystemUpdate() {
+    store.dispatch('ecosystemUpdate/updateEcosystemSchema');
+}
+
 const status = computed(() => {
     if (store.state.ecosystemUpdate.isInProgress) {
         return {
             text: "Updating game list",
             iconClass: "fas fa-sync-alt fa-spin",
             isError: false,
+            onClick: undefined,
+            tooltip: undefined,
         };
     }
 
@@ -29,6 +48,8 @@ const status = computed(() => {
             text: errorMessage,
             iconClass: "fas fa-exclamation-circle",
             isError: true,
+            onClick: retryEcosystemUpdate,
+            tooltip: "Retry game list update",
         };
     }
 
@@ -36,6 +57,8 @@ const status = computed(() => {
         text: "You have the latest game list",
         iconClass: "fas fa-check",
         isError: false,
+        onClick: undefined,
+        tooltip: undefined,
     };
 });
 </script>
@@ -57,7 +80,20 @@ const status = computed(() => {
     line-height: 1.5;
 }
 
-.status-indicator--error {
-    color: var(--notification-danger, #cc0f35);
+.activity-bar__action .status-indicator__text {
+    padding: 0;
+}
+
+.status-indicator--error-action {
+    margin-left: auto;
+    color: var(--ecosystem-update-error-text, #a3162f);
+    background: var(--ecosystem-update-error-background, #fbe4e7);
+    border: 1px solid var(--ecosystem-update-error-border, #efc2ca);
+}
+
+.status-indicator--error-action:hover {
+    background: var(--ecosystem-update-error-background, #fbe4e7);
+    border-color: var(--ecosystem-update-error-border, #efc2ca);
+    color: var(--ecosystem-update-error-text, #a3162f);
 }
 </style>
