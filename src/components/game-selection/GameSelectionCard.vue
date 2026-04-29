@@ -58,7 +58,7 @@ function getImageHref(image: string) {
 
 <style scoped lang="scss">
 .game-card-wrapper {
-    width: 188px;
+    width: 100%;
 }
 
 .game-card-wrapper__footer {
@@ -83,13 +83,13 @@ function getImageHref(image: string) {
 
 .game-card__thumbnail {
     display: block;
-    width: 188px;
-    height: 250px;
+    width: 100%;
+    aspect-ratio: 3 / 4;
     object-fit: cover;
 }
 
 .game-card__placeholder {
-    height: 250px;
+    aspect-ratio: 3 / 4;
     display: flex;
     align-items: center;
     justify-content: center;
