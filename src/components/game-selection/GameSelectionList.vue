@@ -41,16 +41,16 @@
                         <template v-if="favouriteGameList.length > 0">
                             <GameSelectionSection title="Favourites" :count="favouriteGameList.length" :default-open="true">
                                 <div class="game-cards-container">
-                                    <div v-for="game of favouriteGameList" :key="game.settingsIdentifier" class="inline-block margin-right">
-                                        <GameSelectionCard
-                                            :game="game"
-                                            :is-favourited="true"
-                                            :active-tab="activeTab"
-                                            @select="emit('select-game', $event)"
-                                            @set-default="emit('set-default-game', $event)"
-                                            @toggle-favourite="toggleFavourite($event)"
-                                        />
-                                    </div>
+                                    <GameSelectionCard
+                                        v-for="game of favouriteGameList"
+                                        :key="game.settingsIdentifier"
+                                        :game="game"
+                                        :is-favourited="true"
+                                        :active-tab="activeTab"
+                                        @select="emit('select-game', $event)"
+                                        @set-default="emit('set-default-game', $event)"
+                                        @toggle-favourite="toggleFavourite($event)"
+                                    />
                                 </div>
                             </GameSelectionSection>
                         </template>
@@ -64,17 +64,17 @@
                                 :default-open="true"
                             >
                                 <div class="game-cards-container">
-                                    <div v-for="game of nonFavouriteGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
-                                        <GameSelectionCard
-                                            :game="game"
-                                            :is-selected="isGameSelected(game)"
-                                            :is-favourited="false"
-                                            :active-tab="activeTab"
-                                            @select="emit('select-game', $event)"
-                                            @set-default="emit('set-default-game', $event)"
-                                            @toggle-favourite="toggleFavourite($event)"
-                                        />
-                                    </div>
+                                    <GameSelectionCard
+                                        v-for="game of nonFavouriteGameList"
+                                        :key="game.settingsIdentifier"
+                                        :game="game"
+                                        :is-selected="isGameSelected(game)"
+                                        :is-favourited="false"
+                                        :active-tab="activeTab"
+                                        @select="emit('select-game', $event)"
+                                        @set-default="emit('set-default-game', $event)"
+                                        @toggle-favourite="toggleFavourite($event)"
+                                    />
                                 </div>
                             </GameSelectionSection>
                         </template>
@@ -87,16 +87,16 @@
                             v-if="mergedGameList.length > 0"
                         >
                             <div class="game-cards-container">
-                                <div v-for="game of mergedGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
-                                    <GameSelectionCard
-                                        :game="game"
-                                        :is-favourited="isFavourited(game)"
-                                        :active-tab="activeTab"
-                                        @select="emit('select-game', $event)"
-                                        @set-default="emit('set-default-game', $event)"
-                                        @toggle-favourite="toggleFavourite($event)"
-                                    />
-                                </div>
+                                <GameSelectionCard
+                                    v-for="game of mergedGameList"
+                                    :key="game.settingsIdentifier"
+                                    :game="game"
+                                    :is-favourited="isFavourited(game)"
+                                    :active-tab="activeTab"
+                                    @select="emit('select-game', $event)"
+                                    @set-default="emit('set-default-game', $event)"
+                                    @toggle-favourite="toggleFavourite($event)"
+                                />
                             </div>
                         </GameSelectionSection>
                     </template>
@@ -111,18 +111,18 @@
                                 These games are no longer supported.
                             </div>
                             <div class="game-cards-container">
-                                <div v-for="game of hiddenGameList" :key="game.settingsIdentifier" class="inline-block margin-right margin-bottom">
-                                    <GameSelectionCard
-                                        :game="game"
-                                        :is-selected="isGameSelected(game)"
-                                        :is-favourited="isFavourited(game)"
-                                        :active-tab="activeTab"
-                                        :highlight-favourite="true"
-                                        @select="emit('select-game', $event)"
-                                        @set-default="emit('set-default-game', $event)"
-                                        @toggle-favourite="toggleFavourite($event)"
-                                    />
-                                </div>
+                                <GameSelectionCard
+                                    v-for="game of hiddenGameList"
+                                    :key="game.settingsIdentifier"
+                                    :game="game"
+                                    :is-selected="isGameSelected(game)"
+                                    :is-favourited="isFavourited(game)"
+                                    :active-tab="activeTab"
+                                    :highlight-favourite="true"
+                                    @select="emit('select-game', $event)"
+                                    @set-default="emit('set-default-game', $event)"
+                                    @toggle-favourite="toggleFavourite($event)"
+                                />
                             </div>
                         </GameSelectionSection>
                     </template>
@@ -170,9 +170,9 @@ const {
 
 <style lang="scss" scoped>
 .game-cards-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(188px, 1fr));
+    gap: 1rem;
 }
 
 .card-header-title {
