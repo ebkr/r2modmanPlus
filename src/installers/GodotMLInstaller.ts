@@ -1,5 +1,5 @@
+import { InstallArgs, PackageInstaller, uninstallModLoader } from './PackageInstaller';
 import path from "../providers/node/path/path";
-import { InstallArgs, PackageInstaller } from './PackageInstaller';
 import FileWriteError from '../model/errors/FileWriteError';
 import FsProvider from '../providers/generic/file/FsProvider';
 import FileUtils from '../utils/FileUtils';
@@ -28,5 +28,9 @@ export class GodotMLInstaller implements PackageInstaller {
         } catch (e) {
             throw FileWriteError.fromThrownValue(e, 'Failed to install GodotML');
         }
+    }
+
+    async uninstall(args: InstallArgs) {
+        await uninstallModLoader(args.mod, args.profile);
     }
 }

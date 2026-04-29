@@ -1,6 +1,4 @@
-import { getPluginInstaller } from '../../installers/registry';
-import GameManager from '../../model/game/GameManager';
-import { EcosystemSchema, TrackingMethod } from '../../model/schema/ThunderstoreSchema';
+import {EcosystemSupportedGames, TrackingMethod} from '../../model/schema/ThunderstoreSchema';
 import path from '../../providers/node/path/path';
 
 export type CoreRuleType = {
@@ -39,7 +37,7 @@ export default class InstallationRules {
     }
 
     public static apply() {
-        this._RULES = EcosystemSchema.supportedGames.map(([_, x]) => ({
+        this._RULES = EcosystemSupportedGames.value.map(([_, x]) => ({
             gameName: x.internalFolderName,
             rules: x.installRules,
             relativeFileExclusions: x.relativeFileExclusions,
@@ -47,13 +45,23 @@ export default class InstallationRules {
     }
 
     public static validate() {
-        GameManager.gameList.forEach(value => {
-            if (this._RULES.find(rule => rule.gameName === value.internalFolderName) === undefined) {
-                if (getPluginInstaller(value.packageLoader) === null) {
-                    throw new Error(`Missing installation rule for game: ${value.internalFolderName}`);
-                }
-            }
-        })
+        // Initially this used to test that each game has InstallationRules defined.
+        // It was later changed to ignore games that have PackagaInstaller support.
+        // Now PackageInstallers are all there is, and the install rules are defined
+        // by Thunderstore, so this validation makes little sense.
+        // If we'd want to make some sanity check here, it would be to validate that
+        // all PackageLoader types defined by the ecosystem are mapped to mod loader
+        // and plugin installation implemenations in registry.ts. This probably ins't
+        // the correct place for that though. This well be cleaned in future commit
+        // to avoid scope creep within the current commit.
+
+        // GameManager.gameList.forEach(value => {
+        //     if (this._RULES.find(rule => rule.gameName === value.internalFolderName) === undefined) {
+        //         if (getPluginInstaller(value.packageLoader) === null) {
+        //              throw new Error(`Missing installation rule for game: ${value.internalFolderName}`);
+        //         }
+        //     }
+        // })
     }
 
     /**

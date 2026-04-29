@@ -41,6 +41,13 @@ async function extractConfigsToImportedProfile(
 ) {
     const zipEntries = await ZipProvider.instance.getEntries(file);
     const excludedFiles = ["export.r2x", "mods.yml"];
+    const blockedExtensions = [
+        '.dll', '.exe', '.scr', '.com', '.pif',
+        '.bat', '.cmd', '.ps1', '.vbs', '.vbe',
+        '.js', '.jse', '.wsf', '.wsh', '.hta',
+        '.msi', '.msix', '.sys', '.drv', '.cpl',
+        '.ocx', '.lnk', '.reg', '.inf',
+    ];
 
     for (const [index, entry] of zipEntries.entries()) {
         if (!excludedFiles.includes(entry.entryName.toLowerCase())) {
@@ -48,6 +55,11 @@ async function extractConfigsToImportedProfile(
 
             if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
                 outputPath = path.join(outputPath, 'BepInEx');
+            }
+
+            if (blockedExtensions.some(value => entry.entryName.toLowerCase().endsWith(value.toLowerCase()))) {
+                console.warn(`Unsafe file [${entry.entryName}] in import. Skipped.`);
+                continue;
             }
 
             await ZipProvider.instance.extractEntryTo(file, entry.entryName, outputPath);

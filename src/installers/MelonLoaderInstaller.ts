@@ -1,4 +1,4 @@
-import { InstallArgs, PackageInstaller } from "./PackageInstaller";
+import { InstallArgs, PackageInstaller, uninstallModLoader } from "./PackageInstaller";
 import FsProvider from "../providers/generic/file/FsProvider";
 import path from "../providers/node/path/path";
 
@@ -20,5 +20,9 @@ export class MelonLoaderInstaller implements PackageInstaller {
                 }
             }
         }
+    }
+
+    async uninstall(args: InstallArgs) {
+        await uninstallModLoader(args.mod, args.profile);
     }
 }

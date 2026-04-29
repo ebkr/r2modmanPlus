@@ -12,8 +12,9 @@ import ModFileTracker from "../model/installing/ModFileTracker";
 import ConflictManagementProvider from "../providers/generic/installing/ConflictManagementProvider";
 import PathResolver from "../r2mm/manager/PathResolver";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
-import { TrackingMethod } from "../model/schema/ThunderstoreSchema";
+import { getGameConfigBySettingsIdentifier, TrackingMethod } from "../model/schema/ThunderstoreSchema";
 import ModMode from "../model/enums/ModMode";
+import GameManager from "../model/game/GameManager";
 
 type InstallRuleArgs = {
     profile: ImmutableProfile,
@@ -257,8 +258,66 @@ async function installState(args: InstallRuleArgs) {
     await addToStateFile(mod, fileRelocations, profile);
 }
 
+async function uninstallPackageZip(mod: ManifestV2, profile: ImmutableProfile) {
+    const fs = FsProvider.instance;
+
+    const recursiveDelete = async (mainPath: string, match: string) => {
+        for (const subpath of (await fs.readdir(mainPath))) {
+            const fullSubpath = path.join(mainPath, subpath);
+            const subpathInfo = await fs.lstat(fullSubpath);
+            if (subpathInfo.isDirectory()) {
+                await recursiveDelete(fullSubpath, match);
+            } else if (subpathInfo.isFile() && subpath == match) {
+                await fs.unlink(fullSubpath);
+            }
+        }
+    }
+
+    await recursiveDelete(profile.getProfilePath(), `${mod.getName()}.ts.zip`);
+}
+
+async function uninstallSubDir(mod: ManifestV2, profile: ImmutableProfile) {
+    const fs = FsProvider.instance;
+    const searchLocations = ["BepInEx", "shimloader", "UMM"].map((x) => profile.joinToProfilePath(x));
+
+    for (const searchLocation of searchLocations) {
+        if (!(await fs.exists(searchLocation))) {
+            continue
+        }
+
+        for (const file of (await fs.readdir(searchLocation))) {
+            if ((await fs.lstat(path.join(searchLocation, file))).isDirectory()) {
+                for (const folder of (await fs.readdir(path.join(searchLocation, file)))) {
+                    const folderPath = path.join(searchLocation, file, folder);
+                    if (folder === mod.getName() && (await fs.lstat(folderPath)).isDirectory()) {
+                        await FileUtils.emptyDirectory(folderPath);
+                        await fs.rmdir(folderPath);
+                    }
+                }
+            }
+        }
+    }
+}
+
+export async function uninstallState(mod: ManifestV2, profile: ImmutableProfile): Promise<void> {
+    const stateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
+    if (await FsProvider.instance.exists(stateFilePath)) {
+        const read = await FsProvider.instance.readFile(stateFilePath);
+        const tracker = (yaml.parse(read.toString()) as ModFileTracker);
+        for (const [cacheFile, installFile] of tracker.files) {
+            if (await FsProvider.instance.exists(profile.joinToProfilePath(installFile))) {
+                await FsProvider.instance.unlink(profile.joinToProfilePath(installFile));
+                if ((await FsProvider.instance.readdir(path.dirname(profile.joinToProfilePath(installFile)))).length === 0) {
+                    await FsProvider.instance.rmdir(path.dirname(profile.joinToProfilePath(installFile)));
+                }
+            }
+        }
+        await FsProvider.instance.unlink(profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`));
+    }
+}
+
 // Enables or disables a mod installed with InstallRulePluginInstaller using SUBDIR/SUBDIR_NO_FLATTEN tracking methods.
-export async function applyModeSubDirs(mod: ManifestV2, profile: ImmutableProfile, mode: number, rule: CoreRuleType): Promise<R2Error | void> {
+async function applyModeSubDirs(mod: ManifestV2, profile: ImmutableProfile, mode: number, rule: CoreRuleType): Promise<void> {
     const subDirPaths = InstallationRules.getAllManagedPaths(rule.rules)
         .filter(value => [TrackingMethod.SUBDIR, TrackingMethod.SUBDIR_NO_FLATTEN].includes(value.trackingMethod));
 
@@ -267,10 +326,9 @@ export async function applyModeSubDirs(mod: ManifestV2, profile: ImmutableProfil
             const dirContents = await FsProvider.instance.readdir(profile.joinToProfilePath(dir.route));
             for (const namespacedDir of dirContents) {
                 if (namespacedDir === mod.getName()) {
-                    const tree = await FileTree.buildFromLocation(profile.joinToProfilePath(dir.route, namespacedDir));
-                    if (tree instanceof R2Error) {
-                        return tree;
-                    }
+                    const tree = throwForR2Error(
+                        await FileTree.buildFromLocation(profile.joinToProfilePath(dir.route, namespacedDir))
+                    );
                     for (const value of tree.getRecursiveFiles()) {
                         if (mode === ModMode.DISABLED && mod.isEnabled() && !value.toLowerCase().endsWith(".old")) {
                             await FsProvider.instance.rename(value, `${value}.old`);
@@ -285,34 +343,58 @@ export async function applyModeSubDirs(mod: ManifestV2, profile: ImmutableProfil
 }
 
 // Enables or disables a mod installed with InstallRulePluginInstaller using STATE tracking method.
-export async function applyModeState(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
-    try {
-        const modStateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
-        if (await FsProvider.instance.exists(modStateFilePath)) {
-            const fileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
-            const tracker: ModFileTracker = yaml.parse(fileContents);
-            for (const [key, value] of tracker.files) {
-                if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
-                    const filePath = profile.joinToProfilePath(value);
-                    if (await FsProvider.instance.exists(filePath)) {
-                        await FsProvider.instance.unlink(filePath);
-                    }
-                    if (mode === ModMode.ENABLED) {
-                        await FsProvider.instance.copyFile(key, filePath);
-                    }
+export async function applyModeState(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<void> {
+    const modStateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
+    if (await FsProvider.instance.exists(modStateFilePath)) {
+        const fileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
+        const tracker: ModFileTracker = yaml.parse(fileContents);
+        for (const [key, value] of tracker.files) {
+            if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
+                const filePath = profile.joinToProfilePath(value);
+                if (await FsProvider.instance.exists(filePath)) {
+                    await FsProvider.instance.unlink(filePath);
+                }
+                if (mode === ModMode.ENABLED) {
+                    await FsProvider.instance.copyFile(key, filePath);
                 }
             }
         }
-    } catch (e) {
-        return R2Error.fromThrownValue(e, `Error installing mod: ${mod.getName()}`);
     }
 }
 
 export class InstallRulePluginInstaller implements PackageInstaller {
-    public readonly rule: CoreRuleType;
+    private ruleOverride: CoreRuleType|undefined;
 
-    constructor(rules: CoreRuleType) {
-        this.rule = rules;
+    /**
+     * @param ruleOverride can be used to ignore installation rules provided by
+     *                     Thunderstore ecosystem.
+     *
+     * This can be used e.g. in PackageInstaller implementations or test cases.
+     * Note that the override last the instance's whole lifetime, causing it to
+     * ignore changes in the active game. Therefore it shouldn't be used in the
+     * shared instance initiated in registry.ts.
+     */
+    constructor(ruleOverride?: CoreRuleType) {
+        this.ruleOverride = ruleOverride;
+    }
+
+    private get rule(): CoreRuleType {
+        if (this.ruleOverride !== undefined) {
+            return this.ruleOverride;
+        }
+
+        // While it's not ideal that this same method is called repeatedly,
+        // the code path below currently takes <1ms to execute so we should be fine.
+        const gameConfig = getGameConfigBySettingsIdentifier(GameManager.activeGame.settingsIdentifier);
+        if (gameConfig === undefined) {
+            throw new Error(`Game config not found for ${GameManager.activeGame.settingsIdentifier}`);
+        }
+
+        return {
+            gameName: gameConfig.internalFolderName,
+            rules: gameConfig.installRules,
+            relativeFileExclusions: gameConfig.relativeFileExclusions
+        };
     }
 
     /**
@@ -344,5 +426,31 @@ export class InstallRulePluginInstaller implements PackageInstaller {
                 case TrackingMethod.PACKAGE_ZIP: await installPackageZip(profile, managedRule, files, mod); break;
             }
         }
+    }
+
+    async uninstall(args: InstallArgs) {
+        try {
+            await uninstallState(args.mod, args.profile);
+            await uninstallSubDir(args.mod, args.profile);
+            await uninstallPackageZip(args.mod, args.profile);
+        } catch (e) {
+            const name = 'Failed to remove files';
+            const solution = 'Is the game still running? If so, close it and try again.';
+            throw R2Error.fromThrownValue(e, name, solution);
+        }
+    }
+
+    // PACKAGE_ZIP tracking method not supported currently.
+    // NONE tracking method won't implement enabling.
+    async enable(args: InstallArgs) {
+        await applyModeSubDirs(args.mod, args.profile, ModMode.ENABLED, this.rule);
+        await applyModeState(args.mod, args.profile, ModMode.ENABLED);
+    }
+
+    // PACKAGE_ZIP tracking method not supported currently.
+    // NONE tracking method won't implement disabling.
+    async disable(args: InstallArgs) {
+        await applyModeSubDirs(args.mod, args.profile, ModMode.DISABLED, this.rule);
+        await applyModeState(args.mod, args.profile, ModMode.DISABLED);
     }
 }

@@ -1,8 +1,13 @@
+import FileWriteError from "../model/errors/FileWriteError";
 import R2Error from "../model/errors/R2Error";
 import FileTree from "../model/file/FileTree";
+import GameManager from "../model/game/GameManager";
 import { ImmutableProfile } from "../model/Profile";
 import ManifestV2 from "../model/ManifestV2";
 import FsProvider from "../providers/generic/file/FsProvider";
+import path from "../providers/node/path/path";
+import { MOD_LOADER_VARIANTS } from "../r2mm/installing/profile_installers/ModLoaderVariantRecord";
+import PathResolver from "../r2mm/manager/PathResolver";
 
 export type InstallArgs = {
     mod: ManifestV2;
@@ -12,7 +17,9 @@ export type InstallArgs = {
 
 export interface PackageInstaller {
     install(args: InstallArgs): Promise<void>;
-    uninstall?(args: InstallArgs): Promise<void>;
+    uninstall(args: InstallArgs): Promise<void>;
+
+    // Plugin installers only.
     enable?(args: InstallArgs): Promise<void>;
     disable?(args: InstallArgs): Promise<void>;
 }
@@ -40,8 +47,41 @@ export async function enableModByRenamingFiles(folderName: string) {
         if (filePath.toLowerCase().endsWith(".old")) {
             await FsProvider.instance.rename(
                 filePath,
-                filePath.substring(0, filePath.length - ('.old').length)
+                filePath.substring(0, filePath.length - (".old").length)
             );
         }
+    }
+}
+
+export function getInstallArgs(mod: ManifestV2, profile: ImmutableProfile): InstallArgs {
+    const cacheDirectory = path.join(PathResolver.MOD_ROOT, "cache");
+    const packagePath = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
+    return {mod, profile, packagePath};
+}
+
+// Implementation shared by BepInExInstaller, MelonLoaderInstaller and others.
+export async function uninstallModLoader(mod: ManifestV2, profile: ImmutableProfile) {
+    const fs = FsProvider.instance;
+
+    try {
+        const loader = MOD_LOADER_VARIANTS[GameManager.activeGame.internalFolderName].find(
+            loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase()
+        );
+
+        if (loader) {
+            for (const file of (await fs.readdir(profile.getProfilePath()))) {
+                if (file.toLowerCase() === "mods.yml") {
+                    continue;
+                }
+                const filePath = profile.joinToProfilePath(file);
+                if ((await fs.lstat(filePath)).isFile()) {
+                    await fs.unlink(filePath);
+                }
+            }
+        }
+    } catch(e) {
+        const name = "Failed to delete mod loader files from profile root";
+        const solution = "Is the game still running?";
+        throw FileWriteError.fromThrownValue(e, name, solution);
     }
 }

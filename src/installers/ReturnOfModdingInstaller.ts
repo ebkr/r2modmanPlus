@@ -140,5 +140,13 @@ export class ReturnOfModdingPluginInstaller implements PackageInstaller {
             const solution = "Is the game still running?";
             throw FileWriteError.fromThrownValue(e, name, solution);
         }
-    };
+    }
+
+    async enable(args: InstallArgs) {
+        await this.installer().enable(args);
+    }
+
+    async disable(args: InstallArgs) {
+        await this.installer().disable(args);
+    }
 }

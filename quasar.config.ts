@@ -17,6 +17,7 @@ export default defineConfig((ctx) => {
             'i18n',
             // 'axios',
             'floating-vue',
+            'ecosystem'
         ],
 
         // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css

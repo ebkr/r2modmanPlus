@@ -9678,7 +9678,7 @@
       },
       "distributions": [
         {
-          "platform": "steam-direct",
+          "platform": "steam",
           "identifier": "1237970"
         },
         {
@@ -9696,7 +9696,7 @@
           "dataFolderName": "",
           "distributions": [
             {
-              "platform": "steam-direct",
+              "platform": "steam",
               "identifier": "1237970"
             },
             {
@@ -11855,6 +11855,9 @@
           },
           "cosmetics": {
             "label": "Cosmetics"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
           }
         },
         "sections": {
@@ -16818,13 +16821,35 @@
           },
           "cosmetics": {
             "label": "Cosmetics"
+          },
+          "soundpacks": {
+            "label": "Sound Packs"
+          },
+          "qol": {
+            "label": "Quality Of Life"
+          },
+          "gameplay": {
+            "label": "Gameplay"
+          },
+          "utility": {
+            "label": "Utility"
+          },
+          "skins": {
+            "label": "Skins"
           }
         },
         "sections": {
           "mods": {
             "name": "Mods",
             "excludeCategories": [
-              "modpacks"
+              "modpacks",
+              "soundpacks"
+            ]
+          },
+          "soundpacks": {
+            "name": "Sound Packs",
+            "requireCategories": [
+              "soundpacks"
             ]
           },
           "modpacks": {
@@ -19097,6 +19122,86 @@
         ]
       }
     },
+    "angry-birds-vr-isle-of-pigs": {
+      "uuid": "e036d5db-ba60-420d-b151-3a56eb8183ab",
+      "label": "angry-birds-vr-isle-of-pigs",
+      "meta": {
+        "displayName": "Angry Birds VR: Isle of Pigs",
+        "iconUrl": "angry-birds-vr-isle-of-pigs.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1001140"
+            }
+          ],
+          "steamFolderName": "Angry Birds VR Isle of Pigs",
+          "dataFolderName": "angry-birds-vr-isle-of-pigs_Data",
+          "exeNames": [
+            "angry-birds-vr-isle-of-pigs.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Angry Birds VR: Isle of Pigs",
+            "iconUrl": "angry-birds-vr-isle-of-pigs.webp"
+          },
+          "settingsIdentifier": "AngryBirdsVrIsleOfPigs",
+          "internalFolderName": "AngryBirdsVrIsleOfPigs",
+          "packageIndex": "https://thunderstore.io/c/angry-birds-vr-isle-of-pigs/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "ABVR"
+          ],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Angry Birds VR: Isle of Pigs",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Join Red, Chuck, Bomb & the Blues to save the stolen eggs in Angry Birds VR: Isle of Pigs, an immersive VR adventure! Discover the island where the greedy pigs vacation, slingshot your way to defeat Dr. Frankenswine & create/share/discover an infinite number of levels with the online level builder."
+      }
+    },
     "astroneer": {
       "uuid": "43c1b6fb-f9a5-4d25-847f-c3eda4f2bf5a",
       "label": "astroneer",
@@ -19813,6 +19918,53 @@
         "shortDescription": "Big Ambitions is a revolutionary role-playing business sim. Go from nothing to the biggest entrepreneur in New York by opening small businesses or slowly building huge corporations any way you like."
       }
     },
+    "bomberman-64-recompiled": {
+      "uuid": "cef75c51-19b4-49cd-86b6-7eab099c8d4f",
+      "label": "bomberman-64-recompiled",
+      "meta": {
+        "displayName": "Bomberman 64: Recompiled",
+        "iconUrl": "bomberman-64-recompiled.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Bomberman 64: Recompiled",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        }
+      }
+    },
     "broforce": {
       "uuid": "dcebc888-06d8-436f-b7e7-ed08713f68bd",
       "label": "broforce",
@@ -19917,6 +20069,86 @@
         "wikiUrl": "https://github.com/alexneargarder/BroforceMods/wiki",
         "discordUrl": "https://discord.com/invite/freelives",
         "autolistPackageIds": []
+      }
+    },
+    "brutalistick-vr": {
+      "uuid": "5f4143f0-c9c1-4fae-9f72-055e3c5edd8d",
+      "label": "brutalistick-vr",
+      "meta": {
+        "displayName": "BRUTALISTICK VR",
+        "iconUrl": "brutalistick-vr.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2669380"
+            }
+          ],
+          "steamFolderName": "BRUTALISTICK VR",
+          "dataFolderName": "BrutalistickVR_Data",
+          "exeNames": [
+            "BrutalistickVR.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "BRUTALISTICK VR",
+            "iconUrl": "brutalistick-vr.webp"
+          },
+          "settingsIdentifier": "BrutalistickVr",
+          "internalFolderName": "BrutalistickVr",
+          "packageIndex": "https://thunderstore.io/c/brutalistick-vr/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "BRUTALISTICK VR",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://github.com/Kubunautilus/BrutalistickVR_ModFramework/wiki",
+        "discordUrl": "https://discord.gg/CxEtWnDAv4",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "The golden age of violent flash games now in your VR headset. Fully physics based combat with melee and firearms featuring copious amounts of blood, gore and destruction."
       }
     },
     "carrier-deck": {
@@ -20518,6 +20750,76 @@
           }
         },
         "discordUrl": "https://discord.gg/jBGMZqndT3"
+      }
+    },
+    "crashout-crew": {
+      "uuid": "a0dd50c8-8622-4e2e-a2b2-8af424bd483a",
+      "label": "crashout-crew",
+      "meta": {
+        "displayName": "Crashout Crew",
+        "iconUrl": "crashout-crew.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Crashout Crew",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "cosmetics": {
+            "label": "Cosmetics"
+          },
+          "items": {
+            "label": "Items"
+          },
+          "quality-of-life": {
+            "label": "Quality of Life"
+          },
+          "client-side": {
+            "label": "Client-side"
+          },
+          "all-clients": {
+            "label": "All Clients"
+          },
+          "host-only": {
+            "label": "Host Only"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "discordUrl": "https://discord.gg/vpsxCNWVCW",
+        "shortDescription": "Time to clock in at DE NILE SHIPPING, the world's most efficient warehouse! Work together in online co-op with up to 4 players to fulfill orders of increasingly chaotic, physics-based boxes. Time is money, and safety is no concern... just try not to crash out!"
       }
     },
     "crawlspace-2": {
@@ -23181,6 +23483,128 @@
         "autolistPackageIds": []
       }
     },
+    "island-market-simulator": {
+      "uuid": "61a62561-13d8-4e32-9d1c-25f77acf702e",
+      "label": "island-market-simulator",
+      "meta": {
+        "displayName": "Island Market Simulator",
+        "iconUrl": "island-market-simulator.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3391510"
+            }
+          ],
+          "steamFolderName": "Island Market Simulator",
+          "dataFolderName": "Island Market Simulator_Data",
+          "exeNames": [
+            "Island Market Simulator.exe",
+            "IslandMarketSimulator.x86_64"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Island Market Simulator",
+            "iconUrl": "island-market-simulator.webp"
+          },
+          "settingsIdentifier": "IslandMarketSimulator",
+          "internalFolderName": "IslandMarketSimulator",
+          "packageIndex": "https://thunderstore.io/c/island-market-simulator/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "IMS"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Island Market Simulator",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/mKPBe6KccK",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "Team up with your friends and build a thriving trade empire in this CO-OP strategy and economy simulation set on a lively island. Begin with a small market, share tasks, manage production chains, raise livestock, and dominate the economy together through changing seasons and dynamic festivals!"
+      }
+    },
     "jump-scare-mansion": {
       "uuid": "bd792010-c61e-454a-bf51-b3c28243e14f",
       "label": "jump-scare-mansion",
@@ -24185,6 +24609,53 @@
         ]
       }
     },
+    "mega-man-64-recompiled": {
+      "uuid": "4bb22717-7479-46da-9c27-26270b421fe4",
+      "label": "mega-man-64-recompiled",
+      "meta": {
+        "displayName": "Mega Man 64: Recompiled",
+        "iconUrl": "mega-man-64-recompiled.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Mega Man 64: Recompiled",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        }
+      }
+    },
     "megabonk": {
       "uuid": "861f9f61-8f2d-4d32-bf15-c2fdd1b5e0f5",
       "label": "megabonk",
@@ -24552,6 +25023,84 @@
         ]
       }
     },
+    "minos": {
+      "uuid": "f96148a5-903f-4d0b-8bb4-42b6e9d0c3ee",
+      "label": "minos",
+      "meta": {
+        "displayName": "MINOS",
+        "iconUrl": "minos.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3181650"
+            }
+          ],
+          "steamFolderName": "Minos",
+          "dataFolderName": "Minos",
+          "exeNames": [
+            "Minos.exe"
+          ],
+          "packageLoader": "shimloader",
+          "meta": {
+            "displayName": "MINOS",
+            "iconUrl": "minos.webp"
+          },
+          "settingsIdentifier": "Minos",
+          "internalFolderName": "Minos",
+          "packageIndex": "https://thunderstore.io/c/minos/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "MINOS",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "Thunderstore-unreal_shimloader"
+        ],
+        "shortDescription": "Minos is a maze-building roguelite where you, the fabled Minotaur, must defend your sanctuary from bloodthirsty adventurers. Design and re-design deadly labyrinths, set traps, and turn every brave fool into your next victim."
+      }
+    },
     "mirrors-edge": {
       "uuid": "bd2699ab-0ebf-4411-aab3-2132063361b0",
       "label": "mirrors-edge",
@@ -24599,6 +25148,125 @@
         "discordUrl": "https://discord.gg/gV8QW6F"
       },
       "r2modman": null
+    },
+    "modulus-factory-automation": {
+      "uuid": "f971c560-4cd8-49dd-9bc2-f00011ea6cd7",
+      "label": "modulus-factory-automation",
+      "meta": {
+        "displayName": "Modulus: Factory Automation",
+        "iconUrl": "modulus-factory-automation.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2779120"
+            }
+          ],
+          "steamFolderName": "Modulus",
+          "dataFolderName": "Modulus_Data",
+          "exeNames": [
+            "Modulus.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Modulus: Factory Automation",
+            "iconUrl": "modulus-factory-automation.webp"
+          },
+          "settingsIdentifier": "ModulusFactoryAutomation",
+          "internalFolderName": "ModulusFactoryAutomation",
+          "packageIndex": "https://thunderstore.io/c/modulus-factory-automation/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Modulus: Factory Automation",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "discordUrl": "https://discord.gg/modulus",
+        "shortDescription": "Build, automate, & optimize production lines across sky islands with real spatial constraints. Every production line is an open-ended puzzle: which operators to use, how to route your belts and how to fit your factory into the landscape. Your solutions, like your factories, are uniquely your own."
+      }
     },
     "my-winter-car": {
       "uuid": "2c1534b9-6b36-4f54-90bb-65615478cac5",
@@ -26145,6 +26813,125 @@
         ]
       }
     },
+    "project-gorgon": {
+      "uuid": "91fea4ea-4642-4afe-b906-4d45fc8ca1a1",
+      "label": "project-gorgon",
+      "meta": {
+        "displayName": "Project Gorgon",
+        "iconUrl": "project-gorgon.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "342940"
+            }
+          ],
+          "steamFolderName": "Project Gorgon",
+          "dataFolderName": "WindowsPlayer_Data",
+          "exeNames": [
+            "WindowsPlayer.exe",
+            "ProjectGorgon"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Project Gorgon",
+            "iconUrl": "project-gorgon.webp"
+          },
+          "settingsIdentifier": "ProjectGorgon",
+          "internalFolderName": "ProjectGorgon",
+          "packageIndex": "https://thunderstore.io/c/project-gorgon/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Project Gorgon",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "Project: Gorgon is a fantasy MMORPG that allows you to forge your own path through exploration and discovery."
+      }
+    },
     "pushing-it-together-sisyphus": {
       "uuid": "ca4df913-b688-459c-bb60-f56951a5b6a0",
       "label": "pushing-it-together-sisyphus",
@@ -26262,6 +27049,85 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "puttler": {
+      "uuid": "70737eb2-1b22-4b65-bddb-cf805e070606",
+      "label": "puttler",
+      "meta": {
+        "displayName": "Puttler",
+        "iconUrl": "puttler.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3198680"
+            }
+          ],
+          "steamFolderName": "Puttler",
+          "dataFolderName": "Puttler_Data",
+          "exeNames": [
+            "Puttler.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Puttler",
+            "iconUrl": "puttler.webp"
+          },
+          "settingsIdentifier": "Puttler",
+          "internalFolderName": "Puttler",
+          "packageIndex": "https://thunderstore.io/c/puttler/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Puttler",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/gJuva6EWbe",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Puttler is a mini-golf puzzle game featuring wacky obstacles and a charming backstory. Build contraptions to score the golf ball under par across 15 courses and over 250 unique holes to solve."
       }
     },
     "r5reloaded": {
@@ -26758,6 +27624,124 @@
         ]
       }
     },
+    "roadside-research": {
+      "uuid": "7b33c310-2147-45c6-b621-4ecfe90e3a0d",
+      "label": "roadside-research",
+      "meta": {
+        "displayName": "Roadside Research",
+        "iconUrl": "roadside-research.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3643170"
+            }
+          ],
+          "steamFolderName": "Roadside Research",
+          "dataFolderName": "Roadside Research_Data",
+          "exeNames": [
+            "Roadside Research.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Roadside Research",
+            "iconUrl": "roadside-research.webp"
+          },
+          "settingsIdentifier": "RoadsideResearch",
+          "internalFolderName": "RoadsideResearch",
+          "packageIndex": "https://thunderstore.io/c/roadside-research/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Roadside Research",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "Roadside Research is a 1 to 4 player co-op gas station simulator. Except you're aliens. And undercover. Do very human things like restocking shelves while preparing for the invasion. Just don't get caught."
+      }
+    },
     "rv-there-yet": {
       "uuid": "81310141-47b7-4a76-9142-f5a42d1c7811",
       "label": "rv-there-yet",
@@ -26990,6 +27974,127 @@
         "autolistPackageIds": []
       },
       "r2modman": null
+    },
+    "side-effects": {
+      "uuid": "26a8a6fb-51ca-4706-8286-e8e8a23c30d1",
+      "label": "side-effects",
+      "meta": {
+        "displayName": "SIDE EFFECTS",
+        "iconUrl": "side-effects.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3799100"
+            },
+            {
+              "platform": "other"
+            }
+          ],
+          "steamFolderName": "Side Effects",
+          "dataFolderName": "Side Effects_Data",
+          "exeNames": [
+            "Side Effects.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "SIDE EFFECTS",
+            "iconUrl": "side-effects.webp"
+          },
+          "settingsIdentifier": "SideEffects",
+          "internalFolderName": "SideEffects",
+          "packageIndex": "https://thunderstore.io/c/side-effects/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "SIDE EFFECTS",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "A twisted trial of pill roulette for up to 4 players (solo or online). Pick your poison. Use experimental items to shift the odds. And remember: only one of you can survive."
+      }
     },
     "slashers-keep": {
       "uuid": "3df67cc6-8ba1-41c8-829f-62694ee4da4a",
@@ -27993,6 +29098,126 @@
         },
         "discordUrl": "https://discord.gg/5uskscDR3m",
         "autolistPackageIds": []
+      }
+    },
+    "super-psycho-baseball": {
+      "uuid": "447a553c-c682-4493-8677-ae894e110f05",
+      "label": "super-psycho-baseball",
+      "meta": {
+        "displayName": "Super Psycho Baseball",
+        "iconUrl": "super-psycho-baseball.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2216960"
+            }
+          ],
+          "steamFolderName": "Super Psycho Baseball",
+          "dataFolderName": "SuperPsychoBaseball_Data",
+          "exeNames": [
+            "SuperPsychoBaseball.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Super Psycho Baseball",
+            "iconUrl": "super-psycho-baseball.webp"
+          },
+          "settingsIdentifier": "SuperPsychoBaseball",
+          "internalFolderName": "SuperPsychoBaseball",
+          "packageIndex": "https://thunderstore.io/c/super-psycho-baseball/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "SPB"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Super Psycho Baseball",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Welcome to Super Psycho Baseball, a sadistic home-run hitting roguelike in which you try to conquer a gang of pitch-slinging bosses, each more psychotic than the last. Come face five fully-realized pitchers, rack up powerups, and reach the top!"
       }
     },
     "the-choicer-voicer": {
@@ -32182,6 +33407,9 @@
         },
         "cosmetics": {
           "label": "Cosmetics"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
         }
       },
       "sections": {
@@ -33555,13 +34783,35 @@
         },
         "cosmetics": {
           "label": "Cosmetics"
+        },
+        "soundpacks": {
+          "label": "Sound Packs"
+        },
+        "qol": {
+          "label": "Quality Of Life"
+        },
+        "gameplay": {
+          "label": "Gameplay"
+        },
+        "utility": {
+          "label": "Utility"
+        },
+        "skins": {
+          "label": "Skins"
         }
       },
       "sections": {
         "mods": {
           "name": "Mods",
           "excludeCategories": [
-            "modpacks"
+            "modpacks",
+            "soundpacks"
+          ]
+        },
+        "soundpacks": {
+          "name": "Sound Packs",
+          "requireCategories": [
+            "soundpacks"
           ]
         },
         "modpacks": {
@@ -34306,6 +35556,47 @@
         "LavaGang-MelonLoader"
       ]
     },
+    "angry-birds-vr-isle-of-pigs": {
+      "displayName": "Angry Birds VR: Isle of Pigs",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Join Red, Chuck, Bomb & the Blues to save the stolen eggs in Angry Birds VR: Isle of Pigs, an immersive VR adventure! Discover the island where the greedy pigs vacation, slingshot your way to defeat Dr. Frankenswine & create/share/discover an infinite number of levels with the online level builder."
+    },
     "astroneer": {
       "displayName": "Astroneer",
       "categories": {
@@ -34628,6 +35919,43 @@
       ],
       "shortDescription": "Big Ambitions is a revolutionary role-playing business sim. Go from nothing to the biggest entrepreneur in New York by opening small businesses or slowly building huge corporations any way you like."
     },
+    "bomberman-64-recompiled": {
+      "displayName": "Bomberman 64: Recompiled",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      }
+    },
     "broforce": {
       "displayName": "Broforce",
       "categories": {
@@ -34670,6 +35998,49 @@
       "wikiUrl": "https://github.com/alexneargarder/BroforceMods/wiki",
       "discordUrl": "https://discord.com/invite/freelives",
       "autolistPackageIds": []
+    },
+    "brutalistick-vr": {
+      "displayName": "BRUTALISTICK VR",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://github.com/Kubunautilus/BrutalistickVR_ModFramework/wiki",
+      "discordUrl": "https://discord.gg/CxEtWnDAv4",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "The golden age of violent flash games now in your VR headset. Fully physics based combat with melee and firearms featuring copious amounts of blood, gore and destruction."
     },
     "carrier-deck": {
       "displayName": "Carrier Deck",
@@ -34940,6 +36311,66 @@
         }
       },
       "discordUrl": "https://discord.gg/jBGMZqndT3"
+    },
+    "crashout-crew": {
+      "displayName": "Crashout Crew",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "cosmetics": {
+          "label": "Cosmetics"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "quality-of-life": {
+          "label": "Quality of Life"
+        },
+        "client-side": {
+          "label": "Client-side"
+        },
+        "all-clients": {
+          "label": "All Clients"
+        },
+        "host-only": {
+          "label": "Host Only"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "discordUrl": "https://discord.gg/vpsxCNWVCW",
+      "shortDescription": "Time to clock in at DE NILE SHIPPING, the world's most efficient warehouse! Work together in online co-op with up to 4 players to fulfill orders of increasingly chaotic, physics-based boxes. Time is money, and safety is no concern... just try not to crash out!"
     },
     "crawlspace-2": {
       "displayName": "Crawlspace 2",
@@ -36134,6 +37565,48 @@
       "discordUrl": "https://discord.gg/hytalemodding",
       "autolistPackageIds": []
     },
+    "island-market-simulator": {
+      "displayName": "Island Market Simulator",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/mKPBe6KccK",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "Team up with your friends and build a thriving trade empire in this CO-OP strategy and economy simulation set on a lively island. Begin with a small market, share tasks, manage production chains, raise livestock, and dominate the economy together through changing seasons and dynamic festivals!"
+    },
     "jump-scare-mansion": {
       "displayName": "Spooky's Jump Scare Mansion: HD Renovation",
       "categories": {
@@ -36517,6 +37990,43 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "mega-man-64-recompiled": {
+      "displayName": "Mega Man 64: Recompiled",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      }
+    },
     "megabonk": {
       "displayName": "Megabonk",
       "categories": {
@@ -36678,6 +38188,47 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "minos": {
+      "displayName": "MINOS",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "Thunderstore-unreal_shimloader"
+      ],
+      "shortDescription": "Minos is a maze-building roguelite where you, the fabled Minotaur, must defend your sanctuary from bloodthirsty adventurers. Design and re-design deadly labyrinths, set traps, and turn every brave fool into your next victim."
+    },
     "mirrors-edge": {
       "displayName": "Mirror's Edge",
       "categories": {
@@ -36715,6 +38266,48 @@
         }
       },
       "discordUrl": "https://discord.gg/gV8QW6F"
+    },
+    "modulus-factory-automation": {
+      "displayName": "Modulus: Factory Automation",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "discordUrl": "https://discord.gg/modulus",
+      "shortDescription": "Build, automate, & optimize production lines across sky islands with real spatial constraints. Every production line is an open-ended puzzle: which operators to use, how to route your belts and how to fit your factory into the landscape. Your solutions, like your factories, are uniquely your own."
     },
     "my-winter-car": {
       "displayName": "My Winter Car",
@@ -37359,6 +38952,47 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "project-gorgon": {
+      "displayName": "Project Gorgon",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "Project: Gorgon is a fantasy MMORPG that allows you to forge your own path through exploration and discovery."
+    },
     "pushing-it-together-sisyphus": {
       "displayName": "Pushing it! Together - Sisyphus Co-op",
       "categories": {
@@ -37398,6 +39032,48 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "puttler": {
+      "displayName": "Puttler",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/gJuva6EWbe",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Puttler is a mini-golf puzzle game featuring wacky obstacles and a charming backstory. Build contraptions to score the golf ball under par across 15 courses and over 250 unique holes to solve."
     },
     "r5reloaded": {
       "displayName": "R5Reloaded",
@@ -37663,6 +39339,47 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "roadside-research": {
+      "displayName": "Roadside Research",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "Roadside Research is a 1 to 4 player co-op gas station simulator. Except you're aliens. And undercover. Do very human things like restocking shelves while preparing for the invasion. Just don't get caught."
+    },
     "rv-there-yet": {
       "displayName": "RV There Yet?",
       "categories": {
@@ -37785,6 +39502,47 @@
       "wikiUrl": "https://gamebanana.com/games/16121",
       "discordUrl": "https://discord.com/invite/shipofharkinian",
       "autolistPackageIds": []
+    },
+    "side-effects": {
+      "displayName": "SIDE EFFECTS",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "A twisted trial of pill roulette for up to 4 players (solo or online). Pick your poison. Use experimental items to shift the odds. And remember: only one of you can survive."
     },
     "slashers-keep": {
       "displayName": "Slasher's Keep",
@@ -38249,6 +40007,47 @@
       },
       "discordUrl": "https://discord.gg/5uskscDR3m",
       "autolistPackageIds": []
+    },
+    "super-psycho-baseball": {
+      "displayName": "Super Psycho Baseball",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Welcome to Super Psycho Baseball, a sadistic home-run hitting roguelike in which you try to conquer a gang of pitch-slinging bosses, each more psychotic than the last. Come face five fully-realized pitchers, rack up powerups, and reach the top!"
     },
     "the-choicer-voicer": {
       "displayName": "The Choicer Voicer",

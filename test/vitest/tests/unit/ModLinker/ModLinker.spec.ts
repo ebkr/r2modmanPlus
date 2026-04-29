@@ -16,6 +16,7 @@ import { providePathImplementation } from '../../../../../src/providers/node/pat
 import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
 import { provideAppWindowImplementation } from '../../../../../src/providers/node/app/app_window';
 import { TestAppWindowProvider } from '../../../stubs/providers/node/AppWindow.Provider';
+import {updateEcosystemReactives} from "src/r2mm/ecosystem/EcosystemSchema";
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
@@ -36,6 +37,9 @@ describe.skipIf(process.platform !== 'win32')('ModLinker', async () => {
         const inMemoryFs = new InMemoryFsProvider();
         FsProvider.provide(() => inMemoryFs);
         InMemoryFsProvider.clear();
+
+        await updateEcosystemReactives();
+
         PathResolver.MOD_ROOT = 'MODS';
         await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
         ProfileProvider.provide(() => new ProfileProviderImpl());

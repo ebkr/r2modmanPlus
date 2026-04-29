@@ -454,6 +454,9 @@ code {
     }
     &--top {
         padding-top: 1rem;
+        &-none {
+            padding-top: 0;
+        }
     }
 }
 

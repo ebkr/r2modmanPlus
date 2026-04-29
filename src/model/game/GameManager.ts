@@ -2,7 +2,7 @@ import Game from '../../model/game/Game';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
 import PathResolver from '../../r2mm/manager/PathResolver';
 import FileUtils from '../../utils/FileUtils';
-import { EcosystemSchema, Platform } from '../schema/ThunderstoreSchema';
+import {EcosystemSupportedGames, Platform} from '../schema/ThunderstoreSchema';
 import path from '../../providers/node/path/path';
 
 export default class GameManager {
@@ -23,7 +23,7 @@ export default class GameManager {
     }
 
     static get gameList(): Game[] {
-        return EcosystemSchema.supportedGames.map(([identifier, game]) => new Game(
+        return EcosystemSupportedGames.value.map(([identifier, game]) => new Game(
             game.meta.displayName,
             game.internalFolderName,
             game.settingsIdentifier,
