@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2026 ebkr -->
+<component type="desktop-application">
+  <id>io.github.ebkr.r2modman</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <content_rating type="oars-1.1" />
+  <url type="homepage">https://github.com/ebkr/r2modmanPlus</url>
+  <url type="bugtracker">https://github.com/ebkr/r2modmanPlus/issues</url>
+  <launchable type="desktop-id">io.github.ebkr.r2modman.desktop</launchable>
+
+  <name>r2modman</name>
+  <summary>A simple and easy to use mod manager for many games using Thunderstore</summary>
+  <developer id="io.github.ebkr">
+    <name>ebkr</name>
+  </developer>
+  <description>
+    <p>The official Flathub release of r2modman, a simple and easy to use mod manager for many games using Thunderstore.</p>
+
+    <p>Important Notes:</p>
+    <p>**Some Flatpak overrides might be needed!**</p>
+
+    <ul>
+      <li>When using a Flatpak game launcher, like Flatpak Steam, you must ensure that it has access to your r2modman data directory. The default location is in <code>~/.var/app/io.github.ebkr.r2modman</code>.</li>
+    </ul>
+  </description>
+
+  <releases>
+  </releases>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/TB516/flathub-prep/develop/docs/images/gameselection.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/TB516/flathub-prep/develop/docs/images/installedmodview.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/TB516/flathub-prep/develop/docs/images/downloadablemods.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/TB516/flathub-prep/develop/docs/images/configeditor.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/TB516/flathub-prep/develop/docs/images/profiles.png</image>
+    </screenshot>
+  </screenshots>
+</component>

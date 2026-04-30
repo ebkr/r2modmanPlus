@@ -1,3 +1,4 @@
 [tools]
 node = '22'
+python = { version = "3.12", postinstall = "python -m pip install pipx" }
 yarn = "4.11.0"

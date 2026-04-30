@@ -3,6 +3,7 @@ import electronUpdater from 'electron-updater';
 import os from 'os';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import { isManagerRunningOnFlatpak } from 'src/utils/LaunchUtils';
 
 let browserWindow: BrowserWindow;
 let app: App;
@@ -18,7 +19,9 @@ ipcMain.on('get-browser-window', () => {
     browserWindow.webContents.send('receive-browser-window', browserWindow);
 });
 
-ipcMain.on('update-app', () => {
+ipcMain.on('update-app', async () => {
+    if (await isManagerRunningOnFlatpak()) return;
+    
     electronUpdater.autoUpdater.checkForUpdatesAndNotify();
 });
 

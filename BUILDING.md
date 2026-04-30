@@ -4,6 +4,7 @@
 - Yarn
 - Quasar CLI (Install using `yarn global add @quasar/cli`)
 - Python 2
+- pipx/flatpak-node-generator (if doing a local flatpak build)
 
 #### Linux Build
 - rpm builder
