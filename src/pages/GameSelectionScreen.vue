@@ -91,17 +91,12 @@ import { Hero } from '../components/all';
 import { GameInstanceType } from '../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import ModalCard from '../components/ModalCard.vue';
-import { onMounted, provide, ref } from 'vue';
+import { onMounted, ref, provide } from 'vue';
 import { useGameSelectionComposable, gameSelectionKey } from '../components/composables/GameSelectionComposable';
 import GameSelectionList from '../components/game-selection/GameSelectionList.vue';
 import Game from '../model/game/Game';
 import { capitalize } from '../utils/StringUtils';
 import { StorePlatform as platformLabels } from '../model/platform/StorePlatform';
-import { computed, onMounted, reactive, ref } from 'vue';
-import { getStore } from '../providers/generic/store/StoreProvider';
-import { State } from '../store';
-import { useRouter } from 'vue-router';
-import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
 import EcosystemUpdateIndicator from '../components/navigation/EcosystemUpdateIndicator.vue';
 
 
