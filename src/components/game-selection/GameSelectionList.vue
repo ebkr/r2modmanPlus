@@ -47,6 +47,7 @@
                                         :game="game"
                                         :is-favourited="true"
                                         :active-tab="activeTab"
+                                        :is-new="newGames.has(game.internalFolderName)"
                                         @select="emit('select-game', $event)"
                                         @set-default="emit('set-default-game', $event)"
                                         @toggle-favourite="toggleFavourite($event)"
@@ -71,6 +72,7 @@
                                         :is-selected="isGameSelected(game)"
                                         :is-favourited="false"
                                         :active-tab="activeTab"
+                                        :is-new="newGames.has(game.internalFolderName)"
                                         @select="emit('select-game', $event)"
                                         @set-default="emit('set-default-game', $event)"
                                         @toggle-favourite="toggleFavourite($event)"
@@ -93,6 +95,7 @@
                                     :game="game"
                                     :is-favourited="isFavourited(game)"
                                     :active-tab="activeTab"
+                                    :is-new="newGames.has(game.internalFolderName)"
                                     @select="emit('select-game', $event)"
                                     @set-default="emit('set-default-game', $event)"
                                     @toggle-favourite="toggleFavourite($event)"
@@ -118,7 +121,7 @@
                                     :is-selected="isGameSelected(game)"
                                     :is-favourited="isFavourited(game)"
                                     :active-tab="activeTab"
-                                    :highlight-favourite="true"
+                                    :is-new="newGames.has(game.internalFolderName)"
                                     @select="emit('select-game', $event)"
                                     @set-default="emit('set-default-game', $event)"
                                     @toggle-favourite="toggleFavourite($event)"
@@ -142,6 +145,8 @@ import GameSelectionListItem from './GameSelectionListItem.vue';
 import GameSelectionSection from './GameSelectionSection.vue';
 import Game from '../../model/game/Game';
 import { capitalize } from '../../utils/StringUtils';
+import { EcosystemSupportedGames } from '../../model/schema/ThunderstoreSchema';
+import { isGameNewlyAdded, registerGames } from '../../r2mm/ecosystem/EcosystemGameStatus';
 
 const emit = defineEmits<{
     'select-game': [game: Game];
@@ -152,7 +157,19 @@ const mergedGameList = computed(() => {
     const favourites = favouriteGameList.value;
     const others = nonFavouriteGameList.value;
     return [...favourites, ...others];
-})
+});
+
+const newGames = computed(() => {
+    const allGames = EcosystemSupportedGames.value.map(([id, game]) => id);
+    registerGames(allGames);
+    const result = new Set<string>();
+    for (const game of allGames) {
+        if (isGameNewlyAdded(game)) {
+            result.add(game);
+        }
+    }
+    return result;
+});
 
 const {
     hiddenGameList,

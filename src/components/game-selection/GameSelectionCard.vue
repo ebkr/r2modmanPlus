@@ -22,6 +22,7 @@
         </div>
         <div class="game-card-wrapper__footer">
             <p>
+                <span class="tag" v-if="isNew">New</span>
                 {{ game.displayName }}
             </p>
             <a :id="`${game.settingsIdentifier}-star`" href="#" @click.prevent="emit('toggle-favourite', game)">
@@ -41,9 +42,10 @@ type Props = {
     game: Game;
     isFavourited: boolean;
     activeTab: GameInstanceType;
+    isNew?: boolean;
 };
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), { isNew: false });
 
 const emit = defineEmits<{
     select: [game: Game];

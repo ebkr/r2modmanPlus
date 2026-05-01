@@ -1,8 +1,7 @@
-import { LocalStorage } from "quasar";
 import bundledEcosystemSchema from "../../assets/data/ecosystem.json";
 
 export function getRegisteredGames(): string[] {
-    return JSON.parse(LocalStorage.getItem("EcosystemGameStatus.RegisteredGames") ?? "[]");
+    return JSON.parse(localStorage.getItem("EcosystemGameStatus.RegisteredGames") ?? "[]");
 }
 
 export function registerGames(games: string[]): void {
@@ -12,13 +11,13 @@ export function registerGames(games: string[]): void {
             continue;
         }
         registeredGames.add(game);
-        LocalStorage.setItem(`EcosystemGameStatus.Game.${game}`, new Date().getTime().toString());
+        localStorage.setItem(`EcosystemGameStatus.Game.${game}`, new Date().getTime().toString());
     }
-    LocalStorage.setItem("EcosystemGameStatus.RegisteredGames", JSON.stringify([...registeredGames]));
+    localStorage.setItem("EcosystemGameStatus.RegisteredGames", JSON.stringify([...registeredGames]));
 }
 
 export function isGameNewlyAdded(game: string): boolean {
-    const gameTime = LocalStorage.getItem(`EcosystemGameStatus.Game.${game}`) as string;
+    const gameTime = localStorage.getItem(`EcosystemGameStatus.Game.${game}`) as string;
     if (!gameTime) {
         return false;
     }
@@ -26,5 +25,5 @@ export function isGameNewlyAdded(game: string): boolean {
         return false;
     }
     const now = new Date().getTime();
-    return now - parseInt(gameTime) < 72 * 60 * 60 * 1000;
+    return (now - parseInt(gameTime)) < 72 * 60 * 60 * 1000;
 }
