@@ -3,7 +3,7 @@
         <div class="game-card">
             <div class="game-card__image">
                 <template v-if="activeTab === GameInstanceType.GAME">
-                    <img :src="getImageHref(`/images/game_selection/${game.gameImage}`)" alt="Game Logo" class="game-card__thumbnail"/>
+                    <img :src="imageSrc" alt="Game Logo" class="game-card__thumbnail"/>
                 </template>
                 <template v-else>
                     <div class="game-card__placeholder">{{ game.displayName }}</div>
@@ -34,9 +34,10 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, watchEffect } from 'vue';
 import Game from '../../model/game/Game';
 import { GameInstanceType } from '../../model/schema/ThunderstoreSchema';
-import ProtocolProvider from '../../providers/generic/protocol/ProtocolProvider';
+import GameImageProvider from '../../providers/generic/image/GameImageProvider';
 
 type Props = {
     game: Game;
@@ -53,9 +54,11 @@ const emit = defineEmits<{
     'toggle-favourite': [game: Game];
 }>();
 
-function getImageHref(image: string) {
-    return ProtocolProvider.getPublicAssetUrl(image);
-}
+const imageSrc = ref<string>(GameImageProvider.placeholderUrl);
+
+watchEffect(async () => {
+    imageSrc.value = await GameImageProvider.resolve(props.game.iconUrl);
+});
 </script>
 
 <style scoped lang="scss">
