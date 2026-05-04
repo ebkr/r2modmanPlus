@@ -1,7 +1,7 @@
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import { State as RootState } from '../../store';
-import { EcosystemSupportedGames } from '../../model/schema/ThunderstoreSchema';
+import { updateLatestEcosystemSchema } from '../../r2mm/ecosystem/EcosystemSchema';
 
 export interface EcosystemUpdateState {
     isInProgress: boolean;
@@ -47,9 +47,7 @@ export const EcosystemUpdateModule = {
             commit('startUpdate');
 
             try {
-                // Re-evaluate the ecosystem schema. Future remote refresh
-                // logic should be plugged in here.
-                void EcosystemSupportedGames.value;
+                await updateLatestEcosystemSchema();
             } catch (e) {
                 commit('setError', e instanceof Error ? e : new Error(String(e)));
             } finally {

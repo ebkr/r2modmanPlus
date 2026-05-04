@@ -6,6 +6,7 @@ vi.mock('../../../../../src/assets/data/ecosystemJsonSchema.json', () => ({
     get default() { return mockJsonSchema; }
 }));
 
+import type {ThunderstoreEcosystem} from '../../../../../src/assets/data/ecosystemTypes';
 import {VersionedThunderstoreEcosystem, updateEcosystemReactives, updateLatestEcosystemSchema} from '../../../../../src/r2mm/ecosystem/EcosystemSchema';
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from '../../../../../src/model/schema/ThunderstoreSchema';
 import {MODLOADER_PACKAGES, MOD_LOADER_VARIANTS, updateModLoaderExports} from '../../../../../src/r2mm/installing/profile_installers/ModLoaderVariantRecord';
@@ -18,16 +19,32 @@ import ManagerInformation from '../../../../../src/_managerinf/ManagerInformatio
 import LoggerProvider from '../../../../../src/providers/ror2/logging/LoggerProvider';
 import StubLoggerProvider from '../../../stubs/providers/stub.LoggerProvider';
 
+const mockAxiosGet = vi.fn();
+
+vi.mock('../../../../../src/utils/HttpUtils', () => ({
+    getAxiosWithTimeouts: () => ({get: mockAxiosGet}),
+}));
+
+vi.mock('../../../../../src/utils/Common', () => ({
+    retry: (fn: () => Promise<any>) => fn(),
+}));
+
 const TEST_ROOT = 'TEST_ROOT';
 const latestSchemaFilePath = path.join(TEST_ROOT, 'latest-ecosystem-schema.json');
 
-async function writeCacheFile(schema: Partial<VersionedThunderstoreEcosystem>) {
-    const full: VersionedThunderstoreEcosystem = {
+function createMinimalSchema(): ThunderstoreEcosystem {
+    return {
         schemaVersion: '0.0.0',
         communities: {},
         games: {},
         modloaderPackages: [],
         packageInstallers: {},
+    };
+}
+
+async function writeCacheFile(schema: Partial<VersionedThunderstoreEcosystem>) {
+    const full: VersionedThunderstoreEcosystem = {
+        ...createMinimalSchema(),
         version: ManagerInformation.VERSION.toString(),
         ...schema,
     };
@@ -50,6 +67,7 @@ describe('EcosystemSchema', () => {
         LoggerProvider.provide(() => loggerImpl);
         spyLogger = vi.spyOn(LoggerProvider.instance, 'Log').mockImplementation(() => {});
         updateModLoaderExports();
+        mockAxiosGet.mockReset();
         await FsProvider.instance.mkdirs(TEST_ROOT);
     });
 
@@ -115,22 +133,155 @@ describe('EcosystemSchema', () => {
 
     describe('updateLatestEcosystemSchema', () => {
 
-        test('writes file to disk', async () => {
+        test('writes file to disk when fetch succeeds', async () => {
+            mockAxiosGet.mockResolvedValue({
+                status: 200,
+                data: createMinimalSchema(),
+                headers: {},
+            });
+
             expect(await FsProvider.instance.exists(latestSchemaFilePath)).toBe(false);
-
             await updateLatestEcosystemSchema();
-
             expect(await FsProvider.instance.exists(latestSchemaFilePath)).toBe(true);
         });
 
         test('written file contains current version', async () => {
-            expect(await FsProvider.instance.exists(latestSchemaFilePath)).toBe(false);
+            mockAxiosGet.mockResolvedValue({
+                status: 200,
+                data: createMinimalSchema(),
+                headers: {},
+            });
 
             await updateLatestEcosystemSchema();
 
             const content = (await FsProvider.instance.readFile(latestSchemaFilePath)).toString('utf8');
             const parsed: VersionedThunderstoreEcosystem = JSON.parse(content);
             expect(parsed.version).toBe(ManagerInformation.VERSION.toString());
+        });
+
+        test('stores lastModified from response header', async () => {
+            const lastModified = 'Tue, 15 Apr 2026 12:00:00 GMT';
+            mockAxiosGet.mockResolvedValue({
+                status: 200,
+                data: createMinimalSchema(),
+                headers: {'last-modified': lastModified},
+            });
+
+            await updateLatestEcosystemSchema();
+
+            const content = (await FsProvider.instance.readFile(latestSchemaFilePath)).toString('utf8');
+            const parsed: VersionedThunderstoreEcosystem = JSON.parse(content);
+            expect(parsed.lastModified).toBe(lastModified);
+        });
+
+        test('sends If-Modified-Since header when cache has lastModified', async () => {
+            const cachedLastModified = 'Mon, 14 Apr 2026 12:00:00 GMT';
+            await writeCacheFile({lastModified: cachedLastModified});
+
+            mockAxiosGet.mockResolvedValue({
+                status: 304,
+                data: null,
+                headers: {},
+            });
+
+            await updateLatestEcosystemSchema();
+
+            expect(mockAxiosGet).toHaveBeenCalledWith(
+                expect.any(String),
+                expect.objectContaining({
+                    headers: {'If-Modified-Since': cachedLastModified},
+                })
+            );
+        });
+
+        test('does nothing on 304 Not Modified', async () => {
+            await writeCacheFile({});
+            const originalContent = (await FsProvider.instance.readFile(latestSchemaFilePath)).toString('utf8');
+
+            mockAxiosGet.mockResolvedValue({
+                status: 304,
+                data: null,
+                headers: {},
+            });
+
+            await updateLatestEcosystemSchema();
+
+            const afterContent = (await FsProvider.instance.readFile(latestSchemaFilePath)).toString('utf8');
+            expect(afterContent).toBe(originalContent);
+        });
+
+        test('writes bundled schema and throws when fetch fails with no cache', async () => {
+            mockAxiosGet.mockRejectedValue(new Error('Network error'));
+
+            expect(await FsProvider.instance.exists(latestSchemaFilePath)).toBe(false);
+            await expect(updateLatestEcosystemSchema()).rejects.toThrow();
+            expect(await FsProvider.instance.exists(latestSchemaFilePath)).toBe(true);
+
+            const content = (await FsProvider.instance.readFile(latestSchemaFilePath)).toString('utf8');
+            const parsed: VersionedThunderstoreEcosystem = JSON.parse(content);
+            expect(parsed.schemaVersion).not.toBe('');
+            expect(EcosystemSupportedGames.value.length).toBeGreaterThan(0);
+        });
+
+        test('keeps existing cache and throws when fetch fails with existing cache', async () => {
+            await writeCacheFile({});
+            const originalContent = (await FsProvider.instance.readFile(latestSchemaFilePath)).toString('utf8');
+
+            mockAxiosGet.mockRejectedValue(new Error('Network error'));
+
+            await expect(updateLatestEcosystemSchema()).rejects.toThrow();
+
+            const afterContent = (await FsProvider.instance.readFile(latestSchemaFilePath)).toString('utf8');
+            expect(afterContent).toBe(originalContent);
+        });
+
+        test('merges fetched data with bundled schema', async () => {
+            mockAxiosGet.mockResolvedValue({
+                status: 200,
+                data: {
+                    ...createMinimalSchema(),
+                    communities: {
+                        'test-added': {
+                            displayName: 'Added Community',
+                            categories: {},
+                            sections: {'default': {name: 'Default'}},
+                        },
+                    },
+                },
+                headers: {},
+            });
+
+            await updateLatestEcosystemSchema();
+
+            const content = (await FsProvider.instance.readFile(latestSchemaFilePath)).toString('utf8');
+            const parsed: VersionedThunderstoreEcosystem = JSON.parse(content);
+            expect(parsed.communities['test-added']).toBeDefined();
+            // Bundled games are preserved through the merge
+            expect(EcosystemSupportedGames.value.length).toBeGreaterThan(0);
+        });
+
+        test('deduplicates modloader packages during merge', async () => {
+            mockAxiosGet.mockResolvedValue({
+                status: 200,
+                data: {
+                    ...createMinimalSchema(),
+                    modloaderPackages: [
+                        {packageId: 'test-unique-loader', rootFolder: 'test', loader: 'bepinex'},
+                        {packageId: 'test-unique-loader', rootFolder: 'test-updated', loader: 'bepinex'},
+                    ],
+                },
+                headers: {},
+            });
+
+            await updateLatestEcosystemSchema();
+
+            const content = (await FsProvider.instance.readFile(latestSchemaFilePath)).toString('utf8');
+            const parsed: VersionedThunderstoreEcosystem = JSON.parse(content);
+            const testLoaders = parsed.modloaderPackages.filter(
+                (p: any) => p.packageId === 'test-unique-loader'
+            );
+            expect(testLoaders).toHaveLength(1);
+            expect(testLoaders[0]!.rootFolder).toBe('test-updated');
         });
 
     });

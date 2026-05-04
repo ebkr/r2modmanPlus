@@ -12,37 +12,26 @@ import ManagerInformation from "../../_managerinf/ManagerInformation";
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from "../../model/schema/ThunderstoreSchema";
 import {updateModLoaderExports} from "../installing/profile_installers/ModLoaderVariantRecord";
 import LoggerProvider, {LogSeverity} from "../../providers/ror2/logging/LoggerProvider";
+import {getAxiosWithTimeouts} from "../../utils/HttpUtils";
+import {retry} from "../../utils/Common";
 
-export type VersionedThunderstoreEcosystem = ThunderstoreEcosystem & {version: string};
+export type VersionedThunderstoreEcosystem = ThunderstoreEcosystem & {
+    version: string;
+    lastModified?: string;
+};
+
+type LatestSchemaFetchResult =
+    | {kind: "not-modified"}
+    | {kind: "fetched", schema: ThunderstoreEcosystem, lastModified?: string}
+    | {kind: "failed"};
+
+const ECOSYSTEM_DATA_URL = "https://thunderstore.io/api/experimental/schema/dev/latest/";
 
 async function getMergedEcosystemPath(): Promise<string> {
     return path.join(PathResolver.ROOT, "latest-ecosystem-schema.json");
 }
 
-export async function updateLatestEcosystemSchema(): Promise<void> {
-    const latestSchema = await fetchLatestSchema();
-    await writeLatestEcosystemSchema(latestSchema);
-    await internalUpdateEcosystemReactives(latestSchema);
-}
-
-async function writeLatestEcosystemSchema(schema: ThunderstoreEcosystem): Promise<void> {
-    const asMergedSchema: VersionedThunderstoreEcosystem = {
-        ...schema,
-        version: ManagerInformation.VERSION.toString(),
-    };
-    const writable = JSON.stringify(asMergedSchema);
-    return FsProvider.instance.writeFile(await getMergedEcosystemPath(), writable);
-}
-
-async function getLastSavedEcosystemSchema(): Promise<VersionedThunderstoreEcosystem> {
-    const contentBuffer = await FsProvider.instance.readFile(await getMergedEcosystemPath());
-    const content = contentBuffer.toString("utf8");
-    const parsedContent = JSON.parse(content);
-    await validateSchema(parsedContent);
-    return parsedContent;
-}
-
-async function validateSchema(schema: any): Promise<void> {
+function validateSchema(schema: unknown): ThunderstoreEcosystem {
     const ajv = new Ajv();
     addFormats(ajv);
 
@@ -52,15 +41,15 @@ async function validateSchema(schema: any): Promise<void> {
     if (!isOk) {
         throw new R2Error("Schema validation error", ajv.errorsText(validate.errors));
     }
+
+    return schema as ThunderstoreEcosystem;
 }
 
-async function loadBundledSchema(): Promise<ThunderstoreEcosystem> {
-    await validateSchema(bundledEcosystem);
-    return bundledEcosystem as ThunderstoreEcosystem;
+function loadBundledSchema(): ThunderstoreEcosystem {
+    return validateSchema(bundledEcosystem);
 }
 
-async function fetchLatestSchema(): Promise<ThunderstoreEcosystem> {
-    // TODO - Implement fetching of latest resource
+function createEmptySchema(): ThunderstoreEcosystem {
     return {
         schemaVersion: "",
         communities: {},
@@ -70,16 +59,128 @@ async function fetchLatestSchema(): Promise<ThunderstoreEcosystem> {
     };
 }
 
-async function resolveCachedEcosystemSchema(): Promise<VersionedThunderstoreEcosystem> {
-    const mergeFilePath = await getMergedEcosystemPath();
-    const bundledSchema = async () => ({...(await loadBundledSchema()), version: ManagerInformation.VERSION.toString()});
-    if (!(await FsProvider.instance.exists(mergeFilePath))) {
-        return bundledSchema();
-    }
+function mergeSchemas(
+    bundledSchema: ThunderstoreEcosystem,
+    latestSchema: ThunderstoreEcosystem
+): ThunderstoreEcosystem {
+    const modloaderMap = new Map(
+        [...bundledSchema.modloaderPackages, ...latestSchema.modloaderPackages]
+            .map(pkg => [pkg.packageId, pkg])
+    );
+
+    return {
+        schemaVersion: latestSchema.schemaVersion,
+        communities: {
+            ...bundledSchema.communities,
+            ...latestSchema.communities,
+        },
+        games: {
+            ...bundledSchema.games,
+            ...latestSchema.games,
+        },
+        modloaderPackages: [...modloaderMap.values()],
+        packageInstallers: {
+            ...bundledSchema.packageInstallers,
+            ...latestSchema.packageInstallers,
+        },
+    };
+}
+
+async function fetchLatestSchema(
+    currentSchema: VersionedThunderstoreEcosystem | null
+): Promise<LatestSchemaFetchResult> {
+    const timeout = 5000;
+    const requestConfig = {
+        validateStatus: (status: number) => {
+            if (status === 304) {
+                return true;
+            }
+            return status >= 200 && status < 300;
+        },
+        ...(currentSchema?.lastModified ? {headers: {"If-Modified-Since": currentSchema.lastModified}} : {}),
+    };
+
     try {
-        let content = await getLastSavedEcosystemSchema();
+        const axios = getAxiosWithTimeouts(timeout, timeout * 2);
+        const response = await retry(
+            () => axios.get(ECOSYSTEM_DATA_URL, requestConfig),
+            {attempts: 3, interval: 1000, throwLastErrorAsIs: true}
+        );
+        const lastModified = typeof response.headers["last-modified"] === "string"
+            ? response.headers["last-modified"]
+            : undefined;
+
+        if (response.status === 304) {
+            return {kind: "not-modified"};
+        }
+
+        return {
+            kind: "fetched",
+            schema: validateSchema(response.data),
+            ...(lastModified ? {lastModified} : {}),
+        };
+    } catch (e) {
+        console.error(e);
+        return {kind: "failed"};
+    }
+}
+
+export async function updateLatestEcosystemSchema(): Promise<void> {
+    const bundledSchema = loadBundledSchema();
+    const currentSchema = await loadSavedEcosystemSchema();
+    const result = await fetchLatestSchema(currentSchema);
+
+    if (result.kind === "not-modified") {
+        return;
+    }
+
+    if (result.kind === "failed") {
+        if (currentSchema == null) {
+            await writeLatestEcosystemSchema(bundledSchema);
+            await internalUpdateEcosystemReactives(bundledSchema);
+        }
+        throw new Error("Failed to update game list");
+    }
+
+    const mergedSchema = mergeSchemas(bundledSchema, result.schema);
+    await writeLatestEcosystemSchema(mergedSchema, result.lastModified);
+    await internalUpdateEcosystemReactives(mergedSchema);
+}
+
+async function writeLatestEcosystemSchema(
+    schema: ThunderstoreEcosystem,
+    lastModified?: string
+): Promise<void> {
+    const asMergedSchema: VersionedThunderstoreEcosystem = {
+        ...schema,
+        version: ManagerInformation.VERSION.toString(),
+        ...(lastModified != null ? {lastModified} : {}),
+    };
+    const writable = JSON.stringify(asMergedSchema);
+    return FsProvider.instance.writeFile(await getMergedEcosystemPath(), writable);
+}
+
+async function readSavedEcosystemSchema(): Promise<VersionedThunderstoreEcosystem> {
+    const contentBuffer = await FsProvider.instance.readFile(await getMergedEcosystemPath());
+    const content = contentBuffer.toString("utf8");
+    const parsedContent = JSON.parse(content);
+    const {version, lastModified, ...schemaContent} = parsedContent as VersionedThunderstoreEcosystem;
+    void version;
+    void lastModified;
+    validateSchema(schemaContent);
+    return parsedContent as VersionedThunderstoreEcosystem;
+}
+
+async function loadSavedEcosystemSchema(): Promise<VersionedThunderstoreEcosystem | null> {
+    const mergeFilePath = await getMergedEcosystemPath();
+    if (!(await FsProvider.instance.exists(mergeFilePath))) {
+        return null;
+    }
+
+    try {
+        const content = await readSavedEcosystemSchema();
         if (!new VersionNumber(content.version).isEqualTo(ManagerInformation.VERSION)) {
-            return bundledSchema();
+            return null;
         }
         return content;
     } catch (e) {
@@ -88,8 +189,16 @@ async function resolveCachedEcosystemSchema(): Promise<VersionedThunderstoreEcos
             LogSeverity.ERROR,
             `Failed to load cached ecosystem schema, falling back to bundled schema\n${err.message}`
         );
-        return bundledSchema();
+        return null;
     }
+}
+
+async function resolveCachedEcosystemSchema(): Promise<ThunderstoreEcosystem> {
+    const content = await loadSavedEcosystemSchema();
+    if (content != null) {
+        return content;
+    }
+    return loadBundledSchema();
 }
 
 async function internalUpdateEcosystemReactives(schema: ThunderstoreEcosystem): Promise<void> {

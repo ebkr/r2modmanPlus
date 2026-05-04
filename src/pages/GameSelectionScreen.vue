@@ -98,7 +98,10 @@ import Game from '../model/game/Game';
 import { capitalize } from '../utils/StringUtils';
 import { StorePlatform as platformLabels } from '../model/platform/StorePlatform';
 import EcosystemUpdateIndicator from '../components/navigation/EcosystemUpdateIndicator.vue';
+import { getStore } from '../providers/generic/store/StoreProvider';
+import { State } from '../store';
 
+const store = getStore<State>();
 
 const gameSelection = useGameSelectionComposable();
 provide(gameSelectionKey, gameSelection);
@@ -159,6 +162,7 @@ function selectPlatform() {
 onMounted(async () => {
     window.app.checkForApplicationUpdates();
     await initialize();
+    void store.dispatch('ecosystemUpdate/updateEcosystemSchema');
 });
 </script>
 
