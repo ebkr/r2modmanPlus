@@ -14,6 +14,15 @@
                         @toggle-favourite="toggleFavourite(game)"
                     />
                     <GameSelectionListItem
+                        v-for="game of installedGameList"
+                        :key="game.settingsIdentifier"
+                        :game="game"
+                        :is-selected="isGameSelected(game)"
+                        :is-favourited="isFavourited(game)"
+                        @click="markAsSelectedGame(game)"
+                        @toggle-favourite="toggleFavourite(game)"
+                    />
+                    <GameSelectionListItem
                         v-for="game of nonFavouriteGameList"
                         :key="game.settingsIdentifier"
                         :game="game"
@@ -57,8 +66,27 @@
                         </template>
 
 
-                        <template v-if="nonFavouriteGameList.length > 0">
+                        <template v-if="installedGameList.length > 0">
                             <hr v-if="favouriteGameList.length > 0"/>
+                            <GameSelectionSection title="Installed Games" :count="installedGameList.length" :default-open="true">
+                                <div class="game-cards-container">
+                                    <GameSelectionCard
+                                        v-for="game of installedGameList"
+                                        :key="game.settingsIdentifier"
+                                        :game="game"
+                                        :is-selected="isGameSelected(game)"
+                                        :is-favourited="isFavourited(game)"
+                                        :active-tab="activeTab"
+                                        @select="emit('select-game', $event)"
+                                        @set-default="emit('set-default-game', $event)"
+                                        @toggle-favourite="toggleFavourite($event)"
+                                    />
+                                </div>
+                            </GameSelectionSection>
+                        </template>
+
+                        <template v-if="nonFavouriteGameList.length > 0">
+                            <hr v-if="favouriteGameList.length > 0 || installedGameList.length > 0"/>
                             <GameSelectionSection
                                 :title="`${capitalize(activeTab)}s`"
                                 :count="nonFavouriteGameList.length"
@@ -155,6 +183,7 @@ const emit = defineEmits<{
 
 const mergedGameList = computed(() => {
     const favourites = favouriteGameList.value;
+    const installed = installedGameList.value;
     const others = nonFavouriteGameList.value;
     return [...favourites, ...others];
 });
@@ -174,6 +203,7 @@ const newGames = computed(() => {
 const {
     hiddenGameList,
     favouriteGameList,
+    installedGameList,
     nonFavouriteGameList,
     activeTab,
     viewMode,
