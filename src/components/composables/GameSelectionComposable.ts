@@ -28,18 +28,9 @@ export function useGameSelectionComposable() {
     const isSettingDefaultPlatform = ref<boolean>(false);
 
     const gameList = computed<Game[]>(() => {
-        return GameManager.gameList.sort((a, b) => {
-            if (favourites.value.includes(a.settingsIdentifier)) {
-                if (favourites.value.includes(b.settingsIdentifier)) {
-                    return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
-                } else {
-                    return -1;
-                }
-            } else if (favourites.value.includes(b.settingsIdentifier)) {
-                return 1;
-            }
-            return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
-        });
+        return GameManager.gameList.sort((a, b) =>
+            a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase())
+        );
     });
 
     const matchesSearch = (game: Game): boolean => {
