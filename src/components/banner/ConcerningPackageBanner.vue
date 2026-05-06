@@ -14,7 +14,7 @@ function addUnlinkedFilter() {
 
 <template>
     <div class="notification is-concern margin-right" v-show="hasConcerningPackages">
-        <span>You have packages that can no longer be found on Thunderstore.</span> <a href="#" @click.stop.prevent="addUnlinkedFilter">Click here to review packages.</a>
+        <span>You have mods that can no longer be found on Thunderstore.</span> <a href="#" @click.stop.prevent="addUnlinkedFilter">Click here to review packages.</a>
     </div>
 </template>
 

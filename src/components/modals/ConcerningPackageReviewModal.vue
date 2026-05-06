@@ -60,9 +60,9 @@ async function trustPackage() {
             <p class="notification is-warning">It is generally recommended to remove mods that have been removed from Thunderstore.</p>
             <div>
                 <hr/>
-                <p class="margin-bottom">This mod was originally downloaded using the Online section however no longer appears in the package cache.</p>
-                <p class="margin-bottom">When a mod is no longer in the package cache, it means that it has been removed from Thunderstore.</p>
-                <p>Other people will be unable to import this mod if the profile is exported.</p>
+                <p class="margin-bottom">This mod was originally downloaded from Thunderstore, but can no longer be found on the site.</p>
+                <p class="margin-bottom">Mods may be removed at the author's request, for rule violations, or while undergoing verification by moderators.</p>
+                <p>Other people will be unable to import this mod from exported profiles.</p>
             </div>
         </template>
         <template v-slot:footer>

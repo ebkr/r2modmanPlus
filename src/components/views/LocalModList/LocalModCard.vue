@@ -191,11 +191,10 @@ function openReviewModal() {
                 {{ getReadableDate(version!.getDateCreated()!.getTime()) }}
             </p>
             <div class="notification is-warning" v-if="isConcerningPackage(props.mod)">
-                <p>This package was originally downloaded from Thunderstore however can no longer be found.</p>
-                <p>Mods can be removed due to the author's request or due to violating Thunderstore's package policies.</p>
-                <p><strong>It is recommended to remove this mod.</strong></p>
+                <p>This mod was originally downloaded from Thunderstore, but can no longer be found on the site.</p>
+                <p><strong>It is recommended that you remove this mod.</strong></p>
                 <button v-if="isConcerningPackage(props.mod)" class="button" @click.stop.prevent="openReviewModal">
-                    Review package
+                    Review mod
                 </button>
             </div>
         </template>
