@@ -28,7 +28,7 @@ type LocalModCardProps = {
 
 const props = defineProps<LocalModCardProps>();
 
-const { isConcerningPackage } = useConcerningPackageComposable();
+const { isConcerningPackage, wasConcerningPackage } = useConcerningPackageComposable();
 const { uninstallMod } = useModManagementComposable();
 
 const disabledDependencies = ref<ManifestV2[]>([]);
@@ -201,7 +201,7 @@ function openReviewModal() {
 
         <!-- Show icon button row even when card is collapsed -->
         <template v-slot:other-icons>
-            <span v-if="isConcerningPackage(props.mod)"
+            <span v-if="wasConcerningPackage(props.mod)"
                   class='card-header-icon'>
                 <i v-tooltip.left="`This package can no longer be found on Thunderstore`"
                    class='fas fa-unlink'

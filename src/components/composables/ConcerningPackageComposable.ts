@@ -11,21 +11,30 @@ const onlineModList = computed<Map<string, ThunderstoreMod>>(() => {
     return new Map<string, ThunderstoreMod>(mods.map(value => [value.getFullName(), value]));
 });
 
-const concerningPackages = computed<ManifestV2[]>(() => {
-    return localModList.value.filter(value => !value.isTrustedPackage() && (value.isOnlineSource() && !onlineModList.value.has(value.getName())));
+const allConcerningPackages = computed<ManifestV2[]>(() => {
+    return localModList.value.filter(value => (value.isOnlineSource() && !onlineModList.value.has(value.getName())));
+});
+
+const activeConcerningPackages = computed<ManifestV2[]>(() => {
+    return allConcerningPackages.value.filter(value => !value.isTrustedPackage() && (value.isOnlineSource() && !onlineModList.value.has(value.getName())));
 });
 
 export function useConcerningPackageComposable() {
 
-    const hasConcerningPackages = computed<boolean>(() => concerningPackages.value.length > 0);
+    const hasConcerningPackages = computed<boolean>(() => activeConcerningPackages.value.length > 0);
 
     function isConcerningPackage(mod: ManifestV2) {
-        return concerningPackages.value.findIndex(value => value.getName() === mod.getName()) >= 0;
+        return activeConcerningPackages.value.findIndex(value => value.getName() === mod.getName()) >= 0;
+    }
+
+    function wasConcerningPackage(mod: ManifestV2) {
+        return allConcerningPackages.value.findIndex(value => value.getName() === mod.getName()) >= 0;
     }
 
     return {
-        concerningPackages,
+        concerningPackages: activeConcerningPackages,
         hasConcerningPackages,
-        isConcerningPackage
+        isConcerningPackage,
+        wasConcerningPackage,
     }
 }
