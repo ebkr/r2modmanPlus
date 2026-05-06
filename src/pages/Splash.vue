@@ -1,6 +1,6 @@
 <template>
     <div id="splash-body">
-        <hero :title="t('translations.pages.splash.pageTitle', {appName: appName})" :subtitle='t(splashText)' :heroType=heroType />
+        <hero :title="t('translations.pages.splash.pageTitle', {appName: appName})" :subtitle='splashText ? t(splashText) : ""' :heroType=heroType />
         <div class='notification is-warning'>
             <p>{{ t('translations.pages.splash.gameUpdatesWarning') }}</p>
         </div>
@@ -101,7 +101,7 @@
                                         <span class='icon margin-right margin-right--half-width'>
                                           <i class='fas fa-question-circle' />
                                         </span>
-                                        <strong>FAQ</strong>
+                                        <strong>{{ t('translations.pages.splash.content.faq.title') }}</strong>
                                     </p>
                                     <p>
                                         <strong>
