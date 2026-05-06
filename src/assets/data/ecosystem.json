@@ -8659,7 +8659,10 @@
               "modpacks"
             ]
           }
-        }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ]
       }
     },
     "mechanica": {
@@ -16836,6 +16839,9 @@
           },
           "skins": {
             "label": "Skins"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
           }
         },
         "sections": {
@@ -20274,6 +20280,124 @@
         "shortDescription": "Carrier Deck is a fast paced time management game where you play as the Air Boss on board the CVN-76 in the midst of active war."
       }
     },
+    "cave-crawlers": {
+      "uuid": "dd690f63-77dc-40e6-8c1a-2ccc7c222bbf",
+      "label": "cave-crawlers",
+      "meta": {
+        "displayName": "Cave Crawlers",
+        "iconUrl": "cave-crawlers.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2143030"
+            }
+          ],
+          "steamFolderName": "Cave Crawlers",
+          "dataFolderName": "Cave Crawlers_Data",
+          "exeNames": [
+            "Cave Crawlers.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Cave Crawlers",
+            "iconUrl": "cave-crawlers.webp"
+          },
+          "settingsIdentifier": "CaveCrawlers",
+          "internalFolderName": "CaveCrawlers",
+          "packageIndex": "https://thunderstore.io/c/cave-crawlers/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Cave Crawlers",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "Cave Crawlers is a 1-10 player rogue lite set deep underground in a system of randomly generated caves. Players use weapons, spells, and talents to defeat the unique bosses and enemies found in each biome."
+      }
+    },
     "chill-with-you": {
       "uuid": "5090345c-21f2-421f-a53d-13b47a25beae",
       "label": "chill-with-you",
@@ -22428,6 +22552,127 @@
         "autolistPackageIds": [
           "LavaGang-MelonLoader"
         ]
+      }
+    },
+    "gamble-with-your-friends": {
+      "uuid": "8dbc0d05-e6b1-4cdc-92d0-68f21ac4d0e1",
+      "label": "gamble-with-your-friends",
+      "meta": {
+        "displayName": "Gamble With Your Friends",
+        "iconUrl": "gamble-with-your-friends.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3892270"
+            }
+          ],
+          "steamFolderName": "Gamble With Your Friends",
+          "dataFolderName": "Gamble With Your Friends_Data",
+          "exeNames": [
+            "Gamble With Your Friends.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Gamble With Your Friends",
+            "iconUrl": "gamble-with-your-friends.webp"
+          },
+          "settingsIdentifier": "GambleWithYourFriends",
+          "internalFolderName": "GambleWithYourFriends",
+          "packageIndex": "https://thunderstore.io/c/gamble-with-your-friends/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "GWYF"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Gamble With Your Friends",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://gwyf.se/",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "An online 1-6 player co-op \"casino crawler\" where you and your friends share one bank account and one massive debt. Gamble, buy sketchy items, make terrible decisions, and climb an ominous casino tower to hit your loan shark's daily quota in 5 minutes - or face the consequences."
       }
     },
     "gear-blocks": {
@@ -25191,7 +25436,29 @@
           "additionalSearchStrings": [
             "牛头人迷阵"
           ],
-          "installRules": [],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
           "relativeFileExclusions": null
         }
       ],
@@ -25284,6 +25551,84 @@
         "discordUrl": "https://discord.gg/gV8QW6F"
       },
       "r2modman": null
+    },
+    "miside-zero": {
+      "uuid": "2c255a03-0065-4fdc-9889-7c26e99274f3",
+      "label": "miside-zero",
+      "meta": {
+        "displayName": "MiSide: Zero",
+        "iconUrl": "miside-zero.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "other",
+              "identifier": null
+            }
+          ],
+          "steamFolderName": "MiSide Zero",
+          "dataFolderName": "MiSide Zero_Data",
+          "exeNames": [
+            "MiSide Zero.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "MiSide: Zero",
+            "iconUrl": "miside-zero.webp"
+          },
+          "settingsIdentifier": "MiSideZero",
+          "internalFolderName": "MiSideZero",
+          "packageIndex": "https://thunderstore.io/c/miside-zero/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "MiSide: Zero",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "MiSide: Zero is a fan made prequel and reimagining of the base MiSide story, with major rewrites to world mechanics, plotlines, and character arcs. It follows the blonde player from Beyond the World—nicknamed \"Zero\"—as he explores MiSide about a year before the events of the base game."
+      }
     },
     "modulus-factory-automation": {
       "uuid": "f971c560-4cd8-49dd-9bc2-f00011ea6cd7",
@@ -30343,6 +30688,114 @@
       },
       "r2modman": null
     },
+    "windrose": {
+      "uuid": "23f8dcde-9376-4107-ba47-e8a47fa3bdee",
+      "label": "windrose",
+      "meta": {
+        "displayName": "Windrose",
+        "iconUrl": "windrose.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3041230"
+            },
+            {
+              "platform": "epic-games-store",
+              "identifier": "d08157fbe22d45fcba452680857ac58d"
+            }
+          ],
+          "steamFolderName": "Windrose",
+          "dataFolderName": "R5",
+          "exeNames": [
+            "Windrose.exe"
+          ],
+          "packageLoader": "shimloader",
+          "meta": {
+            "displayName": "Windrose",
+            "iconUrl": "windrose.webp"
+          },
+          "settingsIdentifier": "Windrose",
+          "internalFolderName": "Windrose",
+          "packageIndex": "https://thunderstore.io/c/windrose/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "hidden",
+          "additionalSearchStrings": [
+            "WR"
+          ],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Windrose",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://windrose.gaming.tools/",
+        "discordUrl": "https://discord.gg/2GJJZAkk85",
+        "autolistPackageIds": [
+          "Thunderstore-unreal_shimloader"
+        ],
+        "shortDescription": "Embark on a PvE survival adventure in the Age of Piracy. Fight on land and sea, solo or with friends. Build, craft and explore vast open world filled with dark secrets. Master soulslite combat and take on challenging bosses, command your ship and plunder unspoken treasures!"
+      }
+    },
     "word-play": {
       "uuid": "a932f5bb-8871-400f-be6f-f9e8a0a47754",
       "label": "word-play",
@@ -33084,7 +33537,10 @@
             "modpacks"
           ]
         }
-      }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ]
     },
     "meeple-station": {
       "displayName": "Meeple Station",
@@ -35309,6 +35765,9 @@
         },
         "skins": {
           "label": "Skins"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
         }
       },
       "sections": {
@@ -36594,6 +37053,47 @@
       ],
       "shortDescription": "Carrier Deck is a fast paced time management game where you play as the Air Boss on board the CVN-76 in the midst of active war."
     },
+    "cave-crawlers": {
+      "displayName": "Cave Crawlers",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "Cave Crawlers is a 1-10 player rogue lite set deep underground in a system of randomly generated caves. Players use weapons, spells, and talents to defeat the unique bosses and enemies found in each biome."
+    },
     "chill-with-you": {
       "displayName": "Chill with You : Lo-Fi Story",
       "categories": {
@@ -37569,6 +38069,48 @@
       "autolistPackageIds": [
         "LavaGang-MelonLoader"
       ]
+    },
+    "gamble-with-your-friends": {
+      "displayName": "Gamble With Your Friends",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://gwyf.se/",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "An online 1-6 player co-op \"casino crawler\" where you and your friends share one bank account and one massive debt. Gamble, buy sketchy items, make terrible decisions, and climb an ominous casino tower to hit your loan shark's daily quota in 5 minutes - or face the consequences."
     },
     "gear-blocks": {
       "displayName": "GearBlocks",
@@ -38818,6 +39360,47 @@
         }
       },
       "discordUrl": "https://discord.gg/gV8QW6F"
+    },
+    "miside-zero": {
+      "displayName": "MiSide: Zero",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "MiSide: Zero is a fan made prequel and reimagining of the base MiSide story, with major rewrites to world mechanics, plotlines, and character arcs. It follows the blonde player from Beyond the World—nicknamed \"Zero\"—as he explores MiSide about a year before the events of the base game."
     },
     "modulus-factory-automation": {
       "displayName": "Modulus: Factory Automation",
@@ -41004,6 +41587,49 @@
         }
       },
       "discordUrl": "https://discord.gg/C8wWcRW5eX"
+    },
+    "windrose": {
+      "displayName": "Windrose",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://windrose.gaming.tools/",
+      "discordUrl": "https://discord.gg/2GJJZAkk85",
+      "autolistPackageIds": [
+        "Thunderstore-unreal_shimloader"
+      ],
+      "shortDescription": "Embark on a PvE survival adventure in the Age of Piracy. Fight on land and sea, solo or with friends. Build, craft and explore vast open world filled with dark secrets. Master soulslite combat and take on challenging bosses, command your ship and plunder unspoken treasures!"
     },
     "word-play": {
       "displayName": "Word Play",
