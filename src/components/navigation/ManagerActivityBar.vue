@@ -32,12 +32,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watchEffect } from 'vue';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { ActivityDropdown } from '../all';
-import GameImageProvider from '../../providers/generic/image/GameImageProvider';
+import { useGameImageComposable } from '../composables/GameImageComposable';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -45,11 +45,7 @@ const router = useRouter();
 const activeGame = computed(() => store.state.activeGame);
 const profile = computed(() => store.getters['profile/activeProfile']);
 
-const imageSrc = ref<string>(GameImageProvider.placeholderUrl);
-
-watchEffect(async () => {
-    imageSrc.value = await GameImageProvider.resolve(activeGame.value.iconUrl);
-});
+const { imageSrc } = useGameImageComposable(() => activeGame.value.iconUrl);
 
 function changeGame() {
     router.push('/');

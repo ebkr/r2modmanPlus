@@ -34,10 +34,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watchEffect } from 'vue';
 import Game from '../../model/game/Game';
 import { GameInstanceType } from '../../model/schema/ThunderstoreSchema';
-import GameImageProvider from '../../providers/generic/image/GameImageProvider';
+import { useGameImageComposable } from '../composables/GameImageComposable';
 
 type Props = {
     game: Game;
@@ -54,11 +53,7 @@ const emit = defineEmits<{
     'toggle-favourite': [game: Game];
 }>();
 
-const imageSrc = ref<string>(GameImageProvider.placeholderUrl);
-
-watchEffect(async () => {
-    imageSrc.value = await GameImageProvider.resolve(props.game.iconUrl);
-});
+const { imageSrc } = useGameImageComposable(() => props.game.iconUrl);
 </script>
 
 <style scoped lang="scss">

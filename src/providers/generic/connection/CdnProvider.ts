@@ -62,15 +62,6 @@ export default class CdnProvider {
             : url;
     }
 
-    public static cdnUrlFor(pathSuffix: string): string | undefined {
-        if (!CdnProvider.preferredCdn) {
-            return undefined;
-        }
-        const { protocol, host } = CdnProvider.preferredCdn;
-        const trimmed = pathSuffix.startsWith("/") ? pathSuffix.slice(1) : pathSuffix;
-        return `${protocol}://${host}/${trimmed}`;
-    }
-
     public static addCdnQueryParameter(url: string) {
         return CdnProvider.preferredCdn
             ? addOrReplaceSearchParams(url, `cdn=${CdnProvider.preferredCdn.host}`)

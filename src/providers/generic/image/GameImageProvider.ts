@@ -3,9 +3,11 @@ import path from '../../node/path/path';
 import CdnProvider from '../connection/CdnProvider';
 import FsProvider from '../file/FsProvider';
 import PathResolver from '../../../r2mm/manager/PathResolver';
+import ProtocolProvider from '../protocol/ProtocolProvider';
+import { getCdns } from '../../cdn/CdnHostList';
 
-const BUNDLED_PROTOCOL_PREFIX = "public://images/game_selection/";
-const PLACEHOLDER_URL = `${BUNDLED_PROTOCOL_PREFIX}thunderstore-beta.webp`;
+const BUNDLED_ASSET_DIR = "/images/game_selection";
+const PLACEHOLDER_FILE = "thunderstore-beta.webp";
 const LOCALHOST_DEV_BASE = "http://localhost:1337";
 const LOCALHOST_PROBE_TIMEOUT_MS = 2000;
 const CDN_FETCH_TIMEOUT_MS = 10000;
@@ -21,17 +23,17 @@ export default class GameImageProvider {
     private static initialised: Promise<void> | undefined;
 
     public static get placeholderUrl(): string {
-        return PLACEHOLDER_URL;
+        return GameImageProvider.bundledUrlFor(PLACEHOLDER_FILE);
     }
 
     public static async resolve(iconUrl: string): Promise<string> {
         await GameImageProvider.ensureInit();
 
         if (!iconUrl) {
-            return PLACEHOLDER_URL;
+            return GameImageProvider.placeholderUrl;
         }
 
-        const bundledUrl = `${BUNDLED_PROTOCOL_PREFIX}${iconUrl}`;
+        const bundledUrl = GameImageProvider.bundledUrlFor(iconUrl);
         if (await GameImageProvider.urlReachable(bundledUrl)) {
             return bundledUrl;
         }
@@ -55,7 +57,11 @@ export default class GameImageProvider {
             }
         }
 
-        return PLACEHOLDER_URL;
+        return GameImageProvider.placeholderUrl;
+    }
+
+    private static bundledUrlFor(iconUrl: string): string {
+        return ProtocolProvider.getPublicAssetUrl(`${BUNDLED_ASSET_DIR}/${iconUrl}`);
     }
 
     private static ensureInit(): Promise<void> {
@@ -111,10 +117,11 @@ export default class GameImageProvider {
     }
 
     private static async fetchFromCdnAndCache(iconUrl: string, cachePath: string): Promise<string | undefined> {
-        const cdnUrl = CdnProvider.cdnUrlFor(`assets/${iconUrl}`);
-        if (!cdnUrl) {
+        const main = getCdns()[0];
+        if (!main) {
             return undefined;
         }
+        const cdnUrl = CdnProvider.replaceCdnHost(`${main.protocol}://${main.host}/assets/${iconUrl}`);
 
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), CDN_FETCH_TIMEOUT_MS);
