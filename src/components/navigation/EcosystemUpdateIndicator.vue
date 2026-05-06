@@ -1,21 +1,29 @@
 <template>
     <Teleport to="#activity-bar">
-        <button
-            v-if="status.onClick"
-            type="button"
-            :class="['activity-bar__action', 'status-indicator', { 'status-indicator--error-action': status.isError }]"
-            :title="status.tooltip"
-            @click="status.onClick"
-        >
-            <i :class="status.iconClass"></i>
-            <span class="status-indicator__text">{{ status.text }}</span>
-        </button>
-        <div
-            v-else
-            :class="['status-indicator', { 'status-indicator--error': status.isError }]"
-        >
-            <i :class="status.iconClass"></i>
-            <span class="status-indicator__text">{{ status.text }}</span>
+        <div class="activity-bar--left">
+            <button class="activity-bar__action" @click="requestNewGame">
+                <span class="icon is-small"><i class="fa fa-plus fa-xs"></i></span>
+                <span>Request a new game</span>
+            </button>
+        </div>
+        <div class="activity-bar--right">
+            <button
+                v-if="status.onClick"
+                type="button"
+                :class="['activity-bar__action', 'status-indicator', { 'status-indicator--error-action': status.isError }]"
+                :title="status.tooltip"
+                @click="status.onClick"
+            >
+                <i :class="status.iconClass"></i>
+                <span class="status-indicator__text">{{ status.text }}</span>
+            </button>
+            <div
+                v-else
+                :class="['status-indicator', { 'status-indicator--error': status.isError }]"
+            >
+                <i :class="status.iconClass"></i>
+                <span class="status-indicator__text">{{ status.text }}</span>
+            </div>
         </div>
     </Teleport>
 </template>
@@ -24,6 +32,7 @@
 import { computed } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import LinkProvider from '../../providers/components/LinkProvider';
 
 const store = getStore<State>();
 
@@ -61,6 +70,10 @@ const status = computed(() => {
         tooltip: undefined,
     };
 });
+
+function requestNewGame() {
+    LinkProvider.instance.openLink("https://wiki.thunderstore.io/ecosystem/adding-a-new-game");
+}
 </script>
 
 <style lang="scss" scoped>
@@ -85,7 +98,6 @@ const status = computed(() => {
 }
 
 .status-indicator--error-action {
-    margin-left: auto;
     color: var(--ecosystem-update-error-text, #a3162f);
     background: var(--ecosystem-update-error-background, #fbe4e7);
     border: 1px solid var(--ecosystem-update-error-border, #efc2ca);
@@ -95,5 +107,9 @@ const status = computed(() => {
     background: var(--ecosystem-update-error-background, #fbe4e7);
     border-color: var(--ecosystem-update-error-border, #efc2ca);
     color: var(--ecosystem-update-error-text, #a3162f);
+}
+
+.spacer {
+    flex: 1;
 }
 </style>
