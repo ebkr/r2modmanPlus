@@ -14,6 +14,7 @@ import { State as RootState } from "../../store";
 import * as DownloadUtils from "../../utils/DownloadUtils";
 import { getFullDependencyList, InstallMode } from "../../utils/DependencyUtils";
 import { installModsToProfile } from "../../utils/ProfileUtils";
+import { syncProfileRootFiles } from "../../utils/LaunchUtils";
 
 interface DownloadProgress {
     downloadId: UUID;
@@ -136,6 +137,11 @@ export const DownloadModule = {
                 commit('setInstalling', downloadId);
                 await dispatch('_installModsAndResolveConflicts', { combos: modsWithDependencies, profile, downloadId });
                 commit('setInstalled', downloadId);
+
+                // Sync mod loader root files to the game directory so updates
+                // take effect even without requiring "Start Modded".
+                // Prevents issues with outdated files for users starting games using launch arguments.
+                await syncProfileRootFiles(game, profile);
             } catch (e) {
                 const r2Error = R2Error.fromThrownValue(e);
                 if (downloadId) {

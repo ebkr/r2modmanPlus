@@ -43,6 +43,20 @@ export const linkProfileFiles = async (game: Game, profile: ImmutableProfile): P
     await settings.setLinkedFiles(newLinkedFiles);
 };
 
+/**
+ * Non-fatal wrapper around linkProfileFiles.
+ * Syncs mod loader root files from the profile to the game directory.
+ * Failures are logged but do not propagate, so callers such as install/update flows
+ * won't fail if the game directory is not configured or the files are locked by a running game.
+ */
+export const syncProfileRootFiles = async (game: Game, profile: ImmutableProfile): Promise<void> => {
+    try {
+        await linkProfileFiles(game, profile);
+    } catch (e) {
+        console.warn('Failed to sync root mod files to game directory:', e);
+    }
+};
+
 export const setGameDirIfUnset = async (game: Game): Promise<void> => {
     const settings = await ManagerSettings.getSingleton(game);
     const currentDir = settings.getContext().gameSpecific.gameDirectory;
