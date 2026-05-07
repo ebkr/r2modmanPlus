@@ -9,12 +9,14 @@ export default class ShimloaderGameInstructions extends GameInstructionGenerator
         const luaDir = profile.joinToProfilePath("shimloader", "mod");
         const pakDir = profile.joinToProfilePath("shimloader", "pak");
         const cfgDir = profile.joinToProfilePath("shimloader", "cfg");
+        const overlayDir = profile.joinToProfilePath("shimloader", "overlay");
 
         return {
             moddedParameterList: [
                 '--mod-dir', luaDir,
                 '--pak-dir', pakDir,
-                '--cfg-dir', cfgDir
+                '--cfg-dir', cfgDir,
+                '--overlay-dir', overlayDir
             ],
             vanillaParameterList: []
         }
