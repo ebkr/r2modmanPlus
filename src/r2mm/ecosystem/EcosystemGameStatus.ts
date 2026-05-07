@@ -25,5 +25,5 @@ export function isGameNewlyAdded(game: string): boolean {
         return false;
     }
     const now = new Date().getTime();
-    return (now - parseInt(gameTime)) < 72 * 60 * 60 * 1000;
+    return (now - parseInt(gameTime)) < 3 * 24 * 60 * 60 * 1000;
 }
