@@ -29,7 +29,8 @@ const activeConcerningPackages = ref<ManifestV2[]>([]);
 async function updateConcerningPackages() {
     const game = activeGame.value;
     const localMods = localModList.value;
-    const concerningPackages = [];
+    const concerningPackages: ManifestV2[] = [];
+    const modsToCheck: ManifestV2[] = [];
 
     for (const mod of localMods) {
         if (!mod.isOnlineSource()) {
@@ -37,13 +38,19 @@ async function updateConcerningPackages() {
         }
         if (!onlineModList.value.has(mod.getName())) {
             concerningPackages.push(mod);
-            continue;
+        } else {
+            modsToCheck.push(mod);
         }
-        const packageVersionNumbers = await PackageDb.getPackageVersionNumbers(
-            game.internalFolderName,
-            mod.getName()
-        );
-        const dnf = !packageVersionNumbers.find(ver => ver === mod.getVersionNumber().toString());
+    }
+
+    const versionNumbersBatch = await PackageDb.getPackageVersionNumbersBatch(
+        game.internalFolderName,
+        modsToCheck.map(mod => mod.getName())
+    );
+
+    for (const mod of modsToCheck) {
+        const versions = versionNumbersBatch.get(mod.getName());
+        const dnf = !versions || !versions.includes(mod.getVersionNumber().toString());
         if (dnf) {
             concerningPackages.push(mod);
         }

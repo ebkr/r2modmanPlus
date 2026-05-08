@@ -95,6 +95,12 @@ export async function getPackageVersionNumbers(community: string, packageName: s
     return pkg.versions.map((v) => v.version_number);
 }
 
+export async function getPackageVersionNumbersBatch(community: string, packageNames: string[]): Promise<Map<string, string[]>> {
+    const keys = packageNames.map((p): [string, string] => [community, p]);
+    const packages = await db.packages.where('[community+full_name]').anyOf(keys).toArray();
+    return new Map(packages.map(pkg => [pkg.full_name, pkg.versions.map(v => v.version_number)]));
+}
+
 export async function getPackageCount(community: string) {
     return await db.packages.where({community}).count();
 }
