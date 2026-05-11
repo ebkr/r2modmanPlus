@@ -28926,13 +28926,13 @@
           "distributions": [
             {
               "platform": "steam",
-              "identifier": "4029310"
+              "identifier": "3438850"
             }
           ],
-          "steamFolderName": "Sledding Game Demo",
-          "dataFolderName": "Sledding Game Demo_Data",
+          "steamFolderName": "Sledding Game",
+          "dataFolderName": "Sledding Game_Data",
           "exeNames": [
-            "Sledding Game Demo.exe"
+            "Sledding Game.exe"
           ],
           "packageLoader": "recursive-melonloader",
           "meta": {
