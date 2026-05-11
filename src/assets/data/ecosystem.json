@@ -10340,6 +10340,13 @@
               "defaultFileExtensions": [],
               "trackingMethod": "none",
               "subRoutes": []
+            },
+            {
+              "route": "shimloader/overlay",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
             }
           ],
           "relativeFileExclusions": null
@@ -10443,6 +10450,13 @@
               "isDefaultLocation": false,
               "defaultFileExtensions": [],
               "trackingMethod": "none",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/overlay",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
               "subRoutes": []
             }
           ],
@@ -17316,6 +17330,13 @@
               "defaultFileExtensions": [],
               "trackingMethod": "none",
               "subRoutes": []
+            },
+            {
+              "route": "shimloader/overlay",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
             }
           ],
           "relativeFileExclusions": null
@@ -19271,6 +19292,13 @@
               "isDefaultLocation": false,
               "defaultFileExtensions": [],
               "trackingMethod": "none",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/overlay",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
               "subRoutes": []
             }
           ],
@@ -23858,6 +23886,54 @@
         "autolistPackageIds": []
       }
     },
+    "in-silence": {
+      "uuid": "8685454b-def3-4ff5-8cb1-c0784a49f62d",
+      "label": "in-silence",
+      "meta": {
+        "displayName": "In Silence",
+        "iconUrl": "in-silence.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "In Silence",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "shortDescription": "In Silence is a multiplayer horror game. One player takes on the role of the monster who has hypersensitive hearing abilities and is almost completely blind. The other players(2-6) play as survivors, trying to escape or hunting the monster."
+      }
+    },
     "island-market-simulator": {
       "uuid": "61a62561-13d8-4e32-9d1c-25f77acf702e",
       "label": "island-market-simulator",
@@ -24640,6 +24716,124 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "lootun": {
+      "uuid": "80951f48-c690-4c04-af1c-b428f914ba21",
+      "label": "lootun",
+      "meta": {
+        "displayName": "Lootun",
+        "iconUrl": "lootun.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1960270"
+            }
+          ],
+          "steamFolderName": "Lootun",
+          "dataFolderName": "Lootun_Data",
+          "exeNames": [
+            "Lootun.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Lootun",
+            "iconUrl": "lootun.webp"
+          },
+          "settingsIdentifier": "Lootun",
+          "internalFolderName": "Lootun",
+          "packageIndex": "https://thunderstore.io/c/lootun/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Lootun",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Lootun is a Semi-Idle RPG with a strong focus on Character/Skill Progression, Item Hunting, and Inventory Management. Assemble a team of adventurers and send them off to clear missions while you Craft, Upgrade and Enchant the Loot!"
       }
     },
     "lost-skies-ic": {
@@ -25456,6 +25650,13 @@
               "isDefaultLocation": false,
               "defaultFileExtensions": [],
               "trackingMethod": "none",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/overlay",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
               "subRoutes": []
             }
           ],
@@ -28285,6 +28486,13 @@
               "defaultFileExtensions": [],
               "trackingMethod": "none",
               "subRoutes": []
+            },
+            {
+              "route": "shimloader/overlay",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
             }
           ],
           "relativeFileExclusions": null
@@ -28963,6 +29171,13 @@
               "isDefaultLocation": false,
               "defaultFileExtensions": [],
               "trackingMethod": "none",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/overlay",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
               "subRoutes": []
             }
           ],
@@ -30722,7 +30937,7 @@
           "settingsIdentifier": "Windrose",
           "internalFolderName": "Windrose",
           "packageIndex": "https://thunderstore.io/c/windrose/api/v1/package-listing-index/",
-          "gameSelectionDisplayMode": "hidden",
+          "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
             "WR"
           ],
@@ -30746,6 +30961,13 @@
               "isDefaultLocation": false,
               "defaultFileExtensions": [],
               "trackingMethod": "none",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/overlay",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
               "subRoutes": []
             }
           ],
@@ -38659,6 +38881,44 @@
       "discordUrl": "https://discord.gg/hytalemodding",
       "autolistPackageIds": []
     },
+    "in-silence": {
+      "displayName": "In Silence",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "shortDescription": "In Silence is a multiplayer horror game. One player takes on the role of the monster who has hypersensitive hearing abilities and is almost completely blind. The other players(2-6) play as survivors, trying to escape or hunting the monster."
+    },
     "island-market-simulator": {
       "displayName": "Island Market Simulator",
       "categories": {
@@ -38981,6 +39241,47 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "lootun": {
+      "displayName": "Lootun",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Lootun is a Semi-Idle RPG with a strong focus on Character/Skill Progression, Item Hunting, and Inventory Management. Assemble a team of adventurers and send them off to clear missions while you Craft, Upgrade and Enchant the Loot!"
     },
     "lost-skies-ic": {
       "displayName": "Lost Skies Island Creator",
