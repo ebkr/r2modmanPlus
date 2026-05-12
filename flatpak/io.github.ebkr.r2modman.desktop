@@ -3,7 +3,7 @@ Type=Application
 
 Name=r2modman
 Comment=A simple and easy to use mod manager for many games using Thunderstore
-Categories=Game;GameTool;
+Categories=Game;
 
 Icon=io.github.ebkr.r2modman
 Exec=io.github.ebkr.r2modman
