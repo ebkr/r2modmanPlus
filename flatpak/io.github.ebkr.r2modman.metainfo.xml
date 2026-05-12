@@ -26,23 +26,24 @@
   </description>
 
   <releases>
+    <release version="3.2.15" date="2026-05-11" />
   </releases>
 
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/TB516/flathub-prep/develop/docs/images/gameselection.png</image>
+      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/docs/images/gameselection.png</image>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/TB516/flathub-prep/develop/docs/images/installedmodview.png</image>
+      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/docs/images/installedmodview.png</image>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/TB516/flathub-prep/develop/docs/images/downloadablemods.png</image>
+      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/docs/images/downloadablemods.png</image>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/TB516/flathub-prep/develop/docs/images/configeditor.png</image>
+      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/docs/images/configeditor.png</image>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/TB516/flathub-prep/develop/docs/images/profiles.png</image>
+      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/docs/images/profiles.png</image>
     </screenshot>
   </screenshots>
 </component>
