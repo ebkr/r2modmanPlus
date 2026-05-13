@@ -1,3 +1,47 @@
+### 3.2.16
+
+#### UI Changes
+
+- The "Game Selection" screen has been re-styled to:
+  - Add a favourites group
+  - Make game names easier to find and read
+  - Make the favourite action always visible
+  - Allow games to still be accessible if made hidden at any point in the future
+-
+
+#### Fixes
+
+- Titanfall 2 / Northstar can be launched from the manager again (thanks to @TB516)
+- Various style alignment issues fixed
+- Beetleball no longer recommends a fixed version of MelonLoader
+- Essential mod loader files are now synced on mod installs rather than on "Start modded" (thanks to @NikkelM)
+- Scrap Mechanic launch fixes (thanks to @BenMcAvoy)
+
+#### Games added
+
+- Sledding game
+- Hot Lava
+- Angry Birds VR: Isle of Pigs
+- Project Gorgon
+- Puttler
+- Island Market Simulator
+- SIDE EFFECTS
+- Modulus: Factory Automation
+- Roadside Research
+- MINOS
+- BRUTALISTICK VR
+- Super Psycho Baseball
+- Getting Over It
+- The Spell Brigade
+- Vampire Crawlers
+- Voodoo Fishin
+- Project Arrhythmia renamed to Afterbeat
+- Cave Crawlers
+- Gamble with your Friends
+- Miside Zero
+- Lootun
+- Windrose
+
 ### 3.2.15
 
 #### UI Changes
