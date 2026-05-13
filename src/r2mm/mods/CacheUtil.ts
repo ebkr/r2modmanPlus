@@ -7,6 +7,7 @@ import ManifestV2 from '../../model/ManifestV2';
 import VersionNumber from '../../model/VersionNumber';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import path from '../../providers/node/path/path';
+import * as DownloadUtils from '../../utils/DownloadUtils';
 
 export default class CacheUtil {
 
@@ -42,8 +43,15 @@ export default class CacheUtil {
             const cacheDirectory = path.join(PathResolver.MOD_ROOT, "cache");
             await FileUtils.ensureDirectory(cacheDirectory);
             for (const folder of (await fs.readdir(cacheDirectory))) {
+                if (folder === '_state') {
+                    continue;
+                }
                 if ((await fs.stat(path.join(cacheDirectory, folder))).isDirectory()) {
                     if (this.hasNoVersions(folder, activeModSet)) {
+                        // Remove all online state files for this mod before deleting the folder
+                        for (const versionFolder of (await fs.readdir(path.join(cacheDirectory, folder)))) {
+                            await DownloadUtils.removeOnlineStateFile(folder, versionFolder);
+                        }
                         await FileUtils.emptyDirectory(path.join(cacheDirectory, folder))
                         await fs.rmdir(path.join(cacheDirectory, folder));
                     } else {
@@ -52,6 +60,8 @@ export default class CacheUtil {
                             const matchingVersion = versions.find(value => value.toString() === versionFolder);
                             if (matchingVersion === undefined) {
                                 try {
+                                    // Remove online state file for this version
+                                    await DownloadUtils.removeOnlineStateFile(folder, versionFolder);
                                     await FileUtils.emptyDirectory(path.join(cacheDirectory, folder, versionFolder));
                                     await fs.rmdir(path.join(cacheDirectory, folder, versionFolder));
                                 } catch (e) {

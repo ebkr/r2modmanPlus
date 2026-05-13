@@ -31,6 +31,8 @@ export default class ManifestV2 {
     private enabled: boolean = true;
     private icon: string = '';
 
+    private onlineSource: boolean = false;
+
     // Intended to be used to import a mod with only minimal fields specified.
     // Should support manifest V1. Defaults to an "Unknown" author field if not found.
     public makeSafeFromPartial(data: any): R2Error | ManifestV2 {
@@ -87,6 +89,7 @@ export default class ManifestV2 {
         this.setGameVersion(jsManifestObject.gameVersion);
         this.icon = path.join(PathResolver.MOD_ROOT, 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
         this.setInstalledAtTime(jsManifestObject.installedAtTime || 0);
+        this.setOnlineSource(jsManifestObject.onlineSource || false);
         if (!jsManifestObject.enabled) {
             this.disable();
         }
@@ -244,5 +247,13 @@ export default class ManifestV2 {
 
     public getDependencyString(): string {
         return `${this.getName()}-${this.getVersionNumber().toString()}`;
+    }
+
+    public isOnlineSource(): boolean {
+        return this.onlineSource;
+    }
+
+    public setOnlineSource(isOnlineSource: boolean) {
+        this.onlineSource = isOnlineSource;
     }
 }

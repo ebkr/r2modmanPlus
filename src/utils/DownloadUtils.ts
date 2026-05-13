@@ -85,3 +85,66 @@ export function generateProgressPercentage(currentProgress: number, targetProgre
 export function statusIsDownloadOrExtract(status: DownloadStatusEnum): boolean {
     return status === DownloadStatusEnum.DOWNLOADING || status === DownloadStatusEnum.EXTRACTING || status === DownloadStatusEnum.EXTRACTED;
 }
+
+/**
+ * Get the path to the online state directory in the cache.
+ * This directory contains empty files named after dependency strings
+ * to track which mods were downloaded from online sources.
+ */
+export function getOnlineStateDir(): string {
+    return path.join(PathResolver.MOD_ROOT, 'cache', '_state', 'online');
+}
+
+/**
+ * Get the path to the online state file for a given dependency string.
+ * @param dependencyString The dependency string (e.g., "AuthorName-ModName-1.0.0")
+ */
+export function getOnlineStatePath(dependencyString: string): string {
+    return path.join(getOnlineStateDir(), dependencyString);
+}
+
+/**
+ * Check if a mod was previously downloaded from online (state file exists).
+ * @param combo The combo to check.
+ * @returns True if the mod was downloaded from online, false otherwise.
+ */
+export async function wasDownloadedFromOnline(combo: ThunderstoreCombo): Promise<boolean> {
+    const statePath = getOnlineStatePath(combo.getDependencyString());
+    return FsProvider.instance.exists(statePath);
+}
+
+/**
+ * Mark a mod as downloaded from online by creating a state file.
+ * Errors are silently ignored to avoid failing downloads due to state tracking issues.
+ * @param combo The combo to mark.
+ */
+export async function markAsDownloadedFromOnline(combo: ThunderstoreCombo): Promise<void> {
+    try {
+        const fs = FsProvider.instance;
+        const stateDir = getOnlineStateDir();
+        if (!await fs.exists(stateDir)) {
+            await fs.mkdirs(stateDir);
+        }
+        const statePath = getOnlineStatePath(combo.getDependencyString());
+        await fs.writeFile(statePath, '');
+    } catch (e) {
+        console.warn(`Failed to mark mod as downloaded from online: ${combo.getDependencyString()}`, e);
+    }
+}
+
+/**
+ * Remove the online state file for a given mod version.
+ * @param modName The full mod name (e.g., "AuthorName-ModName")
+ * @param version The version string (e.g., "1.0.0")
+ */
+export async function removeOnlineStateFile(modName: string, version: string): Promise<void> {
+    const fs = FsProvider.instance;
+    const stateFile = path.join(getOnlineStateDir(), `${modName}-${version}`);
+    try {
+        if (await fs.exists(stateFile)) {
+            await fs.unlink(stateFile);
+        }
+    } catch (e) {
+        // Ignore errors when removing state files
+    }
+}
