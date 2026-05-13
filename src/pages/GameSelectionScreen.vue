@@ -1,5 +1,6 @@
 <template>
     <div id="game-selection-screen">
+        <EcosystemUpdateIndicator />
         <ModalCard id="select-platform-modal" v-show="showPlatformModal" :is-active="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
             <template v-slot:header>
                 <h2 class='modal-title'>Which store manages your game?</h2>
@@ -90,12 +91,13 @@ import { Hero } from '../components/all';
 import { GameInstanceType } from '../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import ModalCard from '../components/ModalCard.vue';
-import { onMounted, provide, ref } from 'vue';
+import { onMounted, ref, provide } from 'vue';
 import { useGameSelectionComposable, gameSelectionKey } from '../components/composables/GameSelectionComposable';
 import GameSelectionList from '../components/game-selection/GameSelectionList.vue';
 import Game from '../model/game/Game';
 import { capitalize } from '../utils/StringUtils';
 import { StorePlatform as platformLabels } from '../model/platform/StorePlatform';
+import EcosystemUpdateIndicator from '../components/navigation/EcosystemUpdateIndicator.vue';
 
 
 const gameSelection = useGameSelectionComposable();

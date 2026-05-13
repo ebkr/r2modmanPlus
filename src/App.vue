@@ -6,8 +6,7 @@
                     <router-view />
                 </div>
             </main>
-            <div id="activity-bar">
-            </div>
+            <div id="activity-bar"></div>
         </div>
         <ErrorModal />
     </div>
