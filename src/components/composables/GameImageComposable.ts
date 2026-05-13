@@ -1,12 +1,12 @@
-import { ref, watchEffect } from 'vue';
+import { ref, watch } from 'vue';
 import GameImageProvider from '../../providers/generic/image/GameImageProvider';
 
 export function useGameImageComposable(iconUrl: () => string) {
-    const imageSrc = ref<string>(GameImageProvider.placeholderUrl);
+    const imageSrc = ref<string>(GameImageProvider.instance.placeholderUrl);
 
-    watchEffect(async () => {
-        imageSrc.value = await GameImageProvider.resolve(iconUrl());
-    });
+    watch(iconUrl, async (current) => {
+        imageSrc.value = await GameImageProvider.instance.resolve(current);
+    }, { immediate: true });
 
     return { imageSrc };
 }
