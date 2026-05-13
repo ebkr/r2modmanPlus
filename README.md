@@ -1,4 +1,4 @@
-> [!WARNING] 
+> [!WARNING]
 > There has been a rise in third-party redistribution sites which are claiming to be official.
 >
 > There are only two legitimate places to download r2modman which are:
@@ -83,21 +83,21 @@ The only thing you have to consider when suggesting a feature is the impact it w
 
 Game selection
 
-![](https://i.imgur.com/sz1HZP7.png)
+![](https://cdn.imgchest.com/files/865952ff6b49.png)
 
 Installed mod view
 
-![](https://i.imgur.com/oqOREkh.png)
+![](https://cdn.imgchest.com/files/30a03e402178.png)
 
-Downloadable mods
+Online mods
 
-![](https://i.imgur.com/o6EydOd.png)
+![](https://cdn.imgchest.com/files/fe4abf3f137c.png)
 
 Config editor
 
-![](https://i.imgur.com/A01ntPm.png)
+![](https://cdn.imgchest.com/files/06ed5a930bf1.png)
 
 Profiles
 
-![](https://i.imgur.com/ocwFGkS.png)
+![](https://cdn.imgchest.com/files/a23d6834a8d5.png)
 
