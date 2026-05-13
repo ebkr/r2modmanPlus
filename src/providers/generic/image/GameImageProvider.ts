@@ -1,23 +1,28 @@
 import ProviderUtils from '../ProviderUtils';
 
-export default abstract class GameImageProvider {
+export type GameImageProvider = {
+    init(): Promise<void>;
+    readonly placeholderUrl: string;
+    resolve(iconUrl: string): Promise<string>;
+};
 
-    private static provider: () => GameImageProvider;
-    static provide(provided: () => GameImageProvider): void {
-        this.provider = provided;
+let implementation: (() => GameImageProvider) | undefined;
+
+function getImplementation(): GameImageProvider {
+    if (!implementation) {
+        ProviderUtils.throwNotProvidedError("GameImageProvider");
     }
-
-    public static get instance(): GameImageProvider {
-        if (GameImageProvider.provider === undefined) {
-            ProviderUtils.throwNotProvidedError("GameImageProvider");
-        }
-        return GameImageProvider.provider();
-    }
-
-    public abstract init(): Promise<void>;
-
-    public abstract get placeholderUrl(): string;
-
-    public abstract resolve(iconUrl: string): Promise<string>;
-
+    return implementation!();
 }
+
+export function provideGameImageImplementation(provider: () => GameImageProvider) {
+    implementation = provider;
+}
+
+const gameImage: GameImageProvider = {
+    init: () => getImplementation().init(),
+    get placeholderUrl() { return getImplementation().placeholderUrl; },
+    resolve: (iconUrl) => getImplementation().resolve(iconUrl),
+};
+
+export default gameImage;

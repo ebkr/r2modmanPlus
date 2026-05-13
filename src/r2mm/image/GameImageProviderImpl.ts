@@ -2,7 +2,7 @@ import buffer from '../../providers/node/buffer/buffer';
 import path from '../../providers/node/path/path';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import FsProvider from '../../providers/generic/file/FsProvider';
-import GameImageProvider from '../../providers/generic/image/GameImageProvider';
+import { GameImageProvider } from '../../providers/generic/image/GameImageProvider';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import PathResolver from '../manager/PathResolver';
 import ProtocolProvider from '../../providers/generic/protocol/ProtocolProvider';
@@ -15,7 +15,7 @@ const CDN_FETCH_TIMEOUT_MS = 10000;
 const CDN_BREAKER_THRESHOLD = 3;
 const CACHE_SUBDIR = "image-cache";
 
-export default class GameImageProviderImpl extends GameImageProvider {
+class GameImageProviderImpl implements GameImageProvider {
 
     private cacheRoot: string | undefined;
     private cdnConsecutiveFailures = 0;
@@ -130,3 +130,5 @@ export default class GameImageProviderImpl extends GameImageProvider {
     }
 
 }
+
+export const GameImageProviderImplementation: GameImageProvider = new GameImageProviderImpl();

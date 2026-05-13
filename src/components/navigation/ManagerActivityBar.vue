@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
@@ -45,7 +45,8 @@ const router = useRouter();
 const activeGame = computed(() => store.state.activeGame);
 const profile = computed(() => store.getters['profile/activeProfile']);
 
-const { imageSrc } = useGameImageComposable(() => activeGame.value.iconUrl);
+const { imageSrc, setIcon } = useGameImageComposable();
+watch(() => activeGame.value.iconUrl, setIcon, { immediate: true });
 
 function changeGame() {
     router.push('/');

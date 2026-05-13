@@ -34,6 +34,7 @@
 </template>
 
 <script lang="ts" setup>
+import { watch } from 'vue';
 import Game from '../../model/game/Game';
 import { GameInstanceType } from '../../model/schema/ThunderstoreSchema';
 import { useGameImageComposable } from '../composables/GameImageComposable';
@@ -53,7 +54,8 @@ const emit = defineEmits<{
     'toggle-favourite': [game: Game];
 }>();
 
-const { imageSrc } = useGameImageComposable(() => props.game.iconUrl);
+const { imageSrc, setIcon } = useGameImageComposable();
+watch(() => props.game.iconUrl, setIcon, { immediate: true });
 </script>
 
 <style scoped lang="scss">

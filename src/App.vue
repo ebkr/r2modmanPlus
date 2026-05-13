@@ -57,8 +57,8 @@ import { NodeFsImplementation } from './providers/node/fs/NodeFsImplementation';
 import { useRouter } from 'vue-router';
 import { ProtocolProviderImplementation } from './providers/generic/protocol/ProtocolProviderImplementation';
 import { provideProtocolImplementation } from './providers/generic/protocol/ProtocolProvider';
-import GameImageProvider from './providers/generic/image/GameImageProvider';
-import GameImageProviderImpl from './r2mm/image/GameImageProviderImpl';
+import GameImageProvider, { provideGameImageImplementation } from './providers/generic/image/GameImageProvider';
+import { GameImageProviderImplementation } from './r2mm/image/GameImageProviderImpl';
 import BreadcrumbNavigator from 'components/breadcrumbs/BreadcrumbNavigator.vue';
 
 const store = baseStore;
@@ -102,9 +102,7 @@ DataFolderProvider.provide(() => new DataFolderProviderImpl());
 PlatformInterceptorProvider.provide(() => new PlatformInterceptorImpl());
 
 provideProtocolImplementation(() => ProtocolProviderImplementation)
-
-const gameImageProvider = new GameImageProviderImpl();
-GameImageProvider.provide(() => gameImageProvider);
+provideGameImageImplementation(() => GameImageProviderImplementation);
 
 BindLoaderImpl.bind();
 
@@ -138,7 +136,7 @@ onMounted(async () => {
 
         await FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
 
-        await GameImageProvider.instance.init();
+        await GameImageProvider.init();
 
         await ThemeManager.apply();
 
