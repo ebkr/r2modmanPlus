@@ -10,8 +10,7 @@ import ProtocolProvider from '../../providers/generic/protocol/ProtocolProvider'
 const BUNDLED_ASSET_DIR = "/images/game_selection";
 const PLACEHOLDER_FILE = "thunderstore-beta.webp";
 const CDN_ASSET_BASE = "https://gcdn.thunderstore.io/assets";
-const LOCALHOST_DEV_BASE = "http://localhost:1337";
-const LOCALHOST_PROBE_TIMEOUT_MS = 2000;
+const LOCAL_DEV_ASSET_BASE = "/_local-assets";
 const CDN_FETCH_TIMEOUT_MS = 10000;
 const CDN_BREAKER_THRESHOLD = 3;
 const CACHE_SUBDIR = "image-cache";
@@ -19,7 +18,6 @@ const CACHE_SUBDIR = "image-cache";
 export default class GameImageProviderImpl extends GameImageProvider {
 
     private cacheRoot: string | undefined;
-    private localhostAvailable = false;
     private cdnConsecutiveFailures = 0;
     private cdnBreakerTripped = false;
 
@@ -28,10 +26,6 @@ export default class GameImageProviderImpl extends GameImageProvider {
             const root = path.join(PathResolver.APPDATA_DIR, CACHE_SUBDIR);
             await FsProvider.instance.mkdirs(root);
             this.cacheRoot = root;
-        }
-
-        if (import.meta.env.MODE === "development") {
-            this.localhostAvailable = await this.probeLocalhost();
         }
     }
 
@@ -49,10 +43,10 @@ export default class GameImageProviderImpl extends GameImageProvider {
             return bundledUrl;
         }
 
-        if (this.localhostAvailable) {
-            const localhostUrl = `${LOCALHOST_DEV_BASE}/assets/${iconUrl}`;
-            if (await this.urlReachable(localhostUrl)) {
-                return localhostUrl;
+        if (import.meta.env.MODE === "development") {
+            const localUrl = `${LOCAL_DEV_ASSET_BASE}/${iconUrl}`;
+            if (await this.urlReachable(localUrl)) {
+                return localUrl;
             }
         }
 
@@ -73,19 +67,6 @@ export default class GameImageProviderImpl extends GameImageProvider {
 
     private bundledUrlFor(iconUrl: string): string {
         return ProtocolProvider.getPublicAssetUrl(`${BUNDLED_ASSET_DIR}/${iconUrl}`);
-    }
-
-    private async probeLocalhost(): Promise<boolean> {
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), LOCALHOST_PROBE_TIMEOUT_MS);
-        try {
-            const res = await fetch(`${LOCALHOST_DEV_BASE}/healthz`, { signal: controller.signal });
-            return res.ok;
-        } catch {
-            return false;
-        } finally {
-            clearTimeout(timer);
-        }
     }
 
     private async urlReachable(url: string): Promise<boolean> {
