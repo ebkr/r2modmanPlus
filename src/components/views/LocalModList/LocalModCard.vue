@@ -193,7 +193,7 @@ function openReviewModal() {
             <div class="notification is-warning" v-if="isConcerningPackage(props.mod)">
                 <p>This mod was originally downloaded from Thunderstore, but can no longer be found on the site.</p>
                 <p><strong>It is recommended that you remove this mod.</strong></p>
-                <button v-if="isConcerningPackage(props.mod)" class="button" @click.stop.prevent="openReviewModal">
+                <button class="button" @click.stop.prevent="openReviewModal">
                     Review mod
                 </button>
             </div>
