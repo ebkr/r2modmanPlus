@@ -10,7 +10,7 @@
                         <p class="subtitle">Try a different game title or keyword. We may not support this game yet.</p>
                         <button class="button margin-top icon-button" @click.prevent.stop="requestNewGame">
                             <span>Request a new {{ activeTab }}</span>
-                            <i class="margin-left--half-width fas fa-arrow-alt-circle-right"></i>
+                            <i class="margin-left--half-width fas fa-external-link-alt"></i>
                         </button>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                         <h3 class="title is-5">Can't find what you're looking for?</h3>
                         <button class="button margin-top" @click.prevent.stop="requestNewGame">
                             <span>Request a new {{ activeTab }}</span>
-                            <i class="margin-left--half-width fas fa-arrow-alt-circle-right"></i>
+                            <i class="margin-left--half-width fas fa-external-link-alt"></i>
                         </button>
                     </div>
                 </div>
@@ -155,7 +155,7 @@
                     <h3 class="title is-5">Can't find what you're looking for?</h3>
                     <button class="button margin-top" @click.prevent.stop="requestNewGame">
                         <span>Request a new {{ activeTab }}</span>
-                        <i class="margin-left--half-width fas fa-arrow-alt-circle-right"></i>
+                        <i class="margin-left--half-width fas fa-external-link-alt"></i>
                     </button>
                 </div>
             </template>
