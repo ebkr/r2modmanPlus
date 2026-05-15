@@ -3,7 +3,7 @@
         <div class="game-card">
             <div class="game-card__image">
                 <template v-if="activeTab === GameInstanceType.GAME">
-                    <img :src="getImageHref(`/images/game_selection/${game.gameImage}`)" alt="Game Logo" class="game-card__thumbnail"/>
+                    <img :src="imageSrc" alt="Game Logo" class="game-card__thumbnail"/>
                 </template>
                 <template v-else>
                     <div class="game-card__placeholder">{{ game.displayName }}</div>
@@ -34,9 +34,10 @@
 </template>
 
 <script lang="ts" setup>
+import { watch } from 'vue';
 import Game from '../../model/game/Game';
 import { GameInstanceType } from '../../model/schema/ThunderstoreSchema';
-import ProtocolProvider from '../../providers/generic/protocol/ProtocolProvider';
+import { useGameImageComposable } from '../composables/GameImageComposable';
 
 type Props = {
     game: Game;
@@ -53,9 +54,8 @@ const emit = defineEmits<{
     'toggle-favourite': [game: Game];
 }>();
 
-function getImageHref(image: string) {
-    return ProtocolProvider.getPublicAssetUrl(image);
-}
+const { imageSrc, setIcon } = useGameImageComposable();
+watch(() => props.game.iconUrl, setIcon, { immediate: true });
 </script>
 
 <style scoped lang="scss">

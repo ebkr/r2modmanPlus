@@ -13,7 +13,7 @@ export default class Game {
     private readonly _thunderstoreUrl: string;
     private readonly _thunderstoreIdentifier: string;
     private readonly _storePlatformMetadata: StorePlatformMetadata[];
-    private readonly _gameImage: string;
+    private readonly _iconUrl: string;
     private readonly _displayMode: GameSelectionDisplayMode;
     private readonly _instanceType: GameInstanceType;
     private readonly _packageLoader: PackageLoader;
@@ -32,7 +32,7 @@ export default class Game {
         tsUrl: string,
         tsIdentifier: string,
         platforms: StorePlatformMetadata[],
-        gameImage: string,
+        iconUrl: string,
         displayMode: GameSelectionDisplayMode,
         instanceType: GameInstanceType,
         packageLoader: PackageLoader,
@@ -49,7 +49,7 @@ export default class Game {
         this._thunderstoreIdentifier = tsIdentifier;
         this._storePlatformMetadata = platforms;
         this._activePlatform = platforms[0];
-        this._gameImage = gameImage;
+        this._iconUrl = iconUrl;
         this._displayMode = displayMode;
         this._instanceType = instanceType;
         this._packageLoader = packageLoader;
@@ -109,8 +109,8 @@ export default class Game {
         this._activePlatform = platform;
     }
 
-    get gameImage(): string {
-        return this._gameImage;
+    get iconUrl(): string {
+        return this._iconUrl;
     }
 
     get displayMode(): GameSelectionDisplayMode {

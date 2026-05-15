@@ -100,6 +100,15 @@ export default defineConfig((ctx) => {
             https: false,
             port: 9020,
             open: true, // opens browser window automatically
+            proxy: {
+                // Proxy for a local ecosystem-schema deployment.
+                // https://github.com/thunderstore-io/ecosystem-schema
+                '/_local-assets': {
+                    target: 'http://localhost:1337',
+                    changeOrigin: true,
+                    rewrite: (path) => path.replace(/^\/_local-assets/, '/assets'),
+                },
+            },
         },
 
         // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
