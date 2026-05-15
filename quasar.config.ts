@@ -101,6 +101,8 @@ export default defineConfig((ctx) => {
             port: 9020,
             open: true, // opens browser window automatically
             proxy: {
+                // Proxy for a local ecosystem-schema deployment.
+                // https://github.com/thunderstore-io/ecosystem-schema
                 '/_local-assets': {
                     target: 'http://localhost:1337',
                     changeOrigin: true,
