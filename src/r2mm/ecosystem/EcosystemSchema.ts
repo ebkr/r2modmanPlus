@@ -25,7 +25,25 @@ type LatestSchemaFetchResult =
     | {kind: "fetched", schema: ThunderstoreEcosystem, lastModified?: string}
     | {kind: "failed"};
 
-const ECOSYSTEM_DATA_URL = "https://thunderstore.io/api/experimental/schema/dev/latest/";
+const REMOTE_ECOSYSTEM_DATA_URL = "https://thunderstore.io/api/experimental/schema/dev/latest/";
+const LOCAL_ECOSYSTEM_DATA_URL = "/_local/latest.json";
+const LOCAL_HEALTHZ_URL = "/_local/healthz";
+
+async function isLocalSchemaReachable(): Promise<boolean> {
+    try {
+        const res = await fetch(LOCAL_HEALTHZ_URL);
+        return res.ok;
+    } catch {
+        return false;
+    }
+}
+
+async function resolveEcosystemDataUrl(): Promise<string> {
+    if (import.meta.env.MODE === "development" && await isLocalSchemaReachable()) {
+        return LOCAL_ECOSYSTEM_DATA_URL;
+    }
+    return REMOTE_ECOSYSTEM_DATA_URL;
+}
 
 async function getMergedEcosystemPath(): Promise<string> {
     return path.join(PathResolver.ROOT, "latest-ecosystem-schema.json");
@@ -101,9 +119,10 @@ async function fetchLatestSchema(
     };
 
     try {
+        const url = await resolveEcosystemDataUrl();
         const axios = getAxiosWithTimeouts(timeout, timeout * 2);
         const response = await retry(
-            () => axios.get(ECOSYSTEM_DATA_URL, requestConfig),
+            () => axios.get(url, requestConfig),
             {attempts: 3, interval: 1000, throwLastErrorAsIs: true}
         );
         const lastModified = typeof response.headers["last-modified"] === "string"

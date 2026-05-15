@@ -103,10 +103,10 @@ export default defineConfig((ctx) => {
             proxy: {
                 // Proxy for a local ecosystem-schema deployment.
                 // https://github.com/thunderstore-io/ecosystem-schema
-                '/_local-assets': {
+                '/_local': {
                     target: 'http://localhost:1337',
                     changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/_local-assets/, '/assets'),
+                    rewrite: (path) => path.replace(/^\/_local/, ''),
                 },
             },
         },

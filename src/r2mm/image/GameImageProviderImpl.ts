@@ -10,7 +10,7 @@ import ProtocolProvider from '../../providers/generic/protocol/ProtocolProvider'
 const BUNDLED_ASSET_DIR = "/images/game_selection";
 const PLACEHOLDER_FILE = "placeholder.webp";
 const CDN_ASSET_BASE = "https://gcdn.thunderstore.io/assets";
-const LOCAL_DEV_ASSET_BASE = "/_local-assets";
+const LOCAL_DEV_ASSET_BASE = "/_local/assets";
 const CDN_FETCH_TIMEOUT_MS = 10000;
 const CDN_BREAKER_THRESHOLD = 3;
 const CACHE_SUBDIR = "image-cache";
