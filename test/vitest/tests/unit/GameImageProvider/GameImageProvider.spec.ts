@@ -48,7 +48,7 @@ const fakeProtocolImpl = {
 // Import AFTER mocks are set up.
 import { GameImageProviderImplementation } from '../../../../../src/r2mm/image/GameImageProviderImpl';
 
-const PLACEHOLDER_URL = 'app://./images/game_selection/thunderstore-beta.webp';
+const PLACEHOLDER_URL = 'app://./images/game_selection/placeholder.webp';
 const TEST_APPDATA = 'TEST_APPDATA';
 const CACHE_ROOT = nodePath.join(TEST_APPDATA, 'image-cache');
 
