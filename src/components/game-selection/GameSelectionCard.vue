@@ -80,7 +80,6 @@ watch(() => props.game.iconUrl, setIcon, { immediate: true });
 
 .game-card__image {
     display: block;
-    background-color: black;
 }
 
 .game-card__thumbnail {
