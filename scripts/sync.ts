@@ -1,12 +1,23 @@
 import fs from "fs";
+import path from "path";
 
 import {FetchingJSONSchemaStore, InputData, JSONSchemaInput, quicktype} from "quicktype-core";
 
-const ECOSYSTEM_DATA_URL = "https://thunderstore.io/api/experimental/schema/dev/latest/";
-const ECOSYSTEM_JSON_SCHEMA_URL = "https://thunderstore.io/api/experimental/schema/ecosystem-json-schema/latest/";
+const REMOTE_SOURCE = {
+    ecosystemDataUrl: "https://thunderstore.io/api/experimental/schema/dev/latest/",
+    ecosystemJsonSchemaUrl: "https://thunderstore.io/api/experimental/schema/ecosystem-json-schema/latest/",
+    gameImageBaseUrl: "https://gcdn.thunderstore.io/assets",
+};
+const LOCAL_SOURCE = {
+    ecosystemDataUrl: "http://localhost:1337/latest.json",
+    ecosystemJsonSchemaUrl: "http://localhost:1337/latest.schema.json",
+    gameImageBaseUrl: "http://localhost:1337/assets",
+};
+
 const ECOSYSTEM_DATA_PATH = "./src/assets/data/ecosystem.json";
 const ECOSYSTEM_JSON_SCHEMA_PATH = "./src/assets/data/ecosystemJsonSchema.json";
 const ECOSYSTEM_DATA_TYPES_PATH = "./src/assets/data/ecosystemTypes.ts";
+const GAME_IMAGE_DIR_PATH = "./public/images/game_selection";
 
 /**
  * This script synchronizes the in-repo ecosystem schema JSON to the latest
@@ -22,16 +33,21 @@ async function updateSchema() {
         console.log("Skipping API update, reading JSON schema from disk...");
         schema = fs.readFileSync(ECOSYSTEM_JSON_SCHEMA_PATH);
     } else {
+        const source = await isReachable("http://localhost:1337/healthz") ? LOCAL_SOURCE : REMOTE_SOURCE;
+        console.log(`Syncing from ${new URL(source.ecosystemDataUrl).origin}...`);
+
         console.log("Updating ecosystem.json...");
-        const response = await fetch(ECOSYSTEM_DATA_URL);
+        const response = await fetch(source.ecosystemDataUrl);
         if (response.status !== 200) {
             throw new Error(`Received non-200 status from schema API: ${response.status}`);
         }
         const data = Buffer.from(await response.arrayBuffer());
         fs.writeFileSync(ECOSYSTEM_DATA_PATH, data);
 
+        await updateGameImages(data, source.gameImageBaseUrl);
+
         console.log("Updating ecosystemJsonSchema.json...");
-        const schemaResponse = await fetch(ECOSYSTEM_JSON_SCHEMA_URL);
+        const schemaResponse = await fetch(source.ecosystemJsonSchemaUrl);
         if (schemaResponse.status !== 200) {
             throw new Error(`Received non-200 status from schema API: ${schemaResponse.status}`);
         }
@@ -57,6 +73,53 @@ async function updateSchema() {
 }
 
 updateSchema();
+
+async function updateGameImages(ecosystemData: Buffer, baseUrl: string): Promise<void> {
+    const ecosystem = JSON.parse(ecosystemData.toString());
+    const iconUrls = new Set<string>();
+    for (const game of Object.values<any>(ecosystem.games ?? {})) {
+        for (const entry of game?.r2modman ?? []) {
+            const iconUrl = entry?.meta?.iconUrl;
+            if (typeof iconUrl === "string" && iconUrl) {
+                iconUrls.add(iconUrl);
+            }
+        }
+    }
+
+    console.log(`Updating ${iconUrls.size} game images...`);
+    let failures = 0;
+    for (const iconUrl of iconUrls) {
+        try {
+            await fetchGameImage(baseUrl, iconUrl);
+        } catch (e) {
+            console.warn(`  ${(e as Error).message}`);
+            failures += 1;
+        }
+    }
+    if (failures > 0) {
+        console.warn(`Failed to fetch ${failures} of ${iconUrls.size} game images.`);
+    }
+}
+
+async function isReachable(url: string): Promise<boolean> {
+    try {
+        await fetch(url);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+async function fetchGameImage(baseUrl: string, iconUrl: string): Promise<void> {
+    const response = await fetch(`${baseUrl}/${iconUrl}`);
+    if (response.status !== 200) {
+        throw new Error(`Received non-200 status fetching ${iconUrl}: ${response.status}`);
+    }
+    const data = Buffer.from(await response.arrayBuffer());
+    const outPath = path.join(GAME_IMAGE_DIR_PATH, iconUrl);
+    fs.mkdirSync(path.dirname(outPath), {recursive: true});
+    fs.writeFileSync(outPath, data);
+}
 
 function enumKeysToUpperSnakeCase(tsCode: string): string {
     const enumRegex = /export enum (\w+) \{([\s\S]*?)\}/g;
