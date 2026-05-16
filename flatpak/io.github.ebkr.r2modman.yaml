@@ -84,5 +84,5 @@ finish-args:
 
   # File system to find Steam and games
   - --filesystem=host
-  # - --filesystem=~/.var/app/com.valvesoftware.Steam:rw
+  - --filesystem=~/.var/app/com.valvesoftware.Steam:rw
   # - --filesystem=~/.local/share/Steam:rw
