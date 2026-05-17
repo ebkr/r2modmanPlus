@@ -8,6 +8,24 @@ base: org.electronjs.Electron2.BaseApp
 base-version: "25.08"
 command: io.github.ebkr.r2modman
 
+finish-args:
+  # Graphics
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+
+  # Flatpak spawn for steam deck
+  - --talk-name=org.freedesktop.Flatpak
+
+  # Network access
+  - --share=network
+  - --share=ipc
+
+  # File system to find Steam and games
+  - --filesystem=host
+  - --filesystem=~/.var/app/com.valvesoftware.Steam:rw
+  # - --filesystem=~/.local/share/Steam:rw
+
 modules:
   - name: r2modmanPlus
     buildsystem: simple
@@ -68,21 +86,3 @@ modules:
       - install -Dm644 io.github.ebkr.r2modman.desktop /app/share/applications/io.github.ebkr.r2modman.desktop
       - install -Dm644 io.github.ebkr.r2modman.metainfo.xml /app/share/metainfo/io.github.ebkr.r2modman.metainfo.xml
       - install -Dm755 io.github.ebkr.r2modman /app/bin/io.github.ebkr.r2modman
-
-finish-args:
-  # Graphics
-  - --socket=wayland
-  - --socket=fallback-x11
-  - --device=dri
-
-  # Flatpak spawn for steam deck
-  - --talk-name=org.freedesktop.Flatpak
-
-  # Network access
-  - --share=network
-  - --share=ipc
-
-  # File system to find Steam and games
-  - --filesystem=host
-  # - --filesystem=~/.var/app/com.valvesoftware.Steam:rw
-  # - --filesystem=~/.local/share/Steam:rw
