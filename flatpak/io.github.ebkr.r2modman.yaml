@@ -52,12 +52,6 @@ modules:
       - generated-sources.json
 
       - type: file
-        path: io.github.ebkr.r2modman.desktop
-
-      - type: file
-        path: io.github.ebkr.r2modman.metainfo.xml
-
-      - type: file
         path: io.github.ebkr.r2modman
 
       - type: file
@@ -83,6 +77,6 @@ modules:
       - install -Dm644 src/assets/icon/128x128.png /app/share/icons/hicolor/128x128/apps/io.github.ebkr.r2modman.png
       - install -Dm644 src/assets/icon/256x256.png /app/share/icons/hicolor/256x256/apps/io.github.ebkr.r2modman.png
 
-      - install -Dm644 io.github.ebkr.r2modman.desktop /app/share/applications/io.github.ebkr.r2modman.desktop
-      - install -Dm644 io.github.ebkr.r2modman.metainfo.xml /app/share/metainfo/io.github.ebkr.r2modman.metainfo.xml
+      - install -Dm644 flatpak/io.github.ebkr.r2modman.desktop /app/share/applications/io.github.ebkr.r2modman.desktop
+      - install -Dm644 flatpak/io.github.ebkr.r2modman.metainfo.xml /app/share/metainfo/io.github.ebkr.r2modman.metainfo.xml
       - install -Dm755 io.github.ebkr.r2modman /app/bin/io.github.ebkr.r2modman
