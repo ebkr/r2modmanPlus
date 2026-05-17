@@ -20,6 +20,7 @@ async function isManagerUpdateAvailable() {
                     return false;
                 }
                 const releaseVersion = new VersionNumber(release.name);
+                updateTagName.value = release.tag_name;
                 return releaseVersion.isNewerThan(ManagerInformation.VERSION);
             }) !== undefined;
         }).catch(err => {
