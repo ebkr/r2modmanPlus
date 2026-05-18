@@ -77,6 +77,9 @@ class GameImageProviderImpl implements GameImageProvider {
         if (!this.cacheRoot) {
             return undefined;
         }
+        if (iconUrl.includes("..") || iconUrl.startsWith("/") || iconUrl.includes("\\")) {
+            return undefined;
+        }
         return path.join(this.cacheRoot, ...iconUrl.split("/"));
     }
 

@@ -183,6 +183,19 @@ describe('GameImageProviderImpl', () => {
             expect((GameImageProviderImplementation as any).cdnBreakerTripped).toBe(false);
         });
 
+        test.each([
+            '../../etc/passwd.webp',
+            '/etc/passwd.webp',
+            'game\\..\\..\\secret.webp',
+        ])('rejects path-traversal iconUrl %s and falls back to placeholder', async (iconUrl) => {
+            await GameImageProviderImplementation.init();
+            mockFetch.mockResolvedValueOnce(makeFetchResponse('', 404));
+
+            const result = await GameImageProviderImplementation.resolve(iconUrl);
+            expect(result).toBe(PLACEHOLDER_URL);
+            expect(mockFetch).toHaveBeenCalledTimes(1);
+        });
+
         test('CDN non-404 errors accumulate; breaker trips at threshold (3)', async () => {
             await GameImageProviderImplementation.init();
             // Six fetches for three resolves: 3x (bundled-miss + CDN-error).
