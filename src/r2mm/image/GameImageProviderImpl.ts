@@ -100,7 +100,7 @@ class GameImageProviderImpl implements GameImageProvider {
             clearTimeout(timer);
         }
 
-        if (res.status === 404) {
+        if (res.status === 404 || res.status === 403) {
             this.cdnConsecutiveFailures = 0;
             return undefined;
         }

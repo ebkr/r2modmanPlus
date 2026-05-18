@@ -172,6 +172,17 @@ describe('GameImageProviderImpl', () => {
             expect((GameImageProviderImplementation as any).cdnBreakerTripped).toBe(false);
         });
 
+        test('CDN 403 returns placeholder and does NOT increment failure counter', async () => {
+            await GameImageProviderImplementation.init();
+            mockFetch.mockResolvedValueOnce(makeFetchResponse('', 404));
+            mockFetch.mockResolvedValueOnce(makeFetchResponse('', 403));
+
+            const result = await GameImageProviderImplementation.resolve('missing-game/missing-game-cover-360x480.webp');
+            expect(result).toBe(PLACEHOLDER_URL);
+            expect((GameImageProviderImplementation as any).cdnConsecutiveFailures ?? 0).toBe(0);
+            expect((GameImageProviderImplementation as any).cdnBreakerTripped).toBe(false);
+        });
+
         test('CDN non-404 errors accumulate; breaker trips at threshold (3)', async () => {
             await GameImageProviderImplementation.init();
             // Six fetches for three resolves: 3x (bundled-miss + CDN-error).
