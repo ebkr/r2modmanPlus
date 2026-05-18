@@ -7,9 +7,12 @@ import {
 } from '../../../../utils/InstallLogicUtils';
 import { PluginInstallers } from '../../../../../../src/installers/registry';
 import { InstallRulePluginInstaller } from '../../../../../../src/installers/InstallRulePluginInstaller';
+import { ShimloaderInstaller } from '../../../../../../src/installers/ShimloaderInstaller';
+import { getInstallArgs } from '../../../../../../src/installers/PackageInstaller';
 import { PackageLoader } from '../../../../../../src/model/schema/ThunderstoreSchema';
 import Profile from '../../../../../../src/model/Profile';
 import R2Error from '../../../../../../src/model/errors/R2Error';
+import InMemoryFsProvider from '../../../../stubs/providers/InMemory.FsProvider';
 import ProfileInstallerProvider from '../../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
 import GenericProfileInstaller from '../../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import { RuleSubtype } from '../../../../../../src/r2mm/installing/InstallationRules';
@@ -134,6 +137,47 @@ describe('Shimloader Installer Tests', () => {
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
+            await expectFilesToBeCopied(sourceToExpectedDestination);
+        });
+    });
+
+    describe('Mod loader installation (case-sensitive FS)', () => {
+
+        // Test https://github.com/ebkr/r2modmanPlus/issues/2079
+        beforeEach(async () => {
+            await installLogicBeforeEach("Palworld");
+            InMemoryFsProvider.setMatchMode("CASE_SENSITIVE");
+        });
+
+        test("Installs new UE4SS.dll", async () => {
+            const pkg = createManifest("unreal_shimloader", "Thunderstore");
+            const sourceToExpectedDestination = {
+                "dwmapi.dll": "dwmapi.dll",
+                "UE4SS/UE4SS.dll": "ue4ss.dll",
+                "UE4SS/UE4SS-settings.ini": "UE4SS-settings.ini",
+                "UE4SS/Mods/shared/Types.lua": "shimloader/mod/shared/Types.lua",
+            };
+            await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
+
+            const profile = Profile.getActiveProfile().asImmutableProfile();
+            await new ShimloaderInstaller().install(getInstallArgs(pkg, profile));
+
+            await expectFilesToBeCopied(sourceToExpectedDestination);
+        });
+
+        test("Installs old ue4ss.dll", async () => {
+            const pkg = createManifest("unreal_shimloader", "Thunderstore");
+            const sourceToExpectedDestination = {
+                "dwmapi.dll": "dwmapi.dll",
+                "UE4SS/ue4ss.dll": "ue4ss.dll",
+                "UE4SS/UE4SS-settings.ini": "UE4SS-settings.ini",
+                "UE4SS/Mods/shared/Types.lua": "shimloader/mod/shared/Types.lua",
+            };
+            await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
+
+            const profile = Profile.getActiveProfile().asImmutableProfile();
+            await new ShimloaderInstaller().install(getInstallArgs(pkg, profile));
+
             await expectFilesToBeCopied(sourceToExpectedDestination);
         });
     });
