@@ -1,9 +1,22 @@
 <template>
     <article class="media">
         <div class="media-content">
-
+            <div id="no-content" class="content" v-if="resultCount === 0">
+                <div>
+                    <div>
+                        <i class="fas fa-gamepad fa-4x"></i>
+                        <br/>
+                        <h3 class="title is-4">No {{ activeTab }}s found matching "{{ filterText }}"</h3>
+                        <p class="subtitle">Try a different game title or keyword. We may not support this game yet.</p>
+                        <button class="button margin-top icon-button" @click.prevent.stop="requestNewGame">
+                            <span>Request a new {{ activeTab }}</span>
+                            <i class="margin-left--half-width fas fa-external-link-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
             <template v-if="viewMode === GameSelectionViewMode.LIST">
-                <div class="content">
+                <div id="list-content" class="content">
                     <GameSelectionListItem
                         v-for="game of favouriteGameList"
                         :key="game.settingsIdentifier"
@@ -32,6 +45,13 @@
                         @click="markAsSelectedGame(game)"
                         @toggle-favourite="toggleFavourite(game)"
                     />
+                    <div class="request-game margin-bottom" v-if="resultCount > 0">
+                        <h3 class="title is-5">Can't find what you're looking for?</h3>
+                        <button class="button margin-top" @click.prevent.stop="requestNewGame">
+                            <span>Request a new {{ activeTab }}</span>
+                            <i class="margin-left--half-width fas fa-external-link-alt"></i>
+                        </button>
+                    </div>
                 </div>
             </template>
 
@@ -130,6 +150,14 @@
                         </GameSelectionSection>
                     </template>
                 </div>
+                <div class="request-game margin-bottom" v-if="resultCount > 0">
+                    <hr/>
+                    <h3 class="title is-5">Can't find what you're looking for?</h3>
+                    <button class="button margin-top" @click.prevent.stop="requestNewGame">
+                        <span>Request a new {{ activeTab }}</span>
+                        <i class="margin-left--half-width fas fa-external-link-alt"></i>
+                    </button>
+                </div>
             </template>
 
         </div>
@@ -147,6 +175,7 @@ import Game from '../../model/game/Game';
 import { capitalize } from '../../utils/StringUtils';
 import { EcosystemSupportedGames } from '../../model/schema/ThunderstoreSchema';
 import { isGameNewlyAdded, registerGames } from '../../r2mm/ecosystem/EcosystemGameStatus';
+import LinkProvider from '../../providers/components/LinkProvider';
 
 const emit = defineEmits<{
     'select-game': [game: Game];
@@ -171,6 +200,8 @@ const newGames = computed(() => {
     return result;
 });
 
+const resultCount = computed(() => mergedGameList.value.length + hiddenGameList.value.length);
+
 const {
     hiddenGameList,
     favouriteGameList,
@@ -183,6 +214,10 @@ const {
     filterText,
     isFavourited,
 } = inject(gameSelectionKey)!;
+
+function requestNewGame() {
+    LinkProvider.instance.openLink("https://wiki.thunderstore.io/ecosystem/adding-a-new-game");
+}
 </script>
 
 <style lang="scss" scoped>
@@ -200,5 +235,31 @@ const {
 
 h3 {
     margin-bottom: 0 !important;
+}
+
+.title, .subtitle {
+    color: inherit;
+    display: block;
+    margin-top: 1.25rem !important;
+}
+
+.subtitle {
+    font-weight: lighter;
+}
+
+#no-content {
+    text-align: center;
+}
+
+.icon-button {
+    display: flex;
+    align-self: center;
+    flex: 1;
+    justify-self: center;
+    align-items: center;
+}
+
+.request-game {
+    margin: 2rem 0;
 }
 </style>

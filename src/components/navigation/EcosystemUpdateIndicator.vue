@@ -1,11 +1,6 @@
 <template>
     <Teleport to="#activity-bar">
-        <div class="activity-bar--left">
-            <button class="activity-bar__action" @click="requestNewGame">
-                <span class="icon is-small"><i class="fa fa-plus fa-xs"></i></span>
-                <span>Request a new game</span>
-            </button>
-        </div>
+        <div class="activity-bar--left"></div>
         <div class="activity-bar--right">
             <button
                 v-if="status.onClick"
@@ -32,7 +27,6 @@
 import { computed } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import LinkProvider from '../../providers/components/LinkProvider';
 
 const store = getStore<State>();
 
@@ -70,10 +64,6 @@ const status = computed(() => {
         tooltip: undefined,
     };
 });
-
-function requestNewGame() {
-    LinkProvider.instance.openLink("https://wiki.thunderstore.io/ecosystem/adding-a-new-game");
-}
 </script>
 
 <style lang="scss" scoped>
