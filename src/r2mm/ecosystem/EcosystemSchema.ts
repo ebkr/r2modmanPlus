@@ -186,7 +186,10 @@ export async function updateLatestEcosystemSchema(): Promise<void> {
     const mergedSchema = mergeSchemas(bundledSchema, result.schema);
     await writeLatestEcosystemSchema(mergedSchema, result.lastModified);
     await internalUpdateEcosystemReactives(mergedSchema);
-    void GameImageProvider.prefetchAll(getNonBundledIconUrls(mergedSchema, bundledSchema));
+    const nonBundledIconUrls = getNonBundledIconUrls(mergedSchema, bundledSchema);
+    if (nonBundledIconUrls.length > 0) {
+        void GameImageProvider.prefetchAll(nonBundledIconUrls);
+    }
 }
 
 async function writeLatestEcosystemSchema(
