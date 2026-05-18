@@ -35,7 +35,7 @@ export default class GameManager {
             game.distributions.map(
                 (x) => new StorePlatformMetadata(x.platform, x.identifier || undefined)
             ),
-            game.meta.iconUrl || "thunderstore-beta.webp",
+            game.meta.iconUrl ?? "",
             game.gameSelectionDisplayMode,
             game.gameInstanceType,
             game.packageLoader,

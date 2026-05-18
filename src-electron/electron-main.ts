@@ -135,8 +135,15 @@ app.whenReady().then(() => {
         if (filePath.endsWith(path.sep)) {
             filePath = filePath.substring(0, filePath.length - 1);
         }
-        const fileContent = await fs.promises.readFile(path.join(publicFolder, filePath))
-        return new Response(fileContent);
+        try {
+            const fileContent = await fs.promises.readFile(path.join(publicFolder, filePath));
+            return new Response(fileContent);
+        } catch (e: any) {
+            if (e?.code === 'ENOENT') {
+                return new Response(null, { status: 404 });
+            }
+            throw e;
+        }
     })
 });
 
