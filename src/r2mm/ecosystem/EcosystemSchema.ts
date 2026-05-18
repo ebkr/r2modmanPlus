@@ -1,5 +1,6 @@
 import bundledEcosystem from "../../assets/data/ecosystem.json";
 import {R2Modman, ThunderstoreEcosystem} from "../../assets/data/ecosystemTypes";
+import GameImageProvider from "../../providers/generic/image/GameImageProvider";
 import jsonSchema from "../../assets/data/ecosystemJsonSchema.json";
 import R2Error from "../../model/errors/R2Error";
 import Ajv from "ajv";
@@ -144,6 +145,27 @@ async function fetchLatestSchema(
     }
 }
 
+function getNonBundledIconUrls(
+    mergedSchema: ThunderstoreEcosystem,
+    bundledSchema: ThunderstoreEcosystem
+): string[] {
+    const bundledKeys = new Set(Object.keys(bundledSchema.games));
+    const urls: string[] = [];
+    for (const [key, game] of Object.entries(mergedSchema.games)) {
+        if (bundledKeys.has(key)) {
+            continue;
+        }
+        if (game.r2modman) {
+            for (const entry of game.r2modman) {
+                if (entry.meta.iconUrl) {
+                    urls.push(entry.meta.iconUrl)
+                }
+            }
+        }
+    }
+    return [...new Set(urls)];
+}
+
 export async function updateLatestEcosystemSchema(): Promise<void> {
     const bundledSchema = loadBundledSchema();
     const currentSchema = await loadSavedEcosystemSchema();
@@ -164,6 +186,7 @@ export async function updateLatestEcosystemSchema(): Promise<void> {
     const mergedSchema = mergeSchemas(bundledSchema, result.schema);
     await writeLatestEcosystemSchema(mergedSchema, result.lastModified);
     await internalUpdateEcosystemReactives(mergedSchema);
+    void GameImageProvider.prefetchAll(getNonBundledIconUrls(mergedSchema, bundledSchema));
 }
 
 async function writeLatestEcosystemSchema(

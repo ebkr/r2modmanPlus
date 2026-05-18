@@ -65,6 +65,24 @@ class GameImageProviderImpl implements GameImageProvider {
         return this.placeholderUrl;
     }
 
+    public async prefetchAll(iconUrls: string[]): Promise<void> {
+        if (!this.cacheRoot || this.cdnBreakerTripped) {
+            return;
+        }
+        const unique = [...new Set(iconUrls.filter(Boolean))];
+        await Promise.allSettled(unique.map(iconUrl => this.prefetchOne(iconUrl)));
+    }
+
+    private async prefetchOne(iconUrl: string): Promise<void> {
+        if (this.cdnBreakerTripped) {
+            return;
+        }
+        const cachePath = this.cachePathFor(iconUrl);
+        if (cachePath) {
+            await this.fetchFromCdnAndCache(iconUrl, cachePath);
+        }
+    }
+
     private bundledUrlFor(iconUrl: string): string {
         return ProtocolProvider.getPublicAssetUrl(`${BUNDLED_ASSET_DIR}/${iconUrl}`);
     }

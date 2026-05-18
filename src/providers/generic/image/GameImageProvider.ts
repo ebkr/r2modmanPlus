@@ -4,6 +4,7 @@ export type GameImageProvider = {
     init(): Promise<void>;
     readonly placeholderUrl: string;
     resolve(iconUrl: string): Promise<string>;
+    prefetchAll(iconUrls: string[]): Promise<void>;
 };
 
 let implementation: (() => GameImageProvider) | undefined;
@@ -23,6 +24,7 @@ const gameImage: GameImageProvider = {
     init: () => getImplementation().init(),
     get placeholderUrl() { return getImplementation().placeholderUrl; },
     resolve: (iconUrl) => getImplementation().resolve(iconUrl),
+    prefetchAll: (iconUrls) => getImplementation().prefetchAll(iconUrls),
 };
 
 export default gameImage;
