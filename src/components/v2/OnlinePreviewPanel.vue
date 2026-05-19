@@ -37,7 +37,7 @@ const isNsfw = computed<boolean>(() => props.mod?.getNsfwFlag())
 const maxPanelWidth = ref(getMaxPanelWidth());
 
 function getMaxPanelWidth(): number {
-    return window.outerWidth - document.getElementsByClassName("nav-column")[0]!.scrollWidth;
+    return window.outerWidth - (document.getElementsByClassName('nav-column')[0]?.scrollWidth ?? 0);
 }
 
 function setActiveTab(tab: "README" | "CHANGELOG" | "Dependencies") {

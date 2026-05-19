@@ -1,5 +1,5 @@
 <template>
-    <div class="split-pane" :class="[{'split-pane--with-active-second-pane': previewMod !== null}]">
+    <div class="split-pane" :class="[{'split-pane--with-active-second-pane': previewMod !== null}, {'split-pane--full-view': previewFullView}]">
         <div id="online-view">
             <div id="controls">
                 <div class="inherit-background-colour non-selectable">
@@ -113,6 +113,8 @@ const OnlineModList = defineAsyncComponent(() => OnlineModListProvider.provider(
 
 const localModList = computed<ManifestV2[]>(() => store.state.profile.modList);
 const thunderstoreModList = computed<ThunderstoreMod[]>(() => store.state.tsMods.mods);
+const settings = computed(() => store.getters['settings']);
+const previewFullView = computed<boolean>(() => settings.value?.getPreviewPanelFullView() ?? false);
 
 function getPaginationSize() {
     return Math.ceil(searchableThunderstoreModList.value.length / PAGE_SIZE);
@@ -284,11 +286,43 @@ onMounted(() => {
     max-height: 100%;
     width: 100%;
     flex: 1;
+    position: relative;
 
     &--with-active-second-pane {
         #mod-preview {
             display: flex;
             flex: 0;
+        }
+    }
+
+    &--with-active-second-pane#{&}--full-view {
+        #mod-preview {
+            position: absolute;
+            inset: 0;
+            z-index: 30;
+            flex: none;
+            display: block;
+            background-color: var(--preview-panel-background-color);
+            overflow: hidden;
+
+            :deep(.c-panel-window) {
+                max-width: none;
+                width: 100%;
+                height: 100%;
+                margin-left: 0;
+            }
+
+            :deep(.c-drag-pane) {
+                display: none;
+            }
+
+            :deep(.c-preview-panel) {
+                width: 100% !important;
+                min-width: 0;
+                height: 100%;
+                margin: 1rem;
+                box-sizing: border-box;
+            }
         }
     }
 }

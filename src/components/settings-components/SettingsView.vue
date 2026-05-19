@@ -260,6 +260,18 @@ let settingsList = [
     ),
     new SettingsRow(
         'Other',
+        'Toggle mod preview full view',
+        'When enabled, clicking a mod opens the preview panel as a full overlay instead of a side panel.',
+        async () => {
+            return settings.value.getPreviewPanelFullView()
+                ? 'Current: full view'
+                : 'Current: side panel (default)';
+        },
+        'fa-exchange-alt',
+        () => emitInvoke('TogglePreviewPanelFullView')
+    ),
+    new SettingsRow(
+        'Other',
         'Refresh online mod list',
         'Check for any new mod releases.',
         async () => {

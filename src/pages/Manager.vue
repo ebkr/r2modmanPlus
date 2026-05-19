@@ -479,6 +479,9 @@ async function handleSettingsCallbacks(invokedSetting: any) {
         case "SwitchCard":
             toggleCardExpanded(!settings.value.getContext().global.expandedCards);
             break;
+        case "TogglePreviewPanelFullView":
+            await settings.value.setPreviewPanelFullView(!settings.value.getPreviewPanelFullView());
+            break;
         case "EnableAll":
             await store.dispatch(
                 "profile/enableModsOnActiveProfile",

@@ -233,6 +233,15 @@ export default class ManagerSettings {
         await this.save();
     }
 
+    public getPreviewPanelFullView(): boolean {
+        return ManagerSettings.CONTEXT.global.previewPanelFullView ?? false;
+    }
+
+    public async setPreviewPanelFullView(enabled: boolean) {
+        ManagerSettings.CONTEXT.global.previewPanelFullView = enabled;
+        await this.save();
+    }
+
     public logActiveGameInDexieStore() {
         console.debug(`Active game in Dexie store: "${ManagerSettings.DEXIE_STORE.activeGame.settingsIdentifier}".`);
     }
