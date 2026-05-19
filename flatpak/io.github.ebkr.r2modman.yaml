@@ -52,9 +52,6 @@ modules:
       - generated-sources.json
 
       - type: file
-        path: io.github.ebkr.r2modman
-
-      - type: file
         url: https://repo.yarnpkg.com/4.11.0/packages/yarnpkg-cli/bin/yarn.js
         dest-filename: yarn.cjs
         sha256: b0efc6597348fab50c777d2ff4b09e814974058cf012c3d687c9e80bca824358
@@ -65,7 +62,6 @@ modules:
       - >-
         echo "yarnPath: yarn.cjs" >> .yarnrc.yml
       - yarn plugin import $FLATPAK_BUILDER_BUILDDIR/flatpak-node/flatpak-yarn.js
-
       # prepare yarn cache
       - yarn convertToZip $(which yarn)
 
@@ -79,4 +75,4 @@ modules:
 
       - install -Dm644 flatpak/io.github.ebkr.r2modman.desktop /app/share/applications/io.github.ebkr.r2modman.desktop
       - install -Dm644 flatpak/io.github.ebkr.r2modman.metainfo.xml /app/share/metainfo/io.github.ebkr.r2modman.metainfo.xml
-      - install -Dm755 io.github.ebkr.r2modman /app/bin/io.github.ebkr.r2modman
+      - install -Dm755 flatpak/io.github.ebkr.r2modman /app/bin/io.github.ebkr.r2modman
