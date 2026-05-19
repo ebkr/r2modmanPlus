@@ -260,6 +260,6 @@ h3 {
 }
 
 .request-game {
-    margin: 2rem 0;
+    margin: 2rem 1rem;
 }
 </style>
