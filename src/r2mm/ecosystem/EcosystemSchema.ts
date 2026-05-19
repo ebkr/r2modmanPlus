@@ -172,7 +172,7 @@ export async function updateLatestEcosystemSchema(): Promise<void> {
     const result = await fetchLatestSchema(currentSchema);
 
     if (result.kind === "not-modified") {
-        return;
+        return updateEcosystemReactives();
     }
 
     if (result.kind === "failed") {
