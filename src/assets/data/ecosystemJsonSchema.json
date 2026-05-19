@@ -27,9 +27,14 @@
                     "type": "string"
                   },
                   "iconUrl": {
-                    "type": [
-                      "string",
-                      "null"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^([a-z0-9](?:-?[a-z0-9])*)\\/\\1-(bg|cover|icon)-\\d+x\\d+\\.(webp|png|jpg|jpeg)$"
+                      },
+                      {
+                        "type": "null"
+                      }
                     ]
                   }
                 },
