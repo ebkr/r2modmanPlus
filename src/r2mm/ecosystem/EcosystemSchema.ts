@@ -163,7 +163,7 @@ function getNonBundledIconUrls(
             }
         }
     }
-    return [...new Set(urls)];
+    return urls;
 }
 
 export async function updateLatestEcosystemSchema(): Promise<void> {
