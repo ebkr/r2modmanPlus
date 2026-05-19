@@ -248,4 +248,37 @@ describe('GameImageProviderImpl', () => {
             expect(result).toBe(PLACEHOLDER_URL);
         });
     });
+
+    describe('prefetchAll()', () => {
+        test('does nothing without init() (no cacheRoot)', async () => {
+            await GameImageProviderImplementation.prefetchAll(['game/icon.webp']);
+            expect(mockFetch).not.toHaveBeenCalled();
+        });
+
+        test('fetches each unique URL from CDN and writes to cache', async () => {
+            await GameImageProviderImplementation.init();
+            const body = new Uint8Array([1, 2, 3]).buffer;
+            mockFetch
+                .mockResolvedValueOnce(makeFetchResponse(body, 200))
+                .mockResolvedValueOnce(makeFetchResponse(body, 200));
+
+            await GameImageProviderImplementation.prefetchAll([
+                'game-a/game-a-cover.webp',
+                'game-b/game-b-cover.webp',
+            ]);
+
+            expect(mockFetch).toHaveBeenCalledTimes(2);
+            expect(await FsProvider.instance.exists(cachePathFor('game-a/game-a-cover.webp'))).toBe(true);
+            expect(await FsProvider.instance.exists(cachePathFor('game-b/game-b-cover.webp'))).toBe(true);
+        });
+
+        test('does nothing when the circuit breaker is tripped', async () => {
+            await GameImageProviderImplementation.init();
+            (GameImageProviderImplementation as any).cdnBreakerTripped = true;
+
+            await GameImageProviderImplementation.prefetchAll(['game/icon.webp']);
+
+            expect(mockFetch).not.toHaveBeenCalled();
+        });
+    });
 });

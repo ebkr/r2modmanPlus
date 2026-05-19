@@ -18,6 +18,7 @@ import {TestPathProvider} from '../../../stubs/providers/node/Node.Path.Provider
 import ManagerInformation from '../../../../../src/_managerinf/ManagerInformation';
 import LoggerProvider from '../../../../../src/providers/ror2/logging/LoggerProvider';
 import StubLoggerProvider from '../../../stubs/providers/stub.LoggerProvider';
+import { provideGameImageImplementation } from '../../../../../src/providers/generic/image/GameImageProvider';
 
 const mockAxiosGet = vi.fn();
 
@@ -54,6 +55,7 @@ async function writeCacheFile(schema: Partial<VersionedThunderstoreEcosystem>) {
 describe('EcosystemSchema', () => {
 
     let spyLogger: MockInstance;
+    let mockPrefetchAll: ReturnType<typeof vi.fn>;
 
     beforeEach(async () => {
         mockJsonSchema = {};
@@ -68,6 +70,13 @@ describe('EcosystemSchema', () => {
         spyLogger = vi.spyOn(LoggerProvider.instance, 'Log').mockImplementation(() => {});
         updateModLoaderExports();
         mockAxiosGet.mockReset();
+        mockPrefetchAll = vi.fn().mockResolvedValue(undefined);
+        provideGameImageImplementation(() => ({
+            init: vi.fn().mockResolvedValue(undefined),
+            get placeholderUrl() { return ''; },
+            resolve: vi.fn().mockResolvedValue(''),
+            prefetchAll: mockPrefetchAll,
+        }));
         await FsProvider.instance.mkdirs(TEST_ROOT);
     });
 
@@ -282,6 +291,42 @@ describe('EcosystemSchema', () => {
             );
             expect(testLoaders).toHaveLength(1);
             expect(testLoaders[0]!.rootFolder).toBe('test-updated');
+        });
+
+        test('passes icon URLs for new games to prefetchAll', async () => {
+            const newGameIconUrl = 'test-new-game-xyz/test-new-game-xyz-cover.webp';
+            mockAxiosGet.mockResolvedValue({
+                status: 200,
+                data: {
+                    ...createMinimalSchema(),
+                    games: {
+                        'test-new-game-xyz': {
+                            distributions: [],
+                            label: 'Test New Game',
+                            meta: { displayName: 'Test New Game', iconUrl: null },
+                            r2modman: [{ meta: { iconUrl: newGameIconUrl } }],
+                            uuid: 'test-uuid',
+                        },
+                    },
+                },
+                headers: {},
+            });
+
+            await updateLatestEcosystemSchema();
+
+            expect(mockPrefetchAll).toHaveBeenCalledWith([newGameIconUrl]);
+        });
+
+        test('does not call prefetchAll when all games are already bundled', async () => {
+            mockAxiosGet.mockResolvedValue({
+                status: 200,
+                data: createMinimalSchema(),
+                headers: {},
+            });
+
+            await updateLatestEcosystemSchema();
+
+            expect(mockPrefetchAll).not.toHaveBeenCalled();
         });
 
     });
