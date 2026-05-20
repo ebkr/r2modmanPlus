@@ -85,6 +85,7 @@ describe('GameImageProviderImpl', () => {
         inst.cacheRoot = undefined;
         inst.cdnConsecutiveFailures = 0;
         inst.cdnBreakerTripped = false;
+        inst.resolveCache = new Map();
 
         mockFetch = vi.fn();
         vi.stubGlobal('fetch', mockFetch);
