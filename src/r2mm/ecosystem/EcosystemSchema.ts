@@ -171,8 +171,18 @@ export async function updateLatestEcosystemSchema(): Promise<void> {
     const currentSchema = await loadSavedEcosystemSchema();
     const result = await fetchLatestSchema(currentSchema);
 
+    const updateIcons = async (mergedSchema: ThunderstoreEcosystem): Promise<void> => {
+        const nonBundledIconUrls = getNonBundledIconUrls(mergedSchema, bundledSchema);
+        if (nonBundledIconUrls.length > 0) {
+            void GameImageProvider.prefetchAll(nonBundledIconUrls);
+        }
+    }
+
     if (result.kind === "not-modified") {
-        return updateEcosystemReactives();
+        const mergedSchema = await resolveCachedEcosystemSchema();
+        await updateIcons(mergedSchema);
+        await internalUpdateEcosystemReactives(mergedSchema);
+        return;
     }
 
     if (result.kind === "failed") {
@@ -186,10 +196,7 @@ export async function updateLatestEcosystemSchema(): Promise<void> {
     const mergedSchema = mergeSchemas(bundledSchema, result.schema);
     await writeLatestEcosystemSchema(mergedSchema, result.lastModified);
     await internalUpdateEcosystemReactives(mergedSchema);
-    const nonBundledIconUrls = getNonBundledIconUrls(mergedSchema, bundledSchema);
-    if (nonBundledIconUrls.length > 0) {
-        void GameImageProvider.prefetchAll(nonBundledIconUrls);
-    }
+    await updateIcons(mergedSchema);
 }
 
 async function writeLatestEcosystemSchema(
