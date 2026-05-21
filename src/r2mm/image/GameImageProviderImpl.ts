@@ -20,6 +20,7 @@ class GameImageProviderImpl implements GameImageProvider {
     private cacheRoot: string | undefined;
     private cdnConsecutiveFailures = 0;
     private cdnBreakerTripped = false;
+    private resolveCache = new Map<string, string>();
 
     public async init(): Promise<void> {
         if (PathResolver.APPDATA_DIR) {
@@ -38,18 +39,32 @@ class GameImageProviderImpl implements GameImageProvider {
             return this.placeholderUrl;
         }
 
+        const memoryCached = this.resolveCache.get(iconUrl);
+        if (memoryCached !== undefined) {
+            return memoryCached;
+        }
+
+        let result: string;
+
         const bundledUrl = this.bundledUrlFor(iconUrl);
         if (await this.urlReachable(bundledUrl)) {
-            return bundledUrl;
-        }
-
-        if (import.meta.env.MODE === "development") {
+            result = bundledUrl;
+        } else if (import.meta.env.MODE === "development") {
             const localUrl = `${LOCAL_DEV_ASSET_BASE}/${iconUrl}`;
             if (await this.urlReachable(localUrl)) {
-                return localUrl;
+                result = localUrl;
+            } else {
+                result = await this.resolveFromCacheOrCdn(iconUrl);
             }
+        } else {
+            result = await this.resolveFromCacheOrCdn(iconUrl);
         }
 
+        this.resolveCache.set(iconUrl, result);
+        return result;
+    }
+
+    private async resolveFromCacheOrCdn(iconUrl: string): Promise<string> {
         const cachePath = this.cachePathFor(iconUrl);
         if (cachePath && await FsProvider.instance.exists(cachePath)) {
             return await this.dataUrlFromFile(cachePath);

@@ -41,7 +41,8 @@
                         <nav class="pad--sides pad--top-none flex">
                             <div class="input-group input-group--flex margin-right">
                                 <input
-                                    v-model="filterText"
+                                    :value="filterText"
+                                    @input="(e) => debouncedFilter((e.target as HTMLInputElement).value)"
                                     id="game-selection-search"
                                     class="input margin-right"
                                     type="text"
@@ -92,6 +93,7 @@ import { GameInstanceType } from '../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import ModalCard from '../components/ModalCard.vue';
 import { onMounted, ref, provide } from 'vue';
+import debounce from 'lodash.debounce';
 import { useGameSelectionComposable, gameSelectionKey } from '../components/composables/GameSelectionComposable';
 import GameSelectionList from '../components/game-selection/GameSelectionList.vue';
 import Game from '../model/game/Game';
@@ -124,6 +126,7 @@ const {
 } = gameSelection;
 
 const showPlatformModal = ref<boolean>(false);
+const debouncedFilter = debounce((value: string) => { filterText.value = value; }, 100);
 
 function selectGame(game: Game) {
     markAsSelectedGame(game);
