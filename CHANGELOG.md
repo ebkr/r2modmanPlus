@@ -1,3 +1,13 @@
+### 3.2.17
+
+#### Automatic Game Additions
+
+For the longest time you have needed to update the manager in order to get new games, and each game addition required me
+to create a release.
+
+It's automatic now. You'll be able to access any **supported** games given your mod manager version.
+
+
 ### 3.2.16
 
 #### UI Changes
