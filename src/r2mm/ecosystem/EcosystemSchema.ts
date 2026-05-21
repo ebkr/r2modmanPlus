@@ -190,6 +190,7 @@ export async function updateLatestEcosystemSchema(): Promise<void> {
             await writeLatestEcosystemSchema(bundledSchema);
             await internalUpdateEcosystemReactives(bundledSchema);
         }
+        updateEcosystemReactives();
         throw new Error("Failed to update game list");
     }
 
@@ -261,6 +262,7 @@ async function internalUpdateEcosystemReactives(schema: ThunderstoreEcosystem): 
             result.push([identifier, entry]);
         }
     }
+    console.log(result);
     EcosystemSupportedGames.value = result;
     EcosystemModloaderPackages.value = schema.modloaderPackages;
     updateModLoaderExports();
