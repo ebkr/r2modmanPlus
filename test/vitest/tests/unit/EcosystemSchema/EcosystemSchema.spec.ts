@@ -244,6 +244,27 @@ describe('EcosystemSchema', () => {
             expect(afterContent).toBe(originalContent);
         });
 
+        test('populates games from cache into reactives when fetch fails with existing cache', async () => {
+            await writeCacheFile({
+                games: {
+                    'test-cached-game': {
+                        distributions: [],
+                        label: 'Test Cached Game',
+                        meta: { displayName: 'Test Cached Game', iconUrl: null },
+                        r2modman: [{ meta: { iconUrl: null } }],
+                        uuid: 'test-uuid',
+                    },
+                },
+            });
+
+            mockAxiosGet.mockRejectedValue(new Error('Network error'));
+
+            await expect(updateLatestEcosystemSchema()).rejects.toThrow();
+
+            expect(EcosystemSupportedGames.value.length).toBeGreaterThan(0);
+            expect(EcosystemSupportedGames.value[0]![0]).toBe('test-cached-game');
+        });
+
         test('merges fetched data with bundled schema', async () => {
             mockAxiosGet.mockResolvedValue({
                 status: 200,
