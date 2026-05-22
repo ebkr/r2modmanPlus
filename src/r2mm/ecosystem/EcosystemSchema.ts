@@ -190,6 +190,7 @@ export async function updateLatestEcosystemSchema(): Promise<void> {
             await writeLatestEcosystemSchema(bundledSchema);
             await internalUpdateEcosystemReactives(bundledSchema);
         }
+        await updateEcosystemReactives();
         throw new Error("Failed to update game list");
     }
 

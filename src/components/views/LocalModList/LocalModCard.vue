@@ -12,11 +12,14 @@ import { splitToNameAndVersion } from '../../../utils/DependencyUtils';
 import { computed, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
+import ThunderstoreMod from "../../../model/ThunderstoreMod";
+import ThunderstoreVersion from "../../../model/ThunderstoreVersion";
 
 const store = getStore<State>();
 
 type LocalModCardProps = {
     mod: ManifestV2;
+    version?: ThunderstoreVersion;
 }
 
 const props = defineProps<LocalModCardProps>();
@@ -32,7 +35,7 @@ const canBeDisabled = computed(() => !store.getters['isModLoader'](props.mod.get
 const isDeprecated = computed(() => store.state.tsMods.deprecated.get(props.mod.getName()) || false);
 const isLatestVersion = computed(() => store.getters['tsMods/isLatestVersion'](props.mod));
 const localModList = computed(() => store.state.profile.modList);
-const tsMod = computed(() => store.getters['tsMods/tsMod'](props.mod));
+const tsMod = computed<ThunderstoreMod>(() => store.getters['tsMods/tsMod'](props.mod));
 
 async function updateDependencies() {
     if (props.mod.getDependencies().length === 0) {
@@ -217,6 +220,8 @@ function dependencyStringToModName(x: string) {
 
         <template v-slot:description>
             <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0"><strong>Installed on:</strong> {{ getReadableDate(mod.getInstalledAtTime()) }}</p>
+            <p class='card-timestamp' v-if="version && version.getDateCreated()"><strong>Released on:</strong>
+                {{ getReadableDate(version!.getDateCreated()!.getTime()) }}</p>
         </template>
 
         <!-- Show icon button row even when card is collapsed -->
