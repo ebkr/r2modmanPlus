@@ -58,7 +58,7 @@
                                 <router-link :to="{name: 'downloads'}" class="margin-right--half-width">
                                     <i class="tag fas fa-download is-primary" />
                                 </router-link>
-                                <span :class="getTagLinkClasses(['manager.online', 'downloads'])">{{thunderstoreModCount}}</span>
+                                <span :class="getTagLinkClasses(['manager.online', 'downloads'])">{{filteredModCount}}</span>
                             </router-link>
                         </li>
                     </ul>
@@ -103,28 +103,22 @@ import {
     setGameDirIfUnset,
     throwIfNoGameDir
  } from '../../utils/LaunchUtils';
-import FileUtils from '../../utils/FileUtils';
-import { ref, computed, onMounted, getCurrentInstance } from 'vue';
+import { ref, computed } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import VueRouter, { useRouter } from 'vue-router';
-import ProtocolProvider from '../../providers/generic/protocol/ProtocolProvider';
+import { useRouter } from 'vue-router';
 import ActivityDropdown from '../v2/ActivityDropdown.vue';
+import { useModFilters } from '../composables/ModFiltersComposable';
 
 const store = getStore<State>();
 const router = useRouter();
+const { filteredModCount } = useModFilters();
 
 const selectedMode = ref<LaunchMode>(LaunchMode.MODDED);
 
 const activeGame = computed<Game>(() => store.state.activeGame);
 const profile = computed<Profile>(() => store.getters['profile/activeProfile']);
 const localModCount = computed<number>(() => store.state.profile.modList.length);
-
-const thunderstoreModCount = computed(() =>
-    store.state.modFilters.showDeprecatedPackages
-        ? store.state.tsMods.mods.length
-        : store.getters['tsMods/undeprecatedModCount']
-);
 
 function getTagLinkClasses(routeNames: string[]) {
     const base = ["tag", "tagged-link__tag"];
