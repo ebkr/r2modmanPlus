@@ -24,7 +24,7 @@ import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
 import { ImmutableProfile } from '../../../model/Profile';
 import {getCombosByDependencyStrings} from "../../../r2mm/manager/PackageDexieStore";
-import ThunderstoreVersion from "src/model/ThunderstoreVersion";
+import ThunderstoreVersion from "../../../model/ThunderstoreVersion";
 
 
 const store = getStore<State>();
