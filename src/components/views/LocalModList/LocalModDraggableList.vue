@@ -8,7 +8,8 @@
                :scroll-sensitivity="100"
                item-key="id">
         <template #item="{element}">
-            <local-mod-card
+            <LocalModCard
+                :version="installedVersions.get(element.name)"
                 :mod="element" />
         </template>
     </draggable>
@@ -22,6 +23,8 @@ import { State } from '../../../store';
 import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
 import { ImmutableProfile } from '../../../model/Profile';
+import {getCombosByDependencyStrings} from "../../../r2mm/manager/PackageDexieStore";
+import ThunderstoreVersion from "src/model/ThunderstoreVersion";
 
 
 const store = getStore<State>();
@@ -52,4 +55,18 @@ const draggableList = computed({
         }
     }
 });
+
+const activeGame = computed(() => store.state.activeGame);
+const modList = computed(() => store.state.profile.modList);
+
+const installedVersions = ref<Map<string, ThunderstoreVersion>>(new Map());
+
+async function updateInstalledVersions() {
+    const dependenciesStrings = modList.value.map(value => `${value.getName()}-${value.getVersionNumber().toString()}`);
+    const combos = await getCombosByDependencyStrings(activeGame.value, dependenciesStrings, false);
+    installedVersions.value = new Map(combos.map(value => [value.getMod().getFullName(), value.getVersion()]));
+}
+
+onMounted(updateInstalledVersions);
+watch(() => modList, updateInstalledVersions);
 </script>
