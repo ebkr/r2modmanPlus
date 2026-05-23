@@ -8,6 +8,24 @@ base: org.electronjs.Electron2.BaseApp
 base-version: "25.08"
 command: io.github.ebkr.r2modman
 
+finish-args:
+  # Graphics
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+
+  # Flatpak spawn for steam deck
+  - --talk-name=org.freedesktop.Flatpak
+
+  # Network access
+  - --share=network
+  - --share=ipc
+
+  # File system to find Steam and games
+  - --filesystem=host
+  - --filesystem=~/.var/app/com.valvesoftware.Steam:rw
+  # - --filesystem=~/.local/share/Steam:rw
+
 modules:
   - name: r2modmanPlus
     buildsystem: simple
@@ -34,15 +52,6 @@ modules:
       - generated-sources.json
 
       - type: file
-        path: io.github.ebkr.r2modman.desktop
-
-      - type: file
-        path: io.github.ebkr.r2modman.metainfo.xml
-
-      - type: file
-        path: io.github.ebkr.r2modman
-
-      - type: file
         url: https://repo.yarnpkg.com/4.11.0/packages/yarnpkg-cli/bin/yarn.js
         dest-filename: yarn.cjs
         sha256: b0efc6597348fab50c777d2ff4b09e814974058cf012c3d687c9e80bca824358
@@ -53,7 +62,6 @@ modules:
       - >-
         echo "yarnPath: yarn.cjs" >> .yarnrc.yml
       - yarn plugin import $FLATPAK_BUILDER_BUILDDIR/flatpak-node/flatpak-yarn.js
-
       # prepare yarn cache
       - yarn convertToZip $(which yarn)
 
@@ -65,24 +73,6 @@ modules:
       - install -Dm644 src/assets/icon/128x128.png /app/share/icons/hicolor/128x128/apps/io.github.ebkr.r2modman.png
       - install -Dm644 src/assets/icon/256x256.png /app/share/icons/hicolor/256x256/apps/io.github.ebkr.r2modman.png
 
-      - install -Dm644 io.github.ebkr.r2modman.desktop /app/share/applications/io.github.ebkr.r2modman.desktop
-      - install -Dm644 io.github.ebkr.r2modman.metainfo.xml /app/share/metainfo/io.github.ebkr.r2modman.metainfo.xml
-      - install -Dm755 io.github.ebkr.r2modman /app/bin/io.github.ebkr.r2modman
-
-finish-args:
-  # Graphics
-  - --socket=wayland
-  - --socket=fallback-x11
-  - --device=dri
-
-  # Flatpak spawn for steam deck
-  - --talk-name=org.freedesktop.Flatpak
-
-  # Network access
-  - --share=network
-  - --share=ipc
-
-  # File system to find Steam and games
-  - --filesystem=host
-  # - --filesystem=~/.var/app/com.valvesoftware.Steam:rw
-  # - --filesystem=~/.local/share/Steam:rw
+      - install -Dm644 flatpak/io.github.ebkr.r2modman.desktop /app/share/applications/io.github.ebkr.r2modman.desktop
+      - install -Dm644 flatpak/io.github.ebkr.r2modman.metainfo.xml /app/share/metainfo/io.github.ebkr.r2modman.metainfo.xml
+      - install -Dm755 flatpak/io.github.ebkr.r2modman /app/bin/io.github.ebkr.r2modman
