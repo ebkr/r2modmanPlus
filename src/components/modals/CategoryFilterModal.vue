@@ -4,26 +4,25 @@ import ModalCard from '../../components/ModalCard.vue';
 import { computed } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import { useModFilters } from '../composables/ModFiltersComposable';
 
 const store = getStore<State>();
+const { selectCategoryToCompareOne, selectCategoryToCompareAll, selectCategoryToExclude, unselectCategory } = useModFilters();
 
 const allowNsfw = computed({
-    get() {
-        return store.state.modFilters.allowNsfw;
-    },
-    set(value) {
-        store.commit("modFilters/setAllowNsfw", value)
-    }
+    get: () => store.state.modFilters.allowNsfw,
+    set: (value: boolean) => store.commit("modFilters/setAllowNsfw", value)
 });
 
 const showDeprecatedPackages = computed({
-    get() {
-        return store.state.modFilters.showDeprecatedPackages;
-    },
-    set(value) {
-        store.commit("modFilters/setShowDeprecatedPackages", value)
-    }
+    get: () => store.state.modFilters.showDeprecatedPackages,
+    set: (value: boolean) => store.commit("modFilters/setShowDeprecatedPackages", value)
 });
+
+const selectedCategoriesCompareOne = computed(() => store.state.modFilters.selectedCategoriesCompareOne);
+const selectedCategoriesCompareAll = computed(() => store.state.modFilters.selectedCategoriesCompareAll);
+const selectedCategoriesToExclude = computed(() => store.state.modFilters.selectedCategoriesToExclude);
+const unselectedCategories = computed(() => store.getters["modFilters/unselectedCategories"]);
 
 function close() {
     store.commit("closeCategoryFilterModal");
@@ -31,45 +30,6 @@ function close() {
 
 const isDarkTheme = computed(() => store.getters["settings"].getContext().global.darkTheme);
 const isOpen = computed(() => store.state.modals.isCategoryFilterModalOpen);
-
-function selectCompareOneCategory(event: Event) {
-    if (!(event.target instanceof HTMLSelectElement)) {
-        return;
-    }
-
-    store.commit("modFilters/selectCategoryToCompareOne", event.target.value);
-    event.target.selectedIndex = 0;
-}
-
-function selectCompareAllCategory(event: Event) {
-    if (!(event.target instanceof HTMLSelectElement)) {
-        return;
-    }
-
-    store.commit("modFilters/selectCategoryToCompareAll", event.target.value);
-    event.target.selectedIndex = 0;
-}
-
-function selectToExcludeCategory(event: Event) {
-    if (!(event.target instanceof HTMLSelectElement)) {
-        return;
-    }
-
-    store.commit("modFilters/selectCategoryToExclude", event.target.value);
-    event.target.selectedIndex = 0;
-}
-
-const selectedCategoriesCompareOne = computed(() => store.state.modFilters.selectedCategoriesCompareOne);
-
-const selectedCategoriesCompareAll = computed(() => store.state.modFilters.selectedCategoriesCompareAll);
-
-const selectedCategoriesToExclude = computed(() => store.state.modFilters.selectedCategoriesToExclude);
-
-function unselectCategory(category: string) {
-    store.commit("modFilters/unselectCategory", category);
-}
-
-const unselectedCategories = computed(() => store.getters["modFilters/unselectedCategories"]);
 </script>
 
 <template>
@@ -83,7 +43,7 @@ const unselectedCategories = computed(() => store.getters["modFilters/unselected
                     title="Mods must contain at least one of these categories"
                     :selected-categories="selectedCategoriesCompareOne"
                     :selectable-categories="unselectedCategories"
-                    @selected-category="selectCompareOneCategory"
+                    @selected-category="selectCategoryToCompareOne"
                     @deselected-category="unselectCategory"
                 />
                 <hr/>
@@ -91,7 +51,7 @@ const unselectedCategories = computed(() => store.getters["modFilters/unselected
                     title="Mods must contain all of these categories"
                     :selected-categories="selectedCategoriesCompareAll"
                     :selectable-categories="unselectedCategories"
-                    @selected-category="selectCompareAllCategory"
+                    @selected-category="selectCategoryToCompareAll"
                     @deselected-category="unselectCategory"
                 />
                 <hr/>
@@ -99,7 +59,7 @@ const unselectedCategories = computed(() => store.getters["modFilters/unselected
                     title="Mods cannot contain any of these categories"
                     :selected-categories="selectedCategoriesToExclude"
                     :selectable-categories="unselectedCategories"
-                    @selected-category="selectToExcludeCategory"
+                    @selected-category="selectCategoryToExclude"
                     @deselected-category="unselectCategory"
                 />
             </div>
