@@ -67,7 +67,7 @@
                                         :game="game"
                                         :is-favourited="true"
                                         :active-tab="activeTab"
-                                        :is-new="newGames.has(game.thunderstoreIdentifier)"
+                                        :is-new="newGameSet.has(game)"
                                         @select="emit('select-game', $event)"
                                         @set-default="emit('set-default-game', $event)"
                                         @toggle-favourite="toggleFavourite($event)"
@@ -76,9 +76,32 @@
                             </GameSelectionSection>
                         </template>
 
+                        <template v-if="newGameSet.size > 0">
+                            <hr v-if="favouriteGameList.length > 0"/>
+                            <GameSelectionSection
+                                :title="`New ${activeTab}s`"
+                                :count="newGameSet.size"
+                                :default-open="true"
+                            >
+                                <div class="game-cards-container">
+                                    <GameSelectionCard
+                                        v-for="game of newGameSet"
+                                        :key="game.settingsIdentifier"
+                                        :game="game"
+                                        :is-selected="isGameSelected(game)"
+                                        :is-favourited="false"
+                                        :active-tab="activeTab"
+                                        :is-new="newGameSet.has(game)"
+                                        @select="emit('select-game', $event)"
+                                        @set-default="emit('set-default-game', $event)"
+                                        @toggle-favourite="toggleFavourite($event)"
+                                    />
+                                </div>
+                            </GameSelectionSection>
+                        </template>
 
                         <template v-if="nonFavouriteGameList.length > 0">
-                            <hr v-if="favouriteGameList.length > 0"/>
+                            <hr v-if="favouriteGameList.length > 0 || newGameSet.size > 0"/>
                             <GameSelectionSection
                                 :title="`${capitalize(activeTab)}s`"
                                 :count="nonFavouriteGameList.length"
@@ -92,7 +115,7 @@
                                         :is-selected="isGameSelected(game)"
                                         :is-favourited="false"
                                         :active-tab="activeTab"
-                                        :is-new="newGames.has(game.thunderstoreIdentifier)"
+                                        :is-new="newGameSet.has(game)"
                                         @select="emit('select-game', $event)"
                                         @set-default="emit('set-default-game', $event)"
                                         @toggle-favourite="toggleFavourite($event)"
@@ -115,7 +138,7 @@
                                     :game="game"
                                     :is-favourited="isFavourited(game)"
                                     :active-tab="activeTab"
-                                    :is-new="newGames.has(game.thunderstoreIdentifier)"
+                                    :is-new="newGameSet.has(game)"
                                     @select="emit('select-game', $event)"
                                     @set-default="emit('set-default-game', $event)"
                                     @toggle-favourite="toggleFavourite($event)"
@@ -141,7 +164,7 @@
                                     :is-selected="isGameSelected(game)"
                                     :is-favourited="isFavourited(game)"
                                     :active-tab="activeTab"
-                                    :is-new="newGames.has(game.thunderstoreIdentifier)"
+                                    :is-new="newGameSet.has(game)"
                                     @select="emit('select-game', $event)"
                                     @set-default="emit('set-default-game', $event)"
                                     @toggle-favourite="toggleFavourite($event)"
@@ -174,7 +197,6 @@ import GameSelectionSection from './GameSelectionSection.vue';
 import Game from '../../model/game/Game';
 import { capitalize } from '../../utils/StringUtils';
 import { EcosystemSupportedGames } from '../../model/schema/ThunderstoreSchema';
-import { isGameNewlyAdded, registerGames } from '../../r2mm/ecosystem/EcosystemGameStatus';
 import LinkProvider from '../../providers/components/LinkProvider';
 
 const emit = defineEmits<{
@@ -204,6 +226,7 @@ const resultCount = computed(() => mergedGameList.value.length + hiddenGameList.
 
 const {
     hiddenGameList,
+    newGameSet,
     favouriteGameList,
     nonFavouriteGameList,
     activeTab,
