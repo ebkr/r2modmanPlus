@@ -210,18 +210,6 @@ const mergedGameList = computed(() => {
     return [...favourites, ...others];
 });
 
-const newGames = computed(() => {
-    const allGames = EcosystemSupportedGames.value.map(([id, game]) => id);
-    registerGames(allGames);
-    const result = new Set<string>();
-    for (const game of allGames) {
-        if (isGameNewlyAdded(game)) {
-            result.add(game);
-        }
-    }
-    return result;
-});
-
 const resultCount = computed(() => mergedGameList.value.length + hiddenGameList.value.length);
 
 const {
