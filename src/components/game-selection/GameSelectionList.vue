@@ -196,7 +196,6 @@ import GameSelectionListItem from './GameSelectionListItem.vue';
 import GameSelectionSection from './GameSelectionSection.vue';
 import Game from '../../model/game/Game';
 import { capitalize } from '../../utils/StringUtils';
-import { EcosystemSupportedGames } from '../../model/schema/ThunderstoreSchema';
 import LinkProvider from '../../providers/components/LinkProvider';
 
 const emit = defineEmits<{

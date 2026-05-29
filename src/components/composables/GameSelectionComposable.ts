@@ -60,13 +60,9 @@ export function useGameSelectionComposable() {
         const gameList = filteredGameList.value;
         const gameNames = gameList.map((value: Game) => value.thunderstoreIdentifier);
         registerGames(gameNames);
-        const result = new Set<Game>();
-        for (const game of gameList) {
-            if (isGameNewlyAdded(game.thunderstoreIdentifier)) {
-                result.add(game);
-            }
-        }
-        return result;
+        return new Set(filteredGameList.value.filter(game =>
+            isGameNewlyAdded(game.thunderstoreIdentifier)
+        ));
     });
 
     const hiddenGameList = computed(() => {
