@@ -10,6 +10,7 @@ import ProviderUtils from '../../providers/generic/ProviderUtils';
 import R2Error from '../../model/errors/R2Error';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import { isGameNewlyAdded, registerGames } from '../../r2mm/ecosystem/EcosystemGameStatus';
 
 export function useGameSelectionComposable() {
     const store = getStore<State>();
@@ -53,6 +54,15 @@ export function useGameSelectionComposable() {
         return gameList.value
             .filter(matchesSearch)
             .filter((value: Game) => value.instanceType === activeTab.value);
+    });
+
+    const newGameSet = computed(() => {
+        const gameList = filteredGameList.value;
+        const gameNames = gameList.map((value: Game) => value.thunderstoreIdentifier);
+        registerGames(gameNames);
+        return new Set(filteredGameList.value.filter(game =>
+            isGameNewlyAdded(game.thunderstoreIdentifier)
+        ));
     });
 
     const hiddenGameList = computed(() => {
@@ -189,6 +199,7 @@ export function useGameSelectionComposable() {
         runningMigration,
         isSettingDefaultPlatform,
         hiddenGameList,
+        newGameSet,
         favouriteGameList,
         nonFavouriteGameList,
         isFavourited,
