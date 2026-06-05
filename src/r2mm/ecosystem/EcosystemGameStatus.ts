@@ -21,10 +21,8 @@ export function isGameNewlyAdded(game: string): boolean {
     if (!gameTime) {
         return false;
     }
-    if ((bundledEcosystemSchema.games as any)[game] !== undefined) {
-        if ((bundledEcosystemSchema.games as any)[game].r2modman) {
-            return false;
-        }
+    if ((bundledEcosystemSchema.games as any)[game]?.r2modman) {
+        return false;
     }
     const now = new Date().getTime();
     return (now - parseInt(gameTime)) < 3 * 24 * 60 * 60 * 1000;
