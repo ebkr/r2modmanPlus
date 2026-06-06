@@ -39,7 +39,6 @@ export interface DexiePackage {
 
     // Extra fields not included in the API response
     community: string;
-    date_fetched: Date; // When the entry was fetched from the API
 }
 
 // Flat per-package row carrying only the fields the mod list path reads, so

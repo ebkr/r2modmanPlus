@@ -32,7 +32,8 @@ class PackageDexieStore extends Dexie {
             indexHashes: '&community, [community+hash]'
         });
         this.version(3).stores({
-            summaries: '[community+full_name]'
+            summaries: '[community+full_name]',
+            packages: '[community+full_name]'
         });
     }
 }
@@ -61,8 +62,6 @@ function toSummary(community: string, pkg: any): DexieSummary {
     };
 }
 
-// After the version(3) upgrade existing users have an empty summaries table;
-// rebuild it from the cached packages rather than forcing a re-download.
 async function rebuildSummaries(community: string): Promise<DexieSummary[]> {
     return await db.transaction('rw', db.packages, db.summaries, async () => {
         const pkgs = await db.packages.where({community}).toArray();
@@ -170,18 +169,19 @@ export async function isLatestPackageListIndex(community: string, hash: string) 
     );
 }
 
-export async function pruneRemovedMods(community: string, cutoff: Date) {
-    // Find packages that were no longer returned by the API and delete them.
-    // .bulkDelete is faster than calling .delete() on the Collection
-    // directly. Using the odd looking .where(compoundIndex).between(values)
-    // is faster than .where(community).and(filterByDateFetched).
+export function selectPackageIdsToPrune(
+    storedKeys: [string, string][],
+    fetchedFullNames: Set<string>
+): [string, string][] {
+    return storedKeys.filter(([, fullName]) => !fetchedFullNames.has(fullName));
+}
+
+export async function pruneRemovedMods(community: string, fetchedFullNames: Set<string>) {
     await db.transaction('rw', db.packages, db.summaries, async () => {
-        const oldIds = await db.packages
-            .where('[community+date_fetched]')
-            .between([community, 0], [community, cutoff])
-            .primaryKeys();
-        await db.packages.bulkDelete(oldIds);
-        await db.summaries.bulkDelete(oldIds);
+        const storedKeys = await db.packages.where({community}).primaryKeys();
+        const toDelete = selectPackageIdsToPrune(storedKeys, fetchedFullNames);
+        await db.packages.bulkDelete(toDelete);
+        await db.summaries.bulkDelete(toDelete);
     });
 }
 
@@ -195,8 +195,7 @@ export async function resetCommunity(community: string) {
 }
 
 export async function upsertPackageListChunk(community: string, packageChunk: any[]) {
-    const extra = {community, date_fetched: new Date()};
-    const newPackages: DexiePackage[] = packageChunk.map((pkg) => ({...pkg, ...extra}));
+    const newPackages: DexiePackage[] = packageChunk.map((pkg) => ({...pkg, community}));
     const newSummaries: DexieSummary[] = packageChunk.map((pkg) => toSummary(community, pkg));
     await db.transaction('rw', db.packages, db.summaries, async () => {
         await db.packages.bulkPut(newPackages);
