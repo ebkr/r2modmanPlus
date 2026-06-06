@@ -42,6 +42,28 @@ export interface DexiePackage {
     date_fetched: Date; // When the entry was fetched from the API
 }
 
+// Flat per-package row carrying only the fields the mod list path reads, so
+// scanning a community never deserializes the heavy versions[] graph.
+export interface DexieSummary {
+    community: string;
+    full_name: string;
+    name: string;
+    owner: string;
+    package_url: string;
+    date_created: Date;
+    date_updated: Date;
+    categories: string[];
+    rating_score: number;
+    is_pinned: boolean;
+    is_deprecated: boolean;
+    has_nsfw_content: boolean;
+    donation_link: string | null;
+    total_downloads: number;
+    latest_version_number: string;
+    latest_description: string;
+    latest_icon: string;
+}
+
 export async function fetchPackagesByCommunityPackagePairs(
     db: any /* PackageDexieStore */,
     communityPackagePairs: [string, string][]
