@@ -75,7 +75,7 @@ async function rebuildSummaries(community: string): Promise<DexieSummary[]> {
 export async function getPackagesAsThunderstoreMods(community: string) {
     let summaries = await db.summaries.where({community}).toArray();
 
-    if (!summaries.length) {
+    if (summaries.length === 0) {
         summaries = await rebuildSummaries(community);
     }
 

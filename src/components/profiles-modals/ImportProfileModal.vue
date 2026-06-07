@@ -90,7 +90,7 @@ watchEffect(async () => {
 
 // Required to trigger a re-render of the modlist in preview step
 // when the online modlist is refreshed.
-watch(store.state.tsMods.mods, async() => {
+watch(() => store.state.tsMods.mods, async() => {
     if (profileImportContent.value === null) {
         return;
     }
