@@ -6,6 +6,7 @@ import FsProvider from '../../../../../providers/generic/file/FsProvider';
 import EgsInstallationListItem
     from '../../../../../providers/generic/game/directory_resolver/win/EgsInstallationListItem';
 import path from '../../../../../providers/node/path/path';
+import appWindow from "../../../../node/app/app_window";
 
 export default class EGSDirectoryResolver extends GameDirectoryResolverProvider {
 
@@ -20,7 +21,11 @@ export default class EGSDirectoryResolver extends GameDirectoryResolverProvider 
 
         Unsure if there's a way to pull this information from the registry.
         */
-        const datFilePath = path.join("C:", "ProgramData", "Epic", "UnrealEngineLauncher", "LauncherInstalled.dat");
+       const datFilePaths = {
+            'win32': path.join('C:', 'ProgramData', 'Epic', 'UnrealEngineLauncher', 'LauncherInstalled.dat'),
+            'darwin': path.join(await window.app.getAppDataDirectory(), 'Epic', 'UnrealEngineLauncher', 'LauncherInstalled.dat'),
+        }
+        const datFilePath = datFilePaths[appWindow.getPlatform() as keyof typeof datFilePaths];
         if (await FsProvider.instance.exists(datFilePath)) {
             try {
                 const datBuffer = JSON.parse((await FsProvider.instance.readFile(datFilePath)).toString());

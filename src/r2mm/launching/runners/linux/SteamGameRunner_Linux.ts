@@ -12,7 +12,7 @@ import childProcess from '../../../../providers/node/child_process/child_process
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
 import {PackageLoader} from '../../../../model/schema/ThunderstoreSchema';
-import {getDeterminedLaunchType, isManagerRunningOnFlatpak} from '../../../../utils/LaunchUtils';
+import {ensureScriptsAreAllExecutable, getDeterminedLaunchType, isManagerRunningOnFlatpak} from '../../../../utils/LaunchUtils';
 import {LaunchType} from '../../../../model/real_enums/launch/LaunchType';
 import InteractionProvider from "../../../../providers/ror2/system/InteractionProvider";
 import PathResolver from "../../../manager/PathResolver";
@@ -42,18 +42,8 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
             }
             proxyArgs['WINEDLLOVERRIDES'] = `"${proxyDll}=n,b"`
         } else {
-            // If sh files aren't executable then the wrapper will fail.
-            const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(Profile.getActiveProfile().getProfilePath())))
-                .filter(value => value.endsWith(".sh"));
-
-            try {
-                for (const shFile of shFiles) {
-                    await FsProvider.instance.chmod(await FsProvider.instance.realpath(Profile.getActiveProfile().joinToProfilePath(shFile)), 0o755);
-                }
-            } catch (e) {
-                const err: Error = e as Error;
-                return new R2Error("Failed to make sh file executable", err.message, "You may need to run the manager with elevated privileges.");
-            }
+            // The wrapper may call other scripts, so they need to all be executable.
+            await ensureScriptsAreAllExecutable();
         }
 
         const args = await this.getGameArguments(game, profile);

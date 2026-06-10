@@ -14,6 +14,7 @@ import DirectGameRunner from '../../../../r2mm/launching/runners/multiplatform/D
 import SteamGameRunner_Linux from '../../../../r2mm/launching/runners/linux/SteamGameRunner_Linux';
 import SteamGameRunner_Darwin from '../../../../r2mm/launching/runners/darwin/SteamGameRunner_Darwin';
 import EgsGameRunner from '../../../../r2mm/launching/runners/multiplatform/EgsGameRunner';
+import EgsGameRunner_Darwin from "../../../../r2mm/launching/runners/darwin/EgsGameRunner_Darwin";
 import XboxGamePassGameRunner from '../../../../r2mm/launching/runners/windows/XboxGamePassGameRunner';
 import appWindow from '../../../node/app/app_window';
 
@@ -50,7 +51,7 @@ const DIRECT_RUNNERS = {
 const EGS_RUNNERS = {
     "win32": new EgsGameRunner(),
     "linux": new EgsGameRunner(),
-    "darwin": new EgsGameRunner(),
+    "darwin": new EgsGameRunner_Darwin(),
 }
 
 const XBOX_RUNNERS = {
@@ -99,7 +100,7 @@ const RESOLVERS: ResolverType = {
     [Platform.EPIC_GAMES_STORE]: {
         "win32": new EGSDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
-        "darwin": new DRMFreeDirectoryResolver(),
+        "darwin": new EGSDirectoryResolver(),
     },
     [Platform.OCULUS_STORE]: {
         "win32": new DRMFreeDirectoryResolver(),

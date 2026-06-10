@@ -9,6 +9,12 @@ import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameD
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
 import ChildProcess from '../../../../providers/node/child_process/child_process';
+import path from "../../../../providers/node/path/path";
+import appWindow from "../../../../providers/node/app/app_window";
+import PathResolver from "../../../manager/PathResolver";
+import plist from 'plist';
+import { ensureScriptsAreAllExecutable } from "../../../../utils/LaunchUtils";
+import { parse as parseShell } from "shell-quote";
 
 export default class DirectGameRunner extends GameRunnerProvider {
 
@@ -43,11 +49,36 @@ export default class DirectGameRunner extends GameRunnerProvider {
             const gameExecutable = (await FsProvider.instance.readdir(gameDir))
                 .filter((x: string) => game.exeName.includes(x))[0];
 
+            if (gameExecutable === undefined) {
+                const message = game.exeName.length > 1 ?
+                    `Could not find any of "${game.exeName.join('", "')}"` :
+                    `Could not find "${game.exeName[0]}"`;
+                const r2err = new R2Error(
+                    `${game.displayName} folder is invalid`,
+                    message,
+                    'Ensure that the game folder has been set correctly in the settings'
+                );
+                return reject(r2err);
+            }
+
+            const gameExecutablePath = await getRealExecutablePath(path.join(gameDir, gameExecutable));
+
             const mappedArgs = args.map(value => `"${value}"`).join(' ');
 
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`);
+            // Linux and Mac need a wrapper for a few loaders like BepInEx.
+            let wrapper = '';
+            if (['linux', 'darwin'].includes(appWindow.getPlatform())) {
+                await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, 'wrapper_args.txt'), `${PathResolver.MOD_ROOT}/linux_wrapper.sh`);
+                wrapper = `"${path.join(PathResolver.MOD_ROOT, 'web_start_wrapper.sh')}" `;
 
-            const childProcess = ChildProcess.exec(`"${gameExecutable}" ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`, {
+                // The wrapper may call other scripts, so they need to all be executable.
+                ensureScriptsAreAllExecutable();
+            }
+
+            const command = `${wrapper}"${gameExecutablePath}" ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`;
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${command}`);
+
+            const childProcess = ChildProcess.exec(command, {
                 cwd: gameDir,
                 windowsHide: false,
             }, (err => {
@@ -60,5 +91,35 @@ export default class DirectGameRunner extends GameRunnerProvider {
                 return resolve();
             }));
         });
+    }
+}
+
+async function getRealExecutablePath(executablePath: string) {
+    // MacOS .app files are actually folders, with the real executable being defined in a config file.
+    if (executablePath.endsWith('.app') && (await FsProvider.instance.stat(executablePath)).isDirectory()) {
+        const infoPlist = await FsProvider.instance.readFile(path.join(executablePath, 'Contents', 'Info.plist'))
+            .then(buffer => plist.parse(buffer.toString('utf-8')) as plist.PlistObject)
+            .catch(err => new R2Error(
+                `${executablePath} is invalid`,
+                err.toString(),
+                'Ensure that the game folder has been set correctly in the settings'
+            ));
+        if (infoPlist instanceof R2Error) {
+            throw infoPlist;
+        }
+
+        const realExecutableName = infoPlist['CFBundleExecutable']
+        if (typeof realExecutableName !== 'string') {
+            throw new R2Error(
+                `${executablePath} is invalid`,
+                'Could not find an actual executable inside app',
+                'Ensure that the game folder has been set correctly in the settings'
+            );
+        }
+
+        const realExecutablePath = path.join(executablePath, 'Contents', 'MacOS', realExecutableName);
+        return realExecutablePath;
+    } else {
+        return executablePath;
     }
 }
