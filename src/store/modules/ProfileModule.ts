@@ -21,6 +21,11 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import FileUtils from '../../utils/FileUtils';
 import SearchUtils from '../../utils/SearchUtils';
 
+export interface UnsatisfiedDependencies {
+    disabledDependencies: ManifestV2[];
+    missingDependencies: string[];
+}
+
 interface State {
     activeProfile: Profile | null;
     expandedByDefault: boolean;
@@ -87,6 +92,33 @@ export default {
         // For easier access from other Vuex submodules.
         modList(state) {
             return state.modList;
+        },
+
+        unsatisfiedDependencies(state): ReadonlyMap<string, UnsatisfiedDependencies> {
+            const modsByName = new Map(state.modList.map((mod) => [mod.getName(), mod]));
+            const unsatisfied = new Map<string, UnsatisfiedDependencies>();
+
+            for (const mod of state.modList) {
+                const disabledDependencies: ManifestV2[] = [];
+                const missingDependencies: string[] = [];
+
+                for (const dependency of mod.getDependencies()) {
+                    const dependencyName = dependency.substring(0, dependency.lastIndexOf('-'));
+                    const installed = modsByName.get(dependencyName);
+
+                    if (installed === undefined) {
+                        missingDependencies.push(dependency);
+                    } else if (!installed.isEnabled()) {
+                        disabledDependencies.push(installed);
+                    }
+                }
+
+                if (disabledDependencies.length || missingDependencies.length) {
+                    unsatisfied.set(mod.getName(), {disabledDependencies, missingDependencies});
+                }
+            }
+
+            return unsatisfied;
         },
 
         // Swap the ManifestV2s to ThunderstoreMods as the latter knows the version number
