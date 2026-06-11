@@ -27,6 +27,9 @@ export default class ProfileModList {
     public static SUPPORTED_CONFIG_FILE_EXTENSIONS = [".cfg", ".txt", ".json", ".yml", ".yaml", ".ini"];
     public static readonly MAX_EXPORT_AS_CODE_SIZE = 20000000; // 20MB
 
+    private static iconCache = new Map<string, string>();
+    private static iconCacheProfileName: string | undefined;
+
     private static lock = new AsyncLock();
 
     public static async requestLock(fn: () => any) {
@@ -45,7 +48,6 @@ export default class ProfileModList {
                 const parsedYaml: any = parseYaml(fileContent) || [];
                 for(let modIndex in parsedYaml){
                     const mod = new ManifestV2().fromJsObject(parsedYaml[modIndex]);
-                    this.setIconPath(mod, profile);
                     parsedYaml[modIndex] = mod;
                 }
                 return parsedYaml;
@@ -240,7 +242,7 @@ export default class ProfileModList {
         if (builder instanceof R2Error) {
             return builder;
         }
-        const exportPath = path.join(dir[0], `${profile.getProfileName()}_${new Date().getTime()}.r2z`);
+        const exportPath = path.join(dir[0]!, `${profile.getProfileName()}_${new Date().getTime()}.r2z`);
         await builder.createZip(exportPath);
         LinkProvider.instance.selectFile(exportPath);
         return exportPath;
@@ -289,22 +291,35 @@ export default class ProfileModList {
         return modList.filter(value => !value.isEnabled()).length;
     }
 
-    public static async setIconPath(mod: ManifestV2, profile: ImmutableProfile): Promise<void> {
+    public static async getModIcon(mod: ManifestV2, profile: ImmutableProfile): Promise<string> {
+        if (this.iconCacheProfileName !== profile.getProfileName()) {
+            this.iconCache.clear();
+            this.iconCacheProfileName = profile.getProfileName();
+        }
+
+        const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
+        const cached = this.iconCache.get(cacheKey);
+        if (cached !== undefined) {
+            return cached;
+        }
+
         const paths = [
             path.join(profile.getProfilePath(), "BepInEx", "plugins", mod.getName(), "icon.png"),
             path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png"),
         ]
 
+        let icon = "/unknown.png";
         for (const iconPath of paths) {
             try {
                 const content = await FsProvider.instance.base64FromZip(iconPath);
-                mod.setIcon(`data:image/png;base64,${content}`);
-                return;
+                icon = `data:image/png;base64,${content}`;
+                break;
             } catch (e) {
                 continue;
             }
         }
 
-        mod.setIcon("/unknown.png");
+        this.iconCache.set(cacheKey, icon);
+        return icon;
     }
 }

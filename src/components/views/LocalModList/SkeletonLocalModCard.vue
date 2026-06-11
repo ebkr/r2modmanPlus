@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { ExpandableCard } from '../../all';
 import ManifestV2 from '../../../model/ManifestV2';
+import { useModIcon } from '../../composables/ModIconComposable';
 
 type LocalModCardProps = {
     mod: ManifestV2;
 }
 
 const props = defineProps<LocalModCardProps>();
+
+const icon = useModIcon(() => props.mod);
 </script>
 
 <template>
@@ -14,7 +17,7 @@ const props = defineProps<LocalModCardProps>();
         :description="mod.getDescription()"
         :enabled="mod.isEnabled()"
         :id="`${mod.getAuthorName()}-${mod.getName()}-${mod.getVersionNumber()}`"
-        :image="mod.getIcon()">
+        :image="icon">
 
         <template v-slot:title>
             <span class="non-selectable">

@@ -128,7 +128,6 @@ export async function installModsToProfile(
             }
 
             manifestMod.setInstalledAtTime(Number(new Date()));
-            ProfileModList.setIconPath(manifestMod, profile);
 
             if (typeof progressCallback === "function") {
                 const progress = Math.floor(((index + 1) / comboList.length) * 100);
