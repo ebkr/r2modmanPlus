@@ -28,7 +28,7 @@ export default class ProfileModList {
     public static readonly MAX_EXPORT_AS_CODE_SIZE = 20000000; // 20MB
 
     private static iconCache = new Map<string, string>();
-    private static iconCacheProfileName: string | undefined;
+    private static iconCacheProfilePath: string | undefined;
 
     private static lock = new AsyncLock();
 
@@ -292,9 +292,9 @@ export default class ProfileModList {
     }
 
     public static async getModIcon(mod: ManifestV2, profile: ImmutableProfile): Promise<string> {
-        if (this.iconCacheProfileName !== profile.getProfileName()) {
+        if (this.iconCacheProfilePath !== profile.getProfilePath()) {
             this.iconCache.clear();
-            this.iconCacheProfileName = profile.getProfileName();
+            this.iconCacheProfilePath = profile.getProfilePath();
         }
 
         const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
