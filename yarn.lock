@@ -4709,7 +4709,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-builder@npm:^26.14.0":
+"electron-builder@npm:26.14.0":
   version: 26.14.0
   resolution: "electron-builder@npm:26.14.0"
   dependencies:
@@ -4802,7 +4802,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-updater@npm:^6.8.8":
+"electron-updater@npm:6.8.8":
   version: 6.8.8
   resolution: "electron-updater@npm:6.8.8"
   dependencies:
@@ -8426,10 +8426,10 @@ __metadata:
     dexie: "npm:^3.2.7"
     dot-prop: "npm:^5.2.0"
     electron: "npm:^38.1.2"
-    electron-builder: "npm:^26.14.0"
+    electron-builder: "npm:26.14.0"
     electron-debug: "npm:^3.0.1"
     electron-devtools-installer: "npm:^3.0.0"
-    electron-updater: "npm:^6.8.8"
+    electron-updater: "npm:6.8.8"
     elliptic: "npm:^6.5.4"
     fflate: "npm:^0.8.2"
     floating-vue: "npm:5.2.2"
