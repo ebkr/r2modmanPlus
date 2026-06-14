@@ -6,7 +6,6 @@ import VersionNumber from '../../model/VersionNumber';
 
 const appName = computed<string>(() => ManagerInformation.APP_NAME);
 const portableUpdateAvailable = ref<boolean>(false);
-const updateTagName = ref<string>('');
 
 async function isManagerUpdateAvailable() {
     if (!ManagerInformation.IS_PORTABLE) {
@@ -37,7 +36,7 @@ onMounted(async () => {
         <div class='container'>
             <p>
                 An {{ appName }} update is available.
-                <ExternalLink :url="`https://github.com/ebkr/r2modmanPlus/releases/tag/${updateTagName}`">
+                <ExternalLink :url="`https://github.com/ebkr/r2modmanPlus/releases/latest`">
                     Click here to go to the release page.
                 </ExternalLink>
             </p>
