@@ -35,9 +35,9 @@ const isEntryEditor = computed(() => {
 
 <style lang="scss" scoped>
 #config-edit-layout {
-    display: grid;
-    grid-template-rows: min-content min-content 1fr;
+    display: flex;
+    flex-direction: column;
     height: 100vh;
-    overflow-y: hidden;
+    overflow-y: auto;
 }
 </style>
