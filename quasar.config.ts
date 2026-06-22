@@ -17,7 +17,8 @@ export default defineConfig((ctx) => {
             'i18n',
             // 'axios',
             'floating-vue',
-            'ecosystem'
+            'ecosystem',
+            'sqlite-worker'
         ],
 
         // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
@@ -71,6 +72,12 @@ export default defineConfig((ctx) => {
             extendViteConf (viteConf) {
                 // Force Vite to use esbuild for CSS, overriding any defaults
                 viteConf.build!.cssMinify = 'esbuild';
+
+                viteConf.optimizeDeps ??= {};
+                viteConf.optimizeDeps.exclude = [
+                    ...(viteConf.optimizeDeps.exclude ?? []),
+                    '@sqlite.org/sqlite-wasm',
+                ];
             },
             viteVuePluginOptions: {
                 template: {

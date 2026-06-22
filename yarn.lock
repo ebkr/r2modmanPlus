@@ -2069,6 +2069,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sqlite.org/sqlite-wasm@npm:3.53.0-build1":
+  version: 3.53.0-build1
+  resolution: "@sqlite.org/sqlite-wasm@npm:3.53.0-build1"
+  checksum: 10c0/9a03c170aa2bd07c346097ca1709b3721a46213ed82d67330966e1aecdcd25f39d5ce664b2471c1268a7b8b47a8f6d6783e464b3eece15ad6f96dccd15a5bb92
+  languageName: node
+  linkType: hard
+
 "@szmarczak/http-timer@npm:^1.1.2":
   version: 1.1.2
   resolution: "@szmarczak/http-timer@npm:1.1.2"
@@ -4221,6 +4228,13 @@ __metadata:
   dependencies:
     delayed-stream: "npm:~1.0.0"
   checksum: 10c0/0dbb829577e1b1e839fa82b40c07ffaf7de8a09b935cadd355a73652ae70a88b4320db322f6634a4ad93424292fa80973ac6480986247f1734a1137debf271d5
+  languageName: node
+  linkType: hard
+
+"comlink@npm:4.4.2":
+  version: 4.4.2
+  resolution: "comlink@npm:4.4.2"
+  checksum: 10c0/38aa1f455cf08e94aaa8fc494fd203cc0ef02ece6c21404b7931ce17567e8a72deacddab98aa5650cfd78332ff24c34610586f6fb27fd19dc77e753ed1980deb
   languageName: node
   linkType: hard
 
@@ -9175,6 +9189,7 @@ __metadata:
     "@node-steam/vdf": "npm:^2.1.0"
     "@quasar/app-vite": "npm:^2.4.0"
     "@quasar/extras": "npm:^1.17.0"
+    "@sqlite.org/sqlite-wasm": "npm:3.53.0-build1"
     "@types/adm-zip": "npm:^0.4.34"
     "@types/async-lock": "npm:^1.1.2"
     "@types/chai": "npm:^4.2.11"
@@ -9201,6 +9216,7 @@ __metadata:
     bulma-slider: "npm:2.0.4"
     bulma-steps: "npm:^2.2.1"
     bulma-switch: "npm:^2.0.0"
+    comlink: "npm:4.4.2"
     core-js: "npm:^3.47.0"
     devtron: "npm:^1.4.0"
     dexie: "npm:^3.2.7"
