@@ -209,7 +209,7 @@ export default defineConfig((ctx) => {
 
             bundler: 'builder', // 'packager' or 'builder'
 
-            unPackagedInstallParams: ['install', '--prod', '--ignore-workspace', '--no-frozen-lockfile'],
+            unPackagedInstallParams: ['install', '--prod', '--ignore-workspace', '--no-frozen-lockfile', '--ignore-scripts'],
 
             packager: {
                 // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
