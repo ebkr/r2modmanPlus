@@ -6,22 +6,16 @@
 2. Run `mise trust`
 3. Run `mise install`
 4. Re-open the terminal
-5. Run `yarn install`
+5. Run `pnpm install`
 
 ### For development builds
-#### Without Vue Devtools (recommended)
 ```shell
-yarn run run
-```
-
-#### With Vue Devtools
-```shell
-yarn dev
+pnpm run dev
 ```
 
 ### For local production builds
 ```shell
-yarn build-win
+pnpm build-win
 ```
 Go to `/dist/electron/Packaged` and run `r2modman VERSION_NUMBER.exe`
 

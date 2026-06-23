@@ -1,8 +1,8 @@
 # Setting Up
 ### Prerequisites
 - Node.js (>=20.0.0)
-- Yarn
-- Quasar CLI (Install using `yarn global add @quasar/cli`)
+- pnpm
+- Quasar CLI (Install using `pnpm install -g @quasar/cli`)
 - Python 2
 - pipx/flatpak-node-generator (if doing a local flatpak build)
 
@@ -10,7 +10,7 @@
 - rpm builder
 
 ### Setting up
-1. Navigate to the root directory, and run `yarn install`.
-2. Navigate to the root directory, and run `yarn upgrade`.
+1. Navigate to the root directory, and run `pnpm install`.
+2. Navigate to the root directory, and run `pnpm upgrade`.
 3. To run quick dev build: `quasar dev -m electron`
-4. To fully build: `yarn build-{platform}`
+4. To fully build: `pnpm build-{platform}`

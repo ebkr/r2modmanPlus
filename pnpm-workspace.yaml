@@ -1,0 +1,8 @@
+allowBuilds:
+  '@parcel/watcher': true
+  core-js: true
+  electron: true
+  electron-winstaller: true
+  esbuild: true
+  highlight.js: true
+blockExoticSubdeps: false

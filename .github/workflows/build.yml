@@ -29,8 +29,8 @@ jobs:
           cache: true
           log_level: debug
 
-      - name: Install Yarn dependencies
-        run: yarn install --immutable
+      - name: Install pnpm dependencies
+        run: pnpm install --frozen-lockfile
 
       - if: matrix.platform == 'linux'
         name: Install bsdtar # Required by electron-builder when targeting pacman.
@@ -45,7 +45,7 @@ jobs:
         # env:
         #   DEBUG: electron-builder
         with:
-          run: yarn build-${{ matrix.platform }} --publish=never
+          run: pnpm run build-${{ matrix.platform }} --publish=never
 
       - if: steps.build.outputs.stderr != ''
         name: Log stderr

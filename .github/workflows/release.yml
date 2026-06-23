@@ -26,8 +26,8 @@ jobs:
           cache: true
           log_level: debug
 
-      - name: Install Yarn dependencies
-        run: yarn install --immutable
+      - name: Install pnpm dependencies
+        run: pnpm install --frozen-lockfile
 
       - if: matrix.platform == 'linux'
         name: Install bsdtar # Required by electron-builder when targeting pacman.
@@ -39,7 +39,7 @@ jobs:
         id: build
         uses: StarUbiquitous/command-output@v1.0.1
         with:
-          run: yarn publish-${{ matrix.platform }}
+          run: pnpm run publish-${{ matrix.platform }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -74,14 +74,14 @@ jobs:
           cache: true
           log_level: debug
 
-      - name: Install Yarn dependencies
-        run: yarn install --immutable
+      - name: Install pnpm dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Generate release manifest
-        run: yarn generate-release-manifest
+        run: pnpm run generate-release-manifest
 
       - name: Generate node sources
-        run: yarn generate-node-sources
+        run: pnpm run generate-node-sources
 
       - name: Build flatpak
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
