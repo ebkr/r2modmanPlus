@@ -180,11 +180,12 @@ export const TsModsModule = {
         },
         prewarmCacheMod(state: State, mods: ThunderstoreMod[]) {
             const localState = new Map<string, CachedMod>(state.cache.entries());
+            const modsByFullName = new Map(state.mods.map((m) => [m.getFullName(), m]));
             mods.forEach(mod => {
                 const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
 
                 if (localState.get(cacheKey) === undefined) {
-                    const tsMod = state.mods.find((m) => m.getFullName() === mod.getName());
+                    const tsMod = modsByFullName.get(mod.getName());
                     if (tsMod === undefined) {
                         localState.set(cacheKey, {tsMod: undefined, isLatest: true});
                     } else {
