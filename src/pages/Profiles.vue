@@ -147,7 +147,6 @@ onMounted( async () => {
     display: flex;
     flex-direction: column;
     width: 100%;
-    overflow-y: hidden;
 }
 
 #profile-list-content {
@@ -155,14 +154,15 @@ onMounted( async () => {
     flex: 1;
     flex-direction: column;
     width: 100%;
-    overflow-y: auto;
 }
 
 #profile-actions {
-    flex: 1;
-    margin: 2rem;
+    position: sticky;
+    bottom: 0;
+    padding: 2rem;
     justify-items: center;
     display: block;
+    background-color: var(--background);
 }
 
 #profile-actions-container {

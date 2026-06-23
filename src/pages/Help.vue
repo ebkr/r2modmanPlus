@@ -2,17 +2,17 @@
     <ManagerActivityBar />
     <div id="help-view">
         <Hero title="Help" subtitle="Common problems and their potential solutions" hero-type="primary"/>
-        <div
-            class="tabs sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding has-background-">
-            <ul>
-                <li v-for="(key, index) in tabs" :key="`tab-${key}`"
-                    :class="[{'is-active': activeTab === key}]"
-                    @click="changeTab(key)">
-                    <a>{{key}}</a>
-                </li>
-            </ul>
-        </div>
         <div class="margin-right" id="help-content">
+            <div
+                class="tabs sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding has-background-">
+                <ul>
+                    <li v-for="(key, index) in tabs" :key="`tab-${key}`"
+                        :class="[{'is-active': activeTab === key}]"
+                        @click="changeTab(key)">
+                        <a>{{key}}</a>
+                    </li>
+                </ul>
+            </div>
             <br/>
             <div ref="General" v-if="activeTab === 'General'">
                 <h2 class="title is-5">Getting started with installing mods</h2>
@@ -173,11 +173,10 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow-y: hidden;
+    overflow-y: auto;
 }
 
 #help-content {
-    overflow-y: auto;
     flex: 1;
 }
 </style>

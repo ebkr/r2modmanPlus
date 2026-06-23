@@ -51,22 +51,22 @@ function cancel() {
 
 <style lang="scss" scoped>
 #config-raw-editor {
-    height: 100%;
-    overflow-y: hidden;
-    display: grid;
-    grid-template-rows: min-content 1fr;
+    display: flex;
+    flex-direction: column;
     margin: 0;
     padding: 0;
 }
 
 #config-raw-editor-actions {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     text-align: right;
-    padding-right: 2rem;
-    padding-bottom: 1rem;
+    padding: 0.5rem 2rem 1rem 0;
+    background-color: var(--background);
 }
 
 #config-raw-editor-component-wrapper {
-    overflow-y: auto;
     margin-bottom: 1rem;
 }
 </style>

@@ -1,21 +1,21 @@
 <template>
     <div class="config-editor-selection-body">
-        <div class="non-flex-content">
-            <Hero
-                title="Config editor"
-                subtitle="Select a configuration file to edit"
-                hero-type="primary"
-            />
-            <div class="notification is-warning is-square">
-                <div class="container">
-                    <p>
-                        Configuration files are generated after launching the game, with the mod installed, at least
-                        once.
-                    </p>
-                </div>
+        <Hero
+            title="Config editor"
+            subtitle="Select a configuration file to edit"
+            hero-type="primary"
+        />
+        <div class="notification is-warning is-square">
+            <div class="container">
+                <p>
+                    Configuration files are generated after launching the game, with the mod installed, at least
+                    once.
+                </p>
             </div>
-            <div class='is-shadowless'>
-                <div class='no-padding-left card-header-title'>
+        </div>
+        <div class="sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding">
+            <div class='card is-shadowless is-square'>
+                <div class='card-header-title'>
 
                     <div class="input-group input-group--flex margin-right">
                         <label for="config-search" class="non-selectable">Search</label>
@@ -197,14 +197,12 @@ function openConfig(file: ConfigFile) {
 <style lang="scss" scoped>
 .config-editor-selection-body {
     display: flex;
-    grid-template-rows: min-content 1fr;
-    overflow-y: hidden;
-    flex: 1;
     flex-direction: column;
+    overflow-y: auto;
+    flex: 1;
 }
 
 .config-editor-selection-items {
-    overflow-y: auto;
     max-height: none;
 }
 

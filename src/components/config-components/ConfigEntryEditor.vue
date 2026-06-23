@@ -166,15 +166,11 @@ function updateEntryMultiSelect(entry: ConfigurationEntry, newSelections: string
 <style lang="scss" scoped>
 
 #config-entry-wrapper {
-    height: 100%;
-    display: grid;
-    grid-template-rows: min-content 1fr;
-    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 #config-entry-main {
-    height: 100%;
-    overflow-y: auto;
     width: 100%;
     display: grid;
     grid-template-rows: min-content 1fr;
@@ -184,19 +180,17 @@ function updateEntryMultiSelect(entry: ConfigurationEntry, newSelections: string
     display: grid;
     grid-template-rows: min-content 1fr;
     grid-gap: 1rem;
-    height: 100%;
 }
 
 .outer-row {
     display: grid;
     grid-template-columns: 200px 1fr;
-    height: 100%;
     border-bottom: 1px solid var(--v2-table-row-border-color);
 }
 
 .section-title {
     position: sticky;
-    top: 1rem;
+    top: 4rem;
     height: min-content;
     padding-bottom: 2rem;
 }
@@ -210,8 +204,12 @@ function updateEntryMultiSelect(entry: ConfigurationEntry, newSelections: string
 }
 
 #config-entry-actions {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     text-align: right;
     width: 100%;
-    padding-right: 2rem;
+    padding: 0.5rem 2rem 0.5rem 0;
+    background-color: var(--background);
 }
 </style>
