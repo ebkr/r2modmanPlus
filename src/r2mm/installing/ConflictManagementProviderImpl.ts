@@ -64,8 +64,8 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
             });
         }
         const totalState = await this.getTotalState(profile);
+        const stateMap = new Map<string, string>(totalState.currentState);
         for (const file of Array.from(overallState.keys())) {
-            const stateMap = new Map<string, string>(totalState.currentState);
             let copyAcross = false;
             if (!stateMap.has(file)) {
                 // Need to install
