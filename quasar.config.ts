@@ -209,6 +209,8 @@ export default defineConfig((ctx) => {
 
             bundler: 'builder', // 'packager' or 'builder'
 
+            unPackagedInstallParams: ['install', '--prod', '--ignore-workspace', '--no-frozen-lockfile'],
+
             packager: {
                 // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
                 // OS X / Mac App Store
