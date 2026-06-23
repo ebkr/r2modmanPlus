@@ -7,6 +7,7 @@ import ManifestV2 from '../../../model/ManifestV2';
 import VersionNumber from '../../../model/VersionNumber';
 import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
+import { useModIcon } from '../../composables/ModIconComposable';
 import { valueToReadableDate } from '../../../utils/DateUtils';
 import { splitToNameAndVersion } from '../../../utils/DependencyUtils';
 import { computed, ref } from 'vue';
@@ -26,6 +27,7 @@ type LocalModCardProps = {
 const props = defineProps<LocalModCardProps>();
 
 const disableChangePending = ref<boolean>(false);
+const icon = useModIcon(() => props.mod);
 
 // Mod loader packages can't be disabled as it's hard to define
 // what that should even do in all cases.
@@ -157,7 +159,7 @@ function getReadableDate(value: number): string {
         :description="mod.getDescription()"
         :enabled="mod.isEnabled()"
         :id="`${mod.getAuthorName()}-${mod.getName()}-${mod.getVersionNumber()}`"
-        :image="mod.getIcon()"
+        :image="icon"
         :allowSorting="true">
 
         <template v-slot:title>
