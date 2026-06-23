@@ -8053,13 +8053,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"modern-normalize@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "modern-normalize@npm:3.0.1"
-  checksum: 10c0/2c19be1618178b85006e354337d7dda6758640d138be5f3e247c9ebb5dd5d7845edb0b8753cec659e789bb30e1fafe73e91eaa056a332d89055cbb107d9fecec
-  languageName: node
-  linkType: hard
-
 "moment@npm:^2.29.1":
   version: 2.30.1
   resolution: "moment@npm:2.30.1"
@@ -9222,7 +9215,6 @@ __metadata:
     js-yaml: "npm:^4.1.1"
     lodash.debounce: "npm:^4.0.8"
     mock-require: "npm:^3.0.3"
-    modern-normalize: "npm:^3.0.1"
     moment: "npm:^2.29.1"
     node-ipc: "npm:^12.0.0"
     postcss: "npm:^8.5.6"
