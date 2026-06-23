@@ -73,7 +73,6 @@ export const ProfilesModule = {
             await dispatch('profile/updateActiveProfile', params.profileName, { root: true });
             if (params.prewarmCache) {
                 await dispatch('profile/updateModListFromFile', null, { root: true });
-                await dispatch('tsMods/prewarmCache', null, { root: true });
             }
         },
 
