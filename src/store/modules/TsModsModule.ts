@@ -250,7 +250,6 @@ export const TsModsModule = {
                     await dispatch('updateMods');
                     commit('setThunderstoreModListUpdateStatus', 'Almost done...');
                     await dispatch('profile/tryLoadModListFromDisk', null, {root: true});
-                    await dispatch('prewarmCache');
                 }
             } catch (e) {
                 commit('setThunderstoreModListUpdateError', e);
@@ -361,11 +360,6 @@ export const TsModsModule = {
             }
 
             return state.activeGameCacheStatus || 'Unknown status';
-        },
-
-        async prewarmCache({rootGetters, commit}) {
-            const profileMods: ManifestV2[] = rootGetters['profile/modList'];
-            commit('prewarmCacheMod', profileMods);
         },
 
         async pruneRemovedModsFromCache({rootState}, cutoff: Date) {
