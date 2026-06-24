@@ -69,8 +69,7 @@ export const SplashModule = {
 
             if (!hasPriorCache) {
                 const packageListIndex = await dispatch('fetchPackageListIndex');
-                const areAllChunksProcessedSuccessfully = await dispatch('fetchPackageListChunksIfUpdated', packageListIndex);
-                await dispatch('pruneRemovedMods', packageListIndex, areAllChunksProcessedSuccessfully);
+                await dispatch('fetchPackageListChunksIfUpdated', packageListIndex);
             }
 
             await dispatch('triggerStoreModListUpdate');
@@ -145,26 +144,6 @@ export const SplashModule = {
                 return false;
             } finally {
                 await progressCallback(100);
-            }
-        },
-        async pruneRemovedMods(
-            { commit, dispatch },
-            packageListIndex?: PackageListIndex,
-            areAllChunksProcessedSuccessfully?: boolean
-        ): Promise<void> {
-            // Deletion depends on all mods in the persistent cache having a fresh
-            // timestamp, which isn't the case if one or more chunks failed to be
-            // downloaded or processed.
-            if (!packageListIndex || !areAllChunksProcessedSuccessfully) {
-                return;
-            }
-
-            commit('setSplashText', 'Pruning removed mods from local cache');
-
-            try {
-                await dispatch('tsMods/pruneRemovedModsFromCache', packageListIndex.dateFetched, {root: true});
-            } catch (e) {
-                console.error('SplashModule failed to delete outdated mods from local cache.', e);
             }
         },
         async triggerStoreModListUpdate({ commit, dispatch }): Promise<void> {
