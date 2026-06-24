@@ -91,6 +91,28 @@
                   "displayName": {
                     "type": "string"
                   },
+                  "listed": {
+                    "type": "boolean"
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "icon": {
+                        "type": "string",
+                        "pattern": "^([a-z0-9](?:-?[a-z0-9])*)\\/\\1-(bg|cover|icon)-\\d+x\\d+\\.webp$"
+                      },
+                      "cover": {
+                        "$ref": "#/definitions/thunderstore/properties/games/additionalProperties/properties/thunderstore/properties/meta/properties/icon"
+                      },
+                      "background": {
+                        "$ref": "#/definitions/thunderstore/properties/games/additionalProperties/properties/thunderstore/properties/meta/properties/icon"
+                      },
+                      "hero": {
+                        "$ref": "#/definitions/thunderstore/properties/games/additionalProperties/properties/thunderstore/properties/meta/properties/icon"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
                   "categories": {
                     "type": "object",
                     "additionalProperties": {

@@ -29,11 +29,14 @@ const GAME_IMAGE_DIR_PATH = "./public/images/game_selection";
 async function updateSchema() {
     let schema: Buffer;
 
+    const source = await isReachable("http://localhost:1337/healthz") ? LOCAL_SOURCE : REMOTE_SOURCE;
     if (process.argv.includes('--types-only')) {
         console.log("Skipping API update, reading JSON schema from disk...");
         schema = fs.readFileSync(ECOSYSTEM_JSON_SCHEMA_PATH);
+        const data = Buffer.from(fs.readFileSync(ECOSYSTEM_DATA_PATH));
+        console.log("Updating images...");
+        await updateGameImages(data, source.gameImageBaseUrl);
     } else {
-        const source = await isReachable("http://localhost:1337/healthz") ? LOCAL_SOURCE : REMOTE_SOURCE;
         console.log(`Syncing from ${new URL(source.ecosystemDataUrl).origin}...`);
 
         console.log("Updating ecosystem.json...");
