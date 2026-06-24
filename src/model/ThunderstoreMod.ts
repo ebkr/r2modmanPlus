@@ -56,6 +56,29 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
         return mod;
     }
 
+    // Must set the same fields as parseFromThunderstoreData from the summary
+    // table's precomputed values, otherwise the online mod list desyncs.
+    public static parseFromSummary(data: any): ThunderstoreMod {
+        const mod = new ThunderstoreMod();
+        mod.setName(data.name);
+        mod.setFullName(data.full_name);
+        mod.setOwner(data.owner);
+        mod.setDateCreated(data.date_created);
+        mod.setDateUpdated(data.date_updated);
+        mod.setDeprecatedStatus(data.is_deprecated);
+        mod.setPinnedStatus(data.is_pinned);
+        mod.setRating(data.rating_score);
+        mod.setDownloadCount(data.total_downloads);
+        mod.setPackageUrl(data.package_url);
+        mod.setCategories(data.categories);
+        mod.setNsfwFlag(data.has_nsfw_content);
+        mod.setDonationLink(data.donation_link);
+        mod.setLatestVersion(data.latest_version_number);
+        mod.setDescription(data.latest_description);
+        mod.setIcon(data.latest_icon);
+        return mod;
+    }
+
     public getLatestVersion(): string {
         return this.latestVersion;
     }

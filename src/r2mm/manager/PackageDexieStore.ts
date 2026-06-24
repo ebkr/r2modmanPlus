@@ -1,6 +1,6 @@
 import Dexie, { Table } from 'dexie';
 
-import { DexiePackage, fetchPackagesByCommunityPackagePairs } from './PackageDexieStoreMockables';
+import { DexiePackage, DexieSummary, fetchPackagesByCommunityPackagePairs } from './PackageDexieStoreMockables';
 import Game from '../../model/game/Game';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
@@ -20,6 +20,7 @@ interface IndexChunkHash {
 class PackageDexieStore extends Dexie {
     packages!: Table<DexiePackage, string>;
     indexHashes!: Table<IndexChunkHash, string>;
+    summaries!: Table<DexieSummary, string>;
 
     constructor() {
         super('tsPackages');
@@ -30,15 +31,56 @@ class PackageDexieStore extends Dexie {
         this.version(2).stores({
             indexHashes: '&community, [community+hash]'
         });
+        this.version(3).stores({
+            summaries: '[community+full_name]'
+        });
     }
 }
 
 const db = new PackageDexieStore();
 
+function toSummary(community: string, pkg: any): DexieSummary {
+    return {
+        community,
+        full_name: pkg.full_name,
+        name: pkg.name,
+        owner: pkg.owner,
+        package_url: pkg.package_url,
+        date_created: pkg.date_created,
+        date_updated: pkg.date_updated,
+        categories: pkg.categories,
+        rating_score: pkg.rating_score,
+        is_pinned: pkg.is_pinned,
+        is_deprecated: pkg.is_deprecated,
+        has_nsfw_content: pkg.has_nsfw_content,
+        donation_link: pkg.donation_link,
+        total_downloads: pkg.versions.reduce((x: number, v: {downloads: number}) => x + v.downloads, 0),
+        latest_version_number: pkg.versions[0].version_number,
+        latest_description: pkg.versions[0].description,
+        latest_icon: pkg.versions[0].icon,
+    };
+}
+
+// After the version(3) upgrade existing users have an empty summaries table;
+// rebuild it from the cached packages rather than forcing a re-download.
+async function rebuildSummaries(community: string): Promise<DexieSummary[]> {
+    return await db.transaction('rw', db.packages, db.summaries, async () => {
+        const pkgs = await db.packages.where({community}).toArray();
+        const summaries = pkgs.map((p) => toSummary(community, p));
+        await db.summaries.bulkPut(summaries);
+        return summaries;
+    });
+}
+
 export async function getPackagesAsThunderstoreMods(community: string) {
-    const packages = await db.packages.where({community}).toArray();
-    return packages.map(ThunderstoreMod.parseFromThunderstoreData)
-                   .sort(ThunderstoreMod.defaultOrderComparer);
+    let summaries = await db.summaries.where({community}).toArray();
+
+    if (summaries.length === 0) {
+        summaries = await rebuildSummaries(community);
+    }
+
+    return summaries.map(ThunderstoreMod.parseFromSummary)
+                    .sort(ThunderstoreMod.defaultOrderComparer);
 }
 
 export async function getPackagesByNames(community: string, packageNames: string[]) {
@@ -133,17 +175,21 @@ export async function pruneRemovedMods(community: string, cutoff: Date) {
     // .bulkDelete is faster than calling .delete() on the Collection
     // directly. Using the odd looking .where(compoundIndex).between(values)
     // is faster than .where(community).and(filterByDateFetched).
-    const oldIds = await db.packages
-        .where('[community+date_fetched]')
-        .between([community, 0], [community, cutoff])
-        .primaryKeys();
-    await db.packages.bulkDelete(oldIds);
+    await db.transaction('rw', db.packages, db.summaries, async () => {
+        const oldIds = await db.packages
+            .where('[community+date_fetched]')
+            .between([community, 0], [community, cutoff])
+            .primaryKeys();
+        await db.packages.bulkDelete(oldIds);
+        await db.summaries.bulkDelete(oldIds);
+    });
 }
 
 export async function resetCommunity(community: string) {
-    await db.transaction('rw', db.packages, db.indexHashes, async () => {
+    await db.transaction('rw', db.packages, db.summaries, db.indexHashes, async () => {
         const packageIds = await db.packages.where({community}).primaryKeys();
         await db.packages.bulkDelete(packageIds);
+        await db.summaries.where({community}).delete();
         await db.indexHashes.where({community}).delete();
     });
 }
@@ -151,7 +197,11 @@ export async function resetCommunity(community: string) {
 export async function upsertPackageListChunk(community: string, packageChunk: any[]) {
     const extra = {community, date_fetched: new Date()};
     const newPackages: DexiePackage[] = packageChunk.map((pkg) => ({...pkg, ...extra}));
-    await db.packages.bulkPut(newPackages);
+    const newSummaries: DexieSummary[] = packageChunk.map((pkg) => toSummary(community, pkg));
+    await db.transaction('rw', db.packages, db.summaries, async () => {
+        await db.packages.bulkPut(newPackages);
+        await db.summaries.bulkPut(newSummaries);
+    });
 }
 
 export async function setLatestPackageListIndex(community: string, hash: string) {

@@ -1,3 +1,4 @@
+import { markRaw } from 'vue';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import { State as RootState } from '../index';
@@ -156,7 +157,10 @@ export const TsModsModule = {
             state.activeGameCacheStatus = status;
         },
         setMods(state, payload: ThunderstoreMod[]) {
-            state.mods = payload;
+            // The mod list is large and immutable, replaced wholesale.
+            // markRaw keeps Vue from deep-proxying every entry, which absolutely dominates
+            // the load memory and time complexity.
+            state.mods = markRaw(payload);
         },
         setModsLastUpdated(state, payload: Date|undefined) {
             state.modsLastUpdated = payload;
