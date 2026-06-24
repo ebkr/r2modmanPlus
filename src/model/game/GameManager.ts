@@ -1,9 +1,31 @@
+import {computed, ComputedRef} from 'vue';
 import Game from '../../model/game/Game';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
 import PathResolver from '../../r2mm/manager/PathResolver';
 import FileUtils from '../../utils/FileUtils';
 import {EcosystemSupportedGames, Platform} from '../schema/ThunderstoreSchema';
 import path from '../../providers/node/path/path';
+
+const gameListRef: ComputedRef<Game[]> = computed(() =>
+    EcosystemSupportedGames.value.map(([identifier, game]) => new Game(
+        game.meta.displayName,
+        game.internalFolderName,
+        game.settingsIdentifier,
+        game.steamFolderName,
+        game.exeNames,
+        game.dataFolderName,
+        game.packageIndex,
+        identifier,
+        game.distributions.map(
+            (x) => new StorePlatformMetadata(x.platform, x.identifier || undefined)
+        ),
+        game.meta.iconUrl ?? "",
+        game.gameSelectionDisplayMode,
+        game.gameInstanceType,
+        game.packageLoader,
+        game.additionalSearchStrings,
+    ))
+);
 
 export default class GameManager {
 
@@ -23,24 +45,7 @@ export default class GameManager {
     }
 
     static get gameList(): Game[] {
-        return EcosystemSupportedGames.value.map(([identifier, game]) => new Game(
-            game.meta.displayName,
-            game.internalFolderName,
-            game.settingsIdentifier,
-            game.steamFolderName,
-            game.exeNames,
-            game.dataFolderName,
-            game.packageIndex,
-            identifier,
-            game.distributions.map(
-                (x) => new StorePlatformMetadata(x.platform, x.identifier || undefined)
-            ),
-            game.meta.iconUrl ?? "",
-            game.gameSelectionDisplayMode,
-            game.gameInstanceType,
-            game.packageLoader,
-            game.additionalSearchStrings,
-        ));
+        return gameListRef.value;
     }
 
     public static async activate(game: Game, platform: Platform) {
