@@ -26,6 +26,7 @@
   </description>
 
   <releases>
+    <release version="3.2.18" date="2026-06-24" />
     <release version="3.2.17" date="2026-05-22" />
     <release version="3.2.16" date="2026-05-13" />
     <release version="3.2.15" date="2026-05-11" />
