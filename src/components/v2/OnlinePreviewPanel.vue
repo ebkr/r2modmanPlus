@@ -332,5 +332,7 @@ function dragEnd(event: DragEvent) {
 
 summary {
     cursor: pointer;
+    display: list-item;
+    list-style: revert;
 }
 </style>
