@@ -45,6 +45,7 @@ modules:
         YARN_ENABLE_GLOBAL_CACHE: "0"
         # set yarn global folder
         YARN_GLOBAL_FOLDER: /run/build/r2modmanPlus/flatpak-node/yarn-berry
+        DEBUG: "@electron/get:*"
     sources:
       - type: dir
         path: ..
