@@ -30,6 +30,8 @@ modules:
   - name: r2modmanPlus
     buildsystem: simple
     build-options:
+      build-args:
+        - --share=network
       # Add the node bin directory.
       append-path: /usr/lib/sdk/node22/bin
       env:
@@ -45,7 +47,6 @@ modules:
         YARN_ENABLE_GLOBAL_CACHE: "0"
         # set yarn global folder
         YARN_GLOBAL_FOLDER: /run/build/r2modmanPlus/flatpak-node/yarn-berry
-        DEBUG: "@electron/get:*"
     sources:
       - type: dir
         path: ..
