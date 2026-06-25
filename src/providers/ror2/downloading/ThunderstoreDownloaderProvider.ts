@@ -23,13 +23,4 @@ export default abstract class ThunderstoreDownloaderProvider {
         totalProgressCallback: (downloadedSize: number, modName: string, status: DownloadStatusEnum, err: R2Error | null) => void
     ): Promise<void>;
 
-    /**
-     * Save the download buffer to a zip file in the cache.
-     *
-     * @param response  The download buffer.
-     * @param combo     The mod being downloaded.
-     * @param callback  Callback on if saving and extracting has been performed correctly. An error is provided if success is false.
-     */
-    public abstract saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void): void;
-
 }

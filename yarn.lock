@@ -8424,6 +8424,7 @@ __metadata:
     electron-devtools-installer: "npm:^3.0.0"
     electron-updater: "npm:6.8.8"
     elliptic: "npm:^6.5.4"
+    extract-zip: "npm:^2.0.1"
     fflate: "npm:^0.8.2"
     floating-vue: "npm:5.2.2"
     fs-extra: "npm:^8.1.0"

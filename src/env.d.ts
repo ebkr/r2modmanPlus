@@ -27,6 +27,9 @@ declare global {
             os: NodeOsProvider,
             child_process: NodeChildProcessProvider
             buffer: NodeBufferProvider
+            net: {
+                download: (url: string, destPath: string, onProgress?: (downloadedBytes: number) => void) => Promise<void>;
+            }
         },
         app: {
             checkForApplicationUpdates: () => Promise<void>;

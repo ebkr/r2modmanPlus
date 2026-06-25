@@ -44,6 +44,7 @@
     "dot-prop": "^5.2.0",
     "electron-updater": "6.8.8",
     "elliptic": "^6.5.4",
+    "extract-zip": "^2.0.1",
     "fflate": "^0.8.2",
     "floating-vue": "5.2.2",
     "fs-extra": "^8.1.0",
