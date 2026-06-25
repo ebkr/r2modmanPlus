@@ -30,6 +30,8 @@ modules:
   - name: r2modmanPlus
     buildsystem: simple
     build-options:
+      build-args:
+        - --share=network
       # Add the node bin directory.
       append-path: /usr/lib/sdk/node22/bin
       env:
