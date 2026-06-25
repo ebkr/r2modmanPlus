@@ -195,7 +195,7 @@ export async function resetCommunity(community: string) {
 }
 
 export async function upsertPackageListChunk(community: string, packageChunk: any[]) {
-    const newPackages: DexiePackage[] = packageChunk.map((pkg) => ({...pkg, community}));
+    const newPackages: DexiePackage[] = packageChunk.map((pkg) => Object.assign(pkg, {community}));
     const newSummaries: DexieSummary[] = packageChunk.map((pkg) => toSummary(community, pkg));
     await db.transaction('rw', db.packages, db.summaries, async () => {
         await db.packages.bulkPut(newPackages);
