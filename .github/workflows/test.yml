@@ -29,9 +29,6 @@ jobs:
                 cache: true
                 log_level: debug
 
-            - name: Enable Corepack
-              run: corepack enable
-
             - name: Install Yarn dependencies
               run: yarn install --immutable
 
