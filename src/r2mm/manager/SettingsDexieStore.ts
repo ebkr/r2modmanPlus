@@ -60,7 +60,7 @@ export default class SettingsDexieStore extends Dexie {
             }
         })
 
-        this.activeGame = game;F
+        this.activeGame = game;
         this.global = this.table("value");
         this.games = this.table("games");
     }
