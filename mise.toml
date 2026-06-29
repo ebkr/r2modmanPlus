@@ -1,4 +1,9 @@
 [tools]
 node = '22'
 python = { version = "3.12", postinstall = "python -m pip install pipx" }
-yarn = "4.11.0"
+
+# Yarn 4.x (Berry) is provided per-project via corepack, which reads the
+# "packageManager" field in package.json. The vfox-yarn plugin only supports
+# Yarn v1 and fails to install Yarn v2+ (notably on Windows CI runners).
+[settings.node]
+corepack = true
