@@ -2,8 +2,10 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
 import { defineConfig } from '#q-app/wrappers';
+import { ExtendViteConfHandler } from '@quasar/app-vite';
+import { QuasarContext } from '@quasar/app-vite/types/configuration/context';
 
-export default defineConfig((ctx) => {
+export default defineConfig((ctx: QuasarContext) => {
     const skipPackaging = process.env.SKIP_PACKING === 'true';
 
     return {
@@ -68,7 +70,7 @@ export default defineConfig((ctx) => {
             cssMinify: 'esbuild',
             minify: 'esbuild',
 
-            extendViteConf (viteConf) {
+            extendViteConf (viteConf: any) {
                 // Force Vite to use esbuild for CSS, overriding any defaults
                 viteConf.build!.cssMinify = 'esbuild';
             },
@@ -106,7 +108,7 @@ export default defineConfig((ctx) => {
                 '/_local': {
                     target: 'http://localhost:1337',
                     changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/_local/, ''),
+                    rewrite: (path: string) => path.replace(/^\/_local/, ''),
                 },
             },
         },
@@ -274,5 +276,5 @@ export default defineConfig((ctx) => {
              */
             extraScripts: [],
         },
-    };
+    } as any;
 });
