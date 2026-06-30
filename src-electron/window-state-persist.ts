@@ -1,12 +1,18 @@
 import yaml from 'yaml';
 import path from 'path';
 import fs from 'fs-extra';
+import { App, BrowserWindow } from 'electron/main';
 
-let resizeTimeout = undefined;
+let resizeTimeout: NodeJS.Timeout | undefined = undefined;
+
+type SizeType = {
+    defaultWidth: number;
+    defaultHeight: number;
+}
 
 export class Persist {
 
-    static getSize(app, { defaultWidth, defaultHeight }) {
+    static getSize(app: App, { defaultWidth, defaultHeight }: SizeType) {
         const configFilePath = path.join(app.getPath('appData'), 'r2modmanPlus-local', 'config', 'window-state.yml');
         if (fs.existsSync(configFilePath)) {
             try {
@@ -31,7 +37,7 @@ export class Persist {
         };
     }
 
-    static handle(window, app) {
+    static handle(window: BrowserWindow, app: App) {
         window.on('resize', () => {
             if (resizeTimeout !== undefined) {
                 clearTimeout(resizeTimeout);
@@ -52,7 +58,7 @@ export class Persist {
             }
             resizeTimeout = setTimeout(() => {
                 const winSize = window.getSize();
-                const previousSize = this.getSize(app, {defaultWidth: winSize[0], defaultHeight: winSize[1]});
+                const previousSize = this.getSize(app, {defaultWidth: winSize[0], defaultHeight: winSize[1]} as SizeType);
                 const yamlString = yaml.stringify({
                     'windowWidth': previousSize.width,
                     'windowHeight': previousSize.height,
@@ -77,7 +83,7 @@ export class Persist {
         });
     }
 
-    static saveState(app, state) {
+    static saveState(app: App, state: string) {
         const configPath = path.join(app.getPath('appData'), 'r2modmanPlus-local', 'config');
         const configFilePath = path.join(configPath, 'window-state.yml');
         try {
