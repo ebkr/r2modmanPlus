@@ -130,7 +130,7 @@ export default class ManagerSettings {
 
     public getInstalledSortBy() {
         try {
-            return Object.entries(SortNaming).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedSortBy)[0][1];
+            return Object.entries(SortNaming).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedSortBy)[0]![1];
         } catch (e) {
             console.log("Failed to get installedSortBy:", e);
             return SortNaming.CUSTOM;
@@ -144,7 +144,7 @@ export default class ManagerSettings {
 
     public getInstalledSortDirection() {
         try {
-            return Object.entries(SortDirection).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedSortDirection)[0][1];
+            return Object.entries(SortDirection).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedSortDirection)[0]![1];
         } catch (e) {
             console.log("Failed to get installedSortDirection:", e);
             return SortDirection.STANDARD;
@@ -158,7 +158,7 @@ export default class ManagerSettings {
 
     public getInstalledDisablePosition() {
         try {
-            return Object.entries(SortLocalDisabledMods).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedDisablePosition)[0][1];
+            return Object.entries(SortLocalDisabledMods).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedDisablePosition)[0]![1];
         } catch (e) {
             console.log("Failed to get installedDisablePosition:", e);
             return SortLocalDisabledMods.CUSTOM;

@@ -120,8 +120,10 @@ export function useGameSelectionComposable() {
             return;
         }
 
+        const platform = selectedPlatform.value as Platform;
+
         try {
-            ProviderUtils.setupGameProviders(selectedGame.value, selectedPlatform.value);
+            ProviderUtils.setupGameProviders(selectedGame.value as Game, platform);
         } catch (error) {
             if (error instanceof R2Error) {
                 store.commit('error/handleError', error);
@@ -130,10 +132,10 @@ export function useGameSelectionComposable() {
             throw error;
         }
 
-        const s = await ManagerSettings.getSingleton(selectedGame.value);
-        await s.setLastSelectedGame(selectedGame.value);
-        await s.setLastSelectedPlatform(selectedPlatform.value);
-        await GameManager.activate(selectedGame.value, selectedPlatform.value);
+        const s = await ManagerSettings.getSingleton(selectedGame.value as Game);
+        await s.setLastSelectedGame(selectedGame.value as Game);
+        await s.setLastSelectedPlatform(platform);
+        await GameManager.activate(selectedGame.value as Game, platform);
         await store.dispatch('setActiveGame', selectedGame.value);
 
         await router.push({ name: 'splash' });
@@ -142,7 +144,7 @@ export function useGameSelectionComposable() {
     async function selectPlatformForGame(game: Game) {
         const s = await ManagerSettings.getSingleton(game);
         const platform = await s.getLastSelectedPlatform();
-        selectedPlatform.value = platform ? Platform[platform] : null;
+        selectedPlatform.value = platform ? Platform[platform as unknown as keyof typeof Platform] : null;
     }
 
     async function initialize() {
@@ -168,7 +170,8 @@ export function useGameSelectionComposable() {
                 viewMode.value = GameSelectionViewMode.CARD;
         }
 
-        const { defaultGame, defaultPlatform } = ManagerUtils.getDefaults(settings.value);
+        const settingsInstance = settings.value as ManagerSettings;
+        const { defaultGame, defaultPlatform } = ManagerUtils.getDefaults(settingsInstance);
         if (defaultGame && defaultPlatform) {
             markAsSelectedGame(defaultGame);
             selectedPlatform.value = defaultPlatform;
@@ -181,8 +184,9 @@ export function useGameSelectionComposable() {
             return;
         }
 
-        const s = await ManagerSettings.getSingleton(selectedGame.value);
-        await s.setDefaultGame(selectedGame.value);
+        const game = selectedGame.value as Game;
+        const s = await ManagerSettings.getSingleton(game);
+        await s.setDefaultGame(game);
         await s.setDefaultStorePlatform(selectedPlatform.value);
 
         return proceed();

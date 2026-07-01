@@ -20,7 +20,17 @@ declare namespace NodeJS {
 
 declare global {
     interface Window {
-        zip: ZipProvider,
+        zip: {
+            extractAllTo: (zip: string | Buffer, outputFolder: string) => Promise<void>;
+            readFile: (zip: string | Buffer, file: string) => Promise<Buffer | null>;
+            getEntries: (zip: string | Buffer) => Promise<ZipEntryInterface[]>;
+            extractEntryTo: (zip: string | Buffer, target: string, outputPath: string) => Promise<void>;
+            zipBuilder: () => ZipBuilder;
+            createNewTemporaryZip: () => number;
+            addBufferToTemporaryZip: (id: number, fileName: string, buffer: Buffer) => Promise<void>;
+            addFolderToTemporaryZip: (id: number, zippedFolderName: string, folderName: string) => Promise<void>;
+            finalizeTemporaryZip: (id: number, outputPath: string) => Promise<void>;
+        },
         node: {
             fs: NodeFsProvider,
             path: NodePathProvider,
@@ -44,7 +54,7 @@ declare global {
             openPath: (path: string) => void;
             openExternal: (path: string) => void;
             selectFile: (path: string) => void;
-            getEnvironmentVariables: () => Record<string, string>;
+            getEnvironmentVariables: () => Promise<string>;
         }
     }
 }

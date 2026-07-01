@@ -3,11 +3,11 @@ import { ActionContext, createStore } from 'vuex';
 import ErrorModule from './modules/ErrorModule';
 import { DownloadModule } from './modules/DownloadModule';
 import ModalsModule from './modules/ModalsModule';
-import ModFilterModule from './modules/ModFilterModule';
+import ModFilterModule, { State as ModFilterState } from './modules/ModFilterModule';
 import ProfileModule from './modules/ProfileModule';
 import ProfileExportModule from './modules/ProfileExportModule';
 import { ProfilesModule } from './modules/ProfilesModule';
-import { TsModsModule } from './modules/TsModsModule';
+import { TsModsModule, State as TsModsState } from './modules/TsModsModule';
 import { FolderMigration } from '../migrations/FolderMigration';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
@@ -22,6 +22,8 @@ export interface State {
     isMigrationChecked: boolean;
     modLoaderPackageNames: string[];
     _settings: ManagerSettings | null;
+    modFilters: ModFilterState;
+    tsMods: TsModsState;
 }
 
 type Context = ActionContext<State, State>;
@@ -39,7 +41,7 @@ export const store = {
 
         // Access through getters to ensure the settings are loaded.
         _settings: null,
-    },
+    } as unknown as State,
     actions: {
         async checkMigrations({commit, state}: Context) {
             if (state.isMigrationChecked) {

@@ -285,9 +285,9 @@ export const DownloadModule = {
             if (index > -1) {
                 const newDownloads = [...state.allDownloads];
                 if (update.downloadedSize !== undefined) {
-                    update.downloadProgress = DownloadUtils.generateProgressPercentage(update.downloadedSize, newDownloads[index].totalDownloadSize);
+                    update.downloadProgress = DownloadUtils.generateProgressPercentage(update.downloadedSize, newDownloads[index]!.totalDownloadSize);
                 }
-                newDownloads[index] = {...newDownloads[index], ...update};
+                newDownloads[index] = {...newDownloads[index]!, ...update};
                 state.allDownloads = newDownloads;
             }
         },
@@ -336,7 +336,7 @@ function getOnlyActiveDownloads(downloads: DownloadProgress[]): DownloadProgress
 function updateDownloadStatus(downloads: DownloadProgress[], downloadId: UUID, status: DownloadStatusEnum): DownloadProgress[] {
     const index: number = getIndexOfDownloadProgress(downloads, downloadId);
     if (index > -1) {
-        downloads[index].status = status;
+        downloads[index]!.status = status;
     }
     return downloads;
 }

@@ -5,7 +5,7 @@ import { ActionTree, MutationTree } from 'vuex';
 import { State as RootState } from '../../store';
 
 interface State {
-    exportCode?: string;
+    exportCode?: string | undefined;
 }
 
 export default {

@@ -4,9 +4,9 @@ interface Action {
 }
 
 export default class R2Error extends Error {
-    public name: string;
-    public message: string;
-    public stack?: string | undefined;
+    public override name: string;
+    public override message: string;
+    public override stack?: string;
     public solution: string;
     public errorReferenceString: string | undefined;
     public action?: Action;
@@ -16,7 +16,10 @@ export default class R2Error extends Error {
         this.name = name;
         this.message = message;
         this.solution = solution || '';
-        this.stack = new Error().stack;
+        const stackError = new Error().stack;
+        if (stackError) {
+            this.stack = stackError;
+        }
         Object.setPrototypeOf(this, R2Error.prototype);
     }
 

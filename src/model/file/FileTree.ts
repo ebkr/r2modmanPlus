@@ -82,7 +82,7 @@ export default class FileTree {
 
     public navigate(...args: string[]): FileTree | undefined {
         if (args[0] !== undefined) {
-            const foundDir = this.directories.find(value => value.directoryName.toLowerCase() === args[0].toLowerCase());
+            const foundDir = this.directories.find(value => value.directoryName.toLowerCase() === args[0]!.toLowerCase());
             if (foundDir !== undefined) {
                 return foundDir.subNavigate(...args.splice(1));
             }
@@ -91,7 +91,7 @@ export default class FileTree {
 
     private subNavigate(...args: string[]): FileTree | undefined {
         if (args[0] !== undefined) {
-            const foundDir = this.directories.find(value => value.directoryName.toLowerCase() === args[0].toLowerCase());
+            const foundDir = this.directories.find(value => value.directoryName.toLowerCase() === args[0]!.toLowerCase());
             if (foundDir !== undefined) {
                 return foundDir.subNavigate(...args.splice(1));
             }

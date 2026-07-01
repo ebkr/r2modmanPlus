@@ -21,7 +21,7 @@ export default class ExportMod {
         const name = modStr.match(new RegExp("(.+)-\\d+\\.\\d+\\.\\d+$"));
         let resolvedName: string;
         if (name !== null) {
-            resolvedName = name[1];
+            resolvedName = name[1]!;
         } else {
             resolvedName = "";
         }

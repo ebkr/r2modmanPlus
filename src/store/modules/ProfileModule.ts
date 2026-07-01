@@ -31,9 +31,9 @@ interface State {
     expandedByDefault: boolean;
     funkyMode: boolean;
     modList: ManifestV2[];
-    order?: SortNaming;
-    direction?: SortDirection;
-    disabledPosition?: SortLocalDisabledMods;
+    order?: SortNaming | undefined;
+    direction?: SortDirection | undefined;
+    disabledPosition?: SortLocalDisabledMods | undefined;
     searchQuery: string;
     dismissedUpdateAll: boolean;
 }
