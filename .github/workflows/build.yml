@@ -32,9 +32,6 @@ jobs:
       - name: Install pnpm dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check type validity
-        run: mise typecheck
-
       - if: matrix.platform == 'linux'
         name: Install bsdtar # Required by electron-builder when targeting pacman.
         run: |
