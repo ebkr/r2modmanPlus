@@ -2,6 +2,8 @@ name: Build Flatpak
 
 on:
   workflow_dispatch:
+  push:
+    branches: [migrate-to-pnpm]
 
 jobs:
   build-flatpak:
