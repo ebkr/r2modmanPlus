@@ -1,5 +1,5 @@
 <template>
-    <div id="game-list-loading" v-if="!visible || visible">
+    <div id="game-list-loading" v-if="!visible">
         <div class="fa-3x">
             <i class="fas fa-circle-notch fa-spin"></i>
         </div>
