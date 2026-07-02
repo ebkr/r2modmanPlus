@@ -23,7 +23,7 @@
     "publish-win": "quasar build --mode electron -T win32 --publish always",
     "publish-linux": "quasar build --mode electron -T linux --publish always",
     "test": "vitest run ./test/vitest",
-    "typecheck": "tsc"
+    "typecheck": "vue-tsc"
   },
   "dependencies": {
     "@node-steam/vdf": "^2.1.0",
@@ -100,12 +100,12 @@
     "sass": "^1.70.0",
     "sass-loader": "^16.0.5",
     "sinon": "^11.1.1",
-    "tsc": "^2.0.4",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "vite-plugin-node-polyfills": "^0.23.0",
     "vitest": "^3.2.4",
     "vue": "^3.5.16",
+    "vue-tsc": "^3.3.5",
     "wallaby-vue-compiler": "^1.0.3"
   },
   "engines": {

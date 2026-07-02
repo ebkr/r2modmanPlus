@@ -39,7 +39,7 @@ interface UpdateObject {
     status?: DownloadStatusEnum;
 }
 
-interface State {
+export interface State {
     allDownloads: DownloadProgress[],
     ignoreCache: boolean,
 }

@@ -1,7 +1,7 @@
 import ManifestV2 from "../../model/ManifestV2";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
 
-interface State {
+export interface State {
     associatedModsModalMod: ManifestV2 | null;
     disableModModalMod: ManifestV2 | null;
     downloadModalMod: ThunderstoreMod | null;

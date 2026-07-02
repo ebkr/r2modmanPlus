@@ -4,7 +4,7 @@ import InteractionProvider from '../../providers/ror2/system/InteractionProvider
 import { ActionTree, MutationTree } from 'vuex';
 import { State as RootState } from '../../store';
 
-interface State {
+export interface State {
     exportCode?: string | undefined;
 }
 
