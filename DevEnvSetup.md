@@ -33,4 +33,4 @@ windows-build-tools and `Still waiting for installer log file...` error message:
 
 ---
 
-Package versions etc, throwing compatibility errors: `run yarn cache clean` and delete `/node_modules`. `yarn.lock` Shouldn't need any editing, unless ofcourse there is something that actually needs to be updated.
+Package versions etc, throwing compatibility errors: run `pnpm store prune` and delete `/node_modules`. `pnpm-lock.yaml` Shouldn't need any editing, unless ofcourse there is something that actually needs to be updated.

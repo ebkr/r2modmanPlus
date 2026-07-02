@@ -32,43 +32,35 @@ modules:
     build-options:
       build-args:
         - --share=network
-      # Add the node bin directory.
+      prepend-path: /run/build/r2modmanPlus/pnpm-standalone
       append-path: /usr/lib/sdk/node22/bin
       env:
         XDG_CACHE_HOME: /run/build/r2modmanPlus/flatpak-node/cache
         npm_config_nodedir: /usr/lib/sdk/node22
-        # more verbose
-        YARN_ENABLE_INLINE_BUILDS: "1"
-        # disable telemetry
-        YARN_ENABLE_TELEMETRY: "0"
-        # disable network access
-        YARN_ENABLE_NETWORK: "0"
-        # disable global cache
-        YARN_ENABLE_GLOBAL_CACHE: "0"
-        # set yarn global folder
-        YARN_GLOBAL_FOLDER: /run/build/r2modmanPlus/flatpak-node/yarn-berry
+        npm_config_offline: "true"
     sources:
       - type: dir
         path: ..
+        skip:
+          - .git
+          - node_modules
+          - dist
+          - flatpak/build
+          - flatpak/repo
+          - .flatpak-builder
 
       - generated-sources.json
 
-      - type: file
-        url: https://repo.yarnpkg.com/4.11.0/packages/yarnpkg-cli/bin/yarn.js
-        dest-filename: yarn.cjs
-        sha256: b0efc6597348fab50c777d2ff4b09e814974058cf012c3d687c9e80bca824358
+      - type: archive
+        url: https://github.com/pnpm/pnpm/releases/download/v11.8.0/pnpm-linux-x64.tar.gz
+        sha256: 86b9aa5362b06cc61f5e829e41614ffda2fbda09993b8e84176feaa3c97b9532
+        dest: pnpm-standalone
+        strip-components: 0
 
     build-commands:
-      # Set up yarn
-      - chmod +x yarn.cjs
-      - >-
-        echo "yarnPath: yarn.cjs" >> .yarnrc.yml
-      - yarn plugin import $FLATPAK_BUILDER_BUILDDIR/flatpak-node/flatpak-yarn.js
-      # prepare yarn cache
-      - yarn convertToZip $(which yarn)
-
-      - yarn install
-      - yarn build-linux-unpacked
+      - chmod +x pnpm-standalone/pnpm
+      - pnpm install --offline --frozen-lockfile
+      - pnpm build-linux-unpacked
 
       - cp -r dist/electron/Packaged/linux-unpacked/* /app/
 
