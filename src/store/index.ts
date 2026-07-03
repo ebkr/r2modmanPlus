@@ -140,7 +140,7 @@ export const store = {
 
     // enable strict mode (adds overhead!)
     // for dev mode only
-    strict: import.meta.env.MODE === 'developmen',
+    strict: import.meta.env.MODE === 'development',
 };
 
 /*
