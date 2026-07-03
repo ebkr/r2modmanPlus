@@ -25,7 +25,7 @@ There's currently no nice way to hot-reload to test Flatpak behaviour. It has ap
 You can use the following command to automate it for you though:
 
 ```
-yarn build-flatpak && flatpak install ./dist/electron/Packaged/r2modman-<version>-x86_64.flatpak
+pnpm build-flatpak && flatpak install ./dist/electron/Packaged/r2modman-<version>-x86_64.flatpak
 ```
 
 ## Thoughts and findings

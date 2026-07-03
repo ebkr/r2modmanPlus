@@ -24,7 +24,7 @@ const GAME_IMAGE_DIR_PATH = "./public/images/game_selection";
  * version and generates matching TypeScript types.
  *
  * To only generate the TypeScript types without syncing with the
- * Thunderstore API, use `yarn sync -- --types-only`
+ * Thunderstore API, use `pnpm sync --types-only`
  */
 async function updateSchema() {
     let schema: Buffer;

@@ -6,22 +6,16 @@
 2. Run `mise trust`
 3. Run `mise install`
 4. Re-open the terminal
-5. Run `yarn install`
+5. Run `pnpm install`
 
 ### For development builds
-#### Without Vue Devtools (recommended)
 ```shell
-yarn run run
-```
-
-#### With Vue Devtools
-```shell
-yarn dev
+pnpm run dev
 ```
 
 ### For local production builds
 ```shell
-yarn build-win
+pnpm build-win
 ```
 Go to `/dist/electron/Packaged` and run `r2modman VERSION_NUMBER.exe`
 
@@ -39,4 +33,4 @@ windows-build-tools and `Still waiting for installer log file...` error message:
 
 ---
 
-Package versions etc, throwing compatibility errors: `run yarn cache clean` and delete `/node_modules`. `yarn.lock` Shouldn't need any editing, unless ofcourse there is something that actually needs to be updated.
+Package versions etc, throwing compatibility errors: run `pnpm store prune` and delete `/node_modules`. `pnpm-lock.yaml` Shouldn't need any editing, unless ofcourse there is something that actually needs to be updated.

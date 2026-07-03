@@ -8,14 +8,13 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "run": "quasar dev -m electron --modern",
-    "dev": "quasar dev -m electron --modern --devtools",
+    "dev": "quasar dev -m electron --modern",
     "sync": "tsx ./scripts/sync.ts",
     "generate-release-manifest": "node flatpak/generate-release-manifest.js --input flatpak/io.github.ebkr.r2modman.yaml --output flatpak/io.github.ebkr.r2modman.release.yaml --repo https://github.com/ebkr/r2modmanPlus.git --commit $GITHUB_SHA",
-    "generate-node-sources": "pipx run --spec 'git+https://github.com/flatpak/flatpak-builder-tools.git@ac5a296ac6111aa2319daf532f609a067b88d8a9#subdirectory=node' flatpak-node-generator yarn yarn.lock --output flatpak/generated-sources.json",
+    "generate-node-sources": "pipx run --spec 'git+https://github.com/flatpak/flatpak-builder-tools.git@ac5a296ac6111aa2319daf532f609a067b88d8a9#subdirectory=node' flatpak-node-generator pnpm pnpm-lock.yaml --pnpm-store-version v11 --output flatpak/generated-sources.json",
     "build-flatpak-repo": "flatpak-builder --force-clean --install-deps-from=flathub --repo=flatpak/repo flatpak/build flatpak/io.github.ebkr.r2modman.yaml",
     "bundle-flatpak-repo": "flatpak build-bundle flatpak/repo flatpak/r2modman.flatpak io.github.ebkr.r2modman",
-    "build-flatpak": "yarn generate-node-sources && yarn build-flatpak-repo && yarn bundle-flatpak-repo",
+    "build-flatpak": "pnpm generate-node-sources && pnpm build-flatpak-repo && pnpm bundle-flatpak-repo",
     "build-win": "quasar build --mode electron -T win32",
     "build-linux": "quasar build --mode electron -T linux",
     "build-linux-unpacked": "SKIP_PACKING=true quasar build --mode electron -T linux",
@@ -90,8 +89,8 @@
     "@vue/test-utils": "^2.4.6",
     "autoprefixer": "^10.4.21",
     "devtron": "^1.4.0",
-    "electron": "^38.1.2",
     "electron-builder": "26.14.0",
+    "electron": "38.8.6",
     "electron-debug": "^3.0.1",
     "electron-devtools-installer": "^3.0.0",
     "identity-obj-proxy": "^3.0.0",
@@ -110,8 +109,7 @@
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0",
-    "npm": ">= 10.0.0",
-    "yarn": ">= 1.21.1"
+    "npm": ">= 10.0.0"
   },
-  "packageManager": "yarn@4.11.0"
+  "packageManager": "pnpm@11.8.0"
 }

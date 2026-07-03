@@ -17,13 +17,13 @@ Files for the r2modman flatpak release. Contains all the files needed for a full
 
 - [`io.github.ebkr.r2modman`](./io.github.ebkr.r2modman) is a launch script that is used to run the r2modman binary inside of the Flatpak
 
-- [`generated-sources.json`](./generated-sources.json) is a list of the yarn dependencies, formatted so they can be fetched by yarn during build time
+- [`generated-sources.json`](./generated-sources.json) is a list of the pnpm dependencies, formatted so they can be fetched and used to populate the pnpm store during build time
     - This file shouldn't be committed to the repo
     - Flatpaks don't have network access while building, so the files are fetched before building starts
-    - This file is regenerated automatically when building locally, but a manual regeneration can be triggered via `yarn generate-node-sources`
+    - This file is regenerated automatically when building locally, but a manual regeneration can be triggered via `pnpm generate-node-sources`
 
 - [`generate-release-manifest.js`](./generate-release-manifest.js) is a small script to take the manifest that is in the git repo, and update the sources to pull from git instead of using the local file system
-    - This script does use the `yaml` package, which is already used by r2modman, but this means you need to have ran `yarn install` at least once
+    - This script does use the `yaml` package, which is already used by r2modman, but this means you need to have ran `pnpm install` at least once
 
 
 ## Building locally
@@ -32,7 +32,7 @@ For building and installing locally, [Flatpak](https://flatpak.org/) and [Flatpa
 
 ### Building
 
-To build and install the Flatpak, the `yarn build-flatpak` command can be ran from the repository root. This script uses the `flatpak-builder` cli, along with `flatpak`, so make sure they are installed.
+To build and install the Flatpak, the `pnpm build-flatpak` command can be ran from the repository root. This script uses the `flatpak-builder` cli, along with `flatpak`, so make sure they are installed.
 
 ### Linting
 
