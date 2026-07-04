@@ -35,9 +35,7 @@ modules:
       prepend-path: /run/build/r2modmanPlus/pnpm-standalone
       append-path: /usr/lib/sdk/node22/bin
       env:
-        XDG_CACHE_HOME: /run/build/r2modmanPlus/flatpak-node/cache
         npm_config_nodedir: /usr/lib/sdk/node22
-        npm_config_offline: "true"
     sources:
       - type: dir
         path: ..
@@ -49,8 +47,6 @@ modules:
           - flatpak/repo
           - .flatpak-builder
 
-      - generated-sources.json
-
       - type: archive
         url: https://github.com/pnpm/pnpm/releases/download/v11.8.0/pnpm-linux-x64.tar.gz
         sha256: 86b9aa5362b06cc61f5e829e41614ffda2fbda09993b8e84176feaa3c97b9532
@@ -59,7 +55,7 @@ modules:
 
     build-commands:
       - chmod +x pnpm-standalone/pnpm
-      - pnpm install --offline --frozen-lockfile
+      - pnpm install --frozen-lockfile
       - pnpm build-linux-unpacked
 
       - cp -r dist/electron/Packaged/linux-unpacked/* /app/

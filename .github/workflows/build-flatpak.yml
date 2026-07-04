@@ -13,23 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: jdx/mise-action@v3
-        with:
-          install: true
-          cache: true
-          log_level: debug
-
-      - name: Install pnpm dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Generate release manifest
-        run: pnpm run generate-release-manifest
-
-      - name: Generate node sources
-        run: pnpm run generate-node-sources
-
       - name: Build flatpak
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
           bundle: r2modman.flatpak
-          manifest-path: flatpak/io.github.ebkr.r2modman.release.yaml
+          manifest-path: flatpak/io.github.ebkr.r2modman.yaml

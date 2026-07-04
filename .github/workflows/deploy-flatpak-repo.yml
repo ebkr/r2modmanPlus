@@ -1,0 +1,78 @@
+name: Deploy Flatpak Repo
+
+on:
+  workflow_call:
+
+jobs:
+  deploy-flatpak-repo:
+    name: Build and deploy the Flatpak repo
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-25.08
+      options: --privileged
+    env:
+      FLATPAK_R2_BUCKET: r2modman-flatpak-builds
+      FLATPAK_R2_PREFIX: flatpak
+      # Key ID from the public/private GPG key pair used to sign the Flatpak repository.
+      FLATPAK_GPG_KEY_ID: CC3633F617407481
+      FLATPAK_R2_ENDPOINT: ${{ secrets.FLATPAK_R2_ENDPOINT }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.FLATPAK_R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.FLATPAK_R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Import GPG key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          export GNUPGHOME="${RUNNER_TEMP:-/tmp}/gnupg"
+          mkdir -p "$GNUPGHOME"
+          chmod 700 "$GNUPGHOME"
+          printf '%s' "$GPG_PRIVATE_KEY" | gpg --batch --import
+          echo "GNUPGHOME=$GNUPGHOME" >> "$GITHUB_ENV"
+
+      - name: Build signed Flatpak repository
+        run: |
+          flatpak-builder \
+            --force-clean \
+            --disable-rofiles-fuse \
+            --install-deps-from=flathub \
+            --default-branch=stable \
+            --repo=flatpak/repo \
+            --gpg-sign="$FLATPAK_GPG_KEY_ID" \
+            flatpak/build \
+            flatpak/io.github.ebkr.r2modman.yaml
+
+      - name: Update repository summary
+        run: |
+          flatpak build-update-repo \
+            --generate-static-deltas \
+            --gpg-sign="$FLATPAK_GPG_KEY_ID" \
+            flatpak/repo
+
+      - name: Add repository metadata files
+        run: |
+          install -Dm644 flatpak/io.github.ebkr.r2modman.flatpakref flatpak/repo/io.github.ebkr.r2modman.flatpakref
+          install -Dm644 flatpak/r2modman.flatpakrepo flatpak/repo/r2modman.flatpakrepo
+
+      - name: Upload repository to Cloudflare R2
+        run: |
+          aws s3 sync flatpak/repo "s3://$FLATPAK_R2_BUCKET/$FLATPAK_R2_PREFIX" \
+            --endpoint-url "$FLATPAK_R2_ENDPOINT" \
+            --delete \
+            --no-progress
+
+          aws s3 cp flatpak/repo/io.github.ebkr.r2modman.flatpakref "s3://$FLATPAK_R2_BUCKET/$FLATPAK_R2_PREFIX/io.github.ebkr.r2modman.flatpakref" \
+            --endpoint-url "$FLATPAK_R2_ENDPOINT" \
+            --content-type application/vnd.flatpak.ref \
+            --cache-control no-cache \
+            --no-progress
+
+          aws s3 cp flatpak/repo/r2modman.flatpakrepo "s3://$FLATPAK_R2_BUCKET/$FLATPAK_R2_PREFIX/r2modman.flatpakrepo" \
+            --endpoint-url "$FLATPAK_R2_ENDPOINT" \
+            --content-type application/vnd.flatpak.repo \
+            --cache-control no-cache \
+            --no-progress

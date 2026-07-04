@@ -4,7 +4,6 @@
 - pnpm
 - Quasar CLI (Install using `pnpm install -g @quasar/cli`)
 - Python 2
-- pipx/flatpak-node-generator (if doing a local flatpak build)
 
 #### Linux Build
 - rpm builder

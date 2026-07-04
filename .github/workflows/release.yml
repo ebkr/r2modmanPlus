@@ -74,20 +74,11 @@ jobs:
           cache: true
           log_level: debug
 
-      - name: Install pnpm dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Generate release manifest
-        run: pnpm run generate-release-manifest
-
-      - name: Generate node sources
-        run: pnpm run generate-node-sources
-
       - name: Build flatpak
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
           bundle: r2modman.flatpak
-          manifest-path: flatpak/io.github.ebkr.r2modman.release.yaml
+          manifest-path: flatpak/io.github.ebkr.r2modman.yaml
 
       - name: Compute release tag
         id: tag
@@ -102,3 +93,9 @@ jobs:
           TAG_NAME: ${{ steps.tag.outputs.tag }}
         run: |
           gh release upload "$TAG_NAME" r2modman.flatpak --clobber
+
+  deploy-flatpak-repo:
+    name: Deploy Flatpak repo
+    needs: release-flatpak
+    uses: ./.github/workflows/deploy-flatpak-repo.yml
+    secrets: inherit
