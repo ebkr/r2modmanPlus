@@ -1,6 +1,5 @@
 [tools]
 node = '22'
-python = { version = "3.12", postinstall = "python -m pip install pipx" }
 "npm:corepack" = { version = "latest", postinstall = "corepack enable" }
 
 [tasks.dev]
