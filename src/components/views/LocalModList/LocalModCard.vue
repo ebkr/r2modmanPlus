@@ -31,8 +31,6 @@ const props = defineProps<LocalModCardProps>();
 const { isConcerningPackage, wasConcerningPackage } = useConcerningPackageComposable();
 const { uninstallMod } = useModManagementComposable();
 
-const disabledDependencies = ref<ManifestV2[]>([]);
-const missingDependencies = ref<string[]>([]);
 const disableChangePending = ref<boolean>(false);
 const icon = useModIcon(() => props.mod);
 
@@ -44,7 +42,6 @@ const isDeprecated = computed(() => store.state.tsMods.deprecated.get(props.mod.
 const isLatestVersion = computed(() => store.getters['tsMods/isLatestVersion'](props.mod));
 const localModList = computed(() => store.state.profile.modList);
 const tsMod = computed<ThunderstoreMod>(() => store.getters['tsMods/tsMod'](props.mod));
-const isConcerningPackage = computed<boolean>(() => vulnerablePackages.value.findIndex(value => value.getName() === props.mod.getName()) >= 0)
 
 const unsatisfiedDependencies = computed<UnsatisfiedDependencies | undefined>(() =>
     store.getters['profile/unsatisfiedDependencies'].get(props.mod.getName())
