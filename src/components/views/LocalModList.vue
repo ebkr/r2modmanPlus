@@ -73,7 +73,6 @@ function removeFilter(filter: string) {
     .mod-list-content {
         flex: 1;
         overflow-y: auto;
-        padding-right: 1rem;
     }
 }
 </style>
