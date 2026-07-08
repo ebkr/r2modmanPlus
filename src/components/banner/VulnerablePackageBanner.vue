@@ -1,10 +1,18 @@
 <script setup lang="ts">
 
+import { getStore } from '@r2/providers/generic/store/StoreProvider';
+import { State } from '@r2/store';
+
+const store = getStore<State>();
+
+function addUnlinkedFilter() {
+    store.commit('profile/scopeLocalModListToUnlinkedPackages');
+}
 </script>
 
 <template>
     <div class="notification is-concern margin-right">
-        <span>You have packages that can no longer be found on Thunderstore.</span> <a href="#">Click here to review packages.</a>
+        <span>You have packages that can no longer be found on Thunderstore.</span> <a href="#" @click.stop.prevent="addUnlinkedFilter">Click here to review packages.</a>
     </div>
 </template>
 
