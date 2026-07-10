@@ -1,3 +1,9 @@
+export enum ExactSearchMatchRank {
+    NONE = 0,
+    AUTHOR = 1,
+    NAME = 2,
+}
+
 export default class SearchUtils {
     public static makeKeys(search: string) {
         return search.trim().toLowerCase().split(' ');
@@ -11,5 +17,18 @@ export default class SearchUtils {
             description = '';
         }
         return keys.every(i => name.indexOf(i) >= 0 || description.indexOf(i) >= 0);
+    }
+
+    public static getExactMatchRank(query: string, name: string, fullName: string, author: string): ExactSearchMatchRank {
+        if (query.length === 0) {
+            return ExactSearchMatchRank.NONE;
+        }
+        if (name.toLowerCase() === query || fullName.toLowerCase() === query) {
+            return ExactSearchMatchRank.NAME;
+        }
+        if (author.toLowerCase() === query) {
+            return ExactSearchMatchRank.AUTHOR;
+        }
+        return ExactSearchMatchRank.NONE;
     }
 }

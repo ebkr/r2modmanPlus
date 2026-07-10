@@ -5,7 +5,7 @@ import SortingStyle from '../../model/enums/SortingStyle';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import SearchUtils from '../../utils/SearchUtils';
+import SearchUtils, { ExactSearchMatchRank } from '../../utils/SearchUtils';
 
 const store = getStore<State>();
 
@@ -15,7 +15,7 @@ const filteredMods = ref<ThunderstoreMod[]>([]);
 const filteredModCount = ref(0);
 
 function runFilter() {
-    let result = sortedMods.value;
+    let result = sortedMods.value as ThunderstoreMod[];
 
     const searchKeys = SearchUtils.makeKeys(searchFilter.value);
     if (searchKeys.length > 0) {
@@ -44,8 +44,40 @@ function runFilter() {
         result = result.filter(x => filterAll.every(c => x.getCategories().includes(c)));
     }
 
+    result = bumpExactMatches(result, searchFilter.value.trim().toLowerCase());
+
     filteredMods.value = result;
     filteredModCount.value = result.length;
+}
+
+function bumpExactMatches(mods: ThunderstoreMod[], query: string): ThunderstoreMod[] {
+    if (query.length === 0) {
+        return mods;
+    }
+
+    const nameMatches: ThunderstoreMod[] = [];
+    const authorMatches: ThunderstoreMod[] = [];
+    const others: ThunderstoreMod[] = [];
+
+    for (const mod of mods) {
+        const rank = SearchUtils.getExactMatchRank(query, mod.getName(), mod.getFullName(), mod.getOwner());
+        switch (rank) {
+            case ExactSearchMatchRank.NAME:
+                nameMatches.push(mod);
+                break;
+            case ExactSearchMatchRank.AUTHOR:
+                authorMatches.push(mod);
+                break;
+            default:
+                others.push(mod);
+                break;
+        }
+    }
+
+    if (nameMatches.length === 0 && authorMatches.length === 0) {
+        return mods;
+    }
+    return [...nameMatches, ...authorMatches, ...others];
 }
 
 function runSort() {
