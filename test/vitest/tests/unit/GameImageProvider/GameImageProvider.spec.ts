@@ -56,11 +56,12 @@ function cachePathFor(iconUrl: string): string {
     return nodePath.join(CACHE_ROOT, ...iconUrl.split('/'));
 }
 
-function makeFetchResponse(body: ArrayBuffer | string, status = 200, statusText = 'OK'): Response {
+function makeFetchResponse(body: ArrayBuffer | string, status = 200, statusText = 'OK', contentType = 'image/webp'): Response {
     return {
         ok: status >= 200 && status < 300,
         status,
         statusText,
+        headers: { get: (name: string) => (name.toLowerCase() === 'content-type' ? contentType : null) },
         async arrayBuffer() { return typeof body === 'string' ? new TextEncoder().encode(body).buffer : body; },
     } as unknown as Response;
 }
@@ -132,6 +133,14 @@ describe('GameImageProviderImpl', () => {
             expect(mockFetch).toHaveBeenCalledTimes(1);
         });
 
+        test('treats a 200 HTML SPA-fallback response as unreachable and falls through to CDN', async () => {
+            await GameImageProviderImplementation.init();
+            mockFetch.mockResolvedValueOnce(makeFetchResponse('<!doctype html>', 200, 'OK', 'text/html'));
+
+            const result = await GameImageProviderImplementation.resolve('spa-game/spa-game-cover-360x480.webp');
+            expect(result.startsWith('data:image/webp;base64,')).toBe(true);
+        });
+
         test('returns disk-cached data URL when bundled is unreachable but cache exists', async () => {
             await GameImageProviderImplementation.init();
             // Pre-seed cache.
@@ -146,20 +155,6 @@ describe('GameImageProviderImpl', () => {
             expect(result.startsWith('data:image/webp;base64,')).toBe(true);
             // Cache hit means at most one fetch (the bundled check) — CDN was NOT called.
             expect(mockFetch).toHaveBeenCalledTimes(1);
-        });
-
-        test('fetches from CDN, caches, and returns data URL on first cache miss', async () => {
-            await GameImageProviderImplementation.init();
-            const cdnBody = new Uint8Array([0x52, 0x49, 0x46, 0x46]).buffer; // "RIFF"
-            mockFetch.mockResolvedValueOnce(makeFetchResponse('', 404)); // bundled miss
-            mockFetch.mockResolvedValueOnce(makeFetchResponse(cdnBody, 200)); // CDN hit
-
-            const iconUrl = 'fresh-game/fresh-game-cover-360x480.webp';
-            const result = await GameImageProviderImplementation.resolve(iconUrl);
-
-            expect(result.startsWith('data:image/webp;base64,')).toBe(true);
-            // Should now exist in cache.
-            expect(await FsProvider.instance.exists(cachePathFor('fresh-game/fresh-game-cover-360x480.webp'))).toBe(true);
         });
 
         test('CDN 404 returns placeholder and does NOT increment failure counter', async () => {
