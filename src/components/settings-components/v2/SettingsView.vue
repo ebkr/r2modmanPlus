@@ -12,13 +12,21 @@ import ExpandCards from './entries/ExpandCards.vue';
 import FunkyMode from './entries/FunkyMode.vue';
 import RefreshOnlineModList from './entries/RefreshOnlineModList.vue';
 import ModState from './entries/ModState.vue';
+import UpdateAllMods from './entries/UpdateAllMods.vue';
+import DownloadCache from './entries/DownloadCache.vue';
+import CopyLogToClipboard from './entries/CopyLogToClipboard.vue';
+import CopyTroubleshooting from './entries/CopyTroubleshooting.vue';
+import ImportLocalMod from './entries/ImportLocalMod.vue';
+import CleanModCache from './entries/CleanModCache.vue';
+import CleanOnlineModListCache from './entries/CleanOnlineModListCache.vue';
+import ToggleCdn from './entries/ToggleCdn.vue';
 
 const searchTerm = ref<string>('');
 
 const managerVersionNumber = ref<VersionNumber>(ManagerInformation.VERSION);
 const appName = computed(() => ManagerInformation.APP_NAME);
 
-const categories = ['All', 'Directories', 'Profile', 'Appearance', 'Other'] as const;
+const categories = ['All', 'Directories', 'Profile', 'Appearance', 'Debugging', 'Other'] as const;
 type Category = typeof categories[number];
 
 const activeCategory = ref<Category>('All');
@@ -71,12 +79,23 @@ function isVisible(section: Category): boolean {
                 <SettingsSection v-if="isVisible('Profile')" name="Profile">
                     <ExportProfile :search-term="searchTerm"/>
                     <ModState :search-term="searchTerm"/>
+                    <UpdateAllMods :search-term="searchTerm"/>
+                    <ImportLocalMod :search-term="searchTerm"/>
                 </SettingsSection>
 
                 <SettingsSection v-if="isVisible('Appearance')" name="Appearance">
                     <Theme :search-term="searchTerm"/>
                     <ExpandCards :search-term="searchTerm"/>
                     <FunkyMode :search-term="searchTerm"/>
+                </SettingsSection>
+
+                <SettingsSection v-if="isVisible('Debugging')" name="Debugging">
+                    <CopyLogToClipboard :search-term="searchTerm"/>
+                    <CopyTroubleshooting :search-term="searchTerm"/>
+                    <DownloadCache :search-term="searchTerm"/>
+                    <CleanModCache :search-term="searchTerm"/>
+                    <CleanOnlineModListCache :search-term="searchTerm"/>
+                    <ToggleCdn :search-term="searchTerm"/>
                 </SettingsSection>
 
                 <SettingsSection v-if="isVisible('Other')" name="Other">

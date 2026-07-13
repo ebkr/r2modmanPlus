@@ -29,6 +29,16 @@ const { isVisible } = useSettingSearch(() => props.searchTerm, [
 const numberEnabled = computed<number>(() => localModList.value.filter(mod => mod.isEnabled()).length);
 const numberDisabled = computed<number>(() => localModList.value.length - numberEnabled.value);
 
+const statusText = computed<string>(() => {
+    if (numberEnabled.value === localModList.value.length) {
+        return 'All of your mods are currently enabled.';
+    }
+    if (numberDisabled.value === localModList.value.length) {
+        return 'All of your mods are currently disabled.';
+    }
+    return `You have ${numberDisabled.value} mod${numberDisabled.value > 1 ? 's' : ''} disabled.`;
+});
+
 async function enableAllMods() {
     isEnablingState.value = true;
     await store.dispatch(
@@ -55,17 +65,7 @@ async function disableAllMods() {
         <template #title>Change mod state</template>
         <template #description>
         <p>Enable / disable all of the mods on your profile</p>
-        <p>
-            <template v-if="numberEnabled === localModList.length">
-                All of your mods are currently enabled.
-            </template>
-            <template v-else-if="numberDisabled === localModList.length">
-                All of your mods are currently disabled.
-            </template>
-            <template v-else>
-                You have {{ numberDisabled }} mod<template v-if="numberDisabled > 1">s</template> disabled.
-            </template>
-        </p>
+        <p>{{ statusText }}</p>
         </template>
         <div class="export-profile-setting">
             <button
