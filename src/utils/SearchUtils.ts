@@ -3,9 +3,13 @@ export default class SearchUtils {
         return search.trim().toLowerCase().split(' ');
     }
 
-    public static isSearched(keys: string[], name: string, description: string) {
+    public static isSearched(keys: string[], name: string, description?: string) {
         name = name.toLowerCase();
-        description = description.toLowerCase();
+        if (description) {
+            description = description.toLowerCase();
+        } else {
+            description = '';
+        }
         return keys.every(i => name.indexOf(i) >= 0 || description.indexOf(i) >= 0);
     }
 }

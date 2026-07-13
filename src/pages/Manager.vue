@@ -13,18 +13,6 @@
 			<button class="modal-close is-large" aria-label="close"
 			        @click="showSteamIncorrectDirectoryModal = false"></button>
 		</div>
-		<div id='ror2IncorrectDir' :class="['modal', {'is-active':(showRor2IncorrectDirectoryModal !== false)}]">
-			<div class="modal-background" @click="showRor2IncorrectDirectoryModal = false"></div>
-			<div class='modal-content'>
-				<div class='notification is-danger'>
-					<h3 class='title'>Failed to set the {{ activeGame.displayName }} folder</h3>
-					<p>The executable must be either of the following: "{{ activeGame.exeName.join('", "') }}".</p>
-					<p>If this error has appeared but the executable is correct, please run as administrator.</p>
-				</div>
-			</div>
-			<button class="modal-close is-large" aria-label="close"
-			        @click="showRor2IncorrectDirectoryModal = false"></button>
-		</div>
 		<ModalCard id="steam-installation-validation-modal" :is-active="isValidatingSteamInstallation" @close-modal="closeSteamInstallationValidationModal" :can-close="true">
 			<template v-slot:header>
 				<h2 class='modal-title'>Clearing the {{activeGame.displayName}} installation directory</h2>
@@ -113,6 +101,7 @@
 		</ModalCard>
 
         <CategoryFilterModal />
+        <IncorrectGameDirectoryModal />
         <SortModal />
         <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" />
         <ProfileCodeExportModal />
@@ -144,6 +133,7 @@ import LocalFileImportModal from '../components/importing/LocalFileImportModal.v
 import { PackageLoader } from '../model/schema/ThunderstoreSchema';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
+import IncorrectGameDirectoryModal from '../components/modals/IncorrectGameDirectoryModal.vue';
 import ModalCard from '../components/ModalCard.vue';
 import ProfileCodeExportModal from '../components/modals/ProfileCodeExportModal.vue';
 import SortModal from '../components/modals/SortModal.vue';
@@ -164,7 +154,6 @@ const router = useRouter();
 
 const isValidatingSteamInstallation = ref<boolean>(false);
 const showSteamIncorrectDirectoryModal = ref<boolean>(false);
-const showRor2IncorrectDirectoryModal = ref<boolean>(false);
 const launchParametersModel = ref<string>('');
 const showLaunchParameterModal = ref<boolean>(false);
 const showDependencyStrings = ref<boolean>(false);
@@ -192,82 +181,6 @@ async function validateSteamInstallation() {
     } else {
         isValidatingSteamInstallation.value = true;
     }
-}
-
-function computeDefaultInstallDirectory(): string {
-    switch(appWindow.getPlatform()){
-        case 'win32':
-            return path.resolve(
-                process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
-                'Steam', 'steamapps', 'common', activeGame.value.steamFolderName
-            );
-        case 'linux':
-            return path.resolve(os.homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', activeGame.value.steamFolderName);
-        case 'darwin':
-            return path.resolve(os.homedir(), 'Library', 'Application Support', 'Steam',
-                'steamapps', 'common', activeGame.value.steamFolderName);
-        default:
-            return '';
-    }
-}
-
-function changeGameInstallDirectory() {
-    const ror2Directory: string = settings.value.getContext().gameSpecific.gameDirectory || computeDefaultInstallDirectory();
-    InteractionProvider.instance.selectFile({
-        title: `Locate ${activeGame.value.displayName} Executable`,
-        // Lazy reduce. Assume Linux name and Windows name are identical besides extension.
-        // Should fix if needed, although unlikely.
-        filters: (activeGame.value.exeName.map(value => {
-            const nameSplit = value.split(".");
-            return [{
-                name: nameSplit[0],
-                extensions: [nameSplit[1]]
-            }]
-        }).reduce((previousValue, currentValue) => {
-            previousValue[0].extensions = [...previousValue[0].extensions, ...currentValue[0].extensions];
-            return previousValue;
-        })),
-        defaultPath: ror2Directory,
-        buttonLabel: 'Select Executable'
-    }).then(async files => {
-        if (files.length === 1) {
-            try {
-                const containsGameExecutable = activeGame.value.exeName.find(exeName => path.basename(files[0]).toLowerCase() === exeName.toLowerCase()) !== undefined
-                if (containsGameExecutable) {
-                    await settings.value.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
-                } else {
-                    showRor2IncorrectDirectoryModal.value = true;
-                }
-            } catch (e) {
-                const err = R2Error.fromThrownValue(e, 'Failed to change the game folder');
-                store.commit('error/handleError', err);
-            }
-        }
-    });
-}
-
-function changeGameInstallDirectoryGamePass() {
-    const ror2Directory: string = settings.value.getContext().gameSpecific.gameDirectory || computeDefaultInstallDirectory();
-    InteractionProvider.instance.selectFile({
-        title: `Locate gamelaunchhelper Executable`,
-        filters: [{ name: "gamelaunchhelper", extensions: ["exe"] }],
-        defaultPath: ror2Directory,
-        buttonLabel: 'Select Executable'
-    }).then(async files => {
-        if (files.length === 1) {
-            try {
-                const containsGameExecutable = (path.basename(files[0]).toLowerCase() === "gamelaunchhelper.exe");
-                if (containsGameExecutable) {
-                    await settings.value.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
-                } else {
-                    throw new Error("The selected executable is not gamelaunchhelper.exe");
-                }
-            } catch (e) {
-                const err = R2Error.fromThrownValue(e, 'Failed to change the game folder');
-                store.commit('error/handleError', err);
-            }
-        }
-    });
 }
 
 function computeDefaultSteamDirectory(): string {
@@ -413,24 +326,6 @@ async function copyTroubleshootingInfoToClipboard() {
     InteractionProvider.instance.copyToClipboard('```' + content + '```');
 }
 
-async function changeDataFolder() {
-    try {
-        const folder = await DataFolderProvider.instance.showSelectionDialog();
-
-        if (folder === null) {
-            return;
-        }
-
-        await DataFolderProvider.instance.throwForInvalidFolder(folder);
-        await DataFolderProvider.instance.writeOverrideFile(folder);
-        await settings.value.setDataDirectory(folder);
-        InteractionProvider.instance.restartApp();
-    } catch(err) {
-        store.commit("error/handleError", R2Error.fromThrownValue(err));
-        return
-    }
-}
-
 async function handleSettingsCallbacks(invokedSetting: any) {
     switch(invokedSetting) {
         case "BrowseDataFolder":
@@ -438,12 +333,6 @@ async function handleSettingsCallbacks(invokedSetting: any) {
             break;
         case "BrowseProfileFolder":
             browseProfileFolder();
-            break;
-        case "ChangeGameDirectory":
-            changeGameInstallDirectory();
-            break;
-        case "ChangeGameDirectoryGamePass":
-            changeGameInstallDirectoryGamePass();
             break;
         case "ChangeSteamDirectory":
             changeSteamDirectory();
@@ -498,9 +387,6 @@ async function handleSettingsCallbacks(invokedSetting: any) {
             break;
         case "ShowDependencyStrings":
             showDependencyStrings.value = true;
-            break;
-        case "ChangeDataFolder":
-            await changeDataFolder();
             break;
         case "CleanCache":
             CacheUtil.clean();

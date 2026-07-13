@@ -4,10 +4,23 @@ import { getStore } from '../../../../providers/generic/store/StoreProvider';
 import { State } from '../../../../store';
 import ManagerSettings from '../../../../r2mm/manager/ManagerSettings';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
+import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
 
 const store = getStore<State>();
+
+const props = defineProps<{
+    searchTerm?: string;
+}>();
+
 const settings = ref<ManagerSettings | null>(null);
 const expandedCards = ref<boolean>(false);
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, [
+    'Expand cards by default',
+    'Toggle',
+    'Collapsed',
+    'Expanded',
+]);
 
 onMounted(async () => {
     settings.value = await ManagerSettings.getSingleton(store.state.activeGame);
@@ -25,7 +38,7 @@ async function setExpanded(expanded: boolean) {
 </script>
 
 <template>
-    <SettingsViewWrapper>
+    <SettingsViewWrapper v-show="isVisible">
         <template #title>Expand cards by default</template>
         <template #description>
             Show mod cards fully expanded rather than collapsed when opening a mod list.

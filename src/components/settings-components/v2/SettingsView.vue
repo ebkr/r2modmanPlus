@@ -11,11 +11,14 @@ import Theme from './entries/Theme.vue';
 import ExpandCards from './entries/ExpandCards.vue';
 import FunkyMode from './entries/FunkyMode.vue';
 import RefreshOnlineModList from './entries/RefreshOnlineModList.vue';
+import ModState from './entries/ModState.vue';
+
+const searchTerm = ref<string>('');
 
 const managerVersionNumber = ref<VersionNumber>(ManagerInformation.VERSION);
 const appName = computed(() => ManagerInformation.APP_NAME);
 
-const categories = ['All', 'Directories', 'Profile', 'Debugging', 'Modpacks', 'Other'] as const;
+const categories = ['All', 'Directories', 'Profile', 'Appearance', 'Other'] as const;
 type Category = typeof categories[number];
 
 const activeCategory = ref<Category>('All');
@@ -48,20 +51,36 @@ function isVisible(section: Category): boolean {
             </aside>
 
             <div class="settings-list">
+
+                <div class="sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding">
+                    <div class='border-at-bottom'>
+                        <div class='card is-shadowless is-square'>
+                            <div class='card-header-title'>
+                                <span class="non-selectable margin-right">Search:</span>
+                                <input v-model='searchTerm' class="input" type="text" placeholder="Search for a setting"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <SettingsSection v-if="isVisible('Directories')" name="Directories">
-                    <GameDirectory />
-                    <DataDirectory />
+                    <DataDirectory :search-term="searchTerm"/>
+                        <GameDirectory :search-term="searchTerm"/>
                 </SettingsSection>
 
                 <SettingsSection v-if="isVisible('Profile')" name="Profile">
-                    <ExportProfile />
+                    <ExportProfile :search-term="searchTerm"/>
+                    <ModState :search-term="searchTerm"/>
+                </SettingsSection>
+
+                <SettingsSection v-if="isVisible('Appearance')" name="Appearance">
+                    <Theme :search-term="searchTerm"/>
+                    <ExpandCards :search-term="searchTerm"/>
+                    <FunkyMode :search-term="searchTerm"/>
                 </SettingsSection>
 
                 <SettingsSection v-if="isVisible('Other')" name="Other">
-                    <Theme />
-                    <ExpandCards />
-                    <FunkyMode />
-                    <RefreshOnlineModList />
+                    <RefreshOnlineModList :search-term="searchTerm"/>
                 </SettingsSection>
             </div>
         </div>

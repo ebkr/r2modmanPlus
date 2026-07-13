@@ -4,11 +4,22 @@ import { getStore } from '../../../../providers/generic/store/StoreProvider';
 import { State } from '../../../../store';
 import R2Error from '../../../../model/errors/R2Error';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
+import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
 
 const store = getStore<State>();
 
+const props = defineProps<{
+    searchTerm?: string;
+}>();
+
 const activeExport = ref<'file' | 'code' | null>(null);
 const isExporting = computed(() => activeExport.value !== null);
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, [
+    'Export profile',
+    'As file',
+    'As code',
+]);
 
 async function exportProfile(as: 'file' | 'code', action: string) {
     if (isExporting.value) {
@@ -26,7 +37,7 @@ async function exportProfile(as: 'file' | 'code', action: string) {
 </script>
 
 <template>
-    <SettingsViewWrapper>
+    <SettingsViewWrapper v-show="isVisible">
         <template #title>Export profile</template>
         <template #description>
             Export your mod list and configs to share with friends and get an identical profile quickly and easily.

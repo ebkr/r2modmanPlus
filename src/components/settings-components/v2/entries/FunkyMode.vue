@@ -4,10 +4,20 @@ import { getStore } from '../../../../providers/generic/store/StoreProvider';
 import { State } from '../../../../store';
 import ManagerSettings from '../../../../r2mm/manager/ManagerSettings';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
+import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
 
 const store = getStore<State>();
 const settings = ref<ManagerSettings | null>(null);
 const funkyModeEnabled = ref<boolean>(false);
+
+const props = defineProps<{
+    searchTerm?: string;
+}>();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, [
+    'Enable funky mode',
+    'Toggle',
+]);
 
 onMounted(async () => {
     settings.value = await ManagerSettings.getSingleton(store.state.activeGame);
@@ -21,10 +31,10 @@ async function setFunkyMode(enabled: boolean) {
 </script>
 
 <template>
-    <SettingsViewWrapper>
+    <SettingsViewWrapper v-show="isVisible">
         <template #title>Enable funky mode</template>
         <template #description>
-            Adds a more colourful, playful flair to the manager. Purely cosmetic.
+        It's funky mode.
         </template>
         <div class="field" @click.prevent.stop="setFunkyMode(!funkyModeEnabled)">
             <input

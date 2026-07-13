@@ -21,6 +21,7 @@ interface State {
     uninstallModModalMod: ManifestV2 | null;
     isProfileCodeExportModalOpen: boolean;
     isLocalFileImportModalOpen: boolean;
+    isIncorrectGameDirectoryModalOpen: boolean;
 }
 
 export default {
@@ -44,6 +45,7 @@ export default {
         uninstallModModalMod: null,
         isProfileCodeExportModalOpen: false,
         isLocalFileImportModalOpen: false,
+        isIncorrectGameDirectoryModalOpen: false,
     }),
 
     mutations: {
@@ -111,6 +113,10 @@ export default {
             state.isLocalFileImportModalOpen = false;
         },
 
+        closeIncorrectGameDirectoryModal: function(state: State): void {
+            state.isIncorrectGameDirectoryModalOpen = false;
+        },
+
         openAssociatedModsModal: function(state: State, mod: ManifestV2): void {
             state.associatedModsModalMod = mod;
             state.isAssociatedModsModOpen = true;
@@ -173,6 +179,10 @@ export default {
 
         openLocalFileImportModal: function(state: State): void {
             state.isLocalFileImportModalOpen = true;
+        },
+
+        openIncorrectGameDirectoryModal: function(state: State): void {
+            state.isIncorrectGameDirectoryModalOpen = true;
         },
     }
 }

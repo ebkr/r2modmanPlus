@@ -4,8 +4,18 @@ import moment from 'moment';
 import { getStore } from '../../../../providers/generic/store/StoreProvider';
 import { State } from '../../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
+import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
 
 const store = getStore<State>();
+
+const props = defineProps<{
+    searchTerm?: string;
+}>();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, [
+    'Refresh online mod list',
+    'Check for new mod releases',
+]);
 
 const isRefreshing = computed<boolean>(() => store.state.tsMods.isThunderstoreModListUpdateInProgress);
 const hasActiveDownloads = computed<boolean>(() => store.getters['download/activeDownloadCount'] > 0);
@@ -35,7 +45,7 @@ async function refresh() {
 </script>
 
 <template>
-    <SettingsViewWrapper>
+    <SettingsViewWrapper v-show="isVisible">
         <template #title>Refresh online mod list</template>
         <template #description>
             Check for any new mod releases. {{ status }}
