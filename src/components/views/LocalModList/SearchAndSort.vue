@@ -45,6 +45,15 @@ const search = computed({
     }
 });
 
+const groupByBundle = computed({
+    get() {
+        return store.state.profile.groupByBundle;
+    },
+    set() {
+        store.dispatch('profile/toggleGroupByBundle');
+    }
+});
+
 const orderOptions = computed(() => Object.values(SortNaming));
 const directionOptions = computed(() => Object.values(SortDirection));
 const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
@@ -88,7 +97,7 @@ const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
                     </select>
                 </div>
 
-                <div class="input-group">
+                <div class="input-group margin-right">
                     <label for="local-deprecated-position" class="non-selectable">Disabled</label>
                     <select
                         v-model="disabledPosition"
@@ -98,6 +107,19 @@ const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
                             {{option}}
                         </option>
                     </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="local-group-by-bundle" class="non-selectable">Group by bundle</label>
+                    <div class="field">
+                        <input
+                            id="local-group-by-bundle"
+                            v-model="groupByBundle"
+                            type="checkbox"
+                            :class="['switch', 'is-small', {'switch is-info': groupByBundle}]" />
+                        <label for="local-group-by-bundle"
+                            v-tooltip.left="'Group installed mods by the mod you installed (root) and its dependencies.'"></label>
+                    </div>
                 </div>
 
             </div>

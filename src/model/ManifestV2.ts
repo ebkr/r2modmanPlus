@@ -22,6 +22,11 @@ export default class ManifestV2 {
     private installMode: string = '';
     private installedAtTime: number = 0;
 
+    // True when the mod is only present because another mod depends on it,
+    // i.e. it was not installed explicitly by the user. Used to group mods
+    // into "bundles" (an explicitly installed root + its dependency closure).
+    private installedAsDependency: boolean = false;
+
     private loaders: string[] = [];
     private dependencies: string[] = [];
     private incompatibilities: string[] = [];
@@ -89,6 +94,7 @@ export default class ManifestV2 {
         this.setGameVersion(jsManifestObject.gameVersion);
         this.icon = path.join(PathResolver.MOD_ROOT, 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
         this.setInstalledAtTime(jsManifestObject.installedAtTime || 0);
+        this.setInstalledAsDependency(jsManifestObject.installedAsDependency || false);
         this.setOnlineSource(jsManifestObject.onlineSource || false);
         if (!jsManifestObject.enabled) {
             this.disable();
@@ -243,6 +249,14 @@ export default class ManifestV2 {
 
     public setInstalledAtTime(installedAtTime: number) {
         this.installedAtTime = installedAtTime;
+    }
+
+    public isInstalledAsDependency(): boolean {
+        return this.installedAsDependency;
+    }
+
+    public setInstalledAsDependency(installedAsDependency: boolean) {
+        this.installedAsDependency = installedAsDependency;
     }
 
     public getDependencyString(): string {

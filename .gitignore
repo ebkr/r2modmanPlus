@@ -33,3 +33,5 @@ flatpak/generated-sources.json
 *.njsproj
 *.sln
 /.vs
+.pnpm-store
+

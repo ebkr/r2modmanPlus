@@ -135,7 +135,14 @@ export const DownloadModule = {
                 await dispatch('_download', { combos: modsWithDependencies, downloadId });
 
                 commit('setInstalling', downloadId);
-                await dispatch('_installModsAndResolveConflicts', { combos: modsWithDependencies, profile, downloadId });
+                // The mods explicitly requested by the user (combos) are bundle
+                // roots; the extra entries in modsWithDependencies are their
+                // dependencies. For "update all" (UPDATE_ALL) we can't tell roots
+                // from dependencies, so leave provenance untouched.
+                const explicitRoots = installMode === InstallMode.INSTALL_SPECIFIC
+                    ? new Set(combos.map((c) => c.getMod().getFullName()))
+                    : undefined;
+                await dispatch('_installModsAndResolveConflicts', { combos: modsWithDependencies, profile, downloadId, explicitRoots });
                 commit('setInstalled', downloadId);
 
                 // Sync mod loader root files to the game directory so updates
@@ -190,15 +197,16 @@ export const DownloadModule = {
         async _installModsAndResolveConflicts({commit, dispatch}, params: {
             combos: ThunderstoreCombo[],
             profile: ImmutableProfile,
-            downloadId: UUID
+            downloadId: UUID,
+            explicitRoots?: Set<string>
         }): Promise<void> {
-            const { combos, profile, downloadId } = params;
+            const { combos, profile, downloadId, explicitRoots } = params;
 
             await ProfileModList.requestLock(async () => {
                 try {
                     const modList = await installModsToProfile(combos, profile, undefined, (_status, modName, installProgress) => {
                         commit('updateDownload', { downloadId, modName, installProgress });
-                    });
+                    }, explicitRoots);
                     throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts(modList, profile));
                 } catch (e) {
                     throw e;

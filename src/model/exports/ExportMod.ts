@@ -5,15 +5,17 @@ export default class ExportMod {
     private readonly name: string = '';
     private readonly version: VersionNumber = new VersionNumber('0.0.0');
     private readonly enabled: boolean = false;
+    private readonly installedAsDependency: boolean = false;
 
-    public constructor(name: string, versionNumber: VersionNumber, enabled: boolean) {
+    public constructor(name: string, versionNumber: VersionNumber, enabled: boolean, installedAsDependency: boolean = false) {
         this.name = name;
         this.version = versionNumber;
         this.enabled = enabled;
+        this.installedAsDependency = installedAsDependency;
     }
 
     public static fromManifest(mod: ManifestV2): ExportMod {
-        const exportFormat = new ExportMod(mod.getName(), mod.getVersionNumber(), mod.isEnabled());
+        const exportFormat = new ExportMod(mod.getName(), mod.getVersionNumber(), mod.isEnabled(), mod.isInstalledAsDependency());
         return exportFormat;
     }
 
@@ -49,5 +51,9 @@ export default class ExportMod {
 
     public isEnabled(): boolean {
         return this.enabled;
+    }
+
+    public isInstalledAsDependency(): boolean {
+        return this.installedAsDependency;
     }
 }

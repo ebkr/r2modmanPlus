@@ -14,7 +14,8 @@
         <div class="mod-list-content">
             <div class="draggable-content">
                 <Suspense>
-                    <LocalModDraggableList/>
+                    <BundleModList v-if="groupByBundle"/>
+                    <LocalModDraggableList v-else/>
 
                     <template #fallback>
                         <SkeletonLocalModCard :mod="mod" v-for="mod of visibleModList"/>
@@ -41,8 +42,10 @@ import ManagerUpdateBanner from '../banner/ManagerUpdateBanner.vue';
 const store = getStore<State>();
 
 const LocalModDraggableList = defineAsyncComponent(() => import('./LocalModList/LocalModDraggableList.vue'));
+const BundleModList = defineAsyncComponent(() => import('./LocalModList/BundleModList.vue'));
 
 const visibleModList = computed(() => store.getters['profile/visibleModList']);
+const groupByBundle = computed(() => store.state.profile.groupByBundle);
 </script>
 
 <style lang="scss" scoped>

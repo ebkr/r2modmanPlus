@@ -33,6 +33,32 @@ if (process.env.PROD) {
 
 let mainWindow;
 
+// On macOS, ror2mm:// deep links (e.g. "Install with Mod Manager") are delivered
+// via the 'open-url' event rather than process.argv. Route them into the same
+// install path used on Windows/Linux, buffering until the renderer is ready if
+// the link launched the app from cold.
+let pendingDeeplink: string | null = null;
+
+function handleDeeplink(url: string) {
+    if (!url || url.toLowerCase().search('ror2mm://') < 0) {
+        return;
+    }
+    if (mainWindow && !mainWindow.webContents.isLoading()) {
+        ipcMain.emit('install-via-thunderstore', url);
+        if (mainWindow.isMinimized()) {
+            mainWindow.restore();
+        }
+        mainWindow.focus();
+    } else {
+        pendingDeeplink = url;
+    }
+}
+
+app.on('open-url', (event, url) => {
+    event.preventDefault();
+    handleDeeplink(url);
+});
+
 async function createWindow() {
 
     const windowSize = Persist.getSize(app, {
@@ -76,6 +102,15 @@ async function createWindow() {
 
     mainWindow.on('closed', () => {
         mainWindow = null;
+    });
+
+    // Flush any deep link that arrived before the renderer was ready.
+    mainWindow.webContents.on('did-finish-load', () => {
+        if (pendingDeeplink) {
+            const url = pendingDeeplink;
+            pendingDeeplink = null;
+            handleDeeplink(url);
+        }
     });
 }
 

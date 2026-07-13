@@ -108,6 +108,15 @@ export default class ManagerSettings {
         await this.save();
     }
 
+    public getInstalledGroupByBundle(): boolean {
+        return ManagerSettings.CONTEXT.global.installedGroupByBundle ?? false;
+    }
+
+    public async setInstalledGroupByBundle(groupByBundle: boolean) {
+        ManagerSettings.CONTEXT.global.installedGroupByBundle = groupByBundle;
+        await this.save();
+    }
+
     public async toggleDarkTheme() {
         ManagerSettings.CONTEXT.global.darkTheme = !ManagerSettings.CONTEXT.global.darkTheme;
         await this.save();

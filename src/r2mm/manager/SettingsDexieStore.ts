@@ -114,6 +114,7 @@ export default class SettingsDexieStore extends Dexie {
                 dataDirectory: "",
                 expandedCards: false,
                 funkyModeEnabled: false,
+                installedGroupByBundle: false,
                 ignoreCache: false,
                 steamDirectory: null,
                 lastSelectedGame: null,
@@ -203,6 +204,9 @@ export interface ManagerSettingsInterfaceGlobal_V2 {
     steamDirectory: string | null;
     funkyModeEnabled: boolean;
     expandedCards: boolean;
+    // Group the installed mod list by bundle (an explicitly installed root
+    // mod together with its dependency closure) instead of a flat list.
+    installedGroupByBundle: boolean;
     darkTheme: boolean;
     ignoreCache: boolean;
     dataDirectory: string;

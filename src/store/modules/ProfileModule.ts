@@ -16,6 +16,7 @@ import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirecto
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
+import BundleGraph, { Bundle } from '../../r2mm/mods/BundleGraph';
 import ModListSort from '../../r2mm/mods/ModListSort';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import FileUtils from '../../utils/FileUtils';
@@ -30,6 +31,7 @@ interface State {
     activeProfile: Profile | null;
     expandedByDefault: boolean;
     funkyMode: boolean;
+    groupByBundle: boolean;
     modList: ManifestV2[];
     order?: SortNaming;
     direction?: SortDirection;
@@ -48,6 +50,7 @@ export default {
         activeProfile: null,
         expandedByDefault: false,
         funkyMode: false,
+        groupByBundle: false,
         modList: [],
         order: undefined,
         direction: undefined,
@@ -152,6 +155,24 @@ export default {
             );
         },
 
+        // Installed mods grouped into bundles (a root mod + its dependency
+        // closure), honouring the current search query. A bundle is shown if its
+        // root or any of its members matches the search.
+        bundleList(state): Bundle[] {
+            const bundles = BundleGraph.getBundles(state.modList);
+
+            if (!state.searchQuery) {
+                return bundles;
+            }
+
+            const searchKeys = SearchUtils.makeKeys(state.searchQuery);
+            return bundles.filter((bundle) =>
+                bundle.members.some((mod) =>
+                    SearchUtils.isSearched(searchKeys, mod.getName(), mod.getDescription())
+                )
+            );
+        },
+
         canSortMods(state): boolean {
             return state.order === SortNaming.CUSTOM
                 && state.direction === SortDirection.STANDARD
@@ -189,6 +210,10 @@ export default {
 
         setFunkyMode(state: State, value: boolean) {
             state.funkyMode = value;
+        },
+
+        setGroupByBundle(state: State, value: boolean) {
+            state.groupByBundle = value;
         },
 
         // Avoid calling this directly, prefer updateModList action to
@@ -267,6 +292,31 @@ export default {
             }
 
             await dispatch('resolveConflicts', {mods: lastSuccessfulUpdate, profile});
+        },
+
+        // Disable a whole bundle (a root mod + dependencies not needed by any
+        // other enabled root). See BundleGraph for the shared-dependency rule.
+        async disableBundleOnActiveProfile(
+            {dispatch, getters},
+            params: {
+                root: ManifestV2,
+                onProgress?: (mod: ManifestV2) => void,
+            }
+        ) {
+            const mods = BundleGraph.computeDisableSet(params.root, getters.modList);
+            await dispatch('disableModsFromActiveProfile', {mods, onProgress: params.onProgress});
+        },
+
+        // Enable a whole bundle: the root and its full dependency closure.
+        async enableBundleOnActiveProfile(
+            {dispatch, getters},
+            params: {
+                root: ManifestV2,
+                onProgress?: (mod: ManifestV2) => void,
+            }
+        ) {
+            const mods = BundleGraph.computeEnableSet(params.root, getters.modList);
+            await dispatch('enableModsOnActiveProfile', {mods, onProgress: params.onProgress});
         },
 
         async enableModsOnActiveProfile(
@@ -364,6 +414,14 @@ export default {
             const settings: ManagerSettings = rootGetters['settings'];
             commit('setExpandedByDefault', settings.getContext().global.expandedCards);
             commit('setFunkyMode', settings.getContext().global.funkyModeEnabled);
+            commit('setGroupByBundle', settings.getInstalledGroupByBundle());
+        },
+
+        async toggleGroupByBundle({commit, rootGetters, state}) {
+            const settings: ManagerSettings = rootGetters['settings'];
+            const value = !state.groupByBundle;
+            commit('setGroupByBundle', value);
+            await settings.setInstalledGroupByBundle(value);
         },
 
         async loadOrderingSettings({commit, rootGetters}) {

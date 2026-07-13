@@ -72,6 +72,34 @@ async function extractConfigsToImportedProfile(
 }
 
 /**
+ * Decide whether a mod being installed should be flagged as installed-as-dependency.
+ *
+ * - If `explicitRoots` names this mod, it's a root the user asked for (false).
+ *   This also promotes a mod previously installed as a dependency.
+ * - Otherwise, if the mod is already installed, its existing flag is preserved
+ *   (a root pulled in again as someone else's dependency must stay a root).
+ * - Otherwise it's a newly added mod that nobody asked for explicitly, i.e. a
+ *   dependency (true).
+ *
+ * Callers that install explicit roots (single mod / modpack / profile import)
+ * MUST pass `explicitRoots`. Callers where roots can't be distinguished from
+ * dependencies (e.g. "update all") should omit it so existing flags are kept.
+ */
+function resolveInstalledAsDependency(
+    fullName: string,
+    existing: ManifestV2 | undefined,
+    explicitRoots?: Set<string>
+): boolean {
+    if (explicitRoots?.has(fullName)) {
+        return false;
+    }
+    if (existing) {
+        return existing.isInstalledAsDependency();
+    }
+    return true;
+}
+
+/**
  * Install mods to target profile and sync the changes to mods.yml file
  * This is more performant than calling ProfileModList.addMod() on a
  * loop, as that causes multiple disc operations per mod.
@@ -80,7 +108,8 @@ export async function installModsToProfile(
     comboList: ThunderstoreCombo[],
     profile: ImmutableProfile,
     disabledModsOverride?: string[],
-    progressCallback?: (status: string, modName?: string, progress?: number) => void
+    progressCallback?: (status: string, modName?: string, progress?: number) => void,
+    explicitRoots?: Set<string>
 ): Promise<ManifestV2[]> {
     const profileMods = await ProfileModList.getModList(profile);
     if (profileMods instanceof R2Error) {
@@ -95,8 +124,13 @@ export async function installModsToProfile(
     try {
         for (const [index, comboMod] of comboList.entries()) {
             modName = comboMod.getMod().getName();
+            const fullName = comboMod.getMod().getFullName();
+            const existing = profileMods.find((m) => m.getName() === fullName);
 
             const manifestMod = new ManifestV2().fromThunderstoreCombo(comboMod);
+            manifestMod.setInstalledAsDependency(
+                resolveInstalledAsDependency(fullName, existing, explicitRoots)
+            );
 
             // Mark as downloaded from online if the state file exists in cache
             if (await wasDownloadedFromOnline(comboMod)) {
@@ -104,6 +138,12 @@ export async function installModsToProfile(
             }
 
             if (installedVersions.includes(manifestMod.getDependencyString())) {
+                // Same version already installed; still reconcile provenance so
+                // e.g. a mod previously pulled in as a dependency is promoted to
+                // a root when the user later installs it explicitly.
+                if (existing) {
+                    existing.setInstalledAsDependency(manifestMod.isInstalledAsDependency());
+                }
                 continue;
             }
 
@@ -186,7 +226,8 @@ export async function parseYamlToExportFormat(yamlContent: string) {
                 new VersionNumber(
                     `${mod.version.major}.${mod.version.minor}.${mod.version.patch}`
                 ),
-                enabled
+                enabled,
+                mod.installedAsDependency || false
             );
         })
     );
@@ -217,7 +258,13 @@ export async function populateImportedProfile(
 
     try {
         const disabledMods = exportModList.filter((m) => !m.isEnabled()).map((m) => m.getName());
-        await installModsToProfile(comboList, profile, disabledMods, progressCallback);
+        // Preserve bundle roots from the exported profile. Mods exported before
+        // this field existed default to installedAsDependency=false, so they all
+        // count as roots (each shown as its own bundle), matching old behaviour.
+        const explicitRoots = new Set(
+            exportModList.filter((m) => !m.isInstalledAsDependency()).map((m) => m.getName())
+        );
+        await installModsToProfile(comboList, profile, disabledMods, progressCallback, explicitRoots);
         await extractConfigsToImportedProfile(zipPath, profile.getProfileName(), progressCallback);
     } catch (e) {
         await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());

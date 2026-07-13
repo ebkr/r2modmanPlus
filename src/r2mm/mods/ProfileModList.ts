@@ -45,12 +45,17 @@ export default class ProfileModList {
         try {
             try {
                 const fileContent = (await fs.readFile(profile.joinToProfilePath('mods.yml'))).toString();
-                const parsedYaml: any = parseYaml(fileContent) || [];
-                for(let modIndex in parsedYaml){
-                    const mod = new ManifestV2().fromJsObject(parsedYaml[modIndex]);
-                    parsedYaml[modIndex] = mod;
+                const rawList: any[] = (parseYaml(fileContent) as any[]) || [];
+                const modList: ManifestV2[] = rawList.map((entry) => new ManifestV2().fromJsObject(entry));
+
+                // One-time migration for profiles created before bundle tracking
+                // existed: infer which mods are dependencies (declared by another
+                // installed mod) so bundle grouping works without a reinstall.
+                if (this.backfillInstalledAsDependency(rawList, modList)) {
+                    await this.saveModList(profile, modList);
                 }
-                return parsedYaml;
+
+                return modList;
             } catch(e) {
                 const err: Error = e as Error;
                 console.error(err);
@@ -68,6 +73,34 @@ export default class ProfileModList {
                 null
             )
         }
+    }
+
+    /**
+     * Backfill the installedAsDependency flag for profiles written before the
+     * field existed. A mod is treated as a dependency if any other installed mod
+     * declares it in its dependencies list; everything else is treated as a
+     * bundle root. Mutates the ManifestV2 objects in place.
+     *
+     * @returns true if migration was applied (i.e. the list should be saved).
+     */
+    private static backfillInstalledAsDependency(rawList: any[], modList: ManifestV2[]): boolean {
+        // Skip empty profiles and profiles already carrying the field.
+        if (rawList.length === 0 || rawList.some((entry) => entry.installedAsDependency !== undefined)) {
+            return false;
+        }
+
+        const dependedUpon = new Set<string>();
+        for (const mod of modList) {
+            for (const dependency of mod.getDependencies()) {
+                dependedUpon.add(dependency.substring(0, dependency.lastIndexOf('-')));
+            }
+        }
+
+        for (const mod of modList) {
+            mod.setInstalledAsDependency(dependedUpon.has(mod.getName()));
+        }
+
+        return true;
     }
 
     public static async saveModList(profile: ImmutableProfile, modList: ManifestV2[]): Promise<R2Error | null> {
