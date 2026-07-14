@@ -13,7 +13,7 @@ import LinkProvider from '../../../../providers/components/LinkProvider';
 import AppWindow from '../../../../providers/node/app/app_window';
 import os from '../../../../providers/node/os/os';
 import R2Error from '../../../../model/errors/R2Error';
-import { useSettingSearch } from '../../../../components/composables/SettingSearchComposable';
+import { useSettingSearch } from '../../../composables/SettingSearchComposable';
 import ManagerInformation from '../../../../_managerinf/ManagerInformation';
 
 const store = getStore<State>();

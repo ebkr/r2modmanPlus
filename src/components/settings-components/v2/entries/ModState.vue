@@ -4,7 +4,7 @@ import { getStore } from '../../../../providers/generic/store/StoreProvider';
 import { State } from '../../../../store';
 import R2Error from '../../../../model/errors/R2Error';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from '../../../../components/composables/SettingSearchComposable';
+import { useSettingSearch } from '../../../composables/SettingSearchComposable';
 import { useRouter } from 'vue-router';
 import ManifestV2 from '../../../../model/ManifestV2';
 
