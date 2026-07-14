@@ -149,10 +149,10 @@ function browseDirectory() {
                 However <code class="code">{{ activeGame.displayName }}</code> will launch without mods if this is not set appropriately.
             </span>
         </template>
-        <div class="game-directory-setting">
-            <div class="game-directory-setting__field">
+        <div class="setting-column">
+            <div class="setting-row">
                 <input
-                    class="input game-directory-setting__input"
+                    class="input setting-input"
                     type="text"
                     :value="gameDirectory"
                     readonly
@@ -166,25 +166,6 @@ function browseDirectory() {
 </template>
 
 <style lang="scss" scoped>
-.game-directory-setting {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    flex: 1;
-
-    &__field {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    &__input {
-        flex: 1;
-        min-width: 14rem;
-        max-width: 35rem;
-    }
-}
-
 .help-link {
     font-size: 0.9rem;
     align-self: flex-start;

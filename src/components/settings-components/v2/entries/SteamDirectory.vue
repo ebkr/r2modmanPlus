@@ -115,10 +115,10 @@ function browseDirectory() {
         <template #description>
             Change the location of the Steam folder that {{ appName }} uses.
         </template>
-        <div class="steam-directory-setting">
-            <div class="steam-directory-setting__field">
+        <div class="setting-column">
+            <div class="setting-row">
                 <input
-                    class="input steam-directory-setting__input"
+                    class="input setting-input"
                     type="text"
                     :value="steamDirectory"
                     readonly
@@ -129,24 +129,3 @@ function browseDirectory() {
         </div>
     </SettingsViewWrapper>
 </template>
-
-<style lang="scss" scoped>
-.steam-directory-setting {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    flex: 1;
-
-    &__field {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    &__input {
-        flex: 1;
-        min-width: 14rem;
-        max-width: 35rem;
-    }
-}
-</style>

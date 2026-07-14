@@ -47,9 +47,3 @@ async function setFunkyMode(enabled: boolean) {
         </div>
     </SettingsViewWrapper>
 </template>
-
-<style scoped lang="scss">
-.switch {
-    position: relative;
-}
-</style>

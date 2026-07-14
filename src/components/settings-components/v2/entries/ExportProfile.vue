@@ -42,7 +42,7 @@ async function exportProfile(as: 'file' | 'code', action: string) {
         <template #description>
             Export your mod list and configs to share with friends and get an identical profile quickly and easily.
         </template>
-        <div class="export-profile-setting">
+        <div class="setting-row">
             <button
                 class="button"
                 :class="{ 'is-loading': activeExport === 'file' }"
@@ -62,12 +62,3 @@ async function exportProfile(as: 'file' | 'code', action: string) {
         </div>
     </SettingsViewWrapper>
 </template>
-
-<style lang="scss" scoped>
-.export-profile-setting {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-</style>

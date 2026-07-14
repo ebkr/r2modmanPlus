@@ -47,7 +47,7 @@ async function cleanCache() {
         <template #description>
             Downloaded mods are kept in a cache so that they don't need to be downloaded again.
         </template>
-        <div class="mod-cache-setting">
+        <div class="setting-column">
             <div class="field" @click.prevent.stop="toggleCache">
                 <input
                     id="toggle-download-cache"
@@ -58,9 +58,10 @@ async function cleanCache() {
                 <label for="toggle-download-cache">
                     {{ cacheEnabled ? 'Enabled' : 'Disabled' }}
                 </label>
-                <div class="mod-cache-setting__hint" @click.stop.prevent>{{ cacheEnabled ? 'Reusing cached downloads (recommended)' : 'Re-downloading every time' }}</div>
+                <p class="setting-hint" @click.stop.prevent>{{ cacheEnabled ? 'Reusing cached downloads (recommended)' : 'Ignores the cache when downloading mods. Re-downloads each time.' }}</p>
+                <p class="setting-hint" v-if="!cacheEnabled" @click.stop.prevent>Mods will still be written to the cache and will continue to use disk space.</p>
             </div>
-            <div class="mod-cache-setting__clean">
+            <div class="setting-row">
                 <button
                     class="button"
                     :class="{ 'is-loading': isCleaning }"
@@ -69,33 +70,8 @@ async function cleanCache() {
                 >
                     Clean cache
                 </button>
-                <span class="mod-cache-setting__hint">Removes cached mods that aren't in any profile to free up storage space.</span>
+                <span class="setting-hint">Removes cached mods that aren't in any profile to free up storage space.</span>
             </div>
         </div>
     </SettingsViewWrapper>
 </template>
-
-<style scoped lang="scss">
-.mod-cache-setting {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    flex: 1;
-
-    &__clean {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-        flex-wrap: wrap;
-    }
-
-    &__hint {
-        font-size: 0.85rem;
-        color: var(--text-secondary, #6b6464);
-    }
-}
-
-.switch {
-    position: relative;
-}
-</style>

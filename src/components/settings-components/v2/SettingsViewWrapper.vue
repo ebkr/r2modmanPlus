@@ -56,6 +56,42 @@ const category = inject<Ref<string>>('settingsCategory', ref(''));
         align-items: center;
         flex-wrap: wrap;
         gap: 0.5rem;
+
+        :deep(.switch) {
+            position: relative;
+            max-width: 0;
+        }
+
+        :deep(.setting-column) {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            flex: 1;
+        }
+
+        :deep(.setting-row) {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        :deep(.setting-label) {
+            flex: 0 0 6.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary, #6b6464);
+        }
+
+        :deep(.setting-input) {
+            flex: 1;
+            min-width: 14rem;
+            max-width: 35rem;
+        }
+
+        :deep(.setting-hint) {
+            font-size: 0.85rem;
+            color: var(--text-secondary, #6b6464);
+        }
     }
 }
 </style>

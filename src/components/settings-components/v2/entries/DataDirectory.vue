@@ -81,11 +81,11 @@ function browseProfileFolder() {
             The folder where mods are stored for all games and profiles.
             The folder will not be deleted, and existing profiles will not carry across.
         </template>
-        <div class="directory-settings">
-            <div class="directory-settings__row">
-                <label class="directory-settings__label">Data folder</label>
+        <div class="setting-column">
+            <div class="setting-row">
+                <label class="setting-label">Data folder</label>
                 <input
-                    class="input directory-settings__input"
+                    class="input setting-input"
                     type="text"
                     :value="dataDirectory"
                     readonly
@@ -93,10 +93,10 @@ function browseProfileFolder() {
                 <button class="button" @click="changeDataFolder">Change</button>
                 <button class="button" @click="browseDataFolder">Browse</button>
             </div>
-            <div class="directory-settings__row">
-                <label class="directory-settings__label">Profile folder</label>
+            <div class="setting-row">
+                <label class="setting-label">Profile folder</label>
                 <input
-                    class="input directory-settings__input"
+                    class="input setting-input"
                     type="text"
                     :value="profileDirectory"
                     readonly
@@ -106,30 +106,3 @@ function browseProfileFolder() {
         </div>
     </SettingsViewWrapper>
 </template>
-
-<style lang="scss" scoped>
-.directory-settings {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    flex: 1;
-
-    &__row {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    &__label {
-        flex: 0 0 6.5rem;
-        font-size: 0.9rem;
-        color: var(--text-secondary, #6b6464);
-    }
-
-    &__input {
-        flex: 1;
-        min-width: 14rem;
-        max-width: 35rem;
-    }
-}
-</style>

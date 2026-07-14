@@ -71,7 +71,7 @@ async function cleanCache() {
         </p>
         <p>{{ status }}</p>
         </template>
-        <div class="online-mod-list-setting">
+        <div class="setting-row">
             <button
                 class="button"
                 :class="{ 'is-loading': isRefreshing && !isCleaning }"
@@ -91,12 +91,3 @@ async function cleanCache() {
         </div>
     </SettingsViewWrapper>
 </template>
-
-<style scoped lang="scss">
-.online-mod-list-setting {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-</style>

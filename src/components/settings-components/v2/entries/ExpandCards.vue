@@ -54,9 +54,3 @@ async function setExpanded(expanded: boolean) {
         </div>
     </SettingsViewWrapper>
 </template>
-
-<style scoped lang="scss">
-.switch {
-    position: relative;
-}
-</style>

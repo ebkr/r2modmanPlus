@@ -67,7 +67,7 @@ async function disableAllMods() {
         <p>Enable / disable all of the mods on your profile</p>
         <p>{{ statusText }}</p>
         </template>
-        <div class="export-profile-setting">
+        <div class="setting-row">
             <button
                 class="button"
                 :class="{ 'is-loading': isEnablingState }"
@@ -87,12 +87,3 @@ async function disableAllMods() {
         </div>
     </SettingsViewWrapper>
 </template>
-
-<style lang="scss" scoped>
-.export-profile-setting {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-</style>
