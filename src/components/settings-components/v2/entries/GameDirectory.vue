@@ -13,7 +13,8 @@ import LinkProvider from '../../../../providers/components/LinkProvider';
 import AppWindow from '../../../../providers/node/app/app_window';
 import os from '../../../../providers/node/os/os';
 import R2Error from '../../../../model/errors/R2Error';
-import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
+import { useSettingSearch } from '../../../../components/composables/SettingSearchComposable';
+import ManagerInformation from '../../../../_managerinf/ManagerInformation';
 
 const store = getStore<State>();
 
@@ -138,6 +139,10 @@ function browseDirectory() {
         LinkProvider.instance.openLink(settings.value?.getContext().gameSpecific.gameDirectory!)
     }
 }
+
+function openHelpLink() {
+    LinkProvider.instance.openLink(ManagerInformation.WIKI_GAME_DIRECTORY_HELP_URL);
+}
 </script>
 
 <template>
@@ -160,7 +165,7 @@ function browseDirectory() {
                 <button class="button" @click="changeGameInstallDirectory">Change</button>
                 <button class="button" @click="browseDirectory">Browse</button>
             </div>
-            <a href="#" class="help-link">I'm not sure what this should be</a>
+            <a href="#" class="help-link" @click.prevent.stop="openHelpLink">I'm not sure what this should be</a>
         </div>
     </SettingsViewWrapper>
 </template>
