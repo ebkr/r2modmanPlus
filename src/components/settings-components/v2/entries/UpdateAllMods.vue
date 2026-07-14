@@ -19,7 +19,10 @@ const statusText = computed<string>(() =>
         : `${outdatedCount.value} mods have an update available.`
 );
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, ['Update all mods', 'Update']);
+const { isVisible } = useSettingSearch(() => props.searchTerm, [
+    'Update all mods',
+    'Update'
+]);
 
 function updateAllMods() {
     store.commit('openUpdateAllModsModal');

@@ -2,31 +2,41 @@
 import { computed, ref } from 'vue';
 import VersionNumber from '../../../model/VersionNumber';
 import ManagerInformation from '../../../_managerinf/ManagerInformation';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
+import appWindow from '../../../providers/node/app/app_window';
 import { Hero } from '../../all';
 import SettingsSection from './SettingsSection.vue';
 import GameDirectory from './entries/GameDirectory.vue';
 import DataDirectory from './entries/DataDirectory.vue';
+import SteamDirectory from './entries/SteamDirectory.vue';
 import ExportProfile from './entries/ExportProfile.vue';
 import Theme from './entries/Theme.vue';
 import ExpandCards from './entries/ExpandCards.vue';
 import FunkyMode from './entries/FunkyMode.vue';
-import RefreshOnlineModList from './entries/RefreshOnlineModList.vue';
+import OnlineModList from './entries/OnlineModList.vue';
 import ModState from './entries/ModState.vue';
 import UpdateAllMods from './entries/UpdateAllMods.vue';
-import DownloadCache from './entries/DownloadCache.vue';
+import ModCache from './entries/ModCache.vue';
 import CopyLogToClipboard from './entries/CopyLogToClipboard.vue';
 import CopyTroubleshooting from './entries/CopyTroubleshooting.vue';
 import ImportLocalMod from './entries/ImportLocalMod.vue';
-import CleanModCache from './entries/CleanModCache.vue';
-import CleanOnlineModListCache from './entries/CleanOnlineModListCache.vue';
 import ToggleCdn from './entries/ToggleCdn.vue';
+import LaunchArguments from './entries/LaunchArguments.vue';
+import ShowDependencyStrings from './entries/ShowDependencyStrings.vue';
+import ResetGameInstallation from './entries/ResetGameInstallation.vue';
+import ChangeLaunchBehaviour from './entries/ChangeLaunchBehaviour.vue';
 
 const searchTerm = ref<string>('');
 
 const managerVersionNumber = ref<VersionNumber>(ManagerInformation.VERSION);
 const appName = computed(() => ManagerInformation.APP_NAME);
 
-const categories = ['All', 'Directories', 'Profile', 'Appearance', 'Debugging', 'Other'] as const;
+const store = getStore<State>();
+const isSteamGame = computed<boolean>(() => store.state.activeGame.isInstalledViaSteam);
+const isSteamAndNotWindows = computed<boolean>(() => ['linux', 'darwin'].includes(appWindow.getPlatform()) && isSteamGame.value);
+
+const categories = ['All', 'Directories', 'Profile', 'Appearance', 'Debugging', 'Modpacks', 'Other'] as const;
 type Category = typeof categories[number];
 
 const activeCategory = ref<Category>('All');
@@ -74,6 +84,9 @@ function isVisible(section: Category): boolean {
                 <SettingsSection v-if="isVisible('Directories')" name="Directories">
                     <DataDirectory :search-term="searchTerm"/>
                         <GameDirectory :search-term="searchTerm"/>
+                    <template v-if="isSteamGame">
+                        <SteamDirectory :search-term="searchTerm"/>
+                    </template>
                 </SettingsSection>
 
                 <SettingsSection v-if="isVisible('Profile')" name="Profile">
@@ -90,16 +103,25 @@ function isVisible(section: Category): boolean {
                 </SettingsSection>
 
                 <SettingsSection v-if="isVisible('Debugging')" name="Debugging">
+                    <LaunchArguments :search-term="searchTerm"/>
+                    <template v-if="isSteamGame">
+                        <ResetGameInstallation :search-term="searchTerm"/>
+                    </template>
+                    <template v-if="isSteamAndNotWindows">
+                        <ChangeLaunchBehaviour :search-term="searchTerm"/>
+                    </template>
                     <CopyLogToClipboard :search-term="searchTerm"/>
                     <CopyTroubleshooting :search-term="searchTerm"/>
-                    <DownloadCache :search-term="searchTerm"/>
-                    <CleanModCache :search-term="searchTerm"/>
-                    <CleanOnlineModListCache :search-term="searchTerm"/>
+                    <ModCache :search-term="searchTerm"/>
                     <ToggleCdn :search-term="searchTerm"/>
                 </SettingsSection>
 
+                <SettingsSection v-if="isVisible('Modpacks')" name="Modpacks">
+                    <ShowDependencyStrings :search-term="searchTerm"/>
+                </SettingsSection>
+
                 <SettingsSection v-if="isVisible('Other')" name="Other">
-                    <RefreshOnlineModList :search-term="searchTerm"/>
+                    <OnlineModList :search-term="searchTerm"/>
                 </SettingsSection>
             </div>
         </div>
