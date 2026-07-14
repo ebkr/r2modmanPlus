@@ -24,9 +24,11 @@ const props = defineProps<{
 const activeGame = computed<Game>(() => store.state.activeGame);
 const settings = ref<ManagerSettings | null>(null);
 
-const gameDirectory = computed<string>(() =>
-    settings.value?.getContext().gameSpecific.gameDirectory || 'Not set'
-);
+const gameDirectory = ref<string>('Not set');
+
+function syncGameDirectory() {
+    gameDirectory.value = settings.value?.getContext().gameSpecific.gameDirectory || 'Not set';
+}
 
 const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
     `${activeGame.value.displayName} folder`,
@@ -37,10 +39,12 @@ const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
 
 onMounted(async () => {
     settings.value = await ManagerSettings.getSingleton(activeGame.value);
+    syncGameDirectory();
 });
 
 watch(activeGame, async () => {
     settings.value = await ManagerSettings.getSingleton(activeGame.value);
+    syncGameDirectory();
 });
 
 function changeGameInstallDirectory() {
@@ -75,6 +79,7 @@ function changeGameInstallDirectoryGeneral() {
                 const containsGameExecutable = activeGame.value.exeName.find(exeName => path.basename(files[0]).toLowerCase() === exeName.toLowerCase()) !== undefined
                 if (containsGameExecutable) {
                     await settings.value!.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
+                    syncGameDirectory();
                 } else {
                     store.commit('openIncorrectGameDirectoryModal');
                 }
@@ -99,6 +104,7 @@ function changeGameInstallDirectoryGamePass() {
                 const containsGameExecutable = (path.basename(files[0]!).toLowerCase() === "gamelaunchhelper.exe");
                 if (containsGameExecutable) {
                     await settings.value!.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0]!)));
+                    syncGameDirectory();
                 } else {
                     throw new Error("The selected executable is not gamelaunchhelper.exe");
                 }

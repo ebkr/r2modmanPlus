@@ -25,9 +25,11 @@ const appName = ManagerInformation.APP_NAME;
 const activeGame = computed<Game>(() => store.state.activeGame);
 const settings = ref<ManagerSettings | null>(null);
 
-const steamDirectory = computed<string>(() =>
-    settings.value?.getContext().global.steamDirectory || 'Not set'
-);
+const steamDirectory = ref<string>('Not set');
+
+function syncSteamDirectory() {
+    steamDirectory.value = settings.value?.getContext().global.steamDirectory || 'Not set';
+}
 
 const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
     'Change Steam folder',
@@ -38,10 +40,12 @@ const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
 
 onMounted(async () => {
     settings.value = await ManagerSettings.getSingleton(activeGame.value);
+    syncSteamDirectory();
 });
 
 watch(activeGame, async () => {
     settings.value = await ManagerSettings.getSingleton(activeGame.value);
+    syncSteamDirectory();
 });
 
 function computeDefaultSteamDirectory(): string {
@@ -85,6 +89,7 @@ function changeSteamDirectory() {
             try {
                 if (await checkIfSteamExecutableIsValid(files[0]!)) {
                     await settings.value!.setSteamDirectory(path.dirname(await FsProvider.instance.realpath(files[0]!)));
+                    syncSteamDirectory();
                 } else {
                     store.commit('openIncorrectSteamDirectoryModal');
                 }
