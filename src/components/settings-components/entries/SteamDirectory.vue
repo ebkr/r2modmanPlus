@@ -1,19 +1,19 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue';
-import Game from '../../../../model/game/Game';
-import { getStore } from '../../../../providers/generic/store/StoreProvider';
-import { State } from '../../../../store';
-import ManagerSettings from '../../../../r2mm/manager/ManagerSettings';
+import Game from '../../../model/game/Game';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
+import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from '../../../composables/SettingSearchComposable';
-import InteractionProvider from '../../../../providers/ror2/system/InteractionProvider';
-import path from '../../../../providers/node/path/path';
-import FsProvider from '../../../../providers/generic/file/FsProvider';
-import LinkProvider from '../../../../providers/components/LinkProvider';
-import AppWindow from '../../../../providers/node/app/app_window';
-import os from '../../../../providers/node/os/os';
-import R2Error from '../../../../model/errors/R2Error';
-import ManagerInformation from '../../../../_managerinf/ManagerInformation';
+import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import InteractionProvider from '../../../providers/ror2/system/InteractionProvider';
+import path from '../../../providers/node/path/path';
+import FsProvider from '../../../providers/generic/file/FsProvider';
+import LinkProvider from '../../../providers/components/LinkProvider';
+import AppWindow from '../../../providers/node/app/app_window';
+import os from '../../../providers/node/os/os';
+import R2Error from '../../../model/errors/R2Error';
+import ManagerInformation from '../../../_managerinf/ManagerInformation';
 
 const store = getStore<State>();
 

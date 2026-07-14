@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue';
-import Game from '../../../../model/game/Game';
-import { getStore } from '../../../../providers/generic/store/StoreProvider';
-import { State } from '../../../../store';
+import Game from '../../../model/game/Game';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from '../../../composables/SettingSearchComposable';
-import { getLaunchType, LaunchType } from '../../../../model/real_enums/launch/LaunchType';
-import { LaunchTypeModalOpen } from '../../../../components/modals/launch-type/LaunchTypeRefs';
+import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { getLaunchType, LaunchType } from '../../../model/real_enums/launch/LaunchType';
+import { LaunchTypeModalOpen } from '../../modals/launch-type/LaunchTypeRefs';
 
 const store = getStore<State>();
 

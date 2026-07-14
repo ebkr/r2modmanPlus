@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { getStore } from '../../../../providers/generic/store/StoreProvider';
-import { State } from '../../../../store';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from '../../../composables/SettingSearchComposable';
+import { useSettingSearch } from '../../composables/SettingSearchComposable';
 
 const store = getStore<State>();
 

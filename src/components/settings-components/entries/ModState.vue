@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { getStore } from '../../../../providers/generic/store/StoreProvider';
-import { State } from '../../../../store';
-import R2Error from '../../../../model/errors/R2Error';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
+import R2Error from '../../../model/errors/R2Error';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from '../../../composables/SettingSearchComposable';
+import { useSettingSearch } from '../../composables/SettingSearchComposable';
 import { useRouter } from 'vue-router';
-import ManifestV2 from '../../../../model/ManifestV2';
+import ManifestV2 from '../../../model/ManifestV2';
 
 const store = getStore<State>();
 const router = useRouter();

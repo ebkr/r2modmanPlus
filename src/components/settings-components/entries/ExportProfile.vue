@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { getStore } from '../../../../providers/generic/store/StoreProvider';
-import { State } from '../../../../store';
-import R2Error from '../../../../model/errors/R2Error';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
+import R2Error from '../../../model/errors/R2Error';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from '../../../composables/SettingSearchComposable';
+import { useSettingSearch } from '../../composables/SettingSearchComposable';
 
 const store = getStore<State>();
 

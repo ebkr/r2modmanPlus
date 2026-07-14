@@ -89,7 +89,7 @@ const routes: RouteRecordRaw[] = [
                         name: 'manager.settings',
                         path: 'settings/',
                         components: {
-                            subview: () => import('components/settings-components/v2/SettingsView.vue')
+                            subview: () => import('components/settings-components/SettingsView.vue')
                         },
                         meta: {title: () => profileTitle()}
                     }

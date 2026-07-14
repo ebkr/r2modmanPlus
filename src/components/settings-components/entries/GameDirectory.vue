@@ -1,20 +1,20 @@
 <script lang="ts" setup>
-import Game from '../../../../model/game/Game';
-import { getStore } from '../../../../providers/generic/store/StoreProvider';
-import { State } from '../../../../store';
+import Game from '../../../model/game/Game';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
 import { computed, onMounted, ref, watch } from 'vue';
-import ManagerSettings from '../../../../r2mm/manager/ManagerSettings';
+import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { StorePlatform } from '../../../../model/platform/StorePlatform';
-import InteractionProvider from '../../../../providers/ror2/system/InteractionProvider';
-import path from '../../../../providers/node/path/path';
-import FsProvider from '../../../../providers/generic/file/FsProvider';
-import LinkProvider from '../../../../providers/components/LinkProvider';
-import AppWindow from '../../../../providers/node/app/app_window';
-import os from '../../../../providers/node/os/os';
-import R2Error from '../../../../model/errors/R2Error';
-import { useSettingSearch } from '../../../composables/SettingSearchComposable';
-import ManagerInformation from '../../../../_managerinf/ManagerInformation';
+import { StorePlatform } from '../../../model/platform/StorePlatform';
+import InteractionProvider from '../../../providers/ror2/system/InteractionProvider';
+import path from '../../../providers/node/path/path';
+import FsProvider from '../../../providers/generic/file/FsProvider';
+import LinkProvider from '../../../providers/components/LinkProvider';
+import AppWindow from '../../../providers/node/app/app_window';
+import os from '../../../providers/node/os/os';
+import R2Error from '../../../model/errors/R2Error';
+import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import ManagerInformation from '../../../_managerinf/ManagerInformation';
 
 const store = getStore<State>();
 
@@ -77,9 +77,9 @@ function changeGameInstallDirectoryGeneral() {
     }).then(async files => {
         if (files.length === 1) {
             try {
-                const containsGameExecutable = activeGame.value.exeName.find(exeName => path.basename(files[0]).toLowerCase() === exeName.toLowerCase()) !== undefined
+                const containsGameExecutable = activeGame.value.exeName.find(exeName => path.basename(files[0]!).toLowerCase() === exeName.toLowerCase()) !== undefined
                 if (containsGameExecutable) {
-                    await settings.value!.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
+                    await settings.value!.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0]!)));
                     syncGameDirectory();
                 } else {
                     store.commit('openIncorrectGameDirectoryModal');

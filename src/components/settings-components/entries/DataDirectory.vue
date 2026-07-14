@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue';
-import PathResolver from '../../../../r2mm/manager/PathResolver';
+import PathResolver from '../../../r2mm/manager/PathResolver';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import LinkProvider from '../../../../providers/components/LinkProvider';
-import { DataFolderProvider } from '../../../../providers/ror2/system/DataFolderProvider';
-import ManagerSettings from '../../../../r2mm/manager/ManagerSettings';
-import { getStore } from '../../../../providers/generic/store/StoreProvider';
-import { State } from '../../../../store';
-import Game from '../../../../model/game/Game';
-import InteractionProvider from '../../../../providers/ror2/system/InteractionProvider';
-import R2Error from '../../../../model/errors/R2Error';
-import { useSettingSearch } from '../../../composables/SettingSearchComposable';
+import LinkProvider from '../../../providers/components/LinkProvider';
+import { DataFolderProvider } from '../../../providers/ror2/system/DataFolderProvider';
+import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
+import Game from '../../../model/game/Game';
+import InteractionProvider from '../../../providers/ror2/system/InteractionProvider';
+import R2Error from '../../../model/errors/R2Error';
+import { useSettingSearch } from '../../composables/SettingSearchComposable';
 
 const store = getStore<State>();
 

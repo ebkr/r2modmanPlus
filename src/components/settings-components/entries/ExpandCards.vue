@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import { getStore } from '../../../../providers/generic/store/StoreProvider';
-import { State } from '../../../../store';
-import ManagerSettings from '../../../../r2mm/manager/ManagerSettings';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
+import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from '../../../composables/SettingSearchComposable';
+import { useSettingSearch } from '../../composables/SettingSearchComposable';
 
 const store = getStore<State>();
 

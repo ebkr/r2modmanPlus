@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { getStore } from '../../../../providers/generic/store/StoreProvider';
-import { State } from '../../../../store';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from '../../../composables/SettingSearchComposable';
-import { SteamInstallationValidator } from '../../../../r2mm/manager/SteamInstallationValidator';
-import R2Error from '../../../../model/errors/R2Error';
+import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { SteamInstallationValidator } from '../../../r2mm/manager/SteamInstallationValidator';
+import R2Error from '../../../model/errors/R2Error';
 
 const store = getStore<State>();
 
