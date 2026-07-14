@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import { getStore } from '../../../../providers/generic/store/StoreProvider';
 import { State } from '../../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
+import { useSettingSearch } from '../../../composables/SettingSearchComposable';
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import path from '../../../../providers/node/path/path';
 import InteractionProvider from '../../../../providers/ror2/system/InteractionProvider';

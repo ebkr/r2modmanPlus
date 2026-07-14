@@ -6,7 +6,7 @@ import R2Error from '../../../../model/errors/R2Error';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../../../components/composables/SettingSearchComposable';
 import { useRouter } from 'vue-router';
-import ManifestV2 from 'src/model/ManifestV2';
+import ManifestV2 from '../../../../model/ManifestV2';
 
 const store = getStore<State>();
 const router = useRouter();

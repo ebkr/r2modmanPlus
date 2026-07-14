@@ -4,7 +4,7 @@ import Game from '../../../../model/game/Game';
 import { getStore } from '../../../../providers/generic/store/StoreProvider';
 import { State } from '../../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
+import { useSettingSearch } from '../../../composables/SettingSearchComposable';
 import { getLaunchType, LaunchType } from '../../../../model/real_enums/launch/LaunchType';
 import { LaunchTypeModalOpen } from '../../../../components/modals/launch-type/LaunchTypeRefs';
 

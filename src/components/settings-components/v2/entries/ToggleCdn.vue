@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
+import { useSettingSearch } from '../../../composables/SettingSearchComposable';
 import CdnProvider from '../../../../providers/generic/connection/CdnProvider';
 
 const props = defineProps<{

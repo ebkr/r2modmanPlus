@@ -4,7 +4,7 @@ import { getStore } from '../../../../providers/generic/store/StoreProvider';
 import { State } from '../../../../store';
 import ManagerSettings from '../../../../r2mm/manager/ManagerSettings';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
+import { useSettingSearch } from '../../../composables/SettingSearchComposable';
 
 const store = getStore<State>();
 const settings = ref<ManagerSettings | null>(null);

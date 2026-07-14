@@ -10,7 +10,7 @@ import { State } from '../../../../store';
 import Game from '../../../../model/game/Game';
 import InteractionProvider from '../../../../providers/ror2/system/InteractionProvider';
 import R2Error from '../../../../model/errors/R2Error';
-import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
+import { useSettingSearch } from '../../../composables/SettingSearchComposable';
 
 const store = getStore<State>();
 

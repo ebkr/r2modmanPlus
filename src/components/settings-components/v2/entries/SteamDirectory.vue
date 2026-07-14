@@ -5,7 +5,7 @@ import { getStore } from '../../../../providers/generic/store/StoreProvider';
 import { State } from '../../../../store';
 import ManagerSettings from '../../../../r2mm/manager/ManagerSettings';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
+import { useSettingSearch } from '../../../composables/SettingSearchComposable';
 import InteractionProvider from '../../../../providers/ror2/system/InteractionProvider';
 import path from '../../../../providers/node/path/path';
 import FsProvider from '../../../../providers/generic/file/FsProvider';

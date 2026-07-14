@@ -4,7 +4,7 @@ import moment from 'moment';
 import { getStore } from '../../../../providers/generic/store/StoreProvider';
 import { State } from '../../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
+import { useSettingSearch } from '../../../composables/SettingSearchComposable';
 import R2Error from '../../../../model/errors/R2Error';
 
 const store = getStore<State>();

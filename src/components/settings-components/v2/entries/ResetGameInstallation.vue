@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import { getStore } from '../../../../providers/generic/store/StoreProvider';
 import { State } from '../../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
-import { useSettingSearch } from 'src/components/composables/SettingSearchComposable';
+import { useSettingSearch } from '../../../composables/SettingSearchComposable';
 import { SteamInstallationValidator } from '../../../../r2mm/manager/SteamInstallationValidator';
 import R2Error from '../../../../model/errors/R2Error';
 
