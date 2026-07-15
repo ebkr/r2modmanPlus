@@ -14,6 +14,13 @@ import PathResolver from "../r2mm/manager/PathResolver";
 import appWindow from '../providers/node/app/app_window';
 import InteractionProvider from "../providers/ror2/system/InteractionProvider";
 import { TypedEventEmitter } from "./TypedEventEmitter";
+import { PackageLoader } from "../model/schema/ThunderstoreSchema";
+import { ensureWineDllOverride } from "./WineUtils";
+import {
+    resolveProfilePreloaderPath,
+    resolveDefaultRelativePreloaderPath,
+    setProfileDoorstopTarget,
+} from "./DoorstopConfigUtils";
 
 export enum LaunchMode { VANILLA, MODDED };
 
@@ -35,12 +42,98 @@ export const launch = async (game: Game, profile: Profile, mode: LaunchMode): Pr
 export const linkProfileFiles = async (game: Game, profile: ImmutableProfile): Promise<void> => {
     const settings = await ManagerSettings.getSingleton(game);
 
+    // When the user opted in, point the doorstop config at the profile before
+    // linking so the copied game-dir config lets mods load on an out-of-manager
+    // launch (Steam / Big Picture). Non-fatal: a failure here shouldn't block
+    // the normal file sync.
+    if (settings.getSteamProtonExternalLaunch()) {
+        const e = await applyProtonExternalLaunchConfig(game, profile);
+        if (e instanceof R2Error) {
+            console.warn('Failed to apply external-launch doorstop config:', e);
+        }
+    }
+
     const newLinkedFiles = await ModLinker.link(profile, game);
     if (newLinkedFiles instanceof R2Error) {
         throw newLinkedFiles;
     }
 
     await settings.setLinkedFiles(newLinkedFiles);
+};
+
+// True only for Linux + Proton + BepInEx-family games, the case where mods live
+// in the profile and are reached via doorstop redirection.
+async function isProtonBepInExGame(game: Game): Promise<boolean> {
+    if (appWindow.getPlatform() !== 'linux') {
+        return false;
+    }
+    if (![PackageLoader.BEPINEX, PackageLoader.BEPISLOADER].includes(game.packageLoader)) {
+        return false;
+    }
+    const settings = await ManagerSettings.getSingleton(game);
+    const launchType = await getDeterminedLaunchType(game, settings.getLaunchType() || LaunchType.AUTO);
+    return launchType === LaunchType.PROTON;
+}
+
+/**
+ * Point the profile's doorstop config at the profile's BepInEx (absolute, Z:
+ * path) and make sure the Wine prefix loads winhttp. After ModLinker copies the
+ * config into the game directory, launching the game from anywhere (Steam, Big
+ * Picture) loads mods without needing launch arguments.
+ */
+export const applyProtonExternalLaunchConfig = async (game: Game, profile: ImmutableProfile): Promise<void | R2Error> => {
+    if (!(await isProtonBepInExGame(game))) {
+        return;
+    }
+    const target = await resolveProfilePreloaderPath(profile, true);
+    if (target instanceof R2Error) {
+        return target;
+    }
+    const setError = await setProfileDoorstopTarget(profile, target, true);
+    if (setError instanceof R2Error) {
+        return setError;
+    }
+    return await ensureWineDllOverride(game, 'winhttp');
+};
+
+/**
+ * Restore the default game-relative doorstop target so an out-of-manager launch
+ * no longer loads mods from the profile (the manager's own launch still works
+ * via launch arguments).
+ */
+export const revertProtonExternalLaunchConfig = async (game: Game, profile: ImmutableProfile): Promise<void | R2Error> => {
+    if (!(await isProtonBepInExGame(game))) {
+        return;
+    }
+    const target = await resolveDefaultRelativePreloaderPath(profile);
+    if (target instanceof R2Error) {
+        return target;
+    }
+    return await setProfileDoorstopTarget(profile, target, true);
+};
+
+/**
+ * Persist the "load mods when launched outside the manager" setting and sync the
+ * game directory to match. Enabling redirects doorstop to the profile; disabling
+ * reverts it. Safe to call when the game isn't Proton/BepInEx (no-ops the config
+ * work but still refreshes linked files).
+ */
+export const setProtonExternalLaunch = async (game: Game, profile: ImmutableProfile, enabled: boolean): Promise<void> => {
+    const settings = await ManagerSettings.getSingleton(game);
+    await settings.setSteamProtonExternalLaunch(enabled);
+
+    try {
+        if (!enabled) {
+            // linkProfileFiles only applies when enabled, so revert explicitly.
+            const e = await revertProtonExternalLaunchConfig(game, profile);
+            if (e instanceof R2Error) {
+                console.warn('Failed to revert external-launch doorstop config:', e);
+            }
+        }
+        await linkProfileFiles(game, profile);
+    } catch (e) {
+        console.warn('Failed to sync external-launch state to game directory:', e);
+    }
 };
 
 /**

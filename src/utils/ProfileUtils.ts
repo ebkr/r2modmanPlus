@@ -74,29 +74,27 @@ async function extractConfigsToImportedProfile(
 /**
  * Decide whether a mod being installed should be flagged as installed-as-dependency.
  *
- * - If `explicitRoots` names this mod, it's a root the user asked for (false).
- *   This also promotes a mod previously installed as a dependency.
- * - Otherwise, if the mod is already installed, its existing flag is preserved
- *   (a root pulled in again as someone else's dependency must stay a root).
- * - Otherwise it's a newly added mod that nobody asked for explicitly, i.e. a
- *   dependency (true).
+ * - If the mod is already installed, its existing flag is always preserved. This
+ *   avoids reclassifying a mod just because it appears in a combo list again —
+ *   e.g. changing a dependency's version (which runs as INSTALL_SPECIFIC with the
+ *   dependency as its own "root") must NOT promote it to a bundle root, and a
+ *   root pulled in again as someone else's dependency must stay a root.
+ * - Otherwise, for a brand-new mod: it's a root if the user asked for it
+ *   (`explicitRoots`), else it was pulled in as a dependency (true).
  *
  * Callers that install explicit roots (single mod / modpack / profile import)
- * MUST pass `explicitRoots`. Callers where roots can't be distinguished from
- * dependencies (e.g. "update all") should omit it so existing flags are kept.
+ * SHOULD pass `explicitRoots`. Callers where roots can't be distinguished from
+ * dependencies (e.g. "update all") should omit it.
  */
-function resolveInstalledAsDependency(
+export function resolveInstalledAsDependency(
     fullName: string,
     existing: ManifestV2 | undefined,
     explicitRoots?: Set<string>
 ): boolean {
-    if (explicitRoots?.has(fullName)) {
-        return false;
-    }
     if (existing) {
         return existing.isInstalledAsDependency();
     }
-    return true;
+    return !explicitRoots?.has(fullName);
 }
 
 /**
@@ -138,12 +136,6 @@ export async function installModsToProfile(
             }
 
             if (installedVersions.includes(manifestMod.getDependencyString())) {
-                // Same version already installed; still reconcile provenance so
-                // e.g. a mod previously pulled in as a dependency is promoted to
-                // a root when the user later installs it explicitly.
-                if (existing) {
-                    existing.setInstalledAsDependency(manifestMod.isInstalledAsDependency());
-                }
                 continue;
             }
 

@@ -138,6 +138,7 @@ import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import os from '../providers/node/os/os';
 import FsProvider from '../providers/generic/file/FsProvider';
 import CacheUtil from '../r2mm/mods/CacheUtil';
+import { setProtonExternalLaunch } from '../utils/LaunchUtils';
 import LinkProvider from '../providers/components/LinkProvider';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
@@ -462,6 +463,13 @@ async function handleSettingsCallbacks(invokedSetting: any) {
             break;
         case "SetLaunchParameters":
             showLaunchParameters();
+            break;
+        case "ToggleExternalLaunch":
+            await setProtonExternalLaunch(
+                activeGame.value,
+                profile.value.asImmutableProfile(),
+                !settings.value.getContext().gameSpecific.steamProtonExternalLaunch
+            );
             break;
         case "ChangeProfile":
             router.push({name: "profiles"});

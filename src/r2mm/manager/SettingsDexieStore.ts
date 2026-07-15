@@ -136,6 +136,7 @@ export default class SettingsDexieStore extends Dexie {
                 linkedFiles: [],
                 launchType: LaunchType.AUTO,
                 lastSelectedPlatform: null,
+                steamProtonExternalLaunch: false,
             }
         }
     }
@@ -232,6 +233,9 @@ export interface ManagerSettingsInterfaceGame_V2 {
     installedDisablePosition: string;
     launchType: string;
     lastSelectedPlatform: string | null;
+    // Linux/Proton only: keep the game dir set up so mods load when the game is
+    // launched outside the manager (Steam, Big Picture). See LaunchUtils.
+    steamProtonExternalLaunch: boolean;
 }
 
 /**

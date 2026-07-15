@@ -5,6 +5,7 @@ import path from '../../../providers/node/path/path';
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import R2Error from '../../../model/errors/R2Error';
 import { getDeterminedLaunchType } from '../../../utils/LaunchUtils';
+import { BEPINEX_PRELOADER_DLLS } from '../../../utils/UnityDoorstopUtils';
 import appWindow from '../../../providers/node/app/app_window';
 import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 import { LaunchType } from '../../../model/real_enums/launch/LaunchType';
@@ -61,13 +62,13 @@ export default class GameInstructionParser {
                 const corePath = await FsProvider.instance.realpath(profile.joinToProfilePath("BepInEx", "core"));
                 const preloaderPath = path.join(corePath,
                     (await FsProvider.instance.readdir(corePath))
-                        .filter((x: string) => ["BepInEx.Unity.Mono.Preloader.dll", "BepInEx.Unity.IL2CPP.dll", "BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll", "BepInEx.NET.CoreCLR.dll"].includes(x))[0]!);
+                        .filter((x: string) => BEPINEX_PRELOADER_DLLS.includes(x))[0]!);
                 return `${isProton ? 'Z:' : ''}${preloaderPath}`;
             } else {
                 const corePath = profile.joinToProfilePath("BepInEx", "core");
                 return path.join(corePath,
                     (await FsProvider.instance.readdir(corePath))
-                        .filter((x: string) => ["BepInEx.Unity.Mono.Preloader.dll", "BepInEx.Unity.IL2CPP.dll", "BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll", "BepInEx.NET.CoreCLR.dll"].includes(x))[0]!);
+                        .filter((x: string) => BEPINEX_PRELOADER_DLLS.includes(x))[0]!);
             }
         } catch (e) {
             const err: Error = e as Error;

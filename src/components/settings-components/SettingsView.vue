@@ -360,6 +360,24 @@ onMounted(async () => {
             )
         );
     }
+
+    // Proton-only: the redirect + wine override logic only runs on Linux, so
+    // don't offer the toggle on macOS where it would report "enabled" but do
+    // nothing.
+    if (appWindow.getPlatform() === 'linux' && activeGame.value.activePlatform.storePlatform === Platform.STEAM) {
+        settingsList.push(
+            new SettingsRow(
+                'Debugging',
+                'Load mods when launched outside the manager',
+                'Set the game up so mods load when you start it from Steam or Big Picture, not only via this manager. For Proton games.',
+                async () => settings.value.getContext().gameSpecific.steamProtonExternalLaunch
+                    ? 'Current: enabled'
+                    : 'Current: disabled (default)',
+                'fa-external-link-alt',
+                () => emitInvoke('ToggleExternalLaunch')
+            )
+        );
+    }
     settingsList = settingsList.sort((a, b) => a.action.localeCompare(b.action));
     searchableSettings.value = settingsList;
 

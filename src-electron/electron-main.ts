@@ -94,24 +94,31 @@ async function createWindow() {
     // Initialise client to server communication listener
     new Listeners(mainWindow, app);
 
+    // Register BEFORE loading so the event isn't missed: a cold-start deep link
+    // (macOS 'open-url') gets buffered while the window loads and is flushed once
+    // the renderer is ready. Registering after loadURL would be too late.
+    mainWindow.webContents.on('did-finish-load', flushPendingDeeplink);
+
     if (process.env.DEV) {
         await mainWindow.loadURL(process.env.APP_URL);
     } else {
         await mainWindow.loadFile('index.html');
     }
 
+    // Backstop in case did-finish-load already fired before the listener ran.
+    flushPendingDeeplink();
+
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
+}
 
-    // Flush any deep link that arrived before the renderer was ready.
-    mainWindow.webContents.on('did-finish-load', () => {
-        if (pendingDeeplink) {
-            const url = pendingDeeplink;
-            pendingDeeplink = null;
-            handleDeeplink(url);
-        }
-    });
+function flushPendingDeeplink() {
+    if (pendingDeeplink && mainWindow && !mainWindow.webContents.isLoading()) {
+        const url = pendingDeeplink;
+        pendingDeeplink = null;
+        handleDeeplink(url);
+    }
 }
 
 app.on('ready', async () => {

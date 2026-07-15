@@ -108,6 +108,15 @@ export default class ManagerSettings {
         await this.save();
     }
 
+    public getSteamProtonExternalLaunch(): boolean {
+        return ManagerSettings.CONTEXT.gameSpecific.steamProtonExternalLaunch ?? false;
+    }
+
+    public async setSteamProtonExternalLaunch(enabled: boolean) {
+        ManagerSettings.CONTEXT.gameSpecific.steamProtonExternalLaunch = enabled;
+        await this.save();
+    }
+
     public getInstalledGroupByBundle(): boolean {
         return ManagerSettings.CONTEXT.global.installedGroupByBundle ?? false;
     }

@@ -48,12 +48,14 @@ export default class ProfileModList {
                 const rawList: any[] = (parseYaml(fileContent) as any[]) || [];
                 const modList: ManifestV2[] = rawList.map((entry) => new ManifestV2().fromJsObject(entry));
 
-                // One-time migration for profiles created before bundle tracking
-                // existed: infer which mods are dependencies (declared by another
-                // installed mod) so bundle grouping works without a reinstall.
-                if (this.backfillInstalledAsDependency(rawList, modList)) {
-                    await this.saveModList(profile, modList);
-                }
+                // For profiles created before bundle tracking existed, infer which
+                // mods are dependencies (declared by another installed mod) so
+                // bundle grouping works without a reinstall. Done in-memory only:
+                // getModList is a read and does not hold requestLock, so it must
+                // not write mods.yml (that could race a locked writer). The
+                // inferred flags get persisted the next time a locked write
+                // (install/enable/disable/reorder) saves the list.
+                this.backfillInstalledAsDependency(rawList, modList);
 
                 return modList;
             } catch(e) {
