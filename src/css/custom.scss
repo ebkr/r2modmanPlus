@@ -1,3 +1,6 @@
+@use "scheme/variables" as *;
+@use "quasar.variables" as *;
+
 // fix color vars that we can't override
 html {
     background-color: $scheme-background;
