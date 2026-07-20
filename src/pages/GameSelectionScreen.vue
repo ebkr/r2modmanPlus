@@ -1,5 +1,11 @@
 <template>
-    <div id="game-selection-screen">
+    <div id="game-list-loading" v-if="!visible">
+        <div class="fa-3x">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </div>
+        <p>Preparing games</p>
+    </div>
+    <div id="game-selection-screen" v-else>
         <EcosystemUpdateIndicator />
         <ModalCard id="select-platform-modal" v-show="showPlatformModal" :is-active="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
             <template v-slot:header>
@@ -105,6 +111,8 @@ import { State } from '../store';
 
 const store = getStore<State>();
 
+const visible = ref<boolean>(false);
+
 const gameSelection = useGameSelectionComposable();
 provide(gameSelectionKey, gameSelection);
 
@@ -164,8 +172,12 @@ function selectPlatform() {
 
 onMounted(async () => {
     window.app.checkForApplicationUpdates();
-    await initialize();
-    void store.dispatch('ecosystemUpdate/updateEcosystemSchema');
+    try {
+        await initialize();
+    } finally {
+        visible.value = true;
+        void store.dispatch('ecosystemUpdate/updateEcosystemSchema');
+    }
 });
 </script>
 
@@ -185,5 +197,13 @@ onMounted(async () => {
 
 #game-selection-search {
     min-width: 100px;
+}
+
+#game-list-loading {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 </style>
