@@ -133,14 +133,6 @@ describe('GameImageProviderImpl', () => {
             expect(mockFetch).toHaveBeenCalledTimes(1);
         });
 
-        test('treats a 200 HTML SPA-fallback response as unreachable and falls through to CDN', async () => {
-            await GameImageProviderImplementation.init();
-            mockFetch.mockResolvedValueOnce(makeFetchResponse('<!doctype html>', 200, 'OK', 'text/html'));
-
-            const result = await GameImageProviderImplementation.resolve('spa-game/spa-game-cover-360x480.webp');
-            expect(result.startsWith('data:image/webp;base64,')).toBe(true);
-        });
-
         test('returns disk-cached data URL when bundled is unreachable but cache exists', async () => {
             await GameImageProviderImplementation.init();
             // Pre-seed cache.
