@@ -1,5 +1,5 @@
 [tools]
-node = '22'
+node = "22.23.1"
 "npm:corepack" = { version = "latest", postinstall = "corepack enable" }
 
 [tasks.dev]
