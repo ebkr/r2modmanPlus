@@ -5,7 +5,7 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import appWindow from '../../providers/node/app/app_window';
-import { Hero } from '../all';
+import { Hero, DeferredInput } from '../all';
 import SettingsSection from './SettingsSection.vue';
 import GameDirectory from './entries/GameDirectory.vue';
 import DataDirectory from './entries/DataDirectory.vue';
@@ -70,12 +70,20 @@ function isVisible(section: Category): boolean {
 
             <div class="settings-list">
 
-                <div class="sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding">
-                    <div class='border-at-bottom'>
-                        <div class='card is-shadowless is-square'>
-                            <div class='card-header-title'>
-                                <span class="non-selectable margin-right">Search:</span>
-                                <input v-model='searchTerm' class="input" type="text" placeholder="Search for a setting"/>
+                <div class="inherit-background-colour sticky-top sticky-top--search non-selectable border-at-bottom">
+                    <div class="is-shadowless is-square">
+                        <div class="no-padding-left card-header-title">
+                            <div class="input-group input-group--flex margin-right">
+                                <label for="installed-search" class="non-selectable">Search</label>
+                                <DeferredInput
+                                    :modelValue="searchTerm"
+                                    @update:modelValue="$event => (searchTerm = $event)"
+                                    id="installed-search"
+                                    class="input margin-right"
+                                    type="text"
+                                    placeholder="Search for a setting"
+                                    autocomplete="off"
+                                />
                             </div>
                         </div>
                     </div>
