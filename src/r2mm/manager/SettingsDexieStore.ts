@@ -61,7 +61,6 @@ export default class SettingsDexieStore extends Dexie {
         })
 
         this.activeGame = game;
-        console.debug("SettingsDexieStore created with active game", this.activeGame.settingsIdentifier);
         this.global = this.table("value");
         this.games = this.table("games");
     }

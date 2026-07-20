@@ -8,10 +8,6 @@ const router = useRouter();
 const steps = computed<Breadcrumb[]>(() => {
     return (router.currentRoute.value.meta.breadcrumbs || []) as Breadcrumb[];
 });
-
-function printRoute() {
-    console.log(router.currentRoute.value);
-}
 </script>
 
 <template>

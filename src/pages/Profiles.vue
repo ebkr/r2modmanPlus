@@ -113,8 +113,6 @@ async function backToGameSelection() {
 }
 
 onMounted( async () => {
-    console.debug("Profiles view entered with active game", store.state.activeGame.settingsIdentifier);
-
     const settings = await store.getters.settings;
     await settings.load();
 
