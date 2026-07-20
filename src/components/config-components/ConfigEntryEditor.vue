@@ -180,6 +180,7 @@ function updateEntryMultiSelect(entry: ConfigurationEntry, newSelections: string
     display: grid;
     grid-template-rows: min-content 1fr;
     grid-gap: 1rem;
+    word-break: break-word;
 }
 
 .outer-row {
