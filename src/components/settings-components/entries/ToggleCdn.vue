@@ -27,8 +27,8 @@ function toggleCdn() {
     <SettingsViewWrapper v-show="isVisible">
         <template #title>Toggle preferred Thunderstore CDN</template>
         <template #description>
-            Switch the CDN until the app is restarted. This might bypass issues with downloading mods.
-            Current: {{ currentCdn.label }}<template v-if="currentCdn.url"> ({{ currentCdn.url }})</template>.
+            <p>Switch the CDN until the app is restarted. This might bypass issues with downloading mods.</p>
+            <p>Current: {{ currentCdn.label }}<template v-if="currentCdn.url"> ({{ currentCdn.url }})</template>.</p>
         </template>
         <button class="button" @click="toggleCdn">Toggle preferred CDN</button>
     </SettingsViewWrapper>
