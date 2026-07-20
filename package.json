@@ -98,7 +98,6 @@
     "sass": "^1.70.0",
     "sass-loader": "^16.0.5",
     "sinon": "^11.1.1",
-    "tsc": "^2.0.4",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "vite-plugin-node-polyfills": "^0.23.0",

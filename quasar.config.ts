@@ -3,7 +3,6 @@
 
 import path from 'node:path';
 import { defineConfig } from '#q-app/wrappers';
-import { ExtendViteConfHandler } from '@quasar/app-vite';
 import { QuasarContext } from '@quasar/app-vite/types/configuration/context';
 
 export default defineConfig((ctx: QuasarContext) => {
