@@ -35,7 +35,8 @@ const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
     'Change Steam folder',
     'Change Steam directory',
     steamDirectory.value,
-    'Browse'
+    'Browse',
+    'Directories',
 ]);
 
 onMounted(async () => {
