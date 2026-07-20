@@ -36,6 +36,9 @@ const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
     gameDirectory.value,
     'Change',
     'Browse',
+    "Game",
+    "Directory",
+    "Directories"
 ]);
 
 onMounted(async () => {
@@ -149,10 +152,12 @@ function openHelpLink() {
     <SettingsViewWrapper v-show="isVisible">
         <template #title>{{ activeGame.displayName }} folder</template>
         <template #description>
-            The game directory is required to place the appropriate files correctly.
-            <span v-if="StorePlatform[activeGame.activePlatform.storePlatform] === StorePlatform.steam">
-                However <code class="code">{{ activeGame.displayName }}</code> will launch without mods if this is not set appropriately.
-            </span>
+            <p>
+                The game directory is required to place the appropriate files correctly.
+            </p>
+            <p v-if="StorePlatform[activeGame.activePlatform.storePlatform] === StorePlatform.steam">
+                <code class="code">{{ activeGame.displayName }}</code> will launch without mods if this is not set appropriately.
+            </p>
         </template>
         <div class="setting-column">
             <div class="setting-row">

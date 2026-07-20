@@ -32,6 +32,8 @@ const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
     profileDirectory.value,
     'Change',
     'Browse',
+    "Folder",
+    "Directory"
 ]);
 
 onMounted(async () => {
@@ -76,10 +78,10 @@ function browseProfileFolder() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Data and profile directories</template>
+        <template #title>Data and profile folders</template>
         <template #description>
-            The folder where mods are stored for all games and profiles.
-            The folder will not be deleted, and existing profiles will not carry across.
+            <p>The folder where mods are stored for all games and profiles.</p>
+            <p>Changing the data folder does not move or delete existing profiles. They will however remain in the old folder.</p>
         </template>
         <div class="setting-column">
             <div class="setting-row">
