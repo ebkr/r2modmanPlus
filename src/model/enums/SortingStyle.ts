@@ -4,4 +4,5 @@ export default {
     ALPHABETICAL: 'Alphabetical',
     DOWNLOADS: 'Download count',
     RATING: 'Rating',
+    RELEVANCE: 'Relevance',
 };

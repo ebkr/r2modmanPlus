@@ -44,7 +44,9 @@ function runFilter() {
         result = result.filter(x => filterAll.every(c => x.getCategories().includes(c)));
     }
 
-    result = bumpExactMatches(result, searchFilter.value.trim().toLowerCase());
+    if (store.state.modFilters.sortBehaviour === SortingStyle.RELEVANCE) {
+        result = bumpExactMatches(result, searchFilter.value.trim().toLowerCase());
+    }
 
     filteredMods.value = result;
     filteredModCount.value = result.length;
