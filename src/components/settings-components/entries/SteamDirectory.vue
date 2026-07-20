@@ -114,7 +114,7 @@ function browseDirectory() {
     <SettingsViewWrapper v-show="isVisible">
         <template #title>Steam folder</template>
         <template #description>
-            <p>The Steam folder containing the Steam executable</p>
+            <p>The Steam folder containing the Steam executable.</p>
             <p>This is how {{ appName }} will launch the game.</p>
         </template>
         <div class="setting-column">

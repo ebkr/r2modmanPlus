@@ -64,7 +64,7 @@ async function disableAllMods() {
     <SettingsViewWrapper v-show="isVisible">
         <template #title>Change mod state</template>
         <template #description>
-        <p>Enable / disable all of the mods in your profile</p>
+        <p>Enable / disable all of the mods in your profile.</p>
         <p>{{ statusText }}</p>
         </template>
         <div class="setting-row">
