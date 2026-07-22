@@ -4,24 +4,10 @@
             <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
             <button class="button is-danger" @click="cancel">Cancel</button>
         </div>
-        <div id="config-entry-main" v-if="configurationFileHolder.configurationFile">
-            <div id="config-entry-sections">
-                <h3 class='subtitle is-3'>Sections</h3>
-                <ul>
-                    <template v-for="(section, sectionIndex) in configurationFileHolder.configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`">
-                        <li v-if="section.sectionName.length > 0">
-                            <a :href="`#${sectionIndex}`">{{ section.sectionName }}</a>
-                        </li>
-                    </template>
-                </ul>
-                <hr/>
-            </div>
+        <div id="config-entry-main" v-if="configurationFile">
             <div id="config-entries">
-                <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFileHolder.configurationFile.sections">
-                    <div class="section-title" :id="sectionIndex.toString()">
-                        <p class="title is-6" @click="() => toggleSectionVisibility(section)">{{ section.sectionName }}</p>
-                        <p v-if="collapsedSections.includes(section)" class="smaller-font">({{ section.entries.length }} hidden)</p>
-                    </div>
+                <div class="margin-right" :id="`#section-${section.sectionName}`" v-for="(section, sectionIndex) of configurationFile.sections">
+                    <h2 class="title is-5 section-title">{{ section.sectionName}}</h2>
                     <div class="section-content">
                         <template v-for="(entry, entryIndex) of section.entries" :key="`entry-${entryIndex}-${section.sectionName}`">
                             <div class="inner-row" v-if="!collapsedSections.includes(section)">
@@ -30,7 +16,7 @@
                                     <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry)" :key="`description-comment-${commentIndex}-${section.sectionName}`">
                                         <span v-if="comment.isDescription">{{ comment.displayValue }}</span>
                                     </div>
-                                    <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry)" :key="`metadata-comment-${commentIndex}-${section.sectionName}`">
+                                    <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry)" :key="`metadata-comment-${commentIndex}-${section.sectionName}`" class="metadata-container">
                                             <span class="smaller-font metadata-text" v-if="!comment.isDescription">
                                                 {{ comment.displayValue }}
                                             </span>
@@ -42,7 +28,7 @@
                                         <a href="#" @click="() => toggleEntryExpansion(entry)">Show more</a>
                                     </div>
                                 </div>
-                                <template v-if="entry.displayType === 'single-select' || entry.displayType === 'boolean'">
+                                <template v-if="entry.displayType === 'single-select'">
                                     <div class="settings-input-container">
                                         <select class="select select--full" v-model="entry.value">
                                             <template v-if="!getSelectOptions(entry).includes(entry.value)">
@@ -55,6 +41,14 @@
                                             </option>
                                         </select>
                                     </div>
+                                </template>
+                                <template v-else-if="entry.displayType === 'boolean'">
+                                    <CustomCheckbox
+                                        class="checkbox"
+                                        :model-value="entry.value.toLowerCase() === 'true'"
+                                        :label='`${entry.entryName} = "${entry.value}"`'
+                                        :aria-label="entry.entryName"
+                                        @update:model-value="(checked) => entry.value = checked ? 'true' : 'false'" />
                                 </template>
                                 <template v-else-if="entry.displayType === 'multi-select'">
                                     <MultiSelect
@@ -80,16 +74,18 @@
 <script lang="ts" setup>
 import ConfigFile from "../../model/file/ConfigFile";
 import MultiSelect from '../input/MultiSelect.vue';
+import CustomCheckbox from '../input/CustomCheckbox.vue';
 import {
-    buildConfigurationFileFromPath, ConfigurationEntry,
+    ConfigurationEntry,
     ConfigurationFile,
     ConfigurationSection,
     getSelectOptions, saveConfigurationFile
 } from '../../utils/ConfigUtils';
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 export type ConfigEntryEditorProps = {
-    configFile: ConfigFile;
+    configFile?: ConfigFile;
+    configurationFile?: ConfigurationFile;
 }
 
 const props = defineProps<ConfigEntryEditorProps>();
@@ -97,14 +93,8 @@ const emits = defineEmits<{
     (e: 'changed'): void
 }>();
 
-const configurationFileHolder = reactive({
-    configurationFile: {} as ConfigurationFile,
-});
 const collapsedSections = ref<ConfigurationSection[]>([]);
 const entriesWithExpandedComments = ref<ConfigurationEntry[]>([]);
-
-buildConfigurationFileFromPath(props.configFile.getPath())
-    .then(value => configurationFileHolder.configurationFile = reactive(value));
 
 function toggleSectionVisibility(section: ConfigurationSection) {
     const collapsedSectionIndex = collapsedSections.value.indexOf(section);
@@ -116,7 +106,7 @@ function toggleSectionVisibility(section: ConfigurationSection) {
 }
 
 function save() {
-    saveConfigurationFile(configurationFileHolder.configurationFile);
+    saveConfigurationFile(props.configurationFile!);
     emits('changed');
 }
 
@@ -125,15 +115,13 @@ function cancel() {
 }
 
 function isDisplayTooLong(entry: ConfigurationEntry): boolean {
-    if (entry.commentLines.length > 5) {
-        return true;
-    }
-    return entry.commentLines.findIndex(value => value.displayValue.length >= 200) >= 0;
+    return true;
 }
 
 function getAppropriateCommentLines(entry: ConfigurationEntry) {
     if (!entriesWithExpandedComments.value.includes(entry)) {
         const commentLines = [...entry.commentLines]
+            .filter(line => line.isDescription)
             .slice(0, 5)
             .map(value => {
                 return {
@@ -168,6 +156,8 @@ function updateEntryMultiSelect(entry: ConfigurationEntry, newSelections: string
 #config-entry-wrapper {
     display: flex;
     flex-direction: column;
+    align-self: flex-start;
+    width: 100%;
 }
 
 #config-entry-main {
@@ -190,13 +180,17 @@ function updateEntryMultiSelect(entry: ConfigurationEntry, newSelections: string
 
 .section-title {
     position: sticky;
-    top: 4rem;
-    height: min-content;
-    padding-bottom: 2rem;
+    z-index: 100;
+    top: 0;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    width: fit-content;
 }
 
 .inner-row {
-    padding-bottom: 2rem;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    border-bottom: 1px solid var(--v2-table-row-border-color);
 }
 
 .title {
@@ -207,9 +201,26 @@ function updateEntryMultiSelect(entry: ConfigurationEntry, newSelections: string
     position: sticky;
     top: 0;
     z-index: 100;
-    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     width: 100%;
-    padding: 0.5rem 2rem 0.5rem 0;
+    padding: 0.5rem 2rem;
     background-color: var(--background);
+    border-bottom: 1px solid var(--v2-table-row-border-color);
+}
+
+.checkbox {
+    margin-top: 0.5rem;
+}
+
+.entry-info {
+    padding-bottom: 0.5rem;
+}
+
+.metadata-container {
+    border-left: 3px solid var(--v2-table-row-border-color);
+    padding-left: 0.75rem;
+    color: var(--v2-secondary-text-color);
 }
 </style>

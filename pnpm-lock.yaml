@@ -6108,12 +6108,6 @@ snapshots:
     dependencies:
       '@types/node': 20.19.37
 
-  '@types/glob@7.2.0':
-    dependencies:
-      '@types/minimatch': 6.0.0
-      '@types/node': 20.19.37
-    optional: true
-
   '@types/har-format@1.2.16': {}
 
   '@types/http-cache-semantics@4.2.0': {}
@@ -6151,12 +6145,6 @@ snapshots:
   '@types/node@25.5.0':
     dependencies:
       undici-types: 7.18.2
-
-  '@types/plist@3.0.5':
-    dependencies:
-      '@types/node': 20.19.37
-      xmlbuilder: 15.1.1
-    optional: true
 
   '@types/qs@6.15.0': {}
 

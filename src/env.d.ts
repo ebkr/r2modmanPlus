@@ -45,6 +45,9 @@ declare global {
             openExternal: (path: string) => void;
             selectFile: (path: string) => void;
             getEnvironmentVariables: () => Record<string, string>;
+        },
+        configEditor: {
+            fetchAllConfigFiles: ({ id }: FetchAllConfigFilesType, { version }: FetchAllConfigFilesType, { basePath }: FetchAllConfigFilesType, { fileCallback }: FetchAllConfigFilesType) => void;
         }
     }
 }

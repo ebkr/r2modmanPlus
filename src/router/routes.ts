@@ -98,8 +98,19 @@ const routes: RouteRecordRaw[] = [
             {
                 name: 'config-editor',
                 path: 'config-editor/',
-                component: () => import('pages/ConfigEditor.vue'),
-                meta: {title: () => profileTitle()}
+                component: () => import('pages/ConfigEditor.v2.vue'),
+                meta: { title: () => profileTitle() },
+                children: [
+                    {
+                        name: 'config-editor.selection',
+                        path: 'selection/',
+                        alias: '',
+                        components: {
+                            subview: () => import('components/views/ConfigEditor/ConfigEditorSelectionView.vue')
+                        },
+                        meta: {title: () => profileTitle()}
+                    },
+                ]
             },
             {
                 name: 'help',

@@ -18,7 +18,6 @@
                 </a>
             </span>
         </div>
-        <div class="margin-top"></div>
     </div>
 </template>
 

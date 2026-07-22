@@ -67,7 +67,7 @@
                 <p class='menu-label'>Other</p>
                 <ul class='menu-list'>
                     <li>
-                        <router-link :to="{name: 'config-editor'}">
+                        <router-link :to="{name: 'config-editor.selection'}">
                             <i class="fas fa-edit icon--margin-right" />
                             Config editor
                         </router-link>

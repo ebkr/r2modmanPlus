@@ -7,6 +7,7 @@ import * as os from './node-os';
 import * as zip from './zip-preload';
 import * as appGlobals from "./app-preload-globals";
 import * as electron from "./electron-preload";
+import * as configEditor from "./config-editor-preload";
 
 contextBridge.exposeInMainWorld('node', {
     path: path,
@@ -19,3 +20,4 @@ contextBridge.exposeInMainWorld('node', {
 contextBridge.exposeInMainWorld('app', appGlobals);
 contextBridge.exposeInMainWorld('zip', zip);
 contextBridge.exposeInMainWorld('electron', electron);
+contextBridge.exposeInMainWorld('configEditor', configEditor);

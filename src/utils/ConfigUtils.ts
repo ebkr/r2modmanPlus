@@ -1,11 +1,15 @@
 import FsProvider from '../providers/generic/file/FsProvider';
 import path from '../providers/node/path/path';
 
-export type ConfigurationFile = {
+export type PartialConfigurationFile = {
     filename: string;
     path: string;
-    sections: ConfigurationSection[];
+    relative: string;
 }
+
+export type ConfigurationFile = {
+    sections: ConfigurationSection[];
+} & PartialConfigurationFile;
 
 export type ConfigurationSection = {
     sectionName: string;
