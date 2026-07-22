@@ -16,7 +16,7 @@ import { State } from '../../../store';
 import { UnsatisfiedDependencies } from '../../../store/modules/ProfileModule';
 import ThunderstoreMod from "../../../model/ThunderstoreMod";
 import ThunderstoreVersion from "../../../model/ThunderstoreVersion";
-import { useVulnerablePackageComposable } from '@r2/components/composables/VulnerablePackageComposable';
+import { useConcerningPackageComposable } from '@r2/components/composables/ConcerningPackageComposable';
 import { useModManagementComposable } from '@r2/components/composables/ModManagementComposable';
 
 const store = getStore<State>();
@@ -28,7 +28,7 @@ type LocalModCardProps = {
 
 const props = defineProps<LocalModCardProps>();
 
-const { isVulnerablePackage } = useVulnerablePackageComposable();
+const { isConcerningPackage } = useConcerningPackageComposable();
 const { uninstallMod } = useModManagementComposable();
 
 const disabledDependencies = ref<ManifestV2[]>([]);
@@ -145,7 +145,7 @@ function dependencyStringToModName(x: string) {
 }
 
 function openReviewModal() {
-    store.commit('openVulnerableModReviewModal', props.mod);
+    store.commit('openConcerningModReviewModal', props.mod);
 }
 </script>
 
@@ -156,7 +156,7 @@ function openReviewModal() {
         :id="`${mod.getAuthorName()}-${mod.getName()}-${mod.getVersionNumber()}`"
         :image="icon"
         :allowSorting="true"
-        :class="[{'card--is-concern': isVulnerablePackage(props.mod)}]"
+        :class="[{'card--is-concern': isConcerningPackage(props.mod)}]"
     >
 
         <template v-slot:title>
@@ -190,11 +190,11 @@ function openReviewModal() {
             <p class='card-timestamp' v-if="version && version.getDateCreated()"><strong>Released on:</strong>
                 {{ getReadableDate(version!.getDateCreated()!.getTime()) }}
             </p>
-            <div class="notification is-warning" v-if="isVulnerablePackage(props.mod)">
+            <div class="notification is-warning" v-if="isConcerningPackage(props.mod)">
                 <p>This package was originally downloaded from Thunderstore however can no longer be found.</p>
                 <p>Mods can be removed due to the author's request or due to violating Thunderstore's package policies.</p>
                 <p><strong>It is recommended to remove this mod.</strong></p>
-                <button v-if="isVulnerablePackage(props.mod)" class="button" @click.stop.prevent="openReviewModal">
+                <button v-if="isConcerningPackage(props.mod)" class="button" @click.stop.prevent="openReviewModal">
                     Review package
                 </button>
             </div>
@@ -202,7 +202,7 @@ function openReviewModal() {
 
         <!-- Show icon button row even when card is collapsed -->
         <template v-slot:other-icons>
-            <span v-if="isVulnerablePackage(props.mod)"
+            <span v-if="isConcerningPackage(props.mod)"
                   class='card-header-icon'>
                 <i v-tooltip.left="`This package can no longer be found on Thunderstore`"
                    class='fas fa-unlink'
