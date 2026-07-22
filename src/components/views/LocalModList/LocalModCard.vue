@@ -21,7 +21,7 @@ const store = getStore<State>();
 
 type LocalModCardProps = {
     mod: ManifestV2;
-    version?: ThunderstoreVersion;
+    version?: ThunderstoreVersion | undefined;
 }
 
 const props = defineProps<LocalModCardProps>();
@@ -248,15 +248,15 @@ function getReadableDate(value: number): string {
         </button>
 
         <button v-if="missingDependencies.length"
-            @click="downloadDependency(missingDependencies[0])"
+            @click="downloadDependency(missingDependencies[0]!)"
             class='button'>
             Download dependency
         </button>
 
         <button v-if="disabledDependencies.length"
-            @click="enableMod(disabledDependencies[0])"
+            @click="enableMod(disabledDependencies[0]!)"
             class='button'>
-            Enable {{disabledDependencies[0].getDisplayName()}}
+            Enable {{disabledDependencies[0]!.getDisplayName()}}
         </button>
 
         <DonateButton v-if="tsMod" :mod="tsMod"/>

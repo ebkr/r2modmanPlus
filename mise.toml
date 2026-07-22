@@ -6,3 +6,7 @@ python = { version = "3.12", postinstall = "python -m pip install pipx" }
 [tasks.dev]
 description = "Start in dev mode"
 run = "pnpm run dev"
+
+[tasks.typecheck]
+description = "Ensure that the app is appropriately typed"
+run = "pnpm typecheck"

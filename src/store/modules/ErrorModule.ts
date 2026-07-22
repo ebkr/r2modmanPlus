@@ -1,7 +1,7 @@
 import R2Error from "../../model/errors/R2Error";
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 
-interface State {
+export interface State {
     error: R2Error | null;
 }
 

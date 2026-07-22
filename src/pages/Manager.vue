@@ -220,11 +220,11 @@ function changeGameInstallDirectory() {
         filters: (activeGame.value.exeName.map(value => {
             const nameSplit = value.split(".");
             return [{
-                name: nameSplit[0],
-                extensions: [nameSplit[1]]
+                name: nameSplit[0]!,
+                extensions: [nameSplit[1]!]
             }]
         }).reduce((previousValue, currentValue) => {
-            previousValue[0].extensions = [...previousValue[0].extensions, ...currentValue[0].extensions];
+            previousValue[0]!.extensions = [...previousValue[0]!.extensions, ...currentValue[0]!.extensions];
             return previousValue;
         })),
         defaultPath: ror2Directory,
@@ -232,9 +232,9 @@ function changeGameInstallDirectory() {
     }).then(async files => {
         if (files.length === 1) {
             try {
-                const containsGameExecutable = activeGame.value.exeName.find(exeName => path.basename(files[0]).toLowerCase() === exeName.toLowerCase()) !== undefined
+                const containsGameExecutable = activeGame.value.exeName.find(exeName => path.basename(files[0]!).toLowerCase() === exeName.toLowerCase()) !== undefined
                 if (containsGameExecutable) {
-                    await settings.value.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
+                    await settings.value.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0]!)));
                 } else {
                     showRor2IncorrectDirectoryModal.value = true;
                 }
@@ -256,9 +256,9 @@ function changeGameInstallDirectoryGamePass() {
     }).then(async files => {
         if (files.length === 1) {
             try {
-                const containsGameExecutable = (path.basename(files[0]).toLowerCase() === "gamelaunchhelper.exe");
+                const containsGameExecutable = (path.basename(files[0]!).toLowerCase() === "gamelaunchhelper.exe");
                 if (containsGameExecutable) {
-                    await settings.value.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
+                    await settings.value.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0]!)));
                 } else {
                     throw new Error("The selected executable is not gamelaunchhelper.exe");
                 }
@@ -309,8 +309,8 @@ function changeSteamDirectory() {
     }).then(async files => {
         if (files.length === 1) {
             try {
-                if (await checkIfSteamExecutableIsValid(files[0])) {
-                    await settings.value.setSteamDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
+                if (await checkIfSteamExecutableIsValid(files[0]!)) {
+                    await settings.value.setSteamDirectory(path.dirname(await FsProvider.instance.realpath(files[0]!)));
                 } else {
                     showSteamIncorrectDirectoryModal.value = true;
                 }

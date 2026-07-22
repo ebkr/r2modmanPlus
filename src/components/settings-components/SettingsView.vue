@@ -16,17 +16,13 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import VueRouter from 'vue-router';
 import {getLaunchType, LaunchType} from "../../model/real_enums/launch/LaunchType";
 import {LaunchTypeModalOpen} from "../../components/modals/launch-type/LaunchTypeRefs";
 import appWindow from '../../providers/node/app/app_window';
+import { useRouter } from 'vue-router';
 
 const store = getStore<State>();
-let router!: VueRouter;
-
-onMounted(() => {
-    router = getCurrentInstance()!.proxy.$router;
-})
+const router = useRouter();
 
 const activeTab = ref<string>('All');
 const tabs = ref<string[]>(['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other']);

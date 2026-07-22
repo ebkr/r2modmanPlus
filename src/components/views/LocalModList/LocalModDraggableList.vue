@@ -9,7 +9,7 @@
                item-key="id">
         <template #item="{element}">
             <LocalModCard
-                :version="installedVersions.get(element.name)"
+                :version="(installedVersions.get(element.name) as ThunderstoreVersion | undefined)"
                 :mod="element" />
         </template>
     </draggable>
@@ -28,6 +28,8 @@ import ThunderstoreVersion from "../../../model/ThunderstoreVersion";
 
 
 const store = getStore<State>();
+
+const drag = ref<boolean>(false);
 
 const profile = computed<ImmutableProfile>(() => store.getters['profile/activeProfile'].asImmutableProfile());
 
