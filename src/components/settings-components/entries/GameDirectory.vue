@@ -139,7 +139,7 @@ function computeDefaultInstallDirectory(): string {
 
 function browseDirectory() {
     if (settings.value?.getContext().gameSpecific.gameDirectory) {
-        LinkProvider.instance.openLink(settings.value?.getContext().gameSpecific.gameDirectory!)
+        LinkProvider.instance.openPath(settings.value?.getContext().gameSpecific.gameDirectory!)
     }
 }
 

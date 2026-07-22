@@ -64,14 +64,14 @@ async function changeDataFolder() {
 
 function browseDataFolder() {
     if (PathResolver.ROOT) {
-        LinkProvider.instance.openLink(PathResolver.ROOT);
+        LinkProvider.instance.openPath(PathResolver.ROOT);
     }
 }
 
 function browseProfileFolder() {
     const profilePath = store.getters['profile/activeProfile']?.getProfilePath();
     if (profilePath) {
-        LinkProvider.instance.openLink(profilePath);
+        LinkProvider.instance.openPath(profilePath);
     }
 }
 </script>

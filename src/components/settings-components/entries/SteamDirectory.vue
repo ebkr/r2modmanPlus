@@ -105,7 +105,7 @@ function changeSteamDirectory() {
 function browseDirectory() {
     const dir = settings.value?.getContext().global.steamDirectory;
     if (dir) {
-        LinkProvider.instance.openLink(dir);
+        LinkProvider.instance.openPath(dir);
     }
 }
 </script>
