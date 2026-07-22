@@ -103,7 +103,13 @@ class GameImageProviderImpl implements GameImageProvider {
     }
 
     private async urlReachable(url: string): Promise<boolean> {
-        return fetch(url).then(res => res.ok).catch(() => false);
+        return fetch(url).then(res => {
+            if (!res.ok) {
+                return false;
+            }
+            const contentType = res.headers.get("content-type") ?? "";
+            return !contentType.includes("text/html");
+        }).catch(() => false);
     }
 
     private cachePathFor(iconUrl: string): string | undefined {
