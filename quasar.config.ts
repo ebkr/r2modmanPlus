@@ -49,7 +49,7 @@ export default defineConfig((ctx: QuasarContext) => {
             typescript: {
                 strict: true,
                 vueShim: true,
-                extendTsConfig(tsConfig) {
+                extendTsConfig(tsConfig: any) {
                     tsConfig.compilerOptions.paths = {
                         '@r2': ['../src'],
                         '@r2/*': ['../src/*'],
