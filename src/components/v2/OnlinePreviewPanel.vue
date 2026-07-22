@@ -157,8 +157,8 @@ ManagerSettings.getSingleton(store.state.activeGame)
 
 watchEffect(() => {
     const varWidth = previewPanelWidth.value;
-    const root = document.querySelector(':root')!;
-    root.style.setProperty('--preview-panel-width', varWidth);
+    const root = document.querySelector(':root')! as HTMLElement;
+    root.style.setProperty('--preview-panel-width', varWidth.toString());
     maxPanelWidth.value = getMaxPanelWidth();
 });
 
@@ -170,11 +170,11 @@ const resizeDebounce = debounce((event: DragEvent) => {
 }, 1);
 
 function dragStart(event: DragEvent) {
-    event.target.style.opacity = 0;
+    (event.target as HTMLElement).style.opacity = '0';
 }
 
 function dragEnd(event: DragEvent) {
-    event.target.style.opacity = 1;
+    (event.target as HTMLElement).style.opacity = '1';
     ManagerSettings.getSingleton(store.state.activeGame)
         .then(settings => settings.setPreviewPanelWidth(previewPanelWidth.value));
 }
@@ -215,7 +215,7 @@ function dragEnd(event: DragEvent) {
                 <div class="button-group">
                     <button class="button is-info" @click="showDownloadModal(mod)">Download</button>
                     <ExternalLink tag="button" class="button" :url="props.mod.getPackageUrl()">View online</ExternalLink>
-                    <ExternalLink v-if="props.mod.getDonationLink()" tag="button" class="button" :url="props.mod.getDonationLink()">Donate</ExternalLink>
+                    <ExternalLink v-if="props.mod.getDonationLink()" tag="button" class="button" :url="props.mod.getDonationLink()!">Donate</ExternalLink>
                 </div>
                 <div class="tabs margin-top">
                     <ul>
@@ -235,7 +235,7 @@ function dragEnd(event: DragEvent) {
                 </template>
                 <template v-else-if="activeTab === 'Dependencies'">
                     <template v-if="dependencies.length > 0">
-                        <OnlineModList :paged-mod-list="dependencies" :read-only="true" />
+                        <OnlineModList :paged-mod-list="(dependencies as ThunderstoreMod[])" :read-only="true" />
                     </template>
                     <template v-else>
                         <div class="notification">

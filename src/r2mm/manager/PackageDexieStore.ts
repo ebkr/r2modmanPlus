@@ -18,9 +18,9 @@ interface IndexChunkHash {
 }
 
 class PackageDexieStore extends Dexie {
-    packages!: Table<DexiePackage, string>;
+    packages!: Table<DexiePackage, [string, string]>;
     indexHashes!: Table<IndexChunkHash, string>;
-    summaries!: Table<DexieSummary, string>;
+    summaries!: Table<DexieSummary, [string, string]>;
 
     constructor() {
         super('tsPackages');

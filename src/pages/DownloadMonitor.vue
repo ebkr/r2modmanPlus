@@ -26,7 +26,7 @@
                 <div>
                     <div class="row no-wrap border-at-bottom pad pad--sides">
                         <div class="is-flex-grow-1 margin-right card is-shadowless">
-                            <p><strong>{{ downloadObject.initialMods.map(tsCombo => tsCombo.getUserFriendlyString()).join(", ") }}</strong></p>
+                            <p><strong>{{ downloadObject.initialMods.map((tsCombo: ThunderstoreCombo) => tsCombo.getUserFriendlyString()).join(", ") }}</strong></p>
 
                             <div class="row" v-if="downloadObject.status === DownloadStatusEnum.FAILED">
                                 <div class="col">
@@ -148,6 +148,7 @@ import * as DownloadUtils from '../utils/DownloadUtils';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import ManagerActivityBar from '../components/navigation/ManagerActivityBar.vue';
+import ThunderstoreCombo from 'src/model/ThunderstoreCombo';
 
 const store = getStore<State>();
 </script>

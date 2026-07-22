@@ -4,7 +4,7 @@ import { State as RootState } from '../index';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import SortingStyle from '../../model/enums/SortingStyle';
 
-interface State {
+export interface State {
     allowNsfw: boolean;
     selectedCategoriesCompareOne: string[];
     selectedCategoriesCompareAll: string[];

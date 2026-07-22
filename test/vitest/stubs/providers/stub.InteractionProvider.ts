@@ -25,7 +25,7 @@ export default class StubInteractionProvider extends InteractionProvider {
         throw new Error("Stub access must be mocked or spied");
     }
 
-    async getEnvironmentVariables(): Promise<string[]> {
+    async getEnvironmentVariables(): Promise<Record<string, string>> {
         throw new Error("Stub access must be mocked or spied");
     }
 

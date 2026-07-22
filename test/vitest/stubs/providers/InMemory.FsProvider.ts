@@ -2,7 +2,7 @@ import FsProvider from '../../../../src/providers/generic/file/FsProvider';
 import StatInterface from '../../../../src/providers/generic/file/StatInterface';
 import * as path from 'path';
 
-type FileType = {name: string, type: "FILE" | "DIR", nodes: FileType[] | undefined, content: string | undefined, mtime: Date};
+type FileType = {name: string, type: "FILE" | "DIR", nodes: FileType[] | undefined, content: string | Buffer | undefined, mtime: Date};
 
 
 /**

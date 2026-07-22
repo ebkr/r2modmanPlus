@@ -9,7 +9,7 @@
                item-key="id">
         <template #item="{element}">
             <LocalModCard
-                :version="installedVersions.get(element.name)"
+                :version="(installedVersions.get(element.name) as ThunderstoreVersion | undefined)"
                 :mod="element" />
         </template>
     </draggable>
@@ -30,6 +30,7 @@ import { useConcerningPackageComposable } from '@r2/components/composables/Conce
 const store = getStore<State>();
 
 const { isConcerningPackage } = useConcerningPackageComposable();
+const drag = ref<boolean>(false);
 
 const profile = computed<ImmutableProfile>(() => store.getters['profile/activeProfile'].asImmutableProfile());
 

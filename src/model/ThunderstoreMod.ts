@@ -4,7 +4,6 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
     private rating: number = 0;
     private owner: string = '';
     private packageUrl: string = '';
-    private dateCreated: string = '';
     private dateUpdated: string = '';
     private uuid4: string = '';
     private pinned: boolean = false;
@@ -30,7 +29,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
         return a.getDateUpdated() >= b.getDateUpdated() ? -1 : 1;
     }
 
-    public static parseFromThunderstoreData(data: any): ThunderstoreMod {
+        public static override parseFromThunderstoreData(data: any): ThunderstoreMod {
         const mod = new ThunderstoreMod();
         mod.setName(data.name);
         mod.setFullName(data.full_name);
@@ -113,14 +112,6 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
 
     public setPackageUrl(url: string) {
         this.packageUrl = url;
-    }
-
-    public getDateCreated(): string {
-        return this.dateCreated;
-    }
-
-    public setDateCreated(date: string) {
-        this.dateCreated = date;
     }
 
     public getDateUpdated(): string {

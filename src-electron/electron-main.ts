@@ -2,12 +2,12 @@ import { app, BrowserWindow, ipcMain, nativeTheme, protocol } from 'electron';
 import { Listeners } from './ipcListeners';
 import { Persist } from './window-state-persist';
 import path from 'path';
-import ipcServer from 'node-ipc';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import 'app/src-electron/ipc/init-ipc';
 import { hookIpc } from 'app/src-electron/ipc/init-ipc';
 
+// @ts-ignore
 app.allowRendererProcessReuse = true;
 
 try {
@@ -24,14 +24,15 @@ try {
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename);
+const anyGlobal: any = global;
 
 if (process.env.PROD) {
-    global.__statics = __dirname;
-    global.__statics = path.join(__dirname, 'statics').replace(/\\/g, '\\\\');
-    global.__assets = path.join(__dirname, 'assets').replace(/\\/g, '\\\\');
+    anyGlobal.__statics = __dirname;
+    anyGlobal.__statics = path.join(__dirname, 'statics').replace(/\\/g, '\\\\');
+    anyGlobal.__assets = path.join(__dirname, 'assets').replace(/\\/g, '\\\\');
 }
 
-let mainWindow;
+let mainWindow: BrowserWindow | null = null;
 
 async function createWindow() {
 
@@ -45,7 +46,7 @@ async function createWindow() {
         height: windowSize.height,
         useContentSize: true,
         icon: path.resolve(__dirname, 'icons/icon.png'),
-        autoHideMenuBar: process.env.PROD,
+        autoHideMenuBar: !!process.env.PROD,
         webPreferences: {
             preload: path.resolve(
                 fileURLToPath(new URL('.', import.meta.url)),
@@ -79,34 +80,35 @@ async function createWindow() {
     });
 }
 
-app.on('ready', async () => {
-    await createWindow();
-    let reqLockSuccess = app.requestSingleInstanceLock();
-    if (!reqLockSuccess) {
-        // If this isn't the single instance,
-        // connect to r2mm IPC and send the install parameter.
-        ipcServer.connectTo('r2mm', () => {
-            for (let i = 0; i < process.argv.length; i++) {
-                if (process.argv[i].toLowerCase().search('ror2mm://') >= 0) {
-                    ipcServer.of.r2mm.emit('install', process.argv[i]);
-                    break;
-                }
-            }
-            app.quit();
-        });
+const extractInstallUrl = (argv: string[]): string | null =>
+    argv.find((arg) => arg.toLowerCase().includes('ror2mm://')) ?? null;
+
+function dispatchInstallUrl(url: string | null) {
+    if (!url || !mainWindow) return;
+    const { webContents } = mainWindow;
+    if (webContents.isLoading()) {
+        webContents.once('did-finish-load', () => ipcMain.emit('install-via-thunderstore', url));
     } else {
-        ipcServer.config.id = 'r2mm';
-        ipcServer.serve(
-            '/tmp/app.r2mm',
-            () => {
-                ipcServer.server.on('install', (res) => {
-                    ipcMain.emit('install-via-thunderstore', res);
-                });
-            }
-        );
-        ipcServer.server.start();
+        ipcMain.emit('install-via-thunderstore', url);
     }
-});
+}
+
+if (!app.requestSingleInstanceLock()) {
+    app.quit();
+} else {
+    app.on('second-instance', (_event, argv) => {
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.focus();
+        }
+        dispatchInstallUrl(extractInstallUrl(argv));
+    });
+
+    app.on('ready', async () => {
+        await createWindow();
+        dispatchInstallUrl(extractInstallUrl(process.argv));
+    });
+}
 
 protocol.registerSchemesAsPrivileged([
     {
@@ -125,7 +127,7 @@ app.whenReady().then(() => {
         if (fs.existsSync(pathname)) {
             callback(pathname);
         } else {
-            callback(path.join(global.__statics, 'unknown.png'));
+            callback(path.join(anyGlobal.__statics, 'unknown.png'));
         }
     });
 

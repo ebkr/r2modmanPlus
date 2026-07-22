@@ -41,7 +41,7 @@ export default class BepInExConfigUtils {
                 allowedValues.forEach(value => {
                     finalAcceptableValues.push(value.toString());
                 })
-                dumpedConfigVariables[section][sides[0].trim()] = new ConfigLine(rightSide.trim(), comments, finalAcceptableValues);
+                dumpedConfigVariables[section]![sides[0]!.trim()] = new ConfigLine(rightSide.trim(), comments, finalAcceptableValues);
                 comments = [];
                 allowedValues.clear();
             } else if (line.trim().startsWith('#') || line.trim().startsWith(";")) {
@@ -61,7 +61,7 @@ export default class BepInExConfigUtils {
                 builtString += line + '\n';
             } else if (!(line.trim().startsWith('#') || line.trim().startsWith(";")) && line.indexOf('=') > 0) {
                 const sides = line.split('=');
-                builtString += `${sides[0].trim()} = ${data[section][sides[0].trim()].value}\n`;
+                builtString += `${sides[0]!.trim()} = ${data[section]![sides[0]!.trim()]!.value}\n`;
             } else {
                 builtString += line + '\n';
             }

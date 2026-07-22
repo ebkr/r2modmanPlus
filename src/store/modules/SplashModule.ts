@@ -3,7 +3,7 @@ import { ActionTree } from 'vuex';
 import { State as RootState } from "../../store";
 import type { PackageListIndex } from './TsModsModule';
 
-interface State {
+export interface State {
     requests: RequestItem[];
     splashText: string;
 }
