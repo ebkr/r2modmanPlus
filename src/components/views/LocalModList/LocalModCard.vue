@@ -23,7 +23,7 @@ const store = getStore<State>();
 
 type LocalModCardProps = {
     mod: ManifestV2;
-    version?: ThunderstoreVersion;
+    version?: ThunderstoreVersion | undefined;
 }
 
 const props = defineProps<LocalModCardProps>();
@@ -262,7 +262,7 @@ function openReviewModal() {
         </button>
 
         <button v-if="disabledDependencies.length"
-            @click="enableMod(disabledDependencies[0])"
+            @click="enableMod(disabledDependencies[0]!)"
             class='button'>
             Enable {{disabledDependencies[0]!.getDisplayName()}}
         </button>

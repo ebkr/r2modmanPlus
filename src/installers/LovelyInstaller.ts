@@ -32,13 +32,13 @@ export class LovelyInstaller implements PackageInstaller {
 
         const targets = lovelyTree.getRecursiveFiles().map((x) => x.replace(packagePath, "")).map((x) => [x, path.join("mods", x)]);
         for (const target of targets) {
-            const absSrc = path.join(packagePath, target[0]);
-            const absDest = profile.joinToProfilePath(target[1]);
+            const absSrc = path.join(packagePath, target[0]!);
+            const absDest = profile.joinToProfilePath(target[1]!);
 
             await FileUtils.ensureDirectory(path.dirname(absDest));
             await fs.copyFile(absSrc, absDest);
 
-            fileRelocations.set(absSrc, target[1]);
+            fileRelocations.set(absSrc, target[1]!);
         }
 
         await addToStateFile(mod, fileRelocations, profile);

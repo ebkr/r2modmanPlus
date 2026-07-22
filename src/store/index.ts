@@ -1,27 +1,37 @@
 import { ActionContext, createStore } from 'vuex';
 
-import ErrorModule from './modules/ErrorModule';
-import { DownloadModule } from './modules/DownloadModule';
-import ModalsModule from './modules/ModalsModule';
-import ModFilterModule from './modules/ModFilterModule';
-import ProfileModule from './modules/ProfileModule';
-import ProfileExportModule from './modules/ProfileExportModule';
-import { ProfilesModule } from './modules/ProfilesModule';
-import { TsModsModule } from './modules/TsModsModule';
+import ErrorModule, { State as ErrorState } from './modules/ErrorModule';
+import { DownloadModule, State as DownloadState } from './modules/DownloadModule';
+import ModalsModule, { State as ModalsState } from './modules/ModalsModule';
+import ModFilterModule, { State as ModFilterState } from './modules/ModFilterModule';
+import ProfileModule, { State as ProfileState } from './modules/ProfileModule';
+import ProfileExportModule, { State as ProfileExportState } from './modules/ProfileExportModule';
+import { ProfilesModule, State as ProfilesState } from './modules/ProfilesModule';
+import { TsModsModule, State as TsModsState } from './modules/TsModsModule';
 import { FolderMigration } from '../migrations/FolderMigration';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
 import R2Error from '../model/errors/R2Error';
 import { getModLoaderPackageNames } from '../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
-import { SplashModule } from './modules/SplashModule';
-import { EcosystemUpdateModule } from './modules/EcosystemUpdateModule';
+import { SplashModule, State as SplashState } from './modules/SplashModule';
+import { EcosystemUpdateModule, EcosystemUpdateState } from './modules/EcosystemUpdateModule';
 
 export interface State {
     activeGame: Game;
     isMigrationChecked: boolean;
     modLoaderPackageNames: string[];
     _settings: ManagerSettings | null;
+    modFilters: ModFilterState;
+    tsMods: TsModsState;
+    profile: ProfileState;
+    modals: ModalsState;
+    download: DownloadState;
+    error: ErrorState;
+    profileExport: ProfileExportState;
+    ecosystemUpdate: EcosystemUpdateState;
+    profiles: ProfilesState;
+    splash: SplashState;
 }
 
 type Context = ActionContext<State, State>;
@@ -39,7 +49,7 @@ export const store = {
 
         // Access through getters to ensure the settings are loaded.
         _settings: null,
-    },
+    } as unknown as State,
     actions: {
         async checkMigrations({commit, state}: Context) {
             if (state.isMigrationChecked) {

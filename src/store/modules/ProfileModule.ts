@@ -26,14 +26,14 @@ export interface UnsatisfiedDependencies {
     missingDependencies: string[];
 }
 
-interface State {
+export interface State {
     activeProfile: Profile | null;
     expandedByDefault: boolean;
     funkyMode: boolean;
     modList: ManifestV2[];
-    order?: SortNaming;
-    direction?: SortDirection;
-    disabledPosition?: SortLocalDisabledMods;
+    order?: SortNaming | undefined;
+    direction?: SortDirection | undefined;
+    disabledPosition?: SortLocalDisabledMods | undefined;
     searchQuery: string;
     dismissedUpdateAll: boolean;
     filters: Set<'Unlinked'>;

@@ -25,9 +25,9 @@ export default class VersionNumber {
                 }
             });
             // If successful, assign values.
-            this.major = numberArray[0];
-            this.minor = numberArray[1];
-            this.patch = numberArray[2];
+            this.major = numberArray[0]!;
+            this.minor = numberArray[1]!;
+            this.patch = numberArray[2]!;
         } catch (e) {
             // If an error was thrown, log reason.
             return new VersionNumber('0.0.0');

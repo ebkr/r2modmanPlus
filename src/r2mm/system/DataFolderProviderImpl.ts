@@ -25,7 +25,7 @@ export class DataFolderProviderImpl extends DataFolderProvider {
         }
 
         if (files.length === 1) {
-            return files[0];
+            return files[0]!;
         }
 
         // Shouldn't be possible to select multiple folders but someone always finds a way.

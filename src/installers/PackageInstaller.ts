@@ -64,7 +64,7 @@ export async function uninstallModLoader(mod: ManifestV2, profile: ImmutableProf
     const fs = FsProvider.instance;
 
     try {
-        const loader = MOD_LOADER_VARIANTS[GameManager.activeGame.internalFolderName].find(
+        const loader = MOD_LOADER_VARIANTS[GameManager.activeGame.internalFolderName]!.find(
             loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase()
         );
 

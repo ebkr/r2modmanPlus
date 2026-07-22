@@ -19,14 +19,14 @@ export interface CachedMod {
     isLatest: boolean;
 }
 
-interface State {
+export interface State {
     activeGameCacheStatus: string|undefined;
     cache: Map<string, CachedMod>;
     deprecated: Map<string, boolean>;
     exclusions: string[];
     isThunderstoreModListUpdateInProgress: boolean;
     mods: ThunderstoreMod[];
-    modsLastUpdated?: Date;
+    modsLastUpdated?: Date | undefined;
     thunderstoreModListUpdateError: Error|undefined;
     thunderstoreModListUpdateStatus: string;
 }

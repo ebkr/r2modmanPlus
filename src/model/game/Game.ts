@@ -48,7 +48,7 @@ export default class Game {
         this._thunderstoreUrl = tsUrl;
         this._thunderstoreIdentifier = tsIdentifier;
         this._storePlatformMetadata = platforms;
-        this._activePlatform = platforms[0];
+        this._activePlatform = platforms[0]!;
         this._iconUrl = iconUrl;
         this._displayMode = displayMode;
         this._instanceType = instanceType;

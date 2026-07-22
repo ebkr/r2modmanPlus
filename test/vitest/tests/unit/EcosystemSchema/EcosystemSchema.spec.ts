@@ -6,7 +6,7 @@ vi.mock('../../../../../src/assets/data/ecosystemJsonSchema.json', () => ({
     get default() { return mockJsonSchema; }
 }));
 
-import type {ThunderstoreEcosystem} from '../../../../../src/assets/data/ecosystemTypes';
+import type {R2Modman, ThunderstoreEcosystem} from '../../../../../src/assets/data/ecosystemTypes';
 import {VersionedThunderstoreEcosystem, updateEcosystemReactives, updateLatestEcosystemSchema} from '../../../../../src/r2mm/ecosystem/EcosystemSchema';
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from '../../../../../src/model/schema/ThunderstoreSchema';
 import {MODLOADER_PACKAGES, MOD_LOADER_VARIANTS, updateModLoaderExports} from '../../../../../src/r2mm/installing/profile_installers/ModLoaderVariantRecord';
@@ -245,13 +245,14 @@ describe('EcosystemSchema', () => {
         });
 
         test('populates games from cache into reactives when fetch fails with existing cache', async () => {
+            const r2Field = [{ meta: { iconUrl: null } }] as R2Modman[];
             await writeCacheFile({
                 games: {
                     'test-cached-game': {
                         distributions: [],
                         label: 'Test Cached Game',
                         meta: { displayName: 'Test Cached Game', iconUrl: null },
-                        r2modman: [{ meta: { iconUrl: null } }],
+                        r2modman: r2Field,
                         uuid: 'test-uuid',
                     },
                 },

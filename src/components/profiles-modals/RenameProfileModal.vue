@@ -34,7 +34,7 @@ watchEffect(() => {
 
 function closeModal() {
     renamingInProgress.value = false;
-    newProfileName.value = store.state.profile.activeProfile.getProfileName();
+    newProfileName.value = store.state.profile.activeProfile!.getProfileName();
     store.commit('closeRenameProfileModal');
 }
 

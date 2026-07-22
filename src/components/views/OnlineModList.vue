@@ -93,7 +93,7 @@ function showDownloadModal(mod: ThunderstoreMod) {
     store.commit("openDownloadModVersionSelectModal", mod);
 }
 
-function getReadableDate(date: Date): string {
+function getReadableDate(date: Date | string): string {
     return valueToReadableDate(date);
 }
 

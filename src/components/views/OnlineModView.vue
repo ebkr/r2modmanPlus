@@ -77,7 +77,7 @@
         </div>
         <div id="mod-preview">
             <template v-if="previewMod !== null">
-                <OnlinePreviewPanel :mod="previewMod" @close="() => previewMod = null"/>
+                <OnlinePreviewPanel :mod="(previewMod as ThunderstoreMod)" @close="() => previewMod = null"/>
             </template>
         </div>
     </div>

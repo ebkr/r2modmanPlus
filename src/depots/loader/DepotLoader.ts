@@ -31,7 +31,7 @@ export default class DepotLoader {
             );
         }
         const protonRequired = depots[depotIdentifier] || depots[this.DEPOT_DEFAULT_KEY];
-        return protonRequired.use_proton;
+        return protonRequired!.use_proton;
     }
 
 }
