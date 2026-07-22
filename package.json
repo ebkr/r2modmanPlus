@@ -21,7 +21,7 @@
     "publish-win": "quasar build --mode electron -T win32 --publish always",
     "publish-linux": "quasar build --mode electron -T linux --publish always",
     "test": "vitest run ./test/vitest",
-    "typecheck": "vue-tsc"
+    "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@node-steam/vdf": "^2.1.0",
