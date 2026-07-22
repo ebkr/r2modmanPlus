@@ -21,6 +21,11 @@ interface State {
     uninstallModModalMod: ManifestV2 | null;
     isProfileCodeExportModalOpen: boolean;
     isLocalFileImportModalOpen: boolean;
+    isIncorrectGameDirectoryModalOpen: boolean;
+    isIncorrectSteamDirectoryModalOpen: boolean;
+    isDependencyStringsModalOpen: boolean;
+    isSteamInstallationValidationModalOpen: boolean;
+    isLaunchArgumentsModalOpen: boolean;
 }
 
 export default {
@@ -44,6 +49,11 @@ export default {
         uninstallModModalMod: null,
         isProfileCodeExportModalOpen: false,
         isLocalFileImportModalOpen: false,
+        isIncorrectGameDirectoryModalOpen: false,
+        isIncorrectSteamDirectoryModalOpen: false,
+        isDependencyStringsModalOpen: false,
+        isSteamInstallationValidationModalOpen: false,
+        isLaunchArgumentsModalOpen: false,
     }),
 
     mutations: {
@@ -111,6 +121,26 @@ export default {
             state.isLocalFileImportModalOpen = false;
         },
 
+        closeIncorrectGameDirectoryModal: function(state: State): void {
+            state.isIncorrectGameDirectoryModalOpen = false;
+        },
+
+        closeIncorrectSteamDirectoryModal: function(state: State): void {
+            state.isIncorrectSteamDirectoryModalOpen = false;
+        },
+
+        closeDependencyStringsModal: function(state: State): void {
+            state.isDependencyStringsModalOpen = false;
+        },
+
+        closeSteamInstallationValidationModal: function(state: State): void {
+            state.isSteamInstallationValidationModalOpen = false;
+        },
+
+        closeLaunchArgumentsModal: function(state: State): void {
+            state.isLaunchArgumentsModalOpen = false;
+        },
+
         openAssociatedModsModal: function(state: State, mod: ManifestV2): void {
             state.associatedModsModalMod = mod;
             state.isAssociatedModsModOpen = true;
@@ -173,6 +203,26 @@ export default {
 
         openLocalFileImportModal: function(state: State): void {
             state.isLocalFileImportModalOpen = true;
+        },
+
+        openIncorrectGameDirectoryModal: function(state: State): void {
+            state.isIncorrectGameDirectoryModalOpen = true;
+        },
+
+        openIncorrectSteamDirectoryModal: function(state: State): void {
+            state.isIncorrectSteamDirectoryModalOpen = true;
+        },
+
+        openDependencyStringsModal: function(state: State): void {
+            state.isDependencyStringsModalOpen = true;
+        },
+
+        openSteamInstallationValidationModal: function(state: State): void {
+            state.isSteamInstallationValidationModalOpen = true;
+        },
+
+        openLaunchArgumentsModal: function(state: State): void {
+            state.isLaunchArgumentsModalOpen = true;
         },
     }
 }
