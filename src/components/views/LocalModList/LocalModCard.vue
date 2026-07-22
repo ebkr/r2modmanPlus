@@ -16,6 +16,8 @@ import { State } from '../../../store';
 import { UnsatisfiedDependencies } from '../../../store/modules/ProfileModule';
 import ThunderstoreMod from "../../../model/ThunderstoreMod";
 import ThunderstoreVersion from "../../../model/ThunderstoreVersion";
+import { useConcerningPackageComposable } from '@r2/components/composables/ConcerningPackageComposable';
+import { useModManagementComposable } from '@r2/components/composables/ModManagementComposable';
 
 const store = getStore<State>();
 
@@ -25,6 +27,9 @@ type LocalModCardProps = {
 }
 
 const props = defineProps<LocalModCardProps>();
+
+const { isConcerningPackage, wasConcerningPackage } = useConcerningPackageComposable();
+const { uninstallMod } = useModManagementComposable();
 
 const disableChangePending = ref<boolean>(false);
 const icon = useModIcon(() => props.mod);
@@ -98,27 +103,6 @@ async function enableMod(mod: ManifestV2) {
     disableChangePending.value = false;
 }
 
-async function uninstallMod() {
-    const dependants = Dependants.getDependantList(props.mod, localModList.value);
-
-    if (dependants.size > 0) {
-        store.commit('openUninstallModModal', props.mod);
-        return;
-    }
-
-    try {
-        await store.dispatch(
-            'profile/uninstallModsFromActiveProfile',
-            { mods: [props.mod] }
-        );
-    } catch (e) {
-        store.commit('error/handleError', {
-            error: R2Error.fromThrownValue(e),
-            severity: LogSeverity.ACTION_STOPPED
-        });
-    }
-}
-
 function updateMod() {
     if (tsMod.value !== undefined) {
         store.commit('openDownloadModVersionSelectModal', tsMod.value);
@@ -152,6 +136,14 @@ function viewAssociatedMods() {
 function getReadableDate(value: number): string {
     return valueToReadableDate(value);
 }
+
+function dependencyStringToModName(x: string) {
+    return x.substring(0, x.lastIndexOf('-'));
+}
+
+function openReviewModal() {
+    store.commit('openConcerningModReviewModal', props.mod);
+}
 </script>
 
 <template>
@@ -160,7 +152,9 @@ function getReadableDate(value: number): string {
         :enabled="mod.isEnabled()"
         :id="`${mod.getAuthorName()}-${mod.getName()}-${mod.getVersionNumber()}`"
         :image="icon"
-        :allowSorting="true">
+        :allowSorting="true"
+        :class="[{'card--is-concern': isConcerningPackage(props.mod)}]"
+    >
 
         <template v-slot:title>
             <span class="non-selectable">
@@ -191,11 +185,25 @@ function getReadableDate(value: number): string {
         <template v-slot:description>
             <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0"><strong>Installed on:</strong> {{ getReadableDate(mod.getInstalledAtTime()) }}</p>
             <p class='card-timestamp' v-if="version && version.getDateCreated()"><strong>Released on:</strong>
-                {{ getReadableDate(version!.getDateCreated()!.getTime()) }}</p>
+                {{ getReadableDate(version!.getDateCreated()!.getTime()) }}
+            </p>
+            <div class="notification is-warning" v-if="isConcerningPackage(props.mod)">
+                <p>This mod was originally downloaded from Thunderstore, but can no longer be found on the site.</p>
+                <p><strong>It is recommended that you remove this mod.</strong></p>
+                <button class="button" @click.stop.prevent="openReviewModal">
+                    Review mod
+                </button>
+            </div>
         </template>
 
         <!-- Show icon button row even when card is collapsed -->
         <template v-slot:other-icons>
+            <span v-if="wasConcerningPackage(props.mod)"
+                  class='card-header-icon'>
+                <i v-tooltip.left="`This package can no longer be found on Thunderstore`"
+                   class='fas fa-unlink'
+                ></i>
+            </span>
             <DonateIconButton :mod="tsMod" v-if="tsMod"/>
             <span v-if="!isLatestVersion"
                 @click.prevent.stop="updateMod()"
@@ -223,7 +231,7 @@ function getReadableDate(value: number): string {
         </template>
 
         <!-- Show bottom button row -->
-        <button @click="uninstallMod()" class='button'>
+        <button @click="uninstallMod(props.mod)" class='button'>
             Uninstall
         </button>
 
@@ -248,7 +256,7 @@ function getReadableDate(value: number): string {
         </button>
 
         <button v-if="missingDependencies.length"
-            @click="downloadDependency(missingDependencies[0])"
+            @click="downloadDependency(missingDependencies[0]!)"
             class='button'>
             Download dependency
         </button>
@@ -256,7 +264,7 @@ function getReadableDate(value: number): string {
         <button v-if="disabledDependencies.length"
             @click="enableMod(disabledDependencies[0])"
             class='button'>
-            Enable {{disabledDependencies[0].getDisplayName()}}
+            Enable {{disabledDependencies[0]!.getDisplayName()}}
         </button>
 
         <DonateButton v-if="tsMod" :mod="tsMod"/>

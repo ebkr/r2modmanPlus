@@ -26,7 +26,7 @@
                         </a>
                     </header>
                 </div>
-                <div class='mod-card-content' v-show='visible' v-if="description !== ''">
+                <div class='mod-card-content' v-show='visible' v-if="description !== '' || $slots.description">
                     <div class='content'>
                         <p ref="description">{{description}}</p>
                         <slot name='description'></slot>

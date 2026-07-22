@@ -36,6 +36,7 @@ interface State {
     disabledPosition?: SortLocalDisabledMods;
     searchQuery: string;
     dismissedUpdateAll: boolean;
+    filters: Set<'Unlinked'>;
 }
 
 /**
@@ -54,6 +55,7 @@ export default {
         disabledPosition: undefined,
         searchQuery: '',
         dismissedUpdateAll: false,
+        filters: new Set(),
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -156,7 +158,8 @@ export default {
             return state.order === SortNaming.CUSTOM
                 && state.direction === SortDirection.STANDARD
                 && state.disabledPosition === SortLocalDisabledMods.CUSTOM
-                && state.searchQuery.length === 0;
+                && state.searchQuery.length === 0
+                && !state.filters.has('Unlinked');
         },
     },
 
@@ -212,6 +215,14 @@ export default {
         setSearchQuery(state: State, value: string) {
             state.searchQuery = value.trim();
         },
+
+        scopeLocalModListToUnlinkedPackages(state: State) {
+            state.filters.add('Unlinked');
+        },
+
+        removeFilter(state: State, filter: string) {
+            state.filters.delete(filter as any);
+        }
     },
 
     actions: <ActionTree<State, RootState>>{

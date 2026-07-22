@@ -1,6 +1,7 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
+import path from 'node:path';
 import { defineConfig } from '#q-app/wrappers';
 
 export default defineConfig((ctx) => {
@@ -47,7 +48,13 @@ export default defineConfig((ctx) => {
             typescript: {
                 strict: true,
                 vueShim: true,
-                // extendTsConfig (tsConfig) {}
+                extendTsConfig(tsConfig) {
+                    tsConfig.compilerOptions.paths = {
+                        '@r2': ['../src'],
+                        '@r2/*': ['../src/*'],
+                        ...tsConfig.compilerOptions.paths,
+                    };
+                }
             },
 
             vueRouterMode: 'history', // available values: 'hash', 'history'
@@ -71,6 +78,11 @@ export default defineConfig((ctx) => {
             extendViteConf (viteConf) {
                 // Force Vite to use esbuild for CSS, overriding any defaults
                 viteConf.build!.cssMinify = 'esbuild';
+
+                // Allow @r2 alias
+                viteConf.resolve ??= {};
+                viteConf.resolve.alias ??= {};
+                (viteConf.resolve.alias as Record<string, string>)['@r2'] = path.resolve(__dirname, 'src');
             },
             viteVuePluginOptions: {
                 template: {
