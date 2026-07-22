@@ -134,10 +134,6 @@ function getReadableDate(date: string): string {
     return valueToReadableDate(new Date(date));
 }
 
-function getReadableCategories(mod: ThunderstoreMod) {
-    return mod.getCategories().join(", ") || "None";
-}
-
 const markdownToRender = computed(() => {
     switch (activeTab.value) {
         case "README": return readme.value;
@@ -208,7 +204,6 @@ function dragEnd(event: DragEvent) {
                     <p class='card-timestamp'><strong>Downloads:</strong> {{mod.getDownloadCount()}}</p>
                     <p class='card-timestamp'><strong>Likes:</strong> {{mod.getRating()}}</p>
                     <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(mod.getDateUpdated())}}</p>
-                    <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(mod)}}</p>
                 </details>
             </div>
             <div class="sticky-top sticky-top--no-shadow sticky-top--inherit no-margin sticky-top--no-padding">
