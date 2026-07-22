@@ -6,7 +6,7 @@ import Profile from "../../model/Profile";
 import FsProvider from "../../providers/generic/file/FsProvider";
 import path from "../../providers/node/path/path";
 
-interface State {
+export interface State {
     profileList: string[];
 }
 

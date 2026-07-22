@@ -22,5 +22,5 @@ function emitChange(value: string): void {
 </script>
 
 <template>
-    <input class="input" :value="modelValue" @input="e => debounceExecutor(e.target.value)" />
+    <input class="input" :value="modelValue" @input="e => debounceExecutor((e.target! as HTMLInputElement).value!)" />
 </template>

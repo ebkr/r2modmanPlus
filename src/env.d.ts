@@ -19,6 +19,19 @@ declare namespace NodeJS {
 }
 
 declare global {
+    interface ImportMetaEnv {
+        readonly MODE: string;
+        readonly BASE_URL: string;
+        readonly DEV: boolean;
+        readonly PROD: boolean;
+        readonly SSR: boolean;
+        readonly [key: string]: any;
+    }
+
+    interface ImportMeta {
+        readonly env: ImportMetaEnv;
+    }
+
     interface Window {
         zip: {
             extractAllTo: (zip: string | Buffer, outputFolder: string) => Promise<void>;

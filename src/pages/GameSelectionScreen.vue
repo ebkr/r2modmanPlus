@@ -53,11 +53,11 @@
                             <template v-if="viewMode === GameSelectionViewMode.LIST">
                                 <div class="margin-right">
                                     <button class="button is-info"
-                                       :disabled="selectedGame === null || runningMigration" @click="selectGame(selectedGame!)">Select {{ activeTab.toLowerCase() }}</button>
+                                       :disabled="selectedGame === null || runningMigration" @click="selectGame(selectedGame! as Game)">Select {{ activeTab.toLowerCase() }}</button>
                                 </div>
                                 <div class="margin-right">
                                     <button class="button"
-                                       :disabled="selectedGame === null || runningMigration" @click="selectDefaultGame(selectedGame!)">Set as default</button>
+                                       :disabled="selectedGame === null || runningMigration" @click="selectDefaultGame(selectedGame! as Game)">Set as default</button>
                                 </div>
                             </template>
                             <div>

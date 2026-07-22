@@ -26,7 +26,7 @@ export interface UnsatisfiedDependencies {
     missingDependencies: string[];
 }
 
-interface State {
+export interface State {
     activeProfile: Profile | null;
     expandedByDefault: boolean;
     funkyMode: boolean;

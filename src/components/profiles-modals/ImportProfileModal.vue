@@ -142,8 +142,10 @@ async function validateProfileFile(files: string[] | null) {
         return;
     }
 
+    const selectedFile = files[0]!;
+
     try {
-        const yamlContent = await ProfileUtils.readProfileFile(files[0]);
+        const yamlContent = await ProfileUtils.readProfileFile(selectedFile);
         profileImportContent.value = await ProfileUtils.parseYamlToExportFormat(yamlContent);
         profileMods.value = await ProfileUtils.exportModsToCombos(
             profileImportContent.value.getMods(),
@@ -156,7 +158,7 @@ async function validateProfileFile(files: string[] | null) {
         return;
     }
 
-    profileImportFilePath.value = files[0];
+    profileImportFilePath.value = selectedFile;
 
     if (profileMods.value.unknown.length > 0) {
         // Sometimes the reason some packages are unknown is that
