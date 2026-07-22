@@ -13,6 +13,7 @@
         <DownloadProgressModal />
         <DownloadModVersionSelectModal />
         <UpdateAllInstalledModsModal />
+        <VulnerablePackageReviewModal/>
         <LaunchTypeModal v-if="canRenderLaunchTypeModal()" />
 
         <div class="router-view">
@@ -40,6 +41,7 @@ import { State } from '../store';
 import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
 import appWindow from '../providers/node/app/app_window';
 import ManagerActivityBar from '../components/navigation/ManagerActivityBar.vue';
+import VulnerablePackageReviewModal from 'components/modals/VulnerablePackageReviewModal.vue';
 
 const store = getStore<State>();
 

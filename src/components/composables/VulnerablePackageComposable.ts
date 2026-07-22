@@ -1,5 +1,5 @@
 import { getStore } from '@r2/providers/generic/store/StoreProvider';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import ManifestV2 from '@r2/model/ManifestV2';
 import ThunderstoreMod from '@r2/model/ThunderstoreMod';
 
@@ -15,11 +15,17 @@ const vulnerablePackages = computed<ManifestV2[]>(() => {
     return localModList.value.filter(value => !value.isOnlineSource() && onlineModList.value.has(value.getName()));
 });
 
-const hasVulnerablePackages = computed<boolean>(() => vulnerablePackages.value.length > 0);
-
 export function useVulnerablePackageComposable() {
+
+    const hasVulnerablePackages = computed<boolean>(() => vulnerablePackages.value.length > 0);
+
+    function isVulnerablePackage(mod: ManifestV2) {
+        return vulnerablePackages.value.findIndex(value => value.getName() === mod.getName()) >= 0;
+    }
+
     return {
         vulnerablePackages,
-        hasVulnerablePackages
+        hasVulnerablePackages,
+        isVulnerablePackage
     }
 }

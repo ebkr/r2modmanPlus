@@ -26,6 +26,8 @@ interface State {
     isDependencyStringsModalOpen: boolean;
     isSteamInstallationValidationModalOpen: boolean;
     isLaunchArgumentsModalOpen: boolean;
+    vulnerableModToReview: ManifestV2 | null;
+    isVulnerableModReviewModalOpen: boolean;
 }
 
 export default {
@@ -54,6 +56,8 @@ export default {
         isDependencyStringsModalOpen: false,
         isSteamInstallationValidationModalOpen: false,
         isLaunchArgumentsModalOpen: false,
+        vulnerableModToReview: null,
+        isVulnerableModReviewModalOpen: false,
     }),
 
     mutations: {
@@ -141,6 +145,10 @@ export default {
             state.isLaunchArgumentsModalOpen = false;
         },
 
+        closeVulnerableModReviewModal: function(state: State): void {
+            state.isVulnerableModReviewModalOpen = false;
+        },
+
         openAssociatedModsModal: function(state: State, mod: ManifestV2): void {
             state.associatedModsModalMod = mod;
             state.isAssociatedModsModOpen = true;
@@ -223,6 +231,11 @@ export default {
 
         openLaunchArgumentsModal: function(state: State): void {
             state.isLaunchArgumentsModalOpen = true;
+        },
+
+        openVulnerableModReviewModal: function(state: State, mod: ManifestV2): void {
+            state.vulnerableModToReview = mod;
+            state.isVulnerableModReviewModalOpen = true;
         },
     }
 }
