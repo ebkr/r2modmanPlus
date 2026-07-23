@@ -101,8 +101,9 @@ onMounted(async () => {
 }
 
 .image {
-    width: 54px;
-    height: 54px;
+    width: 86px;
+    height: 86px;
+    margin-top: 0.25rem;
 }
 
 .category-tags {
@@ -124,14 +125,14 @@ onMounted(async () => {
 
     .category-link {
         font-weight: lighter;
-        font-size: 0.7rem;
+        font-size: 0.75rem;
         white-space: nowrap;
     }
 
 }
 
 .description {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: normal;
     color: var(--v2-secondary-text-color);
     margin-bottom: 0.2rem;
