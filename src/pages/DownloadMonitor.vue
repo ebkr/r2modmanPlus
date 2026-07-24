@@ -148,7 +148,7 @@ import * as DownloadUtils from '../utils/DownloadUtils';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import ManagerActivityBar from '../components/navigation/ManagerActivityBar.vue';
-import ThunderstoreCombo from 'src/model/ThunderstoreCombo';
+import ThunderstoreCombo from '../model/ThunderstoreCombo';
 
 const store = getStore<State>();
 </script>
