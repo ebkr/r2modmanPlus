@@ -48,7 +48,7 @@
                             <div class="input-group input-group--flex margin-right">
                                 <input
                                     :value="filterText"
-                                    @input="(e) => debouncedFilter((e.target as HTMLInputElement).value)"
+                                    @input="(e: Event) => debouncedFilter((e.target as HTMLInputElement).value)"
                                     id="game-selection-search"
                                     class="input margin-right"
                                     type="text"
