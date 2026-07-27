@@ -13,7 +13,7 @@
                                     id="thunderstore-search-filter"
                                     class="input"
                                     type="text"
-                                    placeholder="Search"
+                                    placeholder="Search for a mod"
                                     autocomplete="off"
                                 />
                             </div>
@@ -94,10 +94,10 @@ import OnlinePreviewPanel from '../v2/OnlinePreviewPanel.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { computed, ref, watch, onMounted, defineAsyncComponent } from 'vue';
-import { useModFilters } from '../composables/ModFiltersComposable';
+import { useModFiltersComposable } from '../composables/ModFiltersComposable';
 
 const store = getStore<State>();
-const { filteredMods, searchFilter } = useModFilters();
+const { filteredMods, searchFilter } = useModFiltersComposable();
 
 const PAGE_SIZE = 40;
 

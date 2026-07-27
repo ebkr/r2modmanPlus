@@ -23,7 +23,7 @@
 </template>
 
 <script lang='ts' setup>
-import { ref } from 'vue';
+import { onUnmounted, ref } from 'vue';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import IncorrectGameDirectoryModal from '../components/modals/IncorrectGameDirectoryModal.vue';
@@ -42,8 +42,11 @@ import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vu
 import appWindow from '../providers/node/app/app_window';
 import ManagerActivityBar from '../components/navigation/ManagerActivityBar.vue';
 import ConcerningPackageReviewModal from '@r2/components/modals/ConcerningPackageReviewModal.vue';
+import { useModFiltersComposable } from '@r2/components/composables/ModFiltersComposable';
 
 const store = getStore<State>();
+
+const { resetFilter } = useModFiltersComposable()
 
 const importingLocalMod = ref<boolean>(false);
 
@@ -53,6 +56,10 @@ function canRenderLaunchTypeModal() {
 
 store.dispatch('profile/loadOrderingSettings');
 store.commit('modFilters/reset');
+
+onUnmounted(() => {
+    resetFilter();
+});
 </script>
 
 <style lang="scss">
