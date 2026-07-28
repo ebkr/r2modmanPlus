@@ -119,7 +119,11 @@ function unselectCategory(category: string) {
     store.commit("modFilters/unselectCategory", category);
 }
 
-export function useModFilters() {
+function resetFilter() {
+    searchFilter.value = '';
+}
+
+export function useModFiltersComposable() {
     return {
         searchFilter,
         filteredMods,
@@ -128,5 +132,6 @@ export function useModFilters() {
         selectCategoryToCompareAll,
         selectCategoryToExclude,
         unselectCategory,
+        resetFilter,
     };
 }

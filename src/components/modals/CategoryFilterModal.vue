@@ -4,10 +4,10 @@ import ModalCard from '../../components/ModalCard.vue';
 import { computed } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import { useModFilters } from '../composables/ModFiltersComposable';
+import { useModFiltersComposable } from '../composables/ModFiltersComposable';
 
 const store = getStore<State>();
-const { selectCategoryToCompareOne, selectCategoryToCompareAll, selectCategoryToExclude, unselectCategory } = useModFilters();
+const { selectCategoryToCompareOne, selectCategoryToCompareAll, selectCategoryToExclude, unselectCategory } = useModFiltersComposable();
 
 const allowNsfw = computed({
     get: () => store.state.modFilters.allowNsfw,

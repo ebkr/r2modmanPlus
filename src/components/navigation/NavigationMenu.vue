@@ -108,11 +108,11 @@ import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { useRouter } from 'vue-router';
 import ActivityDropdown from '../v2/ActivityDropdown.vue';
-import { useModFilters } from '../composables/ModFiltersComposable';
+import { useModFiltersComposable } from '../composables/ModFiltersComposable';
 
 const store = getStore<State>();
 const router = useRouter();
-const { filteredModCount } = useModFilters();
+const { filteredModCount } = useModFiltersComposable();
 
 const selectedMode = ref<LaunchMode>(LaunchMode.MODDED);
 
