@@ -1,8 +1,7 @@
 export default {
-    DEFAULT: 'Default',
+    RELEVANCE: 'Relevance',
     LAST_UPDATED: 'Last updated',
     ALPHABETICAL: 'Alphabetical',
     DOWNLOADS: 'Download count',
     RATING: 'Rating',
-    RELEVANCE: 'Relevance',
 };

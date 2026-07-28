@@ -27,7 +27,7 @@ export default {
         selectedCategoriesToExclude: [],
         showDeprecatedPackages: false,
         sortDirection: SortDirection.STANDARD,
-        sortBehaviour: SortingStyle.DEFAULT
+        sortBehaviour: SortingStyle.RELEVANCE
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -49,7 +49,7 @@ export default {
             state.selectedCategoriesCompareAll = [];
             state.selectedCategoriesToExclude = [];
             state.sortDirection = SortDirection.STANDARD;
-            state.sortBehaviour = SortingStyle.DEFAULT;
+            state.sortBehaviour = SortingStyle.RELEVANCE;
         },
 
         selectCategoryToCompareOne: function(state: State, category: string) {
