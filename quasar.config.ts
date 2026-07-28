@@ -84,6 +84,20 @@ export default defineConfig((ctx: QuasarContext) => {
                 viteConf.resolve ??= {};
                 viteConf.resolve.alias ??= {};
                 (viteConf.resolve.alias as Record<string, string>)['@r2'] = path.resolve(__dirname, 'src');
+
+                if (ctx.dev) {
+                    viteConf.optimizeDeps!.include = [
+                        ...(viteConf.optimizeDeps!.include ?? []),
+                        '@quasar/app-vite/wrappers',
+                        'floating-vue',
+                        'vue-i18n',
+                        'lodash.debounce',
+                        'moment',
+                        'quill',
+                        'sanitize-filename',
+                        'vuedraggable',
+                    ];
+                }
             },
             viteVuePluginOptions: {
                 template: {
