@@ -6,6 +6,9 @@ import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
 import CacheUtil from '../../../r2mm/mods/CacheUtil';
 import R2Error from '../../../model/errors/R2Error';
+import { useCacheComposable } from '@r2/components/composables/CacheComposable';
+import Game from '@r2/model/game/Game';
+import FileUtils from '../../../utils/FileUtils';
 
 const store = getStore<State>();
 
@@ -13,8 +16,15 @@ const props = defineProps<{
     searchTerm?: string;
 }>();
 
+const { getScope, refresh } = useCacheComposable();
+
 const cacheEnabled = computed<boolean>(() => !store.state.download.ignoreCache);
 const isCleaning = ref<boolean>(false);
+const activeGame = computed<Game>(() => store.state.activeGame);
+
+const cacheContent = computed(() => getScope(activeGame.value));
+const cacheSize = computed<string>(() => FileUtils.humanReadableSize(cacheContent.value.cacheByteSize.value));
+const cachePackageCount = computed<number>(() => cacheContent.value.cachePackageCount.value);
 
 const { isVisible } = useSettingSearch(() => props.searchTerm, [
     'Mod cache',
@@ -35,9 +45,15 @@ async function cleanCache() {
         await CacheUtil.clean();
     } catch (e) {
         store.commit('error/handleError', R2Error.fromThrownValue(e, 'Failed to clean the mod cache'));
-    } finally {
-        isCleaning.value = false;
     }
+
+    try {
+        await refresh(activeGame.value);
+    } catch (e) {
+        store.commit('error/handleError', R2Error.fromThrownValue(e, 'Failed to read the mod cache'));
+    }
+
+    isCleaning.value = false;
 }
 </script>
 
@@ -45,7 +61,8 @@ async function cleanCache() {
     <SettingsViewWrapper v-show="isVisible">
         <template #title>Mod cache</template>
         <template #description>
-            Downloaded mods are kept in a cache so that they don't need to be downloaded again.
+            <p>Downloaded mods are kept in a cache so that they don't need to be downloaded again.</p>
+            <p>Using <strong>{{ cacheSize }}</strong> across {{ cachePackageCount }} {{ cachePackageCount === 1 ? 'mod' : 'mods' }} for {{ activeGame.displayName }}.</p>
         </template>
         <div class="setting-column">
             <div class="field" @click.prevent.stop="toggleCache">
@@ -68,7 +85,7 @@ async function cleanCache() {
                     :disabled="isCleaning"
                     @click="cleanCache"
                 >
-                    Clean cache
+                    Optimize cache
                 </button>
                 <span class="setting-hint">Removes cached mods that aren't in any profile to free up storage space.</span>
             </div>
