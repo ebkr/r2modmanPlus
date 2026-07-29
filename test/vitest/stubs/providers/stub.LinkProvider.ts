@@ -10,4 +10,8 @@ export default class StubLinkProvider extends LinkProvider {
         throw new Error("Stub access must be mocked or spied");
     }
 
+    openPath(path: string): void {
+        throw new Error("Stub access must be mocked or spied");
+    }
+
 }
