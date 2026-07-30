@@ -103,7 +103,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
         clearingGameDirectory: {
             title: 'Clearing the {gameName} installation directory',
             waitToLaunchGame: `
-                You will not not be able to launch the game until
+                You will not be able to launch the game until
                 Steam has verified the integrity of the game files.
                 `,
             steamWillBeStarted: `
@@ -147,7 +147,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
             content: {
                 instructToSelect: 'Please select a zip or DLL to be imported.',
                 dataEntryInfo: `
-                Zip files that contain a manifest file will have the some information pre-filled.
+                Zip files that contain a manifest file will have some information pre-filled.
                 If a manifest is not available, this will have to be entered manually.
                 `,
                 waitingForSelection: 'Waiting for file. This may take a minute.',

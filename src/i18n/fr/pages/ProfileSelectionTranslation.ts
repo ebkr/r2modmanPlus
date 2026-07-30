@@ -86,7 +86,7 @@ export const ProfileSelectionTranslation: ProfileSelectionMessageFormat = {
                     waitingForModDownloads: 'En attente de la fin des téléchargements de mods avant d\'actualiser la liste en ligne',
                     refreshStatus: {
                         checkingForUpdates: 'Vérification des mises à jour de la liste des mods depuis Thunderstore',
-                        loadingLatestModList: 'Chargement de la dernière liste de mods depuis Thunderstore : {progress}%',
+                        loadingLatestModList: 'Chargement de la dernière liste de mods depuis Thunderstore : {progress} %',
                         pruneCache: 'Élagage des mods qui ne sont plus disponibles dans le cache local',
                         processingModList: 'Traitement de la liste des mods',
                         almostDone: 'Presque terminé',
@@ -136,11 +136,12 @@ export const ProfileSelectionTranslation: ProfileSelectionMessageFormat = {
             },
             importInProgress: {
                 title: {
-                    downloadingMods: 'Téléchargement des mods : {progress}%',
+                    downloadingMods: 'Téléchargement des mods : {progress} %',
+                    downloadingModsWithGoal: 'Téléchargement des mods : {progress} % sur {totalSize}',
                     cleaningUp: 'Nettoyage',
                     applyChanges: 'Application des changements au profil mis à jour',
-                    copyingModsToProfile: 'Copie des mods vers le profil : {progress}%',
-                    copyingConfigsToProfile: 'opie des fichiers de configuration vers le profil : {progress}%',
+                    copyingModsToProfile: 'Copie des mods vers le profil : {progress} %',
+                    copyingConfigsToProfile: 'Copie des fichiers de configuration vers le profil : {progress} %',
                 },
                 content: {
                     waitMessage: 'Cela peut prendre un certain temps, car les fichiers sont téléchargés, extraits et copiés.',

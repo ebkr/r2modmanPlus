@@ -83,7 +83,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
             imageAltText: 'Image du mod',
             funkyModeAltText: 'Superposition du mode funky',
             tooltips: {
-                dragToReorder: 'Faire glisser pour réorganise',
+                dragToReorder: 'Faire glisser pour réorganiser',
                 expand: 'Développer',
                 collapse: 'Réduire',
             }
@@ -184,10 +184,10 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 downloading: 'Téléchargement de {modName}',
                 installing: 'Installation de {modName}',
             },
-            downloadProgress: 'Téléchargement en cours : {progress}% sur {totalSize}',
-            installProgress: 'Installation en cours : {progress}% terminée',
+            downloadProgress: 'Téléchargement en cours : {progress} % sur {totalSize}',
+            installProgress: 'Installation en cours : {progress} % terminée',
             waitingForDownload: 'Installation en cours : en attente de la fin du téléchargement',
-            extractionProgress: 'Extraction : {progress}% de {totalSize}'
+            extractionProgress: 'Extraction : {progress} % de {totalSize}'
         },
         downloadModVersionSelect: {
             title: 'Sélectionnez une version de {modName} à télécharger',

@@ -15,15 +15,18 @@ export const SplashTranslation: SplashMessageFormat = {
     },
     content: {
         main: {
-            didYouKnow: 'Saviez-vous ?',
+            didYouKnow: 'Le saviez-vous ?',
             externalInstallWithModManager: `
                         Vous pouvez utiliser le bouton « Install with Mod Manager » sur Thunderstore pour installer des mods à l'aide de {appName}.
                         `,
             goToThunderstore: 'Aller à Thunderstore',
-            exportProfile: "Tu peux exporter le profil que tu as sélectionné depuis les paramètres d'écran, soit sous forme de fichier, soit en tant que code. Comme ça, c'est facile de partager ta liste de mods avec tes potes !",
+            exportProfile: `
+                        Vous pouvez exporter le profil sélectionné depuis l'écran des paramètres, soit sous forme de fichier, soit sous forme de code.
+                        Cela facilite le partage de votre liste de mods avec vos amis !
+                        `,
             havingTrouble: {
                 title: 'Besoin d\'aide ?',
-                body: 'Envoie une capture d\'écran de l\'erreur sur le canal d\'assistance du serveur Discord de {appName}.',
+                body: 'Envoyez une capture d\'écran de l\'erreur sur le canal d\'assistance du serveur Discord.',
                 serverLinkText: 'Rejoignez le serveur Discord {appName}'
             }
         },
