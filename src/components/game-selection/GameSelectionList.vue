@@ -59,7 +59,7 @@
                 <div class="content pad--sides pad--top-none">
                     <template v-if="filterText.length === 0">
                         <template v-if="favouriteGameList.length > 0">
-                            <GameSelectionSection title="Favourites" :count="favouriteGameList.length" :default-open="true">
+                            <GameSelectionSection :title="t('translations.pages.gameSelection.cardView.sections.favourites')" :count="favouriteGameList.length" :default-open="true">
                                 <div class="game-cards-container">
                                     <GameSelectionCard
                                         v-for="game of favouriteGameList"
@@ -79,7 +79,7 @@
                         <template v-if="newGameSet.size > 0">
                             <hr v-if="favouriteGameList.length > 0"/>
                             <GameSelectionSection
-                                :title="`New ${activeTab}s`"
+                                :title="t('translations.pages.gameSelection.cardView.sections.newlyAdded.' + activeTab + 's')"
                                 :count="newGameSet.size"
                                 :default-open="true"
                             >
@@ -103,7 +103,7 @@
                         <template v-if="nonFavouriteGameList.length > 0">
                             <hr v-if="favouriteGameList.length > 0 || newGameSet.size > 0"/>
                             <GameSelectionSection
-                                :title="`${capitalize(activeTab)}s`"
+                                :title="t('translations.pages.gameSelection.cardView.sections.' + activeTab + 's')"
                                 :count="nonFavouriteGameList.length"
                                 :default-open="true"
                             >
@@ -126,7 +126,7 @@
                     </template>
                     <template v-else>
                         <GameSelectionSection
-                            title="Search results"
+                            :title="t('translations.pages.gameSelection.cardView.sections.searchResults')"
                             :count="mergedGameList.length"
                             :default-open="true"
                             v-if="mergedGameList.length > 0"
@@ -150,11 +150,11 @@
                     <template v-if="hiddenGameList.length > 0">
                         <hr v-if="favouriteGameList.length > 0 || nonFavouriteGameList.length > 0" />
                         <GameSelectionSection
-                            title="Hidden games"
+                            :title="t('translations.pages.gameSelection.cardView.sections.hiddenGames')"
                             :count="hiddenGameList.length"
                         >
                             <div class="notification is-warning">
-                                These games are no longer supported.
+                                {{ t('translations.pages.gameSelection.cardView.sections.hiddenGamesNotice') }}
                             </div>
                             <div class="game-cards-container">
                                 <GameSelectionCard
@@ -189,14 +189,16 @@
 
 <script lang="ts" setup>
 import { inject, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
 import { gameSelectionKey } from '../composables/GameSelectionComposable';
 import GameSelectionCard from './GameSelectionCard.vue';
 import GameSelectionListItem from './GameSelectionListItem.vue';
 import GameSelectionSection from './GameSelectionSection.vue';
 import Game from '../../model/game/Game';
-import { capitalize } from '../../utils/StringUtils';
 import LinkProvider from '../../providers/components/LinkProvider';
+
+const { t } = useI18n();
 
 const emit = defineEmits<{
     'select-game': [game: Game];

@@ -4,8 +4,10 @@ import R2Error from "../../model/errors/R2Error";
 import { computed, ref } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 const deletingInProgress = ref<boolean>(false);
 const isOpen = computed(() => store.state.modals.isDeleteProfileModalOpen);
@@ -34,19 +36,26 @@ async function removeProfile() {
     <ModalCard id="delete-profile-modal" v-if="isOpen" :is-active="isOpen" @close-modal="closeDeleteProfileModal">
 
         <template v-slot:header>
-            <h2 class="modal-title">Delete profile</h2>
+            <h2 class="modal-title">
+                {{ t('translations.pages.profileSelection.deleteProfileModal.title') }}
+            </h2>
         </template>
         <template v-slot:body>
-            <p>This will remove all mods, and their config files, installed within this profile.</p>
-            <p>If this was an accident, click either the darkened area, or the cross inside located in the top right.</p>
-            <p>Are you sure you'd like to delete this profile?</p>
+            <p>
+                {{ t('translations.pages.profileSelection.deleteProfileModal.content.resultingAction') }}
+            </p>
+            <p>
+                {{ t('translations.pages.profileSelection.deleteProfileModal.content.preventAction') }}
+            </p>
+            <p>{{ t('translations.pages.profileSelection.deleteProfileModal.content.confirmation') }}</p>
         </template>
         <template v-slot:footer>
             <button
                 :disabled="deletingInProgress"
                 class="button is-danger"
-                @click="removeProfile()"
-            >Delete profile</button>
+                @click="removeProfile()">
+                {{ t('translations.pages.profileSelection.deleteProfileModal.actions.delete') }}
+            </button>
         </template>
 
     </ModalCard>

@@ -112,7 +112,7 @@ export const makeLongRunningGetRequest = async (
 export const fetchAndProcessBlobFile = async (url: string) => {
     const dateFetched = new Date();
     const response = await makeLongRunningGetRequest(url, {axiosConfig: {responseType: 'arraybuffer'}});
-    const buffer = Buffer.from(response.data);
+    const buffer = window.node.buffer.from(response.data);
     const hash = await getSha256Hash(buffer);
     const jsonString = await decompressArrayBuffer(buffer);
     const content = JSON.parse(jsonString);

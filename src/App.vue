@@ -60,6 +60,7 @@ import { provideProtocolImplementation } from './providers/generic/protocol/Prot
 import GameImageProvider, { provideGameImageImplementation } from './providers/generic/image/GameImageProvider';
 import { GameImageProviderImplementation } from './r2mm/image/GameImageProviderImpl';
 import BreadcrumbNavigator from 'components/breadcrumbs/BreadcrumbNavigator.vue';
+import { useI18n } from 'vue-i18n';
 
 const store = baseStore;
 const router = useRouter();
@@ -153,6 +154,19 @@ onMounted(async () => {
 
 watchEffect(() => {
     document.documentElement.classList.toggle('html--dark', quasar.dark.isActive);
+})
+
+const { locale } = useI18n();
+
+document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.altKey && ['l', '¬'].includes(e.key.toLowerCase())) {
+        console.log("Switch lang");
+        if (locale.value === 'en') {
+            locale.value = 'fr';
+        } else {
+            locale.value = 'en';
+        }
+    }
 })
 </script>
 
