@@ -59,6 +59,8 @@ function bumpExactMatches(mods: ThunderstoreMod[], query: string): ThunderstoreM
 
     const nameMatches: ThunderstoreMod[] = [];
     const authorMatches: ThunderstoreMod[] = [];
+    const softNameMatches: ThunderstoreMod[] = [];
+    const softAuthorMatches: ThunderstoreMod[] = [];
     const others: ThunderstoreMod[] = [];
 
     for (const mod of mods) {
@@ -70,16 +72,23 @@ function bumpExactMatches(mods: ThunderstoreMod[], query: string): ThunderstoreM
             case ExactSearchMatchRank.AUTHOR:
                 authorMatches.push(mod);
                 break;
+            case ExactSearchMatchRank.SOFT_NAME:
+                softNameMatches.push(mod);
+                break;
+            case ExactSearchMatchRank.SOFT_AUTHOR:
+                softAuthorMatches.push(mod);
+                break;
             default:
                 others.push(mod);
                 break;
         }
     }
 
-    if (nameMatches.length === 0 && authorMatches.length === 0) {
+    const relevanceMatches = [...nameMatches, ...authorMatches, ...softNameMatches, ...softAuthorMatches];
+    if (relevanceMatches.length === 0) {
         return mods;
     }
-    return [...nameMatches, ...authorMatches, ...others];
+    return [...relevanceMatches, ...others];
 }
 
 function runSort() {
