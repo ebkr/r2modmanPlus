@@ -79,7 +79,7 @@
                         <template v-if="newGameSet.size > 0">
                             <hr v-if="favouriteGameList.length > 0"/>
                             <GameSelectionSection
-                                :title="`New ${activeTab}s`"
+                                :title="t('translations.pages.gameSelection.cardView.sections.newlyAdded.' + activeTab + 's')"
                                 :count="newGameSet.size"
                                 :default-open="true"
                             >

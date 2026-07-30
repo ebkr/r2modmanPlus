@@ -6,7 +6,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
     },
     actions: {
         search: {
-            text: 'Recherche:',
+            text: 'Recherche :',
             placeholder: 'Rechercher un paramètre',
         }
     },
