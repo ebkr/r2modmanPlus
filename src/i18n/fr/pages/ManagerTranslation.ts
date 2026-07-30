@@ -283,7 +283,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
         topbar: {
             search: {
                 label: 'Rechercher',
-                placeholder: 'Rechercher',
+                placeholder: 'Rechercher un mod',
             },
             sort: 'Trier',
             filter: 'Filtrer',
