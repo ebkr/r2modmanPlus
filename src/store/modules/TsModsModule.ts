@@ -23,7 +23,7 @@ export interface State {
     activeGameCacheStatus: string|undefined;
     cache: Map<string, CachedMod>;
     deprecated: Map<string, boolean>;
-    exclusions: string[];
+    exclusions: Set<string>;
     isThunderstoreModListUpdateInProgress: boolean;
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date | undefined;
@@ -63,7 +63,7 @@ export const TsModsModule = {
         cache: new Map<string, CachedMod>(),
         deprecated: new Map<string, boolean>(),
         /*** Packages available through API that should be ignored by the manager */
-        exclusions: [],
+        exclusions: new Set<string>(),
         /*** Mod list is updated from the API automatically and by user action */
         isThunderstoreModListUpdateInProgress: false,
         /*** All mods available through API for the current active game */
@@ -166,7 +166,7 @@ export const TsModsModule = {
         },
         setExclusions(state, payload: string|string[]) {
             const exclusions_ = Array.isArray(payload) ? payload : payload.split('\n');
-            state.exclusions = exclusions_.map((e) => e.trim()).filter(Boolean);
+            state.exclusions = new Set(exclusions_.map((e) => e.trim()).filter(Boolean));
         },
         setThunderstoreModListUpdateError(state, error: Error) {
             state.thunderstoreModListUpdateError = error instanceof Error ? error : new Error(error);
@@ -261,7 +261,7 @@ export const TsModsModule = {
             const packageIndexUrl = transformPackageUrl(rootState.activeGame.thunderstoreUrl);
             const indexUrl = CdnProvider.addCdnQueryParameter(packageIndexUrl);
             const options = {attempts: 5, interval: 2000, throwLastErrorAsIs: true};
-            const index = await retry(() => fetchAndProcessBlobFile(indexUrl), options);
+            const index = await retry(() => fetchAndProcessBlobFile(indexUrl, {computeHash: true}), options);
 
             if (!isStringArray(index.content)) {
                 throw new Error('Received invalid chunk index from API');
@@ -269,10 +269,13 @@ export const TsModsModule = {
             if (isEmptyArray(index.content)) {
                 throw new Error('Received empty chunk index from API');
             }
+            if (typeof index.hash !== 'string') {
+                throw new Error('Failed to compute hash for the chunk index');
+            }
 
             const community = rootState.activeGame.internalFolderName;
             const isLatest = await PackageDb.isLatestPackageListIndex(community, index.hash);
-            return {...index, isLatest};
+            return {content: index.content, hash: index.hash, isLatest};
         },
 
         async fetchAndCachePackageListChunks(
@@ -324,7 +327,7 @@ export const TsModsModule = {
                 throw new Error(`Received invalid chunk from URL "${url}"`);
             }
 
-            const filtered = chunk.filter((pkg) => !state.exclusions.includes(pkg.full_name));
+            const filtered = chunk.filter((pkg) => !state.exclusions.has(pkg.full_name));
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.upsertPackageListChunk(community, filtered);
             return filtered.map((pkg) => pkg.full_name);

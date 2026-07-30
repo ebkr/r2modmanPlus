@@ -1,7 +1,7 @@
 // Use third party library as Node's zlib is not available on TSMM.
 import { AsyncGunzip } from "fflate";
 
-export function decompressArrayBuffer(compressed: Buffer, encoding = 'utf-8'): Promise<string> {
+export function decompressArrayBuffer(compressed: Uint8Array, encoding = 'utf-8'): Promise<string> {
     return new Promise((resolve, reject) => {
         const gunzip = new AsyncGunzip((err, result) => {
             if (err) {
@@ -13,6 +13,6 @@ export function decompressArrayBuffer(compressed: Buffer, encoding = 'utf-8'): P
             return resolve(decodedString);
         });
 
-        gunzip.push(new Uint8Array(compressed), true);
+        gunzip.push(compressed, true);
     });
 }
