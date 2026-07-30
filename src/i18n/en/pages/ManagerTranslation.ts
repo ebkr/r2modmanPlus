@@ -289,7 +289,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
         topbar: {
             search: {
                 label: 'Search',
-                placeholder: 'Search',
+                placeholder: 'Search for a mod',
             },
             sort: 'Sort',
             filter: 'Filter',
