@@ -1,9 +1,7 @@
 <template>
-    <Teleport to="#activity-bar">
-        <div class="activity-bar--left"></div>
-        <div class="activity-bar--right">
+    <Teleport to="#activity-bar__right">
+        <div v-if="status.onClick">
             <button
-                v-if="status.onClick"
                 type="button"
                 :class="['activity-bar__action', 'status-indicator', { 'status-indicator--error-action': status.isError }]"
                 :title="status.tooltip"
@@ -12,13 +10,13 @@
                 <i :class="status.iconClass"></i>
                 <span class="status-indicator__text">{{ status.text }}</span>
             </button>
-            <div
-                v-else
-                :class="['status-indicator', { 'status-indicator--error': status.isError }]"
-            >
-                <i :class="status.iconClass"></i>
-                <span class="status-indicator__text">{{ status.text }}</span>
-            </div>
+        </div>
+        <div
+            v-else
+            :class="['status-indicator', { 'status-indicator--error': status.isError }]"
+        >
+            <i :class="status.iconClass"></i>
+            <span class="status-indicator__text">{{ status.text }}</span>
         </div>
     </Teleport>
 </template>
@@ -27,8 +25,12 @@
 import { computed } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import { useI18n } from 'vue-i18n';
+import { ActivityDropdown } from '../all';
 
 const store = getStore<State>();
+
+const { locale, availableLocales,  } = useI18n();
 
 function retryEcosystemUpdate() {
     store.dispatch('ecosystemUpdate/updateEcosystemSchema');

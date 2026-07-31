@@ -6,7 +6,23 @@
                     <router-view />
                 </div>
             </main>
-            <div id="activity-bar"></div>
+            <div id="activity-bar">
+                <div id="activity-bar__left"></div>
+                <div id="activity-bar__right">
+                    <div>
+                        <ActivityDropdown>
+                            <button type="button" class="activity-bar__action">
+                                <i class="fas fa-globe-europe"></i> {{ locale }}
+                            </button>
+                            <template #popper>
+                            <ul class="menu-list">
+                                <li v-for="lang in availableLocales"><a v-close-popper @click="() => locale = lang">{{ lang }}</a></li>
+                            </ul>
+                            </template>
+                        </ActivityDropdown>
+                    </div>
+                </div>
+            </div>
         </div>
         <ErrorModal />
     </div>
@@ -59,14 +75,15 @@ import { ProtocolProviderImplementation } from './providers/generic/protocol/Pro
 import { provideProtocolImplementation } from './providers/generic/protocol/ProtocolProvider';
 import GameImageProvider, { provideGameImageImplementation } from './providers/generic/image/GameImageProvider';
 import { GameImageProviderImplementation } from './r2mm/image/GameImageProviderImpl';
-import BreadcrumbNavigator from 'components/breadcrumbs/BreadcrumbNavigator.vue';
 import { useI18n } from 'vue-i18n';
+import { ActivityDropdown } from './components/all';
 
 const store = baseStore;
 const router = useRouter();
 provideStoreImplementation(() => store);
 
 const quasar = useQuasar();
+const { locale, availableLocales } = useI18n();
 
 document.addEventListener('auxclick', e => {
     const target = e.target! as any;
@@ -155,19 +172,6 @@ onMounted(async () => {
 watchEffect(() => {
     document.documentElement.classList.toggle('html--dark', quasar.dark.isActive);
 })
-
-const { locale } = useI18n();
-
-document.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.altKey && ['l', '¬'].includes(e.key.toLowerCase())) {
-        console.log("Switch lang");
-        if (locale.value === 'en') {
-            locale.value = 'fr';
-        } else {
-            locale.value = 'en';
-        }
-    }
-})
 </script>
 
 <style lang="scss">
@@ -214,6 +218,21 @@ main {
         padding: 0.25rem 0.75rem;
         gap: 0.5rem;
         overflow: hidden;
+    }
+
+    &__left {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.375rem;
+    }
+
+    &__right {
+        display: flex;
+        flex-direction: row-reverse;
+        gap: 1rem;
+        align-items: center;
     }
 }
 </style>
