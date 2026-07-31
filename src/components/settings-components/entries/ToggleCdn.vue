@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 import CdnProvider from '../../../providers/generic/connection/CdnProvider';
 
 const props = defineProps<{
@@ -10,9 +11,9 @@ const props = defineProps<{
 
 const currentCdn = ref(CdnProvider.current);
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
-    'Toggle preferred Thunderstore CDN',
-    'CDN',
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.toggleCdn.searchTerms', () => [
     currentCdn.value.label,
     currentCdn.value.url,
 ]);
@@ -25,11 +26,11 @@ function toggleCdn() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Toggle preferred Thunderstore CDN</template>
+        <template #title>{{ t('translations.pages.settings.entries.toggleCdn.title') }}</template>
         <template #description>
-            <p>Switch the CDN until the app is restarted. This might bypass issues with downloading mods.</p>
-            <p>Current: {{ currentCdn.label }}<template v-if="currentCdn.url"> ({{ currentCdn.url }})</template>.</p>
+            <p>{{ t('translations.pages.settings.entries.toggleCdn.description') }}</p>
+            <p>{{ t('translations.pages.settings.entries.toggleCdn.current', { label: currentCdn.label }) }}<template v-if="currentCdn.url"> ({{ currentCdn.url }})</template>.</p>
         </template>
-        <button class="button" @click="toggleCdn">Toggle preferred CDN</button>
+        <button class="button" @click="toggleCdn">{{ t('translations.pages.settings.entries.toggleCdn.action') }}</button>
     </SettingsViewWrapper>
 </template>

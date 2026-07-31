@@ -5,6 +5,7 @@ import { State } from '../../../store';
 import R2Error from '../../../model/errors/R2Error';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
 
@@ -15,11 +16,9 @@ const props = defineProps<{
 const activeExport = ref<'file' | 'code' | null>(null);
 const isExporting = computed(() => activeExport.value !== null);
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Export profile',
-    'As file',
-    'As code',
-]);
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.exportProfile.searchTerms');
 
 async function exportProfile(as: 'file' | 'code', action: string) {
     if (isExporting.value) {
@@ -38,9 +37,9 @@ async function exportProfile(as: 'file' | 'code', action: string) {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Export profile</template>
+        <template #title>{{ t('translations.pages.settings.entries.exportProfile.title') }}</template>
         <template #description>
-            Export your mod list and configs to share with friends and get an identical profile quickly and easily.
+            {{ t('translations.pages.settings.entries.exportProfile.description') }}
         </template>
         <div class="setting-row">
             <button
@@ -49,7 +48,7 @@ async function exportProfile(as: 'file' | 'code', action: string) {
                 :disabled="isExporting"
                 @click="exportProfile('file', 'profileExport/exportProfileAsFile')"
             >
-                As a file
+                {{ t('translations.pages.settings.entries.exportProfile.asFile') }}
             </button>
             <button
                 class="button"
@@ -57,7 +56,7 @@ async function exportProfile(as: 'file' | 'code', action: string) {
                 :disabled="isExporting"
                 @click="exportProfile('code', 'profileExport/exportProfileAsCode')"
             >
-                As a code
+                {{ t('translations.pages.settings.entries.exportProfile.asCode') }}
             </button>
         </div>
     </SettingsViewWrapper>

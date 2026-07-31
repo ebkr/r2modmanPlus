@@ -1,203 +1,295 @@
 import {SettingsMessageFormat} from "../../base/pages/SettingsMessageFormat";
 
 export const SettingsTranslation: SettingsMessageFormat = {
-    title: {
-        subtitle: 'Advanced options for {appName}: {version}'
+    hero: {
+        title: 'Settings',
+        subtitle: 'Advanced options for {appName}: {version}',
+    },
+    nav: {
+        label: 'Sections',
+        categories: {
+            all: 'All',
+            directories: 'Directories',
+            profile: 'Profile',
+            appearance: 'Appearance',
+            debugging: 'Debugging',
+            modpacks: 'Modpacks',
+            other: 'Other',
+        }
+    },
+    search: {
+        label: 'Search',
+        placeholder: 'Search for a setting',
     },
     actions: {
-        search: {
-            text: 'Search:',
-            placeholder: 'Search for a setting',
-        }
+        change: 'Change',
+        browse: 'Browse',
+        notSet: 'Not set',
     },
-    groups: {
-        all: 'All',
-        profile: 'Profile',
-        locations: 'Locations',
-        debugging: 'Debugging',
-        other: 'Other',
-        modpacks: 'Modpacks',
-    },
-    locations: {
-        browseDataFolder: {
-            title: 'Browse data folder',
-            description: 'Open the folder where mods are stored for all games and profiles.',
-        },
-        changeGameFolder: {
-            title: 'Change {gameName} folder',
-            description: 'Change the location of the {gameName} folder that {appName} uses.',
-            setManually: 'You must locate the game folder manually by clicking here'
-        },
-        browseProfileFolder: {
-            title: 'Browse profile folder',
-            description: 'Open the folder where mods are stored for the current profile.',
-        },
-        changeDataFolder: {
-            title: 'Change data folder',
-            description: 'Change the folder where mods are stored for all games and profiles. The folder will not be deleted, and existing profiles will not carry across.',
-        },
-        changeSteamFolder: {
-            title: `Change {''}@:translations.platforms.STEAM{''} folder`,
-            description: `Change the location of the @:translations.platforms.STEAM folder that {appName} uses.`,
-            states: {
-                setManually: 'You must click this setting and locate the folder manually'
-            }
-        }
-    },
-    debugging: {
-        copyLogFile: {
-            title: 'Copy log file contents to clipboard',
-            description: 'Copy the text inside the LogOutput.log file to the clipboard, with Discord formatting.',
-            logFileExists: 'Log file exists',
-            logFileDoesNotExist: 'Log file does not exist',
-        },
-        copyTroubleshootingInfo: {
-            title: 'Copy troubleshooting information to clipboard',
-            description: 'Copy settings and other information to the clipboard, with Discord formatting.',
-            value: 'Share this information when requesting support on Discord.',
-        },
-        toggleDownloadCache: {
-            title: 'Toggle download cache',
-            description: 'Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.',
-            enabled: 'Current: cache is enabled (recommended)',
-            disabled: 'Current: cache is disabled',
-        },
-        setLaunchArguments: {
-            title: 'Set launch arguments',
-            description: 'Provide custom arguments used to start the game.',
-            value: 'These commands are used against the Steam executable on game startup'
-        },
-        cleanModCache: {
-            title: 'Clean mod cache',
-            description: 'Free extra space caused by cached mods that are not currently in a profile.',
-            value: 'Check all profiles for unused mods and clear cache',
-        },
-        cleanOnlineModList: {
-            title: 'Clean online mod list',
-            description: 'Deletes local copy of mod list, forcing the next refresh to fetch a new one.',
-            states: {
-                updating: 'Online mod list is currently updating, please wait for the operation to complete',
-                hasCopy: '{gameName} has a local copy of online mod list',
-                doesNotHaveCopy: '{gameName} has no local copy stored',
-                errorOccurred: 'Error occurred while checking mod list status',
-                unknown: 'Unknown status'
-            }
-        },
-        toggleThunderstoreCdn: {
-            title: 'Toggle preferred Thunderstore CDN',
-            description: 'Switch the CDN until app is restarted. This might bypass issues with downloading mods.',
-            current: 'Current: {label} ({url})'
-        },
-        resetGameInstallation: {
-            title: 'Reset {gameName} installation',
-            description: 'Fix problems caused by corrupted files or files left over from manual modding attempts.',
-            value: `This will delete all contents of the "{folderName}" folder and will verify files using @:translations.platforms.STEAM`
-        },
+    entries: {
         changeLaunchBehaviour: {
             title: 'Change launch behaviour',
-            description: 'Select a specific launch behaviour such as forcing Steam to launch with Proton',
-            value: `The current launch behaviour is set to: @:translations.enums.launchType.{launchType}`
-        }
-    },
-    profile: {
-        changeProfile: {
-            title: 'Change profile',
-            description: 'Change the mod profile.',
-            value: 'Current profile: {profileName}',
+            description: 'Select a specific launch behaviour. You can tell the manager that a game is explicitly using either Native or Proton.',
+            current: 'The current launch behaviour is set to:',
+            searchTerms: [
+                'Change launch behaviour',
+                'Set launch mode',
+                'Proton',
+                'Native',
+                'Auto',
+            ],
         },
-        enableAllMods: {
-            title: 'Enable all mods',
-            description: 'Enable all mods for the current profile.',
-            value: `
-            No mods are currently enabled. You have {totalModCount} mods |
-            1 mod is enabled out of {totalModCount} |
-            {enabledModCount} mods are enabled out of {totalModCount}
-            `
+        cleanOnlineModListCache: {
+            title: 'Clean online mod list cache',
+            description: 'Deletes the local copy of the mod list and retrieves a new one.',
+            action: 'Clean online mod list',
+            searchTerms: [
+                'Clean online mod list cache',
+                'Reset',
+            ],
         },
-        disableAllMods: {
-            title: 'Disable all mods',
-            description: 'Disable all mods for the current profile.',
-            value: `
-            No mods are currently disabled. You have {totalModCount} mods |
-            1 mod is disabled out of {totalModCount} |
-            {disabledModCount} mods are disabled out of {totalModCount}
-            `,
+        copyLogToClipboard: {
+            title: 'Copy log to clipboard',
+            description: 'Copy the contents of the log file to your clipboard, formatted for Discord.',
+            searchTerms: [
+                'Copy log file contents to clipboard',
+                'LogOutput',
+                'LogOutput.txt',
+                'Discord',
+            ],
+        },
+        copyTroubleshooting: {
+            title: 'Copy troubleshooting info to clipboard',
+            description: 'Copy settings and other information to your clipboard, formatted for Discord. Share this when requesting support.',
+            searchTerms: [
+                'Copy troubleshooting information to clipboard',
+                'Discord',
+                'Support',
+                'System',
+            ],
+        },
+        dataDirectory: {
+            title: 'Data and profile folders',
+            description: 'The folder where mods are stored for all games and profiles.',
+            warning: 'Changing the data folder does not move or delete existing profiles. They will however remain in the old folder.',
+            dataFolder: 'Data folder',
+            profileFolder: 'Profile folder',
+            searchTerms: [
+                'Data and profile directories',
+                'Change',
+                'Browse',
+                'Folder',
+                'Directory',
+            ],
+        },
+        downloadCache: {
+            title: 'Download cache',
+            description: 'When enabled, downloads will be skipped if an existing copy is already cached.',
+            enabled: 'Enabled (recommended)',
+            disabled: 'Disabled',
+            searchTerms: [
+                'Toggle download cache',
+                'Download cache',
+                'Toggle',
+            ],
+        },
+        expandCards: {
+            title: 'Expand cards by default',
+            description: 'Show mod cards fully expanded rather than collapsed when opening a mod list.',
+            expanded: 'Expanded',
+            collapsed: 'Collapsed',
+            searchTerms: [
+                'Expand cards by default',
+                'Toggle',
+                'Collapsed',
+                'Expanded',
+            ],
+        },
+        exportProfile: {
+            title: 'Export profile',
+            description: 'Export your mod list and configs to share with friends and get an identical profile quickly and easily.',
+            asFile: 'As a file',
+            asCode: 'As a code',
+            searchTerms: [
+                'Export profile',
+                'As file',
+                'As code',
+            ],
+        },
+        funkyMode: {
+            title: 'Enable funky mode',
+            description: 'It\'s funky mode.',
+            enabled: 'Enabled',
+            disabled: 'Disabled',
+            searchTerms: [
+                'Enable funky mode',
+                'Toggle',
+                'Disable'
+            ],
+        },
+        gameDirectory: {
+            title: '{gameName} folder',
+            description: 'The game directory is required to place the appropriate files correctly.',
+            warning: '{gameName} will launch without mods if this is not set appropriately.',
+            unsure: 'I\'m not sure what this should be',
+            searchTerms: [
+                '{gameName} folder',
+                'Change',
+                'Browse',
+                'Game',
+                'Directory',
+                'Directories',
+            ],
         },
         importLocalMod: {
-            title: 'Import a local mod',
-            description: `Install a mod that was not downloaded from the "{''}@:translations.pages.manager.navigation.modsActions.online{''}" tab.`,
-            value: 'The manager will attempt to install mods correctly. This is not guaranteed to install as expected.'
+            title: 'Import local mod',
+            description: 'Install a mod offline from your files. Not all mods can be installed locally.',
+            searchTerms: [
+                'Import local mod',
+                'Install offline',
+                'Import',
+            ],
         },
-        exportProfileAsFile: {
-            title: 'Export profile as a file',
-            description: 'Export your mod list and configs as a file.',
-            value: 'The exported file can be shared with friends to get an identical profile quickly and easily',
+        launchArguments: {
+            title: 'Launch arguments',
+            description: 'Provide custom arguments that are added when starting the game.',
+            action: 'Set launch arguments',
+            searchTerms: [
+                'Set custom launch arguments',
+                'Launch parameters',
+            ],
         },
-        exportProfileAsCode: {
-            title: 'Export profile as a code',
-            description: 'Export your mod list and configs as a code.',
-            value: 'The exported code can be shared with friends to get an identical profile quickly and easily',
+        modCache: {
+            title: 'Mod cache',
+            description: 'Downloaded mods are kept in a cache so that they don\'t need to be downloaded again.',
+            stillWritten: 'Mods will still be written to the cache and will continue to use disk space.',
+            action: 'Clean cache',
+            actionDescription: 'Removes cached mods that aren\'t in any profile to free up storage space.',
+            enabled: 'Enabled',
+            disabled: 'Disabled',
+            enabledHint: 'Reusing cached downloads (recommended)',
+            disabledHint: 'Ignores the cache when downloading mods. Re-downloads each time.',
+            searchTerms: [
+                'Mod cache',
+                'Downloads',
+                'Reuse cached downloads',
+                'Toggle',
+                'Clean mod cache',
+                'Free space',
+                'Clear',
+                'Storage',
+            ],
         },
-        updateAllMods: {
-            title: 'Update all mods',
-            description: 'Quickly update every installed mod to their latest versions.',
-            value: `
-            There are no mods with an update available |
-            You have 1 mod with an update available |
-            You have {count} mods with an update available
-            `,
-        }
-    },
-    other: {
-        toggleFunkyMode: {
-            title: 'Toggle funky mode',
-            description: 'Enable / disable funky mode.',
+        modState: {
+            title: 'Change mod state',
+            description: 'Enable / disable all of the mods in your profile.',
+            enableAll: 'Enable all mods',
+            disableAll: 'Disable all mods',
+            allEnabled: 'All of your mods are currently enabled.',
+            allDisabled: 'All of your mods are currently disabled.',
+            someDisabled: 'You have 1 mod disabled. | You have {count} mods disabled.',
+            searchTerms: [
+                'Change mod state',
+                'Toggle',
+                'Enable all mods',
+                'Disable all mods',
+            ],
+        },
+        onlineModList: {
+            title: 'Online mod list',
+            description: 'Check for new mod releases, or clear the local copy.',
+            refresh: 'Refresh',
+            deleteCopy: 'Delete copy',
             states: {
-                enabled: 'Funky mode is enabled',
-                disabled: 'Funky mode is disabled',
+                refreshing: 'Refreshing...',
+                error: 'Error refreshing the mod list: {message}',
+                disabledWhileDownloading: 'Refreshing the mod list is disabled while there are active downloads.',
+                lastUpdated: 'Last updated on: {date}',
+                noApiInfo: 'No API information available',
             },
-        },
-        switchTheme: {
-            title: 'Switch theme',
-            description: 'Switch between light and dark themes.',
-            themes: {
-                light: 'Current: Light theme (default)',
-                dark: 'Current: Dark theme',
-            },
-        },
-        switchCardDisplayType: {
-            title: 'Switch card display type',
-            description: 'Switch between expanded or collapsed cards.',
-            states: {
-                expanded: 'Current: Expanded',
-                collapsed: 'Current: Collapsed (default)'
-            }
+            searchTerms: [
+                'Refresh online mod list',
+                'Check for new mod releases',
+                'Clean online mod list cache',
+                'Reset mod list cache',
+            ],
         },
         refreshOnlineModList: {
             title: 'Refresh online mod list',
-            description: 'Check for new mod releases.',
+            description: 'Check for any new mod releases. {status}',
+            action: 'Refresh',
             states: {
-                refreshing: 'Refreshing',
-                errorRefreshing: 'There was a problem refreshing the mod list: {errorText}',
-                disabledWhilstDownloading: 'Refreshing the mod list is disabled whilst there are active downloads',
-                cacheDate: 'Cache date: {formattedDate}',
-                apiUnavailable: 'No API information available',
-            }
+                refreshing: 'Refreshing...',
+                error: 'Error refreshing the mod list: {message}',
+                disabledWhileDownloading: 'Refreshing the mod list is disabled while there are active downloads.',
+                cacheDate: 'Cache date: {date}',
+                noApiInfo: 'No API information available',
+            },
+            searchTerms: [
+                'Refresh online mod list',
+                'Check for new mod releases',
+                'Thunderstore mods',
+            ],
         },
-        changeGame: {
-            title: 'Change game',
-            description: 'Change the current game.',
-        }
-    },
-    modpacks: {
+        resetGameInstallation: {
+            title: 'Reset {gameName} installation',
+            description: 'Fix problems caused by corrupted files or files left over from manual modding attempts. This will delete all contents of the {folderName} folder and will verify files through Steam.',
+            action: 'Reset installation',
+            searchTerms: [
+                'Reset {gameName} installation',
+                'Validate files',
+                'Verify integrity',
+                'Corrupted',
+                'File',
+            ],
+        },
         showDependencyStrings: {
             title: 'Show dependency strings',
-            description: 'View a list of installed mods with their version strings. Used inside the dependencies array inside the manifest.json file.',
-            value: `
-            No dependency strings as there are no mods installed |
-            Show dependency strings for 1 mod |
-            Show dependency strings for {n} mods
-            `
-        }
+            description: 'View a list of installed mods with their version strings, as used inside the dependencies array of a manifest.json file. Shows dependency strings for {modCount} mod(s).',
+            searchTerms: [
+                'Show dependency strings',
+            ],
+        },
+        steamDirectory: {
+            title: 'Steam folder',
+            description: 'The Steam folder containing the Steam executable.',
+            value: 'This is how {appName} will launch the game.',
+            searchTerms: [
+                'Change Steam folder',
+                'Change Steam directory',
+                'Browse',
+                'Directories',
+            ],
+        },
+        theme: {
+            title: 'Theme',
+            description: 'Choose between a light or dark appearance for the manager.',
+            light: 'Light',
+            dark: 'Dark',
+            searchTerms: [
+                'Theme',
+                'Light',
+                'Dark',
+                'Appearance',
+            ],
+        },
+        toggleCdn: {
+            title: 'Toggle preferred Thunderstore CDN',
+            description: 'Switch the CDN until the app is restarted. This might bypass issues with downloading mods.',
+            action: 'Toggle preferred CDN',
+            current: 'Current: {label}',
+            searchTerms: [
+                'Toggle preferred Thunderstore CDN',
+                'Change',
+            ],
+        },
+        updateAllMods: {
+            title: 'Update all mods',
+            description: 'Quickly update every installed mod to their latest versions. {status}',
+            status: '1 mod has an update available. | {count} mods have an update available.',
+            searchTerms: [
+                'Update all mods',
+            ],
+        },
     }
-}
+};

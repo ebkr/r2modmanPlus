@@ -1,185 +1,115 @@
+export type SettingsEntry = {
+    title: string;
+    description: string;
+    searchTerms: string[];
+};
+
 export type SettingsMessageFormat = {
-    title: {
+    hero: {
+        title: string;
         subtitle: string;
     },
+    nav: {
+        label: string;
+        categories: {
+            all: string;
+            directories: string;
+            profile: string;
+            appearance: string;
+            debugging: string;
+            modpacks: string;
+            other: string;
+        }
+    },
+    search: {
+        label: string;
+        placeholder: string;
+    },
     actions: {
-        search: {
-            text: string,
-            placeholder: string,
-        }
+        change: string;
+        browse: string;
+        notSet: string;
     },
-    groups: {
-        all: string;
-        profile: string;
-        locations: string;
-        debugging: string;
-        other: string;
-        modpacks: string;
-    },
-    locations: {
-        browseDataFolder: {
-            title: string;
-            description: string;
+    entries: {
+        changeLaunchBehaviour: SettingsEntry & { current: string; },
+        cleanOnlineModListCache: SettingsEntry & { action: string; },
+        copyLogToClipboard: SettingsEntry,
+        copyTroubleshooting: SettingsEntry,
+        dataDirectory: SettingsEntry & {
+            warning: string;
+            dataFolder: string;
+            profileFolder: string;
         },
-        changeGameFolder: {
-            title: string;
-            description: string;
-            setManually: string;
-        },
-        browseProfileFolder: {
-            title: string;
-            description: string;
-        },
-        changeDataFolder: {
-            title: string;
-            description: string;
-        },
-        changeSteamFolder: {
-            title: string;
-            description: string;
-            states: {
-                setManually: string;
-            }
-        }
-    },
-    debugging: {
-        copyLogFile: {
-            title: string;
-            description: string;
-            logFileExists: string;
-            logFileDoesNotExist: string;
-        },
-        copyTroubleshootingInfo: {
-            title: string;
-            description: string;
-            value: string;
-        },
-        toggleDownloadCache: {
-            title: string;
-            description: string;
+        downloadCache: SettingsEntry & {
             enabled: string;
             disabled: string;
         },
-        setLaunchArguments: {
-            title: string;
-            description: string;
-            value: string;
+        expandCards: SettingsEntry & {
+            expanded: string;
+            collapsed: string;
         },
-        cleanModCache: {
-            title: string;
-            description: string;
-            value: string;
+        exportProfile: SettingsEntry & {
+            asFile: string;
+            asCode: string;
         },
-        cleanOnlineModList: {
-            title: string;
-            description: string;
-            states: {
-                updating: string;
-                hasCopy: string;
-                doesNotHaveCopy: string;
-                errorOccurred: string;
-                unknown: string;
-            }
+        funkyMode: SettingsEntry & {
+            enabled: string;
+            disabled: string;
         },
-        toggleThunderstoreCdn: {
-            title: string;
-            description: string;
-            current: string;
+        gameDirectory: SettingsEntry & {
+            warning: string;
+            unsure: string;
         },
-        resetGameInstallation: {
-            title: string;
-            description: string;
-            value: string;
+        importLocalMod: SettingsEntry,
+        launchArguments: SettingsEntry & { action: string; },
+        modCache: SettingsEntry & {
+            stillWritten: string;
+            action: string;
+            actionDescription: string;
+            enabled: string;
+            disabled: string;
+            enabledHint: string;
+            disabledHint: string;
         },
-        changeLaunchBehaviour: {
-            title: string;
-            description: string;
-            value: string;
-        }
-    },
-    profile: {
-        changeProfile: {
-            title: string;
-            description: string;
-            value: string;
+        modState: SettingsEntry & {
+            enableAll: string;
+            disableAll: string;
+            allEnabled: string;
+            allDisabled: string;
+            someDisabled: string;
         },
-        enableAllMods: {
-            title: string;
-            description: string;
-            value: string;
-        },
-        disableAllMods: {
-            title: string;
-            description: string;
-            value: string;
-        },
-        importLocalMod: {
-            title: string;
-            description: string;
-            value: string;
-        },
-        exportProfileAsFile: {
-            title: string;
-            description: string;
-            value: string;
-        },
-        exportProfileAsCode: {
-            title: string;
-            description: string;
-            value: string;
-        },
-        updateAllMods: {
-            title: string;
-            description: string;
-            value: string;
-        }
-    },
-    other: {
-        toggleFunkyMode: {
-            title: string;
-            description: string;
-            states: {
-                enabled: string;
-                disabled: string;
-            },
-        },
-        switchTheme: {
-            title: string;
-            description: string;
-            themes: {
-                light: string;
-                dark: string;
-            },
-        },
-        switchCardDisplayType: {
-            title: string;
-            description: string;
-            states: {
-                expanded: string;
-                collapsed: string;
-            }
-        },
-        refreshOnlineModList: {
-            title: string;
-            description: string;
+        onlineModList: SettingsEntry & {
+            refresh: string;
+            deleteCopy: string;
             states: {
                 refreshing: string;
-                errorRefreshing: string;
-                disabledWhilstDownloading: string;
-                cacheDate: string;
-                apiUnavailable: string;
+                error: string;
+                disabledWhileDownloading: string;
+                lastUpdated: string;
+                noApiInfo: string;
             }
         },
-        changeGame: {
-            title: string;
-            description: string;
-        }
-    },
-    modpacks: {
-        showDependencyStrings: {
-            title: string;
-            description: string;
-            value: string;
-        }
+        refreshOnlineModList: SettingsEntry & {
+            action: string;
+            states: {
+                refreshing: string;
+                error: string;
+                disabledWhileDownloading: string;
+                cacheDate: string;
+                noApiInfo: string;
+            }
+        },
+        resetGameInstallation: SettingsEntry & { action: string; },
+        showDependencyStrings: SettingsEntry,
+        steamDirectory: SettingsEntry & { value: string; },
+        theme: SettingsEntry & {
+            light: string;
+            dark: string;
+        },
+        toggleCdn: SettingsEntry & {
+            action: string;
+            current: string;
+        },
+        updateAllMods: SettingsEntry & { status: string; },
     }
-}
+};

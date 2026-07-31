@@ -26,6 +26,9 @@ import LaunchArguments from './entries/LaunchArguments.vue';
 import ShowDependencyStrings from './entries/ShowDependencyStrings.vue';
 import ResetGameInstallation from './entries/ResetGameInstallation.vue';
 import ChangeLaunchBehaviour from './entries/ChangeLaunchBehaviour.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const searchTerm = ref<string>('');
 
@@ -49,20 +52,20 @@ function isVisible(section: Category): boolean {
 <template>
     <div id="settings-view">
         <Hero
-            title="Settings"
-            :subtitle="`Advanced options for ${appName}: ${managerVersionNumber.toString()}`"
+            :title="t('translations.pages.settings.hero.title')"
+            :subtitle="t('translations.pages.settings.hero.subtitle', { appName, version: managerVersionNumber.toString() })"
             heroType="primary"
         />
         <div class="settings-shell">
             <aside class="menu settings-nav">
-                <p class="menu-label">Sections</p>
+                <p class="menu-label">{{ t('translations.pages.settings.nav.label') }}</p>
                 <ul class="menu-list">
                     <li v-for="category in categories" :key="category">
                         <a
                             :class="{ 'is-active': activeCategory === category }"
                             @click="activeCategory = category"
                         >
-                            {{ category }}
+                            {{ t(`translations.pages.settings.nav.categories.${category.toLowerCase()}`) }}
                         </a>
                     </li>
                 </ul>
@@ -74,14 +77,14 @@ function isVisible(section: Category): boolean {
                     <div class="is-shadowless is-square">
                         <div class="no-padding-left card-header-title">
                             <div class="input-group input-group--flex margin-right">
-                                <label for="installed-search" class="non-selectable">Search</label>
+                                <label for="installed-search" class="non-selectable">{{ t('translations.pages.settings.search.label') }}</label>
                                 <DeferredInput
                                     :modelValue="searchTerm"
                                     @update:modelValue="$event => (searchTerm = $event)"
                                     id="installed-search"
                                     class="input margin-right"
                                     type="text"
-                                    placeholder="Search for a setting"
+                                    :placeholder="t('translations.pages.settings.search.placeholder')"
                                     autocomplete="off"
                                 />
                             </div>
@@ -89,7 +92,7 @@ function isVisible(section: Category): boolean {
                     </div>
                 </div>
 
-                <SettingsSection v-if="isVisible('Directories')" name="Directories">
+                <SettingsSection v-if="isVisible('Directories')" :name="t('translations.pages.settings.nav.categories.directories')">
                     <DataDirectory :search-term="searchTerm"/>
                         <GameDirectory :search-term="searchTerm"/>
                     <template v-if="isSteamGame">
@@ -97,20 +100,20 @@ function isVisible(section: Category): boolean {
                     </template>
                 </SettingsSection>
 
-                <SettingsSection v-if="isVisible('Profile')" name="Profile">
+                <SettingsSection v-if="isVisible('Profile')" :name="t('translations.pages.settings.nav.categories.profile')">
                     <ExportProfile :search-term="searchTerm"/>
                     <ModState :search-term="searchTerm"/>
                     <UpdateAllMods :search-term="searchTerm"/>
                     <ImportLocalMod :search-term="searchTerm"/>
                 </SettingsSection>
 
-                <SettingsSection v-if="isVisible('Appearance')" name="Appearance">
+                <SettingsSection v-if="isVisible('Appearance')" :name="t('translations.pages.settings.nav.categories.appearance')">
                     <Theme :search-term="searchTerm"/>
                     <ExpandCards :search-term="searchTerm"/>
                     <FunkyMode :search-term="searchTerm"/>
                 </SettingsSection>
 
-                <SettingsSection v-if="isVisible('Debugging')" name="Debugging">
+                <SettingsSection v-if="isVisible('Debugging')" :name="t('translations.pages.settings.nav.categories.debugging')">
                     <LaunchArguments :search-term="searchTerm"/>
                     <template v-if="isSteamGame">
                         <ResetGameInstallation :search-term="searchTerm"/>
@@ -124,11 +127,11 @@ function isVisible(section: Category): boolean {
                     <ToggleCdn :search-term="searchTerm"/>
                 </SettingsSection>
 
-                <SettingsSection v-if="isVisible('Modpacks')" name="Modpacks">
+                <SettingsSection v-if="isVisible('Modpacks')" :name="t('translations.pages.settings.nav.categories.modpacks')">
                     <ShowDependencyStrings :search-term="searchTerm"/>
                 </SettingsSection>
 
-                <SettingsSection v-if="isVisible('Other')" name="Other">
+                <SettingsSection v-if="isVisible('Other')" :name="t('translations.pages.settings.nav.categories.other')">
                     <OnlineModList :search-term="searchTerm"/>
                 </SettingsSection>
             </div>

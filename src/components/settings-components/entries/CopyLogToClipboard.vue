@@ -4,6 +4,7 @@ import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import path from '../../../providers/node/path/path';
 import InteractionProvider from '../../../providers/ror2/system/InteractionProvider';
@@ -20,12 +21,9 @@ const activeGame = computed(() => store.state.activeGame);
 const profile = computed(() => store.getters['profile/activeProfile']);
 const isCopying = ref<boolean>(false);
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Copy log file contents to clipboard',
-    'LogOutput',
-    'LogOutput.txt',
-    'Discord',
-]);
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.copyLogToClipboard.searchTerms');
 
 async function copyLogToClipboard() {
     isCopying.value = true;
@@ -69,9 +67,9 @@ async function copyLogToClipboard() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Copy log to clipboard</template>
+        <template #title>{{ t('translations.pages.settings.entries.copyLogToClipboard.title') }}</template>
         <template #description>
-            Copy the contents of the log file to your clipboard, formatted for Discord.
+            {{ t('translations.pages.settings.entries.copyLogToClipboard.description') }}
         </template>
         <button
             class="button"
@@ -79,7 +77,7 @@ async function copyLogToClipboard() {
             :disabled="isCopying"
             @click="copyLogToClipboard"
         >
-            Copy log to clipboard
+            {{ t('translations.pages.settings.entries.copyLogToClipboard.title') }}
         </button>
     </SettingsViewWrapper>
 </template>

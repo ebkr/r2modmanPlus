@@ -5,6 +5,7 @@ import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../../components/composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
 
@@ -12,10 +13,9 @@ const props = defineProps<{
     searchTerm?: string;
 }>();
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Refresh online mod list',
-    'Check for new mod releases',
-]);
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.refreshOnlineModList.searchTerms');
 
 const isRefreshing = computed<boolean>(() => store.state.tsMods.isThunderstoreModListUpdateInProgress);
 const hasActiveDownloads = computed<boolean>(() => store.getters['download/activeDownloadCount'] > 0);
@@ -46,9 +46,9 @@ async function refresh() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Refresh online mod list</template>
+        <template #title>{{ t('translations.pages.settings.entries.refreshOnlineModList.title') }}</template>
         <template #description>
-            Check for any new mod releases. {{ status }}
+            {{ t('translations.pages.settings.entries.refreshOnlineModList.description', { status }) }}
         </template>
         <button
             class="button"
@@ -56,7 +56,7 @@ async function refresh() {
             :disabled="isRefreshing || hasActiveDownloads"
             @click="refresh"
         >
-            Refresh
+            {{ t('translations.pages.settings.entries.refreshOnlineModList.action') }}
         </button>
     </SettingsViewWrapper>
 </template>

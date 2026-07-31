@@ -5,6 +5,7 @@ import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 import { getLaunchType, LaunchType } from '../../../model/real_enums/launch/LaunchType';
 import { LaunchTypeModalOpen } from '../../modals/launch-type/LaunchTypeRefs';
 
@@ -17,12 +18,9 @@ const props = defineProps<{
 const activeGame = computed<Game>(() => store.state.activeGame);
 const launchType = ref<LaunchType>(LaunchType.AUTO);
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
-    'Change launch behaviour',
-    'Set launch mode',
-    'Proton',
-    'Native',
-    'Auto',
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.changeLaunchBehaviour.searchTerms', () => [
     launchType.value,
 ]);
 
@@ -45,12 +43,12 @@ function openLaunchTypeModal() {
 </script>
 
 <template>
-    <SettingsViewWrapper >
-        <template #title>Change launch behaviour</template>
+    <SettingsViewWrapper v-show="isVisible">
+        <template #title>{{ t('translations.pages.settings.entries.changeLaunchBehaviour.title') }}</template>
         <template #description>
-            <p>Select a specific launch behaviour. You can tell the manager that a game is explicitly using either Native or Proton.</p>
-            <p>The current launch behaviour is set to: <strong>{{ launchType }}</strong>.</p>
+            <p>{{ t('translations.pages.settings.entries.changeLaunchBehaviour.description') }}</p>
+            <p>{{ t('translations.pages.settings.entries.changeLaunchBehaviour.current') }} <strong>{{ launchType }}</strong>.</p>
         </template>
-        <button class="button" @click="openLaunchTypeModal">Change launch behaviour</button>
+        <button class="button" @click="openLaunchTypeModal">{{ t('translations.pages.settings.entries.changeLaunchBehaviour.title') }}</button>
     </SettingsViewWrapper>
 </template>

@@ -4,6 +4,7 @@ import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../../components/composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 import R2Error from '../../../model/errors/R2Error';
 
 const store = getStore<State>();
@@ -15,11 +16,9 @@ const props = defineProps<{
 const isCleaning = ref<boolean>(false);
 const cacheStatus = ref<string>('');
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Clean online mod list cache',
-    'Reset mod list cache',
-    'Clean',
-]);
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.cleanOnlineModListCache.searchTerms');
 
 async function refreshStatus() {
     try {
@@ -46,9 +45,9 @@ async function cleanOnlineModList() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Clean online mod list cache</template>
+        <template #title>{{ t('translations.pages.settings.entries.cleanOnlineModListCache.title') }}</template>
         <template #description>
-            Deletes the local copy of the mod list and retrieves a new one.
+            {{ t('translations.pages.settings.entries.cleanOnlineModListCache.description') }}
             <template v-if="cacheStatus">{{ cacheStatus }}</template>
         </template>
         <button
@@ -57,7 +56,7 @@ async function cleanOnlineModList() {
             :disabled="isCleaning"
             @click="cleanOnlineModList"
         >
-            Clean online mod list
+            {{ t('translations.pages.settings.entries.cleanOnlineModListCache.action') }}
         </button>
     </SettingsViewWrapper>
 </template>
