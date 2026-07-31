@@ -11,12 +11,14 @@
                 <div id="activity-bar__right">
                     <div>
                         <ActivityDropdown>
-                            <button type="button" class="activity-bar__action">
+                            <button type="button" class="activity-bar__action"
+                                :aria-label="`${t('metadata.name', 0, { locale })}`"
+                            >
                                 <i class="fas fa-globe-europe"></i> {{ locale }}
                             </button>
                             <template #popper>
                             <ul class="menu-list">
-                                <li v-for="lang in availableLocales"><a v-close-popper @click="() => locale = lang">{{ lang }} ({{ t('metadata.name', undefined, {
+                                <li v-for="lang in availableLocales" :key="`locale-select-${lang}`"><a v-close-popper @click="() => locale = lang">{{ lang }} ({{ t('metadata.name', 0, {
                                     locale: lang
                                 }) }})</a></li>
                             </ul>
