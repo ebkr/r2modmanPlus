@@ -50,5 +50,11 @@ export const GameSelectionTranslation: GameSelectionMessageFormat = {
             hiddenGames: 'Jeux masqués',
             hiddenGamesNotice: 'Ces jeux ne sont plus pris en charge.',
         }
+    },
+    ecosystemUpdate: {
+        updating: 'Mise à jour de la liste des jeux',
+        upToDate: 'Votre liste de jeux est à jour',
+        failed: 'Échec de la mise à jour de la liste des jeux',
+        retry: 'Réessayer la mise à jour de la liste des jeux',
     }
 }

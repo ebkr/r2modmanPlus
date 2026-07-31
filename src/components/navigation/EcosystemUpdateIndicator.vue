@@ -26,11 +26,10 @@ import { computed } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { useI18n } from 'vue-i18n';
-import { ActivityDropdown } from '../all';
 
 const store = getStore<State>();
 
-const { locale, availableLocales,  } = useI18n();
+const { t } = useI18n();
 
 function retryEcosystemUpdate() {
     store.dispatch('ecosystemUpdate/updateEcosystemSchema');
@@ -39,7 +38,7 @@ function retryEcosystemUpdate() {
 const status = computed(() => {
     if (store.state.ecosystemUpdate.isInProgress) {
         return {
-            text: "Updating game list",
+            text: t('translations.pages.gameSelection.ecosystemUpdate.updating'),
             iconClass: "fas fa-sync-alt fa-spin",
             isError: false,
             onClick: undefined,
@@ -48,18 +47,19 @@ const status = computed(() => {
     }
 
     const errorMessage = store.getters['ecosystemUpdate/conciseEcosystemUpdateErrorMessage'];
-    if (errorMessage) {
+    if (errorMessage !== undefined) {
         return {
-            text: errorMessage,
+
+            text: errorMessage || t('translations.pages.gameSelection.ecosystemUpdate.failed'),
             iconClass: "fas fa-exclamation-circle",
             isError: true,
             onClick: retryEcosystemUpdate,
-            tooltip: "Retry game list update",
+            tooltip: t('translations.pages.gameSelection.ecosystemUpdate.retry'),
         };
     }
 
     return {
-        text: "You have the latest game list",
+        text: t('translations.pages.gameSelection.ecosystemUpdate.upToDate'),
         iconClass: "fas fa-check",
         isError: false,
         onClick: undefined,

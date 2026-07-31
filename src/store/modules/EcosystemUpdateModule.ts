@@ -21,7 +21,8 @@ export const EcosystemUpdateModule = {
             if (!state.error) {
                 return undefined;
             }
-            return state.error.message || "Failed to update game list";
+
+            return state.error.message;
         },
     },
 
