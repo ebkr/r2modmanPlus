@@ -12,7 +12,7 @@ import { DownloadMonitorTranslation } from './pages/DownloadMonitorTranslation';
 
 const message = {
     metadata: {
-        name: 'French',
+        name: 'Français',
         locale: 'fr-FR'
     },
     translations: {

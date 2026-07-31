@@ -16,7 +16,9 @@
                             </button>
                             <template #popper>
                             <ul class="menu-list">
-                                <li v-for="lang in availableLocales"><a v-close-popper @click="() => locale = lang">{{ lang }}</a></li>
+                                <li v-for="lang in availableLocales"><a v-close-popper @click="() => locale = lang">{{ lang }} ({{ t('metadata.name', undefined, {
+                                    locale: lang
+                                }) }})</a></li>
                             </ul>
                             </template>
                         </ActivityDropdown>
@@ -83,7 +85,7 @@ const router = useRouter();
 provideStoreImplementation(() => store);
 
 const quasar = useQuasar();
-const { locale, availableLocales } = useI18n();
+const { t, locale, availableLocales } = useI18n();
 
 document.addEventListener('auxclick', e => {
     const target = e.target! as any;
