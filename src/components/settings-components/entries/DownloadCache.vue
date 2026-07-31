@@ -28,7 +28,7 @@ async function toggleCache() {
     <SettingsViewWrapper v-show="isVisible">
         <template #title>Download cache</template>
         <template #description>
-            When enabled, downloads will be skipped if an existing copy is already cache.
+            When enabled, downloads will be skipped if an existing copy is already cached.
         </template>
         <div class="field" @click.prevent.stop="toggleCache">
             <input

@@ -26,7 +26,7 @@ export const SplashTranslation: SplashMessageFormat = {
                         `,
             havingTrouble: {
                 title: 'Besoin d\'aide ?',
-                body: 'Envoyez une capture d\'écran de l\'erreur sur le canal d\'assistance du serveur Discord.',
+                body: 'Envoyez une capture d\'écran de l\'erreur sur le canal d\'assistance du serveur Discord {appName}.',
                 serverLinkText: 'Rejoignez le serveur Discord {appName}'
             }
         },

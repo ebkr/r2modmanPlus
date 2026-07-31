@@ -36,7 +36,7 @@ function openErrorModal() {
             </span>
             <span v-else-if="store.getters['download/activeDownloadCount'] > 0">
                 An error occurred when refreshing the mod list from Thunderstore.<br />
-                However, the mod list can't be refreshed while the are mod downloads in progress.<br />
+                However, the mod list can't be refreshed while there are mod downloads in progress.<br />
                 Please wait for the downloads to finish before continuing.
             </span>
             <span v-else>
