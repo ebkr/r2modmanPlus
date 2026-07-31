@@ -4,6 +4,7 @@ import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 import CacheUtil from '../../../r2mm/mods/CacheUtil';
 import R2Error from '../../../model/errors/R2Error';
 
@@ -16,14 +17,9 @@ const props = defineProps<{
 const cacheEnabled = computed<boolean>(() => !store.state.download.ignoreCache);
 const isCleaning = ref<boolean>(false);
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Mod cache',
-    'Download cache',
-    'Reuse cached downloads',
-    'Toggle',
-    'Clean mod cache',
-    'Free space',
-]);
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.modCache.searchTerms');
 
 async function toggleCache() {
     await store.dispatch('download/toggleIgnoreCache');
@@ -43,9 +39,9 @@ async function cleanCache() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Mod cache</template>
+        <template #title>{{ t('translations.pages.settings.entries.modCache.title') }}</template>
         <template #description>
-            Downloaded mods are kept in a cache so that they don't need to be downloaded again.
+            {{ t('translations.pages.settings.entries.modCache.description') }}
         </template>
         <div class="setting-column">
             <div class="field" @click.prevent.stop="toggleCache">
@@ -56,10 +52,10 @@ async function cleanCache() {
                     :checked="cacheEnabled"
                 />
                 <label for="toggle-download-cache">
-                    {{ cacheEnabled ? 'Enabled' : 'Disabled' }}
+                    {{ cacheEnabled ? t('translations.pages.settings.entries.modCache.enabled') : t('translations.pages.settings.entries.modCache.disabled') }}
                 </label>
-                <p class="setting-hint" @click.stop.prevent>{{ cacheEnabled ? 'Reusing cached downloads (recommended)' : 'Ignores the cache when downloading mods. Re-downloads each time.' }}</p>
-                <p class="setting-hint" v-if="!cacheEnabled" @click.stop.prevent>Mods will still be written to the cache and will continue to use disk space.</p>
+                <p class="setting-hint" @click.stop.prevent>{{ cacheEnabled ? t('translations.pages.settings.entries.modCache.enabledHint') : t('translations.pages.settings.entries.modCache.disabledHint') }}</p>
+                <p class="setting-hint" v-if="!cacheEnabled" @click.stop.prevent>{{ t('translations.pages.settings.entries.modCache.stillWritten') }}</p>
             </div>
             <div class="setting-row">
                 <button
@@ -68,9 +64,9 @@ async function cleanCache() {
                     :disabled="isCleaning"
                     @click="cleanCache"
                 >
-                    Clean cache
+                    {{ t('translations.pages.settings.entries.modCache.action') }}
                 </button>
-                <span class="setting-hint">Removes cached mods that aren't in any profile to free up storage space.</span>
+                <span class="setting-hint">{{ t('translations.pages.settings.entries.modCache.actionDescription') }}</span>
             </div>
         </div>
     </SettingsViewWrapper>

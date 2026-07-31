@@ -6,6 +6,7 @@ import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 import ThemeManager from '../../../r2mm/manager/ThemeManager';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
 const settings = ref<ManagerSettings | null>(null);
@@ -15,12 +16,9 @@ const props = defineProps<{
     searchTerm?: string;
 }>();
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Theme',
-    'Light',
-    'Dark',
-    'Appearance',
-]);
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.theme.searchTerms');
 
 onMounted(async () => {
     settings.value = await ManagerSettings.getSingleton(store.state.activeGame);
@@ -40,17 +38,17 @@ async function setTheme(value: 'light' | 'dark') {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Theme</template>
+        <template #title>{{ t('translations.pages.settings.entries.theme.title') }}</template>
         <template #description>
-            Choose between a light or dark appearance for the manager.
+            {{ t('translations.pages.settings.entries.theme.description') }}
         </template>
         <select
             class="select"
             :value="theme"
             @change="setTheme(($event.target as HTMLSelectElement).value as 'light' | 'dark')"
         >
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
+            <option value="light">{{ t('translations.pages.settings.entries.theme.light') }}</option>
+            <option value="dark">{{ t('translations.pages.settings.entries.theme.dark') }}</option>
         </select>
     </SettingsViewWrapper>
 </template>

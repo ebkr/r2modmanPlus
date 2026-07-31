@@ -6,6 +6,7 @@ import { State } from '../../../store';
 import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 import InteractionProvider from '../../../providers/ror2/system/InteractionProvider';
 import path from '../../../providers/node/path/path';
 import FsProvider from '../../../providers/generic/file/FsProvider';
@@ -31,12 +32,10 @@ function syncSteamDirectory() {
     steamDirectory.value = settings.value?.getContext().global.steamDirectory || 'Not set';
 }
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
-    'Change Steam folder',
-    'Change Steam directory',
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.steamDirectory.searchTerms', () => [
     steamDirectory.value,
-    'Browse',
-    'Directories',
 ]);
 
 onMounted(async () => {
@@ -112,10 +111,10 @@ function browseDirectory() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Steam folder</template>
+        <template #title>{{ t('translations.pages.settings.entries.steamDirectory.title') }}</template>
         <template #description>
-            <p>The Steam folder containing the Steam executable.</p>
-            <p>This is how {{ appName }} will launch the game.</p>
+            <p>{{ t('translations.pages.settings.entries.steamDirectory.description') }}</p>
+            <p>{{ t('translations.pages.settings.entries.steamDirectory.value', { appName }) }}</p>
         </template>
         <div class="setting-column">
             <div class="setting-row">
@@ -125,8 +124,8 @@ function browseDirectory() {
                     :value="steamDirectory"
                     readonly
                 />
-                <button class="button" @click="changeSteamDirectory">Change</button>
-                <button class="button" @click="browseDirectory">Browse</button>
+                <button class="button" @click="changeSteamDirectory">{{ t('translations.pages.settings.actions.change') }}</button>
+                <button class="button" @click="browseDirectory">{{ t('translations.pages.settings.actions.browse') }}</button>
             </div>
         </div>
     </SettingsViewWrapper>

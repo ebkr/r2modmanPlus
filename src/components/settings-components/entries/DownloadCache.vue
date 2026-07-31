@@ -4,6 +4,7 @@ import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
 import SettingsViewWrapper from '../../../SettingsViewWrapper.vue';
 import { useSettingSearch } from 'components/composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
 
@@ -13,11 +14,9 @@ const props = defineProps<{
 
 const cacheEnabled = computed<boolean>(() => !store.state.download.ignoreCache);
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Toggle download cache',
-    'Download cache',
-    'Toggle',
-]);
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.downloadCache.searchTerms');
 
 async function toggleCache() {
     await store.dispatch('download/toggleIgnoreCache');
@@ -26,9 +25,9 @@ async function toggleCache() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Download cache</template>
+        <template #title>{{ t('translations.pages.settings.entries.downloadCache.title') }}</template>
         <template #description>
-            When enabled, downloads will be skipped if an existing copy is already cached.
+            {{ t('translations.pages.settings.entries.downloadCache.description') }}
         </template>
         <div class="field" @click.prevent.stop="toggleCache">
             <input
@@ -37,7 +36,7 @@ async function toggleCache() {
                 :class="['switch', { 'is-info': cacheEnabled }]"
                 :checked="cacheEnabled"
             />
-            <label for="toggle-download-cache">{{ cacheEnabled ? 'Enabled (recommended)' : 'Disabled' }}</label>
+            <label for="toggle-download-cache">{{ cacheEnabled ? t('translations.pages.settings.entries.downloadCache.enabled') : t('translations.pages.settings.entries.downloadCache.disabled') }}</label>
         </div>
     </SettingsViewWrapper>
 </template>

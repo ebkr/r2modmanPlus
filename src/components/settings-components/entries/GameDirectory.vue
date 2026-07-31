@@ -14,6 +14,7 @@ import AppWindow from '../../../providers/node/app/app_window';
 import os from '../../../providers/node/os/os';
 import R2Error from '../../../model/errors/R2Error';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 import ManagerInformation from '../../../_managerinf/ManagerInformation';
 
 const store = getStore<State>();
@@ -31,14 +32,10 @@ function syncGameDirectory() {
     gameDirectory.value = settings.value?.getContext().gameSpecific.gameDirectory || 'Not set';
 }
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
-    `${activeGame.value.displayName} folder`,
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.gameDirectory.searchTerms', () => [
     gameDirectory.value,
-    'Change',
-    'Browse',
-    "Game",
-    "Directory",
-    "Directories"
 ]);
 
 onMounted(async () => {
@@ -150,14 +147,20 @@ function openHelpLink() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>{{ activeGame.displayName }} folder</template>
+        <template #title>{{ t('translations.pages.settings.entries.gameDirectory.title', { gameName: activeGame.displayName }) }}</template>
         <template #description>
             <p>
-                The game directory is required to place the appropriate files correctly.
+                {{ t('translations.pages.settings.entries.gameDirectory.description') }}
             </p>
-            <p v-if="StorePlatform[activeGame.activePlatform.storePlatform] === StorePlatform.steam">
-                <code class="code">{{ activeGame.displayName }}</code> will launch without mods if this is not set appropriately.
-            </p>
+            <i18n-t
+                tag="p"
+                keypath="translations.pages.settings.entries.gameDirectory.warning"
+                v-if="StorePlatform[activeGame.activePlatform.storePlatform] === StorePlatform.steam"
+            >
+                <template v-slot:gameName>
+                    <code class="code">{{ activeGame.displayName }}</code>
+                </template>
+            </i18n-t>
         </template>
         <div class="setting-column">
             <div class="setting-row">
@@ -167,10 +170,10 @@ function openHelpLink() {
                     :value="gameDirectory"
                     readonly
                 />
-                <button class="button" @click="changeGameInstallDirectory">Change</button>
-                <button class="button" @click="browseDirectory">Browse</button>
+                <button class="button" @click="changeGameInstallDirectory">{{ t('translations.pages.settings.actions.change') }}</button>
+                <button class="button" @click="browseDirectory">{{ t('translations.pages.settings.actions.browse') }}</button>
             </div>
-            <a href="#" class="help-link" @click.prevent.stop="openHelpLink">I'm not sure what this should be</a>
+            <a href="#" class="help-link" @click.prevent.stop="openHelpLink">{{ t('translations.pages.settings.entries.gameDirectory.unsure') }}</a>
         </div>
     </SettingsViewWrapper>
 </template>
