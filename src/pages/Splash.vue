@@ -71,10 +71,10 @@
                                         </span>
                                         <strong>{{ t('translations.pages.splash.content.main.havingTrouble.title') }}</strong>
                                     </p>
-                                    <p>{{ t('translations.pages.splash.content.main.havingTrouble.body') }}</p>
+                                    <p>{{ t('translations.pages.splash.content.main.havingTrouble.body', {appName: appName}) }}</p>
                                     <p>
                                         <ExternalLink url="https://discord.gg/p4yW4bxfSa">
-                                            {{ t('translations.pages.splash.content.main.havingTrouble.serverLinkText', appName) }}
+                                            {{ t('translations.pages.splash.content.main.havingTrouble.serverLinkText', {appName: appName}) }}
                                         </ExternalLink>
                                     </p>
                                 </div>

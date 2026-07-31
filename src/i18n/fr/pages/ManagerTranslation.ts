@@ -111,7 +111,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
             confirmation: 'Je comprends'
         },
         dependencyStrings: {
-            title: 'Liste des identifiants de dépendance',
+            title: 'Liste des chaînes de dépendance',
             dependency: '{modName}-{versionNumber}',
             close: 'Fermer'
         },

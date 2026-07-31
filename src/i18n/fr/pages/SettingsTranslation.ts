@@ -84,7 +84,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
             }
         },
         toggleThunderstoreCdn: {
-            title: 'Activer / désactiver le CDN Thunderstore préféré',
+            title: 'Changer le CDN Thunderstore préféré',
             description: 'Changer le CDN jusqu\'au redémarrage de l\'application. Cela pourrait contourner les problèmes de téléchargement des mods.',
             current: 'Actuel : {label} ({url})'
         },
@@ -167,9 +167,9 @@ export const SettingsTranslation: SettingsMessageFormat = {
         },
         switchCardDisplayType: {
             title: 'Changer le type d\'affichage des cartes',
-            description: 'Basculer entre les cartes agrandies ou réduites.',
+            description: 'Basculer entre les cartes développées ou réduites.',
             states: {
-                expanded: 'Actuel : Agrandies',
+                expanded: 'Actuel : Développées',
                 collapsed: 'Actuel : Réduites (par défaut)'
             }
         },

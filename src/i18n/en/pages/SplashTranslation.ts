@@ -27,7 +27,7 @@ export const SplashTranslation: SplashMessageFormat = {
                         `,
             havingTrouble: {
                 title: 'Having trouble?',
-                body: 'Send a screenshot of the error in the support channel of the r2modman Discord server.',
+                body: 'Send a screenshot of the error in the support channel of the {appName} Discord server.',
                 serverLinkText: 'Join the {appName} Discord server',
             },
         },
