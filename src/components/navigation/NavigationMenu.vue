@@ -8,7 +8,9 @@
                         <button class="launch-split__start" @click="launchGame(selectedMode)">
                             <i class="fas fa-play fa-fw" />
                             <span>
-                                Start {{ selectedMode === LaunchMode.MODDED ? 'modded' : 'vanilla' }}
+                                {{ selectedMode === LaunchMode.MODDED
+                                    ? t('translations.pages.manager.navigation.gameActions.startModded')
+                                    : t('translations.pages.manager.navigation.gameActions.startVanilla') }}
                             </span>
                         </button>
                         <ActivityDropdown trigger="click" placement="bottom-end">
@@ -24,13 +26,13 @@
                                     <li v-if="selectedMode === LaunchMode.VANILLA">
                                         <a v-close-popper @click="selectedMode = LaunchMode.MODDED">
                                             <i class="fas fa-play fa-fw" />
-                                            Start modded
+                                            {{ t('translations.pages.manager.navigation.gameActions.startModded') }}
                                         </a>
                                     </li>
                                     <li v-else>
                                         <a v-close-popper @click="selectedMode = LaunchMode.VANILLA">
                                             <i class="fas fa-play fa-fw" />
-                                            Start vanilla
+                                            {{ t('translations.pages.manager.navigation.gameActions.startVanilla') }}
                                         </a>
                                     </li>
                                 </ul>
@@ -39,7 +41,7 @@
                     </div>
                 </div>
                 <hr/>
-                <p class="menu-label">Mods</p>
+                <p class="menu-label">{{ t('translations.pages.manager.navigation.modsActions.label') }}</p>
                 <div>
                     <ul class="menu-list">
                         <li>

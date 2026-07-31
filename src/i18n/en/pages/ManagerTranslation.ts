@@ -25,6 +25,11 @@ export const ManagerTranslation: ManagerMessageFormat = {
             label: 'Profile',
             gameIconAltText: 'Game image',
             close: 'Close',
+        },
+        activityBar: {
+            exportProfile: 'Export profile',
+            exportToCode: 'Export to code',
+            exportToFile: 'Export to file',
         }
     },
     installed: {

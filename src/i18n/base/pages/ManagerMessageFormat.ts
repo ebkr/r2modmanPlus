@@ -23,6 +23,11 @@ export type ManagerMessageFormat = {
             label: string;
             gameIconAltText: string;
             close: string;
+        },
+        activityBar: {
+            exportProfile: string;
+            exportToCode: string;
+            exportToFile: string;
         }
     },
     installed: {
