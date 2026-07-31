@@ -50,5 +50,11 @@ export const GameSelectionTranslation: GameSelectionMessageFormat = {
             hiddenGames: 'Hidden games',
             hiddenGamesNotice: 'These games are no longer supported.',
         }
+    },
+    ecosystemUpdate: {
+        updating: 'Updating game list',
+        upToDate: 'You have the latest game list',
+        failed: 'Failed to update game list',
+        retry: 'Retry game list update',
     }
 }

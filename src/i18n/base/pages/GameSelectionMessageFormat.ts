@@ -48,5 +48,11 @@ export type GameSelectionMessageFormat = {
             hiddenGames: string;
             hiddenGamesNotice: string;
         }
+    },
+    ecosystemUpdate: {
+        updating: string;
+        upToDate: string;
+        failed: string;
+        retry: string;
     }
 }
