@@ -3,7 +3,7 @@
         <div class="fa-3x">
             <i class="fas fa-circle-notch fa-spin"></i>
         </div>
-        <p>Preparing games</p>
+        <p>{{ t('translations.pages.gameSelection.loading') }}</p>
     </div>
     <div id="game-selection-screen" v-else>
         <EcosystemUpdateIndicator />

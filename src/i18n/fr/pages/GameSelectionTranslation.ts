@@ -23,12 +23,24 @@ export const GameSelectionTranslation: GameSelectionMessageFormat = {
         game: 'Jeu',
         server: 'Serveur'
     },
+    noResults: {
+        empty: {
+            game: 'Aucun jeu ne correspond à "{filterText}"',
+            server: 'Aucun serveur ne correspond à "{filterText}"',
+        },
+        title: 'Vous ne trouvez pas ce que vous cherchez ?',
+        suggestion: 'Essayez un autre titre ou mot-clé. Il se peut que ce jeu ne soit pas encore pris en charge.',
+    },
     actions: {
         select: {
             game: 'Sélectionner',
             server: 'Sélectionner'
         },
-        setAsDefault: 'Définir par défaut'
+        setAsDefault: 'Définir par défaut',
+        request: {
+            game: 'Demander l\'ajout d\'un jeu',
+            server: 'Demander l\'ajout d\'un serveur',
+        }
     },
     filter: {
         placeholder: {
@@ -38,6 +50,7 @@ export const GameSelectionTranslation: GameSelectionMessageFormat = {
     },
     cardView: {
         imageAltText: 'Image du jeu',
+        newBadge: 'Nouveau',
         sections: {
             favourites: 'Favoris',
             games: 'Jeux',

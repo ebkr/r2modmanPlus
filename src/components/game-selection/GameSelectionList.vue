@@ -6,10 +6,10 @@
                     <div>
                         <i class="fas fa-gamepad fa-4x"></i>
                         <br/>
-                        <h3 class="title is-4">No {{ activeTab }}s found matching "{{ filterText }}"</h3>
-                        <p class="subtitle">Try a different game title or keyword. We may not support this game yet.</p>
+                        <h3 class="title is-4">{{ t(`translations.pages.gameSelection.noResults.empty.${activeTab}`, { filterText }) }}</h3>
+                        <p class="subtitle">{{ t('translations.pages.gameSelection.noResults.suggestion') }}</p>
                         <button class="button margin-top icon-button" @click.prevent.stop="requestNewGame">
-                            <span>Request a new {{ activeTab }}</span>
+                            <span>{{ t(`translations.pages.gameSelection.actions.request.${activeTab}`) }}</span>
                             <i class="margin-left--half-width fas fa-external-link-alt"></i>
                         </button>
                     </div>
@@ -46,9 +46,9 @@
                         @toggle-favourite="toggleFavourite(game)"
                     />
                     <div class="request-game margin-bottom" v-if="resultCount > 0">
-                        <h3 class="title is-5">Can't find what you're looking for?</h3>
+                        <h3 class="title is-5">{{ t('translations.pages.gameSelection.noResults.title') }}</h3>
                         <button class="button margin-top" @click.prevent.stop="requestNewGame">
-                            <span>Request a new {{ activeTab }}</span>
+                            <span>{{ t(`translations.pages.gameSelection.actions.request.${activeTab}`) }}</span>
                             <i class="margin-left--half-width fas fa-external-link-alt"></i>
                         </button>
                     </div>
@@ -175,9 +175,9 @@
                 </div>
                 <div class="request-game margin-bottom" v-if="resultCount > 0">
                     <hr/>
-                    <h3 class="title is-5">Can't find what you're looking for?</h3>
+                    <h3 class="title is-5">{{ t('translations.pages.gameSelection.noResults.title') }}</h3>
                     <button class="button margin-top" @click.prevent.stop="requestNewGame">
-                        <span>Request a new {{ activeTab }}</span>
+                        <span>{{ t(`translations.pages.gameSelection.actions.request.${activeTab}`) }}</span>
                         <i class="margin-left--half-width fas fa-external-link-alt"></i>
                     </button>
                 </div>

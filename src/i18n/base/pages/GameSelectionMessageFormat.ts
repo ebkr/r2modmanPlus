@@ -23,12 +23,24 @@ export type GameSelectionMessageFormat = {
             server: string;
         };
     },
+    noResults: {
+        empty: {
+            game: string;
+            server: string;
+        },
+        title: string;
+        suggestion: string;
+    },
     actions: {
         select: {
             game: string;
             server: string;
         },
         setAsDefault: string;
+        request: {
+            game: string;
+            server: string;
+        };
     },
     tabs: {
         game: string;
@@ -36,6 +48,7 @@ export type GameSelectionMessageFormat = {
     },
     cardView: {
         imageAltText: string;
+        newBadge: string;
         sections: {
             favourites: string;
             games: string;

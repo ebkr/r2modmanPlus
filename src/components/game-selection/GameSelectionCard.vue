@@ -10,7 +10,7 @@
                 </template>
             </div>
             <div class="game-card__new-badge" v-if="isNew">
-                <i class="fas fa-bolt game-card__new-badge-icon"></i> New
+                <i class="fas fa-bolt game-card__new-badge-icon"></i> {{ t('translations.pages.gameSelection.cardView.newBadge') }}
             </div>
             <div class="game-card__overlay">
                 <div class="game-card__overlay-spacer"></div>
