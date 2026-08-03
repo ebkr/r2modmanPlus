@@ -3,6 +3,7 @@ import {SplashTranslation} from "./pages/SplashTranslation";
 import {PlatformTranslation} from "./platforms/PlatformTranslation";
 import { ModListStatusTranslation } from './modListStatus/ModListStatusTranslation';
 import { BannerTranslation } from './banners/BannerTranslation';
+import { ModalTranslation } from './modals/ModalTranslation';
 import {ProfileSelectionTranslation} from "./pages/ProfileSelectionTranslation";
 import {ManagerTranslation} from './pages/ManagerTranslation';
 import { DateTimeFormat } from 'src/i18n';
@@ -31,6 +32,7 @@ const message = {
         platforms: PlatformTranslation,
         modListStatus: ModListStatusTranslation,
         banners: BannerTranslation,
+        modals: ModalTranslation,
         enums: EnumTranslation
     }
 };

@@ -40,13 +40,13 @@ const isOpen = computed(() => store.state.modals.isOnlineSortModalOpen)
     <ModalCard id="sort-modal" v-show="isOpen" :is-active="isOpen" :can-close="true" @close-modal="closeModal">
         <template v-slot:header>
             <h2 class="modal-title">
-                {{ t('translations.pages.manager.online.modals.sort.title') }}
+                {{ t('translations.modals.sort.title') }}
             </h2>
         </template>
         <template v-slot:body>
             <div class="input-group">
                 <label>
-                    {{ t('translations.pages.manager.online.modals.sort.sortBehaviour') }}
+                    {{ t('translations.modals.sort.sortBehaviour') }}
                 </label>
                 <div class="input-group margin-bottom">
                     <select class="select select--content-spacing" v-model="selectedBehaviour">
@@ -58,7 +58,7 @@ const isOpen = computed(() => store.state.modals.isOnlineSortModalOpen)
             </div>
             <div class="input-group">
                 <label>
-                    {{ t('translations.pages.manager.online.modals.sort.sortDirection') }}
+                    {{ t('translations.modals.sort.sortDirection') }}
                 </label>
                 <div class="input-group margin-bottom">
                     <select class="select select--content-spacing" v-model="selectedDirection">
@@ -71,7 +71,7 @@ const isOpen = computed(() => store.state.modals.isOnlineSortModalOpen)
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="closeModal">
-                {{ t('translations.pages.manager.online.modals.sort.close') }}
+                {{ t('translations.modals.sort.close') }}
             </button>
         </template>
     </ModalCard>

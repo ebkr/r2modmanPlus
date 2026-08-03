@@ -21,18 +21,18 @@ function close() {
 <template>
     <ModalCard id="incorrect-game-directory-modal" v-show="isOpen" :is-active="isOpen" @close-modal="close">
         <template v-slot:header>
-            <h2 class="modal-title">{{ t('translations.pages.manager.modals.failedToSetTheGameFolder.title', { gameName: activeGame.displayName }) }}</h2>
+            <h2 class="modal-title">{{ t('translations.modals.failedToSetTheGameFolder.title', { gameName: activeGame.displayName }) }}</h2>
         </template>
         <template v-slot:body>
-            <p>{{ t('translations.pages.manager.modals.failedToSetTheGameFolder.executableMustBeOneOf') }}</p>
+            <p>{{ t('translations.modals.failedToSetTheGameFolder.executableMustBeOneOf') }}</p>
             <ul class="list">
                 <li v-for="exe in activeGame.exeName"><strong>{{ exe }}</strong></li>
             </ul>
-            <p class="margin-top">{{ t('translations.pages.manager.modals.failedToSetTheGameFolder.solution') }}</p>
+            <p class="margin-top">{{ t('translations.modals.failedToSetTheGameFolder.solution') }}</p>
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="close">
-                {{ t('translations.pages.manager.modals.clearingGameDirectory.confirmation') }}
+                {{ t('translations.modals.clearingGameDirectory.confirmation') }}
             </button>
         </template>
     </ModalCard>

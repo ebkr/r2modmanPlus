@@ -1,8 +1,4 @@
 export type GameSelectionMessageFormat = {
-    platformModal: {
-        header: string;
-        selectAction: string;
-    },
     pageTitle: {
         title: {
             game: string;

@@ -35,39 +35,39 @@ async function updateAllToLatestVersion() {
     <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-if="modsWithUpdates.length === 0" @close-modal="closeModal()">
         <template v-slot:header>
             <h2 class='modal-title'>
-                {{ t('translations.pages.manager.modals.updateAllInstalledMods.noModsToUpdate.title') }}
+                {{ t('translations.modals.updateAllInstalledMods.noModsToUpdate.title') }}
             </h2>
         </template>
         <template v-slot:body>
-            <p>{{ t('translations.pages.manager.modals.updateAllInstalledMods.noModsToUpdate.content')}}</p>
+            <p>{{ t('translations.modals.updateAllInstalledMods.noModsToUpdate.content')}}</p>
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="closeModal()">
-                {{ t('translations.pages.manager.modals.updateAllInstalledMods.noModsToUpdate.close') }}
+                {{ t('translations.modals.updateAllInstalledMods.noModsToUpdate.close') }}
             </button>
         </template>
     </ModalCard>
     <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-else @close-modal="closeModal()">
         <template v-slot:header>
             <h2 class='modal-title'>
-                {{ t('translations.pages.manager.modals.updateAllInstalledMods.hasModsToUpdate.title') }}
+                {{ t('translations.modals.updateAllInstalledMods.hasModsToUpdate.title') }}
             </h2>
         </template>
         <template v-slot:body>
-            <p>{{ t('translations.pages.manager.modals.updateAllInstalledMods.hasModsToUpdate.content.willBeUpdated') }}</p>
-            <p>{{ t('translations.pages.manager.modals.updateAllInstalledMods.hasModsToUpdate.content.missingDependenciesInstalled') }}</p>
-            <p>{{ t('translations.pages.manager.modals.updateAllInstalledMods.hasModsToUpdate.content.whatWillHappen') }}</p>
+            <p>{{ t('translations.modals.updateAllInstalledMods.hasModsToUpdate.content.willBeUpdated') }}</p>
+            <p>{{ t('translations.modals.updateAllInstalledMods.hasModsToUpdate.content.missingDependenciesInstalled') }}</p>
+            <p>{{ t('translations.modals.updateAllInstalledMods.hasModsToUpdate.content.whatWillHappen') }}</p>
             <br/>
             <ul class="list">
                 <li class="list-item" v-for='(mod, index) in modsWithUpdates'
                     :key='`to-update-${index}-${mod.getFullName()}`'>
-                    {{ t('translations.pages.manager.modals.updateAllInstalledMods.hasModsToUpdate.content.modUpdatedTo', { modName: mod.getName(), version: mod.getLatestVersion() }) }}
+                    {{ t('translations.modals.updateAllInstalledMods.hasModsToUpdate.content.modUpdatedTo', { modName: mod.getName(), version: mod.getLatestVersion() }) }}
                 </li>
             </ul>
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="updateAllToLatestVersion()">
-                {{ t('translations.pages.manager.modals.updateAllInstalledMods.hasModsToUpdate.updateAll') }}
+                {{ t('translations.modals.updateAllInstalledMods.hasModsToUpdate.updateAll') }}
             </button>
         </template>
     </ModalCard>

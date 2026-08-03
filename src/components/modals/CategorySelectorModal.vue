@@ -30,7 +30,7 @@ function emitDeselected(key: string) {
         <div class="input-group margin-bottom">
             <select class="select select--content-spacing" @change="emitSelected">
                 <option selected disabled>
-                    {{ t('translations.pages.manager.modals.categorySelector.selectCategory') }}
+                    {{ t('translations.modals.categorySelector.selectCategory') }}
                 </option>
                 <option v-for="(key, index) in selectableCategories" :key="`category--${key}-${index}`">
                     {{ key }}
@@ -50,7 +50,7 @@ function emitDeselected(key: string) {
         <div class="field has-addons" v-else>
             <span class="tags">
                 <span class="tag">
-                    {{ t('translations.pages.manager.modals.categorySelector.noCategoriesSelected') }}
+                    {{ t('translations.modals.categorySelector.noCategoriesSelected') }}
                 </span>
             </span>
         </div>

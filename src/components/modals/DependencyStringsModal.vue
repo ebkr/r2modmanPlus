@@ -21,7 +21,7 @@ function close() {
 <template>
     <ModalCard id="dependency-strings-modal" v-show="isOpen" :is-active="isOpen" @close-modal="close">
         <template v-slot:header>
-            <h2 class="modal-title">{{ t('translations.pages.manager.modals.dependencyStrings.title') }}</h2>
+            <h2 class="modal-title">{{ t('translations.modals.dependencyStrings.title') }}</h2>
         </template>
         <template v-slot:body>
             <ul>
@@ -31,7 +31,7 @@ function close() {
             </ul>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="close">{{ t('translations.pages.manager.modals.dependencyStrings.close') }}</button>
+            <button class="button is-info" @click="close">{{ t('translations.modals.dependencyStrings.close') }}</button>
         </template>
     </ModalCard>
 </template>

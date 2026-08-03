@@ -20,25 +20,25 @@ function close() {
 <template>
     <ModalCard id="steam-installation-validation-modal" v-show="isOpen" :is-active="isOpen" @close-modal="close">
         <template v-slot:header>
-            <h2 class="modal-title">{{ t('translations.pages.manager.modals.clearingGameDirectory.title', { gameName: activeGame.displayName }) }}</h2>
+            <h2 class="modal-title">{{ t('translations.modals.clearingGameDirectory.title', { gameName: activeGame.displayName }) }}</h2>
         </template>
         <template v-slot:body>
             <div class="notification is-warning">
                 <p>
-                    {{ t('translations.pages.manager.modals.clearingGameDirectory.waitToLaunchGame') }}
+                    {{ t('translations.modals.clearingGameDirectory.waitToLaunchGame') }}
                 </p>
             </div>
             <p>
-                {{ t('translations.pages.manager.modals.clearingGameDirectory.steamWillBeStarted', { gameName: activeGame.displayName }) }}
+                {{ t('translations.modals.clearingGameDirectory.steamWillBeStarted', { gameName: activeGame.displayName }) }}
             </p>
             <br/>
             <p>
-                {{ t('translations.pages.manager.modals.clearingGameDirectory.checkSteamForProgress') }}
+                {{ t('translations.modals.clearingGameDirectory.checkSteamForProgress') }}
             </p>
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="close">
-                {{ t('translations.pages.manager.modals.clearingGameDirectory.confirmation') }}
+                {{ t('translations.modals.clearingGameDirectory.confirmation') }}
             </button>
         </template>
     </ModalCard>

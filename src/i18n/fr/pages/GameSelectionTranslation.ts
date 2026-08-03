@@ -1,10 +1,6 @@
 import {GameSelectionMessageFormat} from "../../base/pages/GameSelectionMessageFormat";
 
 export const GameSelectionTranslation: GameSelectionMessageFormat = {
-    platformModal: {
-        header: "Sélectionnez le magasin pour vos jeux",
-        selectAction: "Sélectionnez le magasin"
-    },
     pageTitle: {
         title: {
             game: 'Sélectionnez un jeu',

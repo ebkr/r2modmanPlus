@@ -192,10 +192,10 @@ function openReviewModal() {
                 {{ t('translations.pages.manager.installed.localModCard.display.releasedAt', { formattedDate: d(version!.getDateCreated()!.getTime(), 'long', dateLocale) }) }}
             </p>
             <div class="notification is-warning" v-if="isConcerningPackage(props.mod)">
-                <p>{{ t('translations.pages.manager.modals.concerningPackage.notFound') }}</p>
+                <p>{{ t('translations.modals.concerningPackage.notFound') }}</p>
                 <p><strong>{{ t('translations.pages.manager.installed.localModCard.concerning.recommendation') }}</strong></p>
                 <button class="button" @click.stop.prevent="openReviewModal">
-                    {{ t('translations.pages.manager.modals.concerningPackage.actions.review') }}
+                    {{ t('translations.modals.concerningPackage.actions.review') }}
                 </button>
             </div>
         </template>

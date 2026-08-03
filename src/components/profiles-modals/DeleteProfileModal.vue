@@ -37,24 +37,24 @@ async function removeProfile() {
 
         <template v-slot:header>
             <h2 class="modal-title">
-                {{ t('translations.pages.profileSelection.deleteProfileModal.title') }}
+                {{ t('translations.modals.deleteProfile.title') }}
             </h2>
         </template>
         <template v-slot:body>
             <p>
-                {{ t('translations.pages.profileSelection.deleteProfileModal.content.resultingAction') }}
+                {{ t('translations.modals.deleteProfile.content.resultingAction') }}
             </p>
             <p>
-                {{ t('translations.pages.profileSelection.deleteProfileModal.content.preventAction') }}
+                {{ t('translations.modals.deleteProfile.content.preventAction') }}
             </p>
-            <p>{{ t('translations.pages.profileSelection.deleteProfileModal.content.confirmation') }}</p>
+            <p>{{ t('translations.modals.deleteProfile.content.confirmation') }}</p>
         </template>
         <template v-slot:footer>
             <button
                 :disabled="deletingInProgress"
                 class="button is-danger"
                 @click="removeProfile()">
-                {{ t('translations.pages.profileSelection.deleteProfileModal.actions.delete') }}
+                {{ t('translations.modals.deleteProfile.actions.delete') }}
             </button>
         </template>
 
