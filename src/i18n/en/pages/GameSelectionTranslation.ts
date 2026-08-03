@@ -23,12 +23,24 @@ export const GameSelectionTranslation: GameSelectionMessageFormat = {
         game: 'Game',
         server: 'Server'
     },
+    noResults: {
+        empty: {
+            game: 'No games found matching "{filterText}"',
+            server: 'No servers found matching "{filterText}"',
+        },
+        title: 'Can\'t find what you\'re looking for?',
+        suggestion: 'Try a different game title or keyword. We may not support this game yet.',
+    },
     actions: {
         select: {
             game: 'Select game',
             server: 'Select server'
         },
-        setAsDefault: 'Set as default'
+        setAsDefault: 'Set as default',
+        request: {
+            game: 'Request a new game',
+            server: 'Request a new server',
+        }
     },
     filter: {
         placeholder: {
@@ -38,6 +50,7 @@ export const GameSelectionTranslation: GameSelectionMessageFormat = {
     },
     cardView: {
         imageAltText: 'Game image',
+        newBadge: 'New',
         sections: {
             favourites: 'Favourites',
             games: 'Games',
