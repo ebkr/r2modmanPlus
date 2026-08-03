@@ -84,14 +84,6 @@ export const ProfileSelectionTranslation: ProfileSelectionMessageFormat = {
                     L'actualisation de la liste des mods en ligne pourrait résoudre le problème. Veuillez patienter.
                     `,
                     waitingForModDownloads: 'En attente de la fin des téléchargements de mods avant d\'actualiser la liste en ligne',
-                    refreshStatus: {
-                        checkingForUpdates: 'Vérification des mises à jour de la liste des mods depuis Thunderstore',
-                        loadingLatestModList: 'Chargement de la dernière liste de mods depuis Thunderstore : {progress} %',
-                        pruneCache: 'Élagage des mods qui ne sont plus disponibles dans le cache local',
-                        processingModList: 'Traitement de la liste des mods',
-                        almostDone: 'Presque terminé',
-                        resettingCache: 'Réinitialisation du cache des mods',
-                    }
                 }
             },
             reviewImport: {

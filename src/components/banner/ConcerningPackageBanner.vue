@@ -1,8 +1,12 @@
 <script setup lang="ts">
 
 import { getStore } from '@r2/providers/generic/store/StoreProvider';
+import { useI18n } from 'vue-i18n';
 import { State } from '@r2/store';
 import { useConcerningPackageComposable } from '@r2/components/composables/ConcerningPackageComposable';
+
+
+const { t } = useI18n();
 
 const store = getStore<State>();
 const { hasConcerningPackages } = useConcerningPackageComposable();
@@ -14,7 +18,7 @@ function addUnlinkedFilter() {
 
 <template>
     <div class="notification is-concern margin-right" v-show="hasConcerningPackages">
-        <span>You have mods that can no longer be found on Thunderstore.</span> <a href="#" @click.stop.prevent="addUnlinkedFilter">Click here to review packages.</a>
+        <span>{{ t('translations.banners.concerningPackage.text') }}</span> <a href="#" @click.stop.prevent="addUnlinkedFilter">{{ t('translations.banners.concerningPackage.action') }}</a>
     </div>
 </template>
 

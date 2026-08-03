@@ -1,8 +1,4 @@
 export type ManagerMessageFormat = {
-    updateAvailable: {
-        title: string;
-        linkText: string;
-    },
     navigation: {
         gameActions: {
             startModded: string;
@@ -34,10 +30,6 @@ export type ManagerMessageFormat = {
         noModsInstalled: {
             title: string;
             content: string;
-        },
-        updatableModsBanner: {
-            text: string;
-            updateAction: string;
         },
         searchAndSort: {
             search: {

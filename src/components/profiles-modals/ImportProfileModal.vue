@@ -378,7 +378,7 @@ function onContentOrPathNotSet() {
                     {{ t('translations.pages.profileSelection.importProfileModal.states.refresh.waitingForModDownloads') }}
                 </p>
                 <p v-else class="margin-top">
-                    {{ t(`translations.pages.profileSelection.importProfileModal.states.refresh.refreshStatus.${store.state.tsMods.thunderstoreModListUpdateStatus}`, { progress: store.state.tsMods.thunderstoreModListUpdateProgress }) }}
+                    {{ t(`translations.modListStatus.${store.state.tsMods.thunderstoreModListUpdateStatus}`, { progress: store.state.tsMods.thunderstoreModListUpdateProgress }) }}
                 </p>
             </div>
         </template>

@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { ExternalLink } from '../all';
+import { useI18n } from 'vue-i18n';
 import { computed, onMounted, ref } from 'vue';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import VersionNumber from '../../model/VersionNumber';
+
+
+const { t } = useI18n();
 
 const appName = computed<string>(() => ManagerInformation.APP_NAME);
 const portableUpdateAvailable = ref<boolean>(false);
@@ -35,9 +39,9 @@ onMounted(async () => {
     <div class='notification margin-top margin-right' v-show="portableUpdateAvailable">
         <div class='container'>
             <p>
-                An {{ appName }} update is available.
+                {{ t('translations.banners.managerUpdate.title', { appName }) }}
                 <ExternalLink :url="`https://github.com/ebkr/r2modmanPlus/releases/latest`">
-                    Click here to go to the release page.
+                    {{ t('translations.banners.managerUpdate.linkText') }}
                 </ExternalLink>
             </p>
         </div>

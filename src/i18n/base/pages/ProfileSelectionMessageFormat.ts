@@ -79,14 +79,6 @@ export type ProfileSelectionMessageFormat = {
                 content: {
                     description: string;
                     waitingForModDownloads: string;
-                    refreshStatus: {
-                        checkingForUpdates: string;
-                        loadingLatestModList: string;
-                        pruneCache: string;
-                        processingModList: string;
-                        almostDone: string;
-                        resettingCache: string;
-                    };
                 };
             },
             reviewImport: {
