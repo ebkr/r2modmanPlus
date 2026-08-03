@@ -19,9 +19,12 @@ import ThunderstoreVersion from "../../../model/ThunderstoreVersion";
 import { useConcerningPackageComposable } from '@r2/components/composables/ConcerningPackageComposable';
 import { useModManagementComposable } from '@r2/components/composables/ModManagementComposable';
 import { useI18n } from 'vue-i18n';
+import { useDateLocale } from '../../composables/DateLocaleComposable';
 
 const store = getStore<State>();
-const { t, d, messages, locale } = useI18n();
+const { t, d } = useI18n();
+const { getDateLocale } = useDateLocale();
+const dateLocale = getDateLocale();
 
 type LocalModCardProps = {
     mod: ManifestV2;
@@ -162,12 +165,12 @@ function openReviewModal() {
             <span class="non-selectable">
                 <span v-if="isDeprecated"
                     class="tag is-danger margin-right margin-right--half-width"
-                    v-tooltip.right="'This mod is deprecated and could be broken'">
+                    v-tooltip.right="t('translations.pages.manager.online.modList.tooltips.deprecated.long')">
                     {{ t('translations.pages.manager.installed.localModCard.labels.deprecated') }}
                 </span>
                 <span v-if="!mod.isEnabled()"
                     class="tag is-warning margin-right margin-right--half-width"
-                    v-tooltip.right="'This mod will not be used in-game'">
+                    v-tooltip.right="t('translations.pages.manager.installed.localModCard.tooltips.willNotBeUsed')">
                     {{ t('translations.pages.manager.installed.localModCard.labels.disabled') }}
                 </span>
                 <span class="card-title selectable">
@@ -183,16 +186,16 @@ function openReviewModal() {
 
         <template v-slot:description>
             <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0">
-                {{ t('translations.pages.manager.installed.localModCard.display.installedAt', { formattedDate: d(mod.getInstalledAtTime(), 'long', messages[locale].metadata.locale)}) }}
+                {{ t('translations.pages.manager.installed.localModCard.display.installedAt', { formattedDate: d(mod.getInstalledAtTime(), 'long', dateLocale)}) }}
             </p>
-            <p class='card-timestamp' v-if="version && version.getDateCreated()"><strong>Released on:</strong>
-                {{ getReadableDate(version!.getDateCreated()!.getTime()) }}
+            <p class='card-timestamp' v-if="version && version.getDateCreated()">
+                {{ t('translations.pages.manager.installed.localModCard.display.releasedAt', { formattedDate: d(version!.getDateCreated()!.getTime(), 'long', dateLocale) }) }}
             </p>
             <div class="notification is-warning" v-if="isConcerningPackage(props.mod)">
-                <p>This mod was originally downloaded from Thunderstore, but can no longer be found on the site.</p>
-                <p><strong>It is recommended that you remove this mod.</strong></p>
+                <p>{{ t('translations.pages.manager.modals.concerningPackage.notFound') }}</p>
+                <p><strong>{{ t('translations.pages.manager.installed.localModCard.concerning.recommendation') }}</strong></p>
                 <button class="button" @click.stop.prevent="openReviewModal">
-                    Review mod
+                    {{ t('translations.pages.manager.modals.concerningPackage.actions.review') }}
                 </button>
             </div>
         </template>

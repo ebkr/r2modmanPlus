@@ -64,6 +64,10 @@ export const ManagerTranslation: ManagerMessageFormat = {
             display: {
                 byline: 'v{version} by {author}',
                 installedAt: 'Installed on: {formattedDate}',
+                releasedAt: 'Released on: {formattedDate}',
+            },
+            concerning: {
+                recommendation: 'It is recommended that you remove this mod.',
             },
             tooltips: {
                 updateAvailable: 'An update is available',
@@ -71,6 +75,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 disable: 'Disable',
                 enable: 'Enable',
                 donate: 'Donate to the mod author',
+                willNotBeUsed: 'This mod will not be used in-game',
             },
             actions: {
                 uninstall: 'Uninstall',
@@ -185,6 +190,18 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 noProfileSelected: 'Profile is not selected.'
             }
         },
+        concerningPackage: {
+            title: 'Review {modName}',
+            notFound: 'This mod was originally downloaded from Thunderstore, but can no longer be found on the site.',
+            whyRemoved: 'Mods may be removed at the author\'s request, for rule violations, or while undergoing verification by moderators.',
+            recommendation: 'It is generally recommended to remove mods that have been removed from Thunderstore.',
+            exportWarning: 'Other people will be unable to import this mod from exported profiles.',
+            actions: {
+                markSafe: 'Mark version as safe',
+                remove: 'Remove mod',
+                review: 'Review mod',
+            }
+        },
         codeExport: {
             title: 'Profile exported',
             description: 'Your code has been copied to your clipboard but may also be copied manually below:',
@@ -195,6 +212,8 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 downloading: 'Downloading {modName}',
                 installing: 'Installing {modName}',
             },
+            complete: 'Download complete',
+            close: 'Close',
             downloadProgress: 'Downloading: {progress}% of {totalSize}',
             installProgress: 'Installing: {progress}%',
             extractionProgress: 'Extracting: {progress}% of {totalSize}',
@@ -286,6 +305,8 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 changelog: 'CHANGELOG',
                 dependencies: 'Dependencies ({dependencyCount})',
             },
+            packageInformation: 'Package information',
+            nsfwWarning: 'This mod may contain potentially explicit material',
             fetchingData: 'Fetching data',
             noDependencies: 'This mod has no dependencies',
             unableToFetchReadme: 'Unable to fetch README',
@@ -316,6 +337,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 },
                 donate: 'Donate to the mod author',
                 installed: 'Mod already installed',
+                nsfw: 'Mod marked as NSFW',
             },
             mod: {
                 author: 'By {author}'

@@ -46,7 +46,7 @@ function closeModal() {
 
                     <p v-else>
                         <i class="fas fa-check"/>
-                        Download complete
+                        {{ t('translations.pages.manager.modals.downloadProgress.complete') }}
                     </p>
 
                     <Progress
@@ -71,7 +71,7 @@ function closeModal() {
                     />
                 </div>
             </div>
-            <button class="modal-close is-large" aria-label="close" @click="closeModal();"></button>
+            <button class="modal-close is-large" :aria-label="t('translations.pages.manager.modals.downloadProgress.close')" @click="closeModal();"></button>
         </div>
     </div>
 </template>

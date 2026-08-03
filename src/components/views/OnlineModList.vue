@@ -35,7 +35,7 @@
                   <i18n-t tag="strong" keypath="translations.pages.manager.online.previewPanel.metadata.lastUpdated">
                     <template v-slot:date>
                         <span class="font-weight-normal">
-                            {{ d(key.getDateUpdated(), 'long', messages[locale].metadata.locale) }}
+                            {{ d(key.getDateUpdated(), 'long', dateLocale) }}
                         </span>
                     </template>
                   </i18n-t>
@@ -82,9 +82,12 @@ import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { computed, onMounted, ref } from 'vue';
 import {useI18n} from "vue-i18n";
+import { useDateLocale } from '../composables/DateLocaleComposable';
 
 const store = getStore<State>();
-const { t, d, messages, locale } = useI18n();
+const { t, d } = useI18n();
+const { getDateLocale } = useDateLocale();
+const dateLocale = getDateLocale();
 
 type OnlineModListProps = {
     pagedModList: ThunderstoreMod[];
