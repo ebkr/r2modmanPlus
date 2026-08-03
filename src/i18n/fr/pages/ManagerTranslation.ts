@@ -64,6 +64,10 @@ export const ManagerTranslation: ManagerMessageFormat = {
             display: {
                 byline: 'v{version} par {author}',
                 installedAt: 'Installé le : {formattedDate}',
+                releasedAt: 'Publié le : {formattedDate}',
+            },
+            concerning: {
+                recommendation: 'Il est recommandé de supprimer ce mod.',
             },
             tooltips: {
                 updateAvailable: 'Une mise à jour est disponible',
@@ -71,6 +75,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 disable: 'Désactiver',
                 enable: 'Activer',
                 donate: 'Faire un don à l\'auteur du mod',
+                willNotBeUsed: 'Ce mod ne sera pas utilisé en jeu',
             },
             actions: {
                 uninstall: 'Désinstaller',
@@ -179,6 +184,18 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 noProfileSelected: 'Le profil n\'est pas sélectionné.'
             }
         },
+        concerningPackage: {
+            title: 'Vérifier {modName}',
+            notFound: 'Ce mod a été téléchargé depuis Thunderstore, mais il est désormais introuvable sur le site.',
+            whyRemoved: 'Un mod peut être retiré à la demande de son auteur, en cas de non-respect des règles, ou pendant sa vérification par les modérateurs.',
+            recommendation: 'Il est généralement recommandé de supprimer les mods qui ont été retirés de Thunderstore.',
+            exportWarning: 'Les autres utilisateurs ne pourront pas importer ce mod depuis des profils exportés.',
+            actions: {
+                markSafe: 'Marquer cette version comme sûre',
+                remove: 'Supprimer le mod',
+                review: 'Vérifier le mod',
+            }
+        },
         codeExport: {
             title: 'Profil exporté',
             description: 'Votre code a été copié dans votre presse-papiers, mais peut également être copié manuellement ci-dessous :',
@@ -189,6 +206,8 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 downloading: 'Téléchargement de {modName}',
                 installing: 'Installation de {modName}',
             },
+            complete: 'Téléchargement terminé',
+            close: 'Fermer',
             downloadProgress: 'Téléchargement en cours : {progress} % sur {totalSize}',
             installProgress: 'Installation en cours : {progress} % terminée',
             waitingForDownload: 'Installation en cours : en attente de la fin du téléchargement',
@@ -280,6 +299,8 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 changelog: 'CHANGELOG',
                 dependencies: 'Dépendances ({dependencyCount})',
             },
+            packageInformation: 'Informations sur le mod',
+            nsfwWarning: 'Ce mod peut contenir du contenu potentiellement explicite',
             fetchingData: 'Récupération des données',
             noDependencies: 'Ce mod n\'a pas de dépendances',
             unableToFetchReadme: 'Impossible de récupérer le README',
@@ -310,6 +331,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 },
                 donate: 'Faire un don à l\'auteur du mod',
                 installed: 'Mod déjà installé',
+                nsfw: 'Mod marqué NSFW',
             },
             mod: {
                 author: 'par {author}'

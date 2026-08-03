@@ -30,7 +30,7 @@
                     <i class='fas fa-check' v-tooltip.left="t('translations.pages.manager.online.modList.tooltips.installed')"></i>
                 </span>
                 <span class='card-header-icon' v-if="key.getNsfwFlag()">
-                    <i class="fas fa-pause-circle" v-tooltip.left="'Mod marked as NSFW'"></i>
+                    <i class="fas fa-pause-circle" v-tooltip.left="t('translations.pages.manager.online.modList.tooltips.nsfw')"></i>
                 </span>
             </template>
         </OnlineRowCard>

@@ -14,9 +14,12 @@ import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { transformPackageUrl } from '../../providers/cdn/PackageUrlTransformer';
 import {useI18n} from "vue-i18n";
+import { useDateLocale } from '../composables/DateLocaleComposable';
 
 const store = getStore<State>();
-const { t, d, messages, locale } = useI18n();
+const { t, d } = useI18n();
+const { getDateLocale } = useDateLocale();
+const dateLocale = getDateLocale();
 
 interface ModPreviewPanelProps {
     mod: ThunderstoreMod;
@@ -200,9 +203,9 @@ function dragEnd(event: DragEvent) {
                     {{ t('translations.pages.manager.online.previewPanel.author', { author: mod.getOwner() }) }}
                 </h2>
                 <details id="package-preview-details" open="true">
-                    <summary class='card-timestamp non-selectable'>Package information</summary>
+                    <summary class='card-timestamp non-selectable'>{{ t('translations.pages.manager.online.previewPanel.packageInformation') }}</summary>
                     <div class="notification is-warning margin-top" v-if="isNsfw">
-                        <p>This mod may contain potentially explicit material</p>
+                        <p>{{ t('translations.pages.manager.online.previewPanel.nsfwWarning') }}</p>
                     </div>
                     <div class="margin-top margin-bottom">
                         <p class="description">{{ mod.getDescription() }}</p>
@@ -225,7 +228,7 @@ function dragEnd(event: DragEvent) {
                         <i18n-t tag="strong" keypath="translations.pages.manager.online.previewPanel.metadata.lastUpdated">
                             <template v-slot:date>
                                 <span class="font-weight-normal">
-                                    {{ d(mod.getDateUpdated(), 'long', messages[locale].metadata.locale) }}
+                                    {{ d(mod.getDateUpdated(), 'long', dateLocale) }}
                                 </span>
                             </template>
                         </i18n-t>

@@ -59,6 +59,10 @@ export type ManagerMessageFormat = {
             display: {
                 byline: string;
                 installedAt: string;
+                releasedAt: string;
+            },
+            concerning: {
+                recommendation: string;
             },
             tooltips: {
                 updateAvailable: string;
@@ -66,6 +70,7 @@ export type ManagerMessageFormat = {
                 disable: string;
                 enable: string;
                 donate: string;
+                willNotBeUsed: string;
             },
             actions: {
                 uninstall: string;
@@ -165,6 +170,18 @@ export type ManagerMessageFormat = {
                 noProfileSelected: string;
             },
         },
+        concerningPackage: {
+            title: string;
+            notFound: string;
+            whyRemoved: string;
+            recommendation: string;
+            exportWarning: string;
+            actions: {
+                markSafe: string;
+                remove: string;
+                review: string;
+            }
+        },
         codeExport: {
             title: string;
             description: string;
@@ -175,6 +192,8 @@ export type ManagerMessageFormat = {
                 downloading: string;
                 installing: string;
             },
+            complete: string;
+            close: string;
             downloadProgress: string;
             installProgress: string;
             waitingForDownload: string;
@@ -266,6 +285,8 @@ export type ManagerMessageFormat = {
                 changelog: string;
                 dependencies: string;
             },
+            packageInformation: string;
+            nsfwWarning: string;
             fetchingData: string;
             noDependencies: string;
             unableToFetchReadme: string;
@@ -296,6 +317,7 @@ export type ManagerMessageFormat = {
                 },
                 donate: string;
                 installed: string;
+                nsfw: string;
             },
             mod: {
                 author: string;
