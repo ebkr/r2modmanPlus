@@ -8,6 +8,7 @@ export const ConfigEditorTranslation: ConfigEditorMessageFormat = {
     warning: {
         content: 'Configuration files are generated after launching the game, with the mod installed, at least once.'
     },
+    loading: 'Looking for config files',
     actions: {
         delete: 'Delete',
         editConfig: 'Edit config',
@@ -28,6 +29,8 @@ export const ConfigEditorTranslation: ConfigEditorMessageFormat = {
             showLess: 'Show less'
         },
         sections: 'Sections',
+        hiddenCount: '(1 hidden) | ({count} hidden)',
+        selectOption: 'Select an option',
         subtitle: 'Editing config file'
     }
 };
