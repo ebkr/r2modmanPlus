@@ -108,6 +108,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
         failedToSetTheGameFolder: {
             title: 'Échec du changement de dossier {gameName}',
             listedExecutableNames: 'L\'exécutable doit être l\'un des suivants : "{options}".',
+            executableMustBeOneOf: 'L\'exécutable sélectionné doit être l\'un des suivants :',
             solution: 'Si cette erreur apparaît alors que l\'exécutable est correct, veuillez exécuter en tant qu\'administrateur.'
         },
         clearingGameDirectory: {
@@ -195,6 +196,46 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 remove: 'Supprimer le mod',
                 review: 'Vérifier le mod',
             }
+        },
+        gameRunning: {
+            starting: '{gameName} démarre',
+            launchingViaSteam: '{gameName} se lance via Steam',
+            closeToContinue: 'Fermez ce message pour continuer à modder.',
+            takingAWhile: 'Si cela prend du temps, c\'est probablement dû au démarrage de Steam.',
+            bePatient: 'Merci de patienter, et amusez-vous bien !',
+            close: 'Fermer',
+        },
+        error: {
+            title: 'Erreur',
+            suggestion: 'Suggestion',
+            close: 'Fermer',
+        },
+        disableMod: {
+            title: 'Désactivation de {modName}',
+            dependantsWarning: 'D\'autres mods dépendent de ce mod. Sélectionnez {disableAllAction} pour désactiver les mods dépendants, sinon ils risquent de provoquer des erreurs.',
+            modsToBeDisabled: 'Mods à désactiver',
+            actions: {
+                disableAll: 'Tout désactiver',
+                disableAllRecommended: 'Tout désactiver (recommandé)',
+                disableOnly: 'Désactiver uniquement {modName}',
+            }
+        },
+        uninstallMod: {
+            title: 'Désinstallation de {modName}',
+            dependantsWarning: 'D\'autres mods dépendent de ce mod. Sélectionnez {uninstallAllAction} pour désinstaller les mods dépendants, sinon ils risquent de provoquer des erreurs.',
+            modsToBeUninstalled: 'Mods à désinstaller',
+            actions: {
+                uninstallAll: 'Tout désinstaller',
+                uninstallAllRecommended: 'Tout désinstaller (recommandé)',
+                uninstallOnly: 'Désinstaller uniquement {modName}',
+            }
+        },
+        associatedMods: {
+            title: 'Mods associés à {modName}',
+            dependencies: 'Dépendances',
+            dependants: 'Mods dépendants',
+            none: 'Ce mod n\'a aucune dépendance et aucun mod n\'en dépend.',
+            done: 'Terminé',
         },
         codeExport: {
             title: 'Profil exporté',

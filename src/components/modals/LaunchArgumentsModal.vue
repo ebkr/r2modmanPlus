@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
 import { computed, ref, watch } from 'vue';
 import ModalCard from '../../components/ModalCard.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
@@ -8,6 +9,8 @@ import GameInstructions from '../../r2mm/launching/instructions/GameInstructions
 import GameRunnerProvider from '../../providers/generic/game/GameRunnerProvider';
 import GameInstructionParser from '../../r2mm/launching/instructions/GameInstructionParser';
 import R2Error from '../../model/errors/R2Error';
+
+const { t } = useI18n();
 
 const store = getStore<State>();
 
@@ -64,38 +67,37 @@ function close() {
 <template>
     <ModalCard id="launch-arguments-modal" v-show="isOpen" :is-active="isOpen" @close-modal="close">
         <template v-slot:header>
-            <h2 class="modal-title">Set custom launch arguments</h2>
+            <h2 class="modal-title">{{ t('translations.pages.manager.modals.launchArguments.title') }}</h2>
         </template>
         <template v-slot:body>
-            <p>Some arguments are provided by default:</p>
+            <p>{{ t('translations.pages.manager.modals.launchArguments.someProvidedByDefault') }}</p>
             <br/>
-            <p>Modded:
+            <p>{{ t('translations.pages.manager.modals.launchArguments.moddedLabel') }}
                 <br/>
                 <code v-if="doorstopTarget.length > 0">{{ doorstopTarget }}</code>
-                <code v-else>These arguments will be available after installing a mod loader.</code>
+                <code v-else>{{ t('translations.pages.manager.modals.launchArguments.availableAfterInstallingLoader') }}</code>
             </p>
             <br/>
-            <p>Vanilla:
+            <p>{{ t('translations.pages.manager.modals.launchArguments.vanillaLabel') }}
                 <br/>
                 <code>{{ vanillaLaunchArgs }}</code>
             </p>
             <br/>
             <p>
-                <strong>Please note that these are called against the Steam executable. Be careful when
-                    entering custom launch arguments.</strong>
+                <strong>{{ t('translations.pages.manager.modals.launchArguments.pleaseNote') }}</strong>
             </p>
             <br/>
             <input
                 v-model="launchArguments"
                 id="launch-arguments-modal-input"
                 class="input"
-                placeholder="Enter arguments"
+                :placeholder="t('translations.pages.manager.modals.launchArguments.placeholder')"
                 autocomplete="off"
             />
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="updateLaunchArguments">
-                Update launch arguments
+                {{ t('translations.pages.manager.modals.launchArguments.updateArguments') }}
             </button>
         </template>
     </ModalCard>

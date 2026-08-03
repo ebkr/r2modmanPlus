@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
 import { ModalCard } from '../../all';
 import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
@@ -7,6 +8,8 @@ import Dependants from '../../../r2mm/mods/Dependants';
 import { computed, ref } from 'vue';
 import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
+
+const { t } = useI18n();
 
 const store = getStore<State>();
 
@@ -62,17 +65,18 @@ function onClose() {
 <template>
     <ModalCard id="uninstall-mod-modal" v-if="isOpen" :is-active="true" :can-close="!isLocked" @close-modal="onClose">
         <template v-slot:header>
-            <h2 class='modal-title'>Uninstalling {{mod.getName()}}</h2>
+            <h2 class='modal-title'>{{ t('translations.pages.manager.modals.uninstallMod.title', { modName: mod.getName() }) }}</h2>
         </template>
         <template v-slot:body>
             <div class="max-height-100 is-flex is-flex-direction-column">
                 <div class='notification is-warning'>
-                    <p>
-                        Other mods depend on this mod. Select <strong>Uninstall all</strong>
-                        to uninstall dependent mods, otherwise they may cause errors.
-                    </p>
+                    <i18n-t tag="p" keypath="translations.pages.manager.modals.uninstallMod.dependantsWarning">
+                        <template v-slot:uninstallAllAction>
+                            <strong>{{ t('translations.pages.manager.modals.uninstallMod.actions.uninstallAll') }}</strong>
+                        </template>
+                    </i18n-t>
                 </div>
-                <h3 class="subtitle mb-3">Mods to be uninstalled</h3>
+                <h3 class="subtitle mb-3">{{ t('translations.pages.manager.modals.uninstallMod.modsToBeUninstalled') }}</h3>
                 <div class="is-flex-shrink-1 overflow-auto code-snippet">
                     <ul class="list">
                         <li class="list-item">{{mod.getName()}}</li>
@@ -83,7 +87,7 @@ function onClose() {
                     </ul>
                 </div>
                 <div v-if="isLocked" class="mt-3">
-                    <h3 class="subtitle mb-3">Uninstalling {{modBeingUninstalled}}</h3>
+                    <h3 class="subtitle mb-3">{{ t('translations.pages.manager.modals.uninstallMod.title', { modName: modBeingUninstalled }) }}</h3>
                     <progress class="progress is-small is-info"/>
                 </div>
             </div>
@@ -92,12 +96,12 @@ function onClose() {
             <button class="button is-info"
                     :disabled="isLocked"
                     @click="uninstallModIncludingDependants">
-                Uninstall all (recommended)
+                {{ t('translations.pages.manager.modals.uninstallMod.actions.uninstallAllRecommended') }}
             </button>
             <button class="button"
                     :disabled="isLocked"
                     @click="uninstallModExcludingDependants">
-                Uninstall {{mod.getDisplayName()}} only
+                {{ t('translations.pages.manager.modals.uninstallMod.actions.uninstallOnly', { modName: mod.getDisplayName() }) }}
             </button>
         </template>
     </ModalCard>

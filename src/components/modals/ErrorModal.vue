@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
 import R2Error from '../../model/errors/R2Error';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { computed, ComputedRef } from 'vue';
+
+const { t } = useI18n();
 
 const store = getStore<State>();
 
@@ -21,11 +24,11 @@ function close() {
         <div class="modal-background" @click="close"></div>
         <div class="modal-content">
             <div class="notification is-danger">
-                <h3 class="title">Error</h3>
+                <h3 class="title">{{ t('translations.pages.manager.modals.error.title') }}</h3>
                 <h5 class="title is-5">{{name}}</h5>
                 <p>{{message}}</p>
                 <div v-if="solution">
-                    <h5 class="title is-5">Suggestion</h5>
+                    <h5 class="title is-5">{{ t('translations.pages.manager.modals.error.suggestion') }}</h5>
                     <p>{{solution}}</p>
                 </div>
                 <div class="mt-3 text-right" v-if="error && error.action">
@@ -35,7 +38,7 @@ function close() {
                 </div>
             </div>
         </div>
-        <button class="modal-close is-large" aria-label="close" @click="close"></button>
+        <button class="modal-close is-large" :aria-label="t('translations.pages.manager.modals.error.close')" @click="close"></button>
     </div>
 </template>
 

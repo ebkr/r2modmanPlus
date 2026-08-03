@@ -103,6 +103,7 @@ export type ManagerMessageFormat = {
         failedToSetTheGameFolder: {
             title: string;
             listedExecutableNames: string;
+            executableMustBeOneOf: string;
             solution: string;
         },
         clearingGameDirectory: {
@@ -181,6 +182,46 @@ export type ManagerMessageFormat = {
                 remove: string;
                 review: string;
             }
+        },
+        gameRunning: {
+            starting: string;
+            launchingViaSteam: string;
+            closeToContinue: string;
+            takingAWhile: string;
+            bePatient: string;
+            close: string;
+        },
+        error: {
+            title: string;
+            suggestion: string;
+            close: string;
+        },
+        disableMod: {
+            title: string;
+            dependantsWarning: string;
+            modsToBeDisabled: string;
+            actions: {
+                disableAll: string;
+                disableAllRecommended: string;
+                disableOnly: string;
+            }
+        },
+        uninstallMod: {
+            title: string;
+            dependantsWarning: string;
+            modsToBeUninstalled: string;
+            actions: {
+                uninstallAll: string;
+                uninstallAllRecommended: string;
+                uninstallOnly: string;
+            }
+        },
+        associatedMods: {
+            title: string;
+            dependencies: string;
+            dependants: string;
+            none: string;
+            done: string;
         },
         codeExport: {
             title: string;
