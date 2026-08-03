@@ -6,6 +6,7 @@ export type ConfigEditorMessageFormat = {
     warning: {
         content: string;
     },
+    loading: string;
     actions: {
         editConfig: string;
         openFile: string;
@@ -21,6 +22,8 @@ export type ConfigEditorMessageFormat = {
     editConfig: {
         subtitle: string;
         sections: string;
+        hiddenCount: string;
+        selectOption: string;
         actions: {
             save: string;
             cancel: string;

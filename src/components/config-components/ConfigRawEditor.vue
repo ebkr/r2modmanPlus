@@ -1,8 +1,8 @@
 <template>
     <div id="config-raw-editor">
         <div id="config-raw-editor-actions">
-            <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
-            <button class="button is-danger" @click="cancel">Cancel</button>
+            <button class="button is-info margin-right margin-right--half-width" @click="save">{{ t('translations.pages.configEditor.editConfig.actions.save') }}</button>
+            <button class="button is-danger" @click="cancel">{{ t('translations.pages.configEditor.editConfig.actions.cancel') }}</button>
         </div>
         <div id="config-raw-editor-component-wrapper" class="notification margin-right">
             <QuillEditor
@@ -15,10 +15,13 @@
 import QuillEditor from "../QuillEditor.vue";
 import {ref} from "vue";
 import FsProvider from "../../providers/generic/file/FsProvider";
+import { useI18n } from 'vue-i18n';
 
 export type ConfigRawEditorProps = {
     filePath: string;
 }
+
+const { t } = useI18n();
 
 const props = defineProps<ConfigRawEditorProps>();
 const emits = defineEmits<{

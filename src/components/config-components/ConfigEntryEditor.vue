@@ -1,12 +1,12 @@
 <template>
     <div id="config-entry-wrapper">
         <div id="config-entry-actions">
-            <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
-            <button class="button is-danger" @click="cancel">Cancel</button>
+            <button class="button is-info margin-right margin-right--half-width" @click="save">{{ t('translations.pages.configEditor.editConfig.actions.save') }}</button>
+            <button class="button is-danger" @click="cancel">{{ t('translations.pages.configEditor.editConfig.actions.cancel') }}</button>
         </div>
         <div id="config-entry-main" v-if="configurationFileHolder.configurationFile">
             <div id="config-entry-sections">
-                <h3 class='subtitle is-3'>Sections</h3>
+                <h3 class='subtitle is-3'>{{ t('translations.pages.configEditor.editConfig.sections') }}</h3>
                 <ul>
                     <template v-for="(section, sectionIndex) in configurationFileHolder.configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`">
                         <li v-if="section.sectionName.length > 0">
@@ -20,7 +20,7 @@
                 <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFileHolder.configurationFile.sections">
                     <div class="section-title" :id="sectionIndex.toString()">
                         <p class="title is-6" @click="() => toggleSectionVisibility(section)">{{ section.sectionName }}</p>
-                        <p v-if="collapsedSections.includes(section)" class="smaller-font">({{ section.entries.length }} hidden)</p>
+                        <p v-if="collapsedSections.includes(section)" class="smaller-font">{{ t('translations.pages.configEditor.editConfig.hiddenCount', section.entries.length, { named: { count: section.entries.length } }) }}</p>
                     </div>
                     <div class="section-content">
                         <template v-for="(entry, entryIndex) of section.entries" :key="`entry-${entryIndex}-${section.sectionName}`">
@@ -36,10 +36,10 @@
                                             </span>
                                     </div>
                                     <div v-if="isDisplayTooLong(entry) && entriesWithExpandedComments.includes(entry)">
-                                        <a href="#" @click="() => toggleEntryExpansion(entry)">Show less</a>
+                                        <a href="#" @click="() => toggleEntryExpansion(entry)">{{ t('translations.pages.configEditor.editConfig.actions.showLess') }}</a>
                                     </div>
                                     <div v-else-if="isDisplayTooLong(entry)">
-                                        <a href="#" @click="() => toggleEntryExpansion(entry)">Show more</a>
+                                        <a href="#" @click="() => toggleEntryExpansion(entry)">{{ t('translations.pages.configEditor.editConfig.actions.showMore') }}</a>
                                     </div>
                                 </div>
                                 <template v-if="entry.displayType === 'single-select' || entry.displayType === 'boolean'">
@@ -58,7 +58,7 @@
                                 </template>
                                 <template v-else-if="entry.displayType === 'multi-select'">
                                     <MultiSelect
-                                        placeholder="Select an option"
+                                        :placeholder="t('translations.pages.configEditor.editConfig.selectOption')"
                                         :selected="entry.value.split(',')"
                                         :options="getSelectOptions(entry)"
                                         @selection-changed="(newSelection) => updateEntryMultiSelect(entry, newSelection)"/>
@@ -87,10 +87,13 @@ import {
     getSelectOptions, saveConfigurationFile
 } from '../../utils/ConfigUtils';
 import { reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export type ConfigEntryEditorProps = {
     configFile: ConfigFile;
 }
+
+const { t } = useI18n();
 
 const props = defineProps<ConfigEntryEditorProps>();
 const emits = defineEmits<{

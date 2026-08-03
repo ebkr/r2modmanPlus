@@ -31,16 +31,18 @@
                         <select id="config-sort-order"
                                 class="select select--content-spacing margin-right margin-right--half-width"
                                 v-model="sortOrder">
-                            <option v-for="(key, index) in getSortOrderOptions()"
-                                    :key="`${index}-deprecated-position-option`">
-                                {{ key }}
+                            <option v-for="(value, key) in SortConfigFile"
+                                    :value="value"
+                                    :key="`config-sort-order--${key}`">
+                                {{ t(`translations.enums.sortConfigFile.${key}`) }}
                             </option>
                         </select>
                         <select id="config-sort-direction" class="select select--content-spacing"
                                 v-model="sortDirection">
-                            <option v-for="(key, index) in getSortDirectionOptions()"
-                                    :key="`${index}-deprecated-position-option`">
-                                {{ key }}
+                            <option v-for="(value, key) in SortDirection"
+                                    :value="value"
+                                    :key="`config-sort-direction--${key}`">
+                                {{ t(`translations.enums.sortDirection.${key}`) }}
                             </option>
                         </select>
                     </div>
@@ -70,7 +72,7 @@
                 <div class="fa-3x">
                     <i class="fas fa-circle-notch fa-spin"></i>
                 </div>
-                <p>Looking for config files</p>
+                <p>{{ t('translations.pages.configEditor.loading') }}</p>
             </div>
         </div>
     </div>
@@ -118,14 +120,6 @@ function updateShownConfigFiles(configFiles: ConfigFile[]) {
 watch(filterText, () => {
     updateShownConfigFiles(configFiles.value as ConfigFile[]);
 });
-
-function getSortOrderOptions() {
-    return Object.values(SortConfigFile);
-}
-
-function getSortDirectionOptions() {
-    return Object.values(SortDirection);
-}
 
 const sortedConfigFiles = computed(() => {
     return ConfigSort.sort(shownConfigFiles.value as ConfigFile[], sortOrder.value, sortDirection.value);
