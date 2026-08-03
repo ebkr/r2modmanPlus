@@ -1,10 +1,13 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
 import { ModalCard } from '../../all';
 import R2Error from '../../../model/errors/R2Error';
 import Dependants from '../../../r2mm/mods/Dependants';
 import { computed } from 'vue';
 import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
+
+const { t } = useI18n();
 
 const store = getStore<State>();
 
@@ -31,11 +34,11 @@ function onClose() {
 <template>
     <ModalCard id="associated-mods-modal" v-if="isOpen" :is-active="true" @close-modal="onClose">
         <template v-slot:header>
-            <h2 class='modal-title'>Mods associated with {{mod.getName()}}</h2>
+            <h2 class='modal-title'>{{ t('translations.pages.manager.modals.associatedMods.title', { modName: mod.getName() }) }}</h2>
         </template>
         <template v-slot:body>
             <div v-if="!!dependencies.size">
-                <h3 class="subtitle is-5">Dependencies</h3>
+                <h3 class="subtitle is-5">{{ t('translations.pages.manager.modals.associatedMods.dependencies') }}</h3>
                 <ul class="list">
                     <li class="list-item" v-for='(mod) in dependencies'
                         :key='`dependency-${mod.getName()}`'>
@@ -45,7 +48,7 @@ function onClose() {
             </div>
             <br v-if="!!dependencies.size"/>
             <div v-if="!!dependants.size">
-                <h3 class="subtitle is-5">Dependants</h3>
+                <h3 class="subtitle is-5">{{ t('translations.pages.manager.modals.associatedMods.dependants') }}</h3>
                 <ul class="list">
                     <li class="list-item" v-for='(mod) in dependants'
                         :key='`dependant-${mod.getName()}`'>
@@ -54,12 +57,12 @@ function onClose() {
                 </ul>
             </div>
             <div v-if="dependencies.size === 0 && dependants.size === 0">
-                <p>This mod has no dependencies or dependants.</p>
+                <p>{{ t('translations.pages.manager.modals.associatedMods.none') }}</p>
             </div>
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="onClose">
-                Done
+                {{ t('translations.pages.manager.modals.associatedMods.done') }}
             </button>
         </template>
     </ModalCard>

@@ -108,6 +108,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
         failedToSetTheGameFolder: {
             title: 'Failed to set the {gameName} folder',
             listedExecutableNames: 'The executable must be either of the following: "{options}".',
+            executableMustBeOneOf: 'The selected executable must be any of the following:',
             solution: 'If this error has appeared but the executable is correct, please run as administrator.'
         },
         clearingGameDirectory: {
@@ -201,6 +202,46 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 remove: 'Remove mod',
                 review: 'Review mod',
             }
+        },
+        gameRunning: {
+            starting: '{gameName} is starting',
+            launchingViaSteam: '{gameName} is launching via Steam',
+            closeToContinue: 'Close this message to continue modding.',
+            takingAWhile: 'If this is taking a while, it\'s likely due to Steam starting.',
+            bePatient: 'Please be patient, and have fun!',
+            close: 'Close',
+        },
+        error: {
+            title: 'Error',
+            suggestion: 'Suggestion',
+            close: 'Close',
+        },
+        disableMod: {
+            title: 'Disabling {modName}',
+            dependantsWarning: 'Other mods depend on this mod. Select {disableAllAction} to disable dependent mods, otherwise they may cause errors.',
+            modsToBeDisabled: 'Mods to be disabled',
+            actions: {
+                disableAll: 'Disable all',
+                disableAllRecommended: 'Disable all (recommended)',
+                disableOnly: 'Disable {modName} only',
+            }
+        },
+        uninstallMod: {
+            title: 'Uninstalling {modName}',
+            dependantsWarning: 'Other mods depend on this mod. Select {uninstallAllAction} to uninstall dependent mods, otherwise they may cause errors.',
+            modsToBeUninstalled: 'Mods to be uninstalled',
+            actions: {
+                uninstallAll: 'Uninstall all',
+                uninstallAllRecommended: 'Uninstall all (recommended)',
+                uninstallOnly: 'Uninstall {modName} only',
+            }
+        },
+        associatedMods: {
+            title: 'Mods associated with {modName}',
+            dependencies: 'Dependencies',
+            dependants: 'Dependants',
+            none: 'This mod has no dependencies or dependants.',
+            done: 'Done',
         },
         codeExport: {
             title: 'Profile exported',

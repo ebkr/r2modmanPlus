@@ -1,9 +1,12 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
 import ModalCard from '../../components/ModalCard.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import ManifestV2 from '../../model/ManifestV2';
+
+const { t } = useI18n();
 
 const store = getStore<State>();
 
@@ -18,7 +21,7 @@ function close() {
 <template>
     <ModalCard id="dependency-strings-modal" v-show="isOpen" :is-active="isOpen" @close-modal="close">
         <template v-slot:header>
-            <h2 class="modal-title">Dependency string list</h2>
+            <h2 class="modal-title">{{ t('translations.pages.manager.modals.dependencyStrings.title') }}</h2>
         </template>
         <template v-slot:body>
             <ul>
@@ -28,7 +31,7 @@ function close() {
             </ul>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="close">Close</button>
+            <button class="button is-info" @click="close">{{ t('translations.pages.manager.modals.dependencyStrings.close') }}</button>
         </template>
     </ModalCard>
 </template>

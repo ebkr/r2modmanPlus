@@ -7,8 +7,10 @@ import ManifestV2 from '@r2/model/ManifestV2';
 import { useModManagementComposable } from '@r2/components/composables/ModManagementComposable';
 import R2Error from '@r2/model/errors/R2Error';
 import ProfileModList from '@r2/r2mm/mods/ProfileModList';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 const { uninstallMod } = useModManagementComposable();
 
@@ -54,23 +56,23 @@ async function trustPackage() {
 <template>
     <ModalCard id="review-package-modal" v-if="isOpen && modToReview" :is-active="isOpen" :can-close="true" @close-modal="close">
         <template v-slot:header>
-            <h2 class="modal-title">Review {{ modToReview.getName() }}</h2>
+            <h2 class="modal-title">{{ t('translations.pages.manager.modals.concerningPackage.title', { modName: modToReview.getName() }) }}</h2>
         </template>
         <template v-slot:body>
-            <p class="notification is-warning">It is generally recommended to remove mods that have been removed from Thunderstore.</p>
+            <p class="notification is-warning">{{ t('translations.pages.manager.modals.concerningPackage.recommendation') }}</p>
             <div>
                 <hr/>
-                <p class="margin-bottom">This mod was originally downloaded from Thunderstore, but can no longer be found on the site.</p>
-                <p class="margin-bottom">Mods may be removed at the author's request, for rule violations, or while undergoing verification by moderators.</p>
-                <p>Other people will be unable to import this mod from exported profiles.</p>
+                <p class="margin-bottom">{{ t('translations.pages.manager.modals.concerningPackage.notFound') }}</p>
+                <p class="margin-bottom">{{ t('translations.pages.manager.modals.concerningPackage.whyRemoved') }}</p>
+                <p>{{ t('translations.pages.manager.modals.concerningPackage.exportWarning') }}</p>
             </div>
         </template>
         <template v-slot:footer>
             <button class="button" @click.stop.prevent="trustPackage">
-                Mark version as safe
+                {{ t('translations.pages.manager.modals.concerningPackage.actions.markSafe') }}
             </button>
             <button class="button is-danger" @click.stop.prevent="removeMod">
-                Remove mod
+                {{ t('translations.pages.manager.modals.concerningPackage.actions.remove') }}
             </button>
         </template>
     </ModalCard>
