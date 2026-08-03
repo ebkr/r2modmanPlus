@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import R2Error from '../model/errors/R2Error';
+import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
+
+
+const { t } = useI18n();
 
 const store = getStore<State>();
 
@@ -26,24 +30,24 @@ function openErrorModal() {
     <div v-if="!isModListLoaded" id="mod-list-update-banner" class="margin-bottom">
         <div class="notification is-warning margin-right">
             <span v-if="isUpdateInProgress">
-                {{ store.state.tsMods.thunderstoreModListUpdateStatus }}
+                {{ t(`translations.modListStatus.${store.state.tsMods.thunderstoreModListUpdateStatus}`) }}
             </span>
             <span v-else-if="updateError">
-                Error refreshing the mod list.
-                <a @click="openErrorModal">View error details</a>.
+                {{ t('translations.banners.modListUpdate.error') }}
+                <a @click="openErrorModal">{{ t('translations.banners.modListUpdate.viewDetails') }}</a>.
                 <br />
-                The manager will keep trying to refresh the mod list in the background.
+                {{ t('translations.banners.modListUpdate.willKeepTrying') }}
             </span>
             <span v-else-if="store.getters['download/activeDownloadCount'] > 0">
-                An error occurred when refreshing the mod list from Thunderstore.<br />
-                However, the mod list can't be refreshed while there are mod downloads in progress.<br />
-                Please wait for the downloads to finish before continuing.
+                {{ t('translations.banners.modListUpdate.errorOccurred') }}<br />
+                {{ t('translations.banners.modListUpdate.blockedByDownloads') }}<br />
+                {{ t('translations.banners.modListUpdate.waitForDownloads') }}
             </span>
-            <span v-else>
-                An error occurred when refreshing the mod list from Thunderstore.
-                Would you like to
-                <a @click="updateModList">try again now</a>?
-            </span>
+            <i18n-t v-else tag="span" keypath="translations.banners.modListUpdate.retryPrompt">
+                <template v-slot:retryAction>
+                    <a @click="updateModList">{{ t('translations.banners.modListUpdate.retryAction') }}</a>
+                </template>
+            </i18n-t>
         </div>
     </div>
 </template>

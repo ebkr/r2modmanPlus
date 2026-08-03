@@ -1,6 +1,8 @@
 import {GameSelectionTranslation} from "./pages/GameSelectionTranslation";
 import {SplashTranslation} from "./pages/SplashTranslation";
 import {PlatformTranslation} from "./platforms/PlatformTranslation";
+import { ModListStatusTranslation } from './modListStatus/ModListStatusTranslation';
+import { BannerTranslation } from './banners/BannerTranslation';
 import {ProfileSelectionTranslation} from "./pages/ProfileSelectionTranslation";
 import {ManagerTranslation} from './pages/ManagerTranslation';
 import { DateTimeFormat } from 'src/i18n';
@@ -27,6 +29,8 @@ const message = {
             downloadMonitor: DownloadMonitorTranslation,
         },
         platforms: PlatformTranslation,
+        modListStatus: ModListStatusTranslation,
+        banners: BannerTranslation,
         enums: EnumTranslation
     }
 };

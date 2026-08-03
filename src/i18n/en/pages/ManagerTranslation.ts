@@ -1,10 +1,6 @@
 import { ManagerMessageFormat } from '../../base/pages/ManagerMessageFormat';
 
 export const ManagerTranslation: ManagerMessageFormat = {
-    updateAvailable: {
-        title: 'An update is available.',
-        linkText: 'Click here to go to the release page.',
-    },
     navigation: {
         gameActions: {
             startModded: 'Start modded',
@@ -36,13 +32,6 @@ export const ManagerTranslation: ManagerMessageFormat = {
         noModsInstalled: {
             title: 'Looks like you don\'t have any mods installed',
             content: 'You can click the Online tab on the left to browse all available mods.',
-        },
-        updatableModsBanner: {
-            text: `
-            You have {numberOfModsWithUpdates} mod with an update available. |
-            You have {numberOfModsWithUpdates} mods with updates available.
-            `,
-            updateAction: 'Update all?'
         },
         searchAndSort: {
             search: {

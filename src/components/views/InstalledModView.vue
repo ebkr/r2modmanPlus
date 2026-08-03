@@ -22,9 +22,9 @@
                     <div class="margin-bottom">
                         <div class="notification is-warning margin-right">
                             <span>
-                                {{ t('translations.pages.manager.installed.updatableModsBanner.text', numberOfModsWithUpdates, { named: { numberOfModsWithUpdates: numberOfModsWithUpdates } }) }}
+                                {{ t('translations.banners.updatableMods.text', numberOfModsWithUpdates, { named: { numberOfModsWithUpdates: numberOfModsWithUpdates } }) }}
                                 <a @click="store.commit('openUpdateAllModsModal')">
-                                    {{ t('translations.pages.manager.installed.updatableModsBanner.updateAction') }}
+                                    {{ t('translations.banners.updatableMods.updateAction') }}
                                 </a>
                             </span>
                             <a class="float-right cursor-pointer" @click="store.commit('profile/dismissUpdateAll')">
