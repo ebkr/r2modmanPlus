@@ -65,18 +65,18 @@ function onClose() {
 <template>
     <ModalCard id="uninstall-mod-modal" v-if="isOpen" :is-active="true" :can-close="!isLocked" @close-modal="onClose">
         <template v-slot:header>
-            <h2 class='modal-title'>{{ t('translations.pages.manager.modals.uninstallMod.title', { modName: mod.getName() }) }}</h2>
+            <h2 class='modal-title'>{{ t('translations.modals.uninstallMod.title', { modName: mod.getName() }) }}</h2>
         </template>
         <template v-slot:body>
             <div class="max-height-100 is-flex is-flex-direction-column">
                 <div class='notification is-warning'>
-                    <i18n-t tag="p" keypath="translations.pages.manager.modals.uninstallMod.dependantsWarning">
+                    <i18n-t tag="p" keypath="translations.modals.uninstallMod.dependantsWarning">
                         <template v-slot:uninstallAllAction>
-                            <strong>{{ t('translations.pages.manager.modals.uninstallMod.actions.uninstallAll') }}</strong>
+                            <strong>{{ t('translations.modals.uninstallMod.actions.uninstallAll') }}</strong>
                         </template>
                     </i18n-t>
                 </div>
-                <h3 class="subtitle mb-3">{{ t('translations.pages.manager.modals.uninstallMod.modsToBeUninstalled') }}</h3>
+                <h3 class="subtitle mb-3">{{ t('translations.modals.uninstallMod.modsToBeUninstalled') }}</h3>
                 <div class="is-flex-shrink-1 overflow-auto code-snippet">
                     <ul class="list">
                         <li class="list-item">{{mod.getName()}}</li>
@@ -87,7 +87,7 @@ function onClose() {
                     </ul>
                 </div>
                 <div v-if="isLocked" class="mt-3">
-                    <h3 class="subtitle mb-3">{{ t('translations.pages.manager.modals.uninstallMod.title', { modName: modBeingUninstalled }) }}</h3>
+                    <h3 class="subtitle mb-3">{{ t('translations.modals.uninstallMod.title', { modName: modBeingUninstalled }) }}</h3>
                     <progress class="progress is-small is-info"/>
                 </div>
             </div>
@@ -96,12 +96,12 @@ function onClose() {
             <button class="button is-info"
                     :disabled="isLocked"
                     @click="uninstallModIncludingDependants">
-                {{ t('translations.pages.manager.modals.uninstallMod.actions.uninstallAllRecommended') }}
+                {{ t('translations.modals.uninstallMod.actions.uninstallAllRecommended') }}
             </button>
             <button class="button"
                     :disabled="isLocked"
                     @click="uninstallModExcludingDependants">
-                {{ t('translations.pages.manager.modals.uninstallMod.actions.uninstallOnly', { modName: mod.getDisplayName() }) }}
+                {{ t('translations.modals.uninstallMod.actions.uninstallOnly', { modName: mod.getDisplayName() }) }}
             </button>
         </template>
     </ModalCard>

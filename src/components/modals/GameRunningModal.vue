@@ -29,15 +29,15 @@ function close() {
         <div class="modal-background" @click="close"></div>
         <div class="modal-content">
             <div class='notification is-info'>
-                <h3 class="title" v-if="isSteamGame">{{ t('translations.pages.manager.modals.gameRunning.launchingViaSteam', { gameName: activeGame.displayName }) }}</h3>
-                <h3 class="title" v-else>{{ t('translations.pages.manager.modals.gameRunning.starting', { gameName: activeGame.displayName }) }}</h3>
-                <h5 class="title is-5">{{ t('translations.pages.manager.modals.gameRunning.closeToContinue') }}</h5>
+                <h3 class="title" v-if="isSteamGame">{{ t('translations.modals.gameRunning.launchingViaSteam', { gameName: activeGame.displayName }) }}</h3>
+                <h3 class="title" v-else>{{ t('translations.modals.gameRunning.starting', { gameName: activeGame.displayName }) }}</h3>
+                <h5 class="title is-5">{{ t('translations.modals.gameRunning.closeToContinue') }}</h5>
                 <div v-if="isSteamGame">
-                    <p>{{ t('translations.pages.manager.modals.gameRunning.takingAWhile') }}</p>
-                    <p>{{ t('translations.pages.manager.modals.gameRunning.bePatient') }}</p>
+                    <p>{{ t('translations.modals.gameRunning.takingAWhile') }}</p>
+                    <p>{{ t('translations.modals.gameRunning.bePatient') }}</p>
                 </div>
             </div>
         </div>
-        <button class="modal-close is-large" :aria-label="t('translations.pages.manager.modals.gameRunning.close')" @click="close"></button>
+        <button class="modal-close is-large" :aria-label="t('translations.modals.gameRunning.close')" @click="close"></button>
     </div>
 </template>

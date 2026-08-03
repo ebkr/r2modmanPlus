@@ -28,25 +28,25 @@ function closeModal() {
                 <div class='notification is-info'>
 
                     <h3 v-if="DownloadUtils.statusIsDownloadOrExtract(store.getters['download/currentDownload'].status)" class='title'>
-                        {{ t('translations.pages.manager.modals.downloadProgress.states.downloading', { modName: store.getters['download/currentDownload'].modName }) }}
+                        {{ t('translations.modals.downloadProgress.states.downloading', { modName: store.getters['download/currentDownload'].modName }) }}
                     </h3>
                     <h3 v-else-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.INSTALLING" class='title'>
-                        {{ t('translations.pages.manager.modals.downloadProgress.states.installing', { modName: store.getters['download/currentDownload'].modName }) }}
+                        {{ t('translations.modals.downloadProgress.states.installing', { modName: store.getters['download/currentDownload'].modName }) }}
                     </h3>
 
                     <p v-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.DOWNLOADING">
                         <i class="fas fa-download"/>
-                        {{ t('translations.pages.manager.modals.downloadProgress.downloadProgress', { progress: store.getters['download/currentDownload'].downloadProgress, totalSize: FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize) }) }}
+                        {{ t('translations.modals.downloadProgress.downloadProgress', { progress: store.getters['download/currentDownload'].downloadProgress, totalSize: FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize) }) }}
                     </p>
 
                     <p v-else-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTING || store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTED">
                         <i class="fas fa-box-open"/>
-                        {{ t('translations.pages.manager.modals.downloadProgress.extractionProgress', { progress: store.getters['download/currentDownload'].downloadProgress, totalSize: FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize) }) }}
+                        {{ t('translations.modals.downloadProgress.extractionProgress', { progress: store.getters['download/currentDownload'].downloadProgress, totalSize: FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize) }) }}
                     </p>
 
                     <p v-else>
                         <i class="fas fa-check"/>
-                        {{ t('translations.pages.manager.modals.downloadProgress.complete') }}
+                        {{ t('translations.modals.downloadProgress.complete') }}
                     </p>
 
                     <Progress
@@ -57,11 +57,11 @@ function closeModal() {
 
                     <p v-if="store.getters['download/currentDownload'].installProgress">
                         <i class="fas fa-cog" spin />
-                        {{ t('translations.pages.manager.modals.downloadProgress.installProgress', { progress: store.getters['download/currentDownload'].installProgress }) }}
+                        {{ t('translations.modals.downloadProgress.installProgress', { progress: store.getters['download/currentDownload'].installProgress }) }}
                     </p>
                     <p v-else>
                         <i class="fas fa-cog" />
-                        {{ t('translations.pages.manager.modals.downloadProgress.waitingForDownload') }}
+                        {{ t('translations.modals.downloadProgress.waitingForDownload') }}
                     </p>
 
                     <Progress
@@ -71,7 +71,7 @@ function closeModal() {
                     />
                 </div>
             </div>
-            <button class="modal-close is-large" :aria-label="t('translations.pages.manager.modals.downloadProgress.close')" @click="closeModal();"></button>
+            <button class="modal-close is-large" :aria-label="t('translations.modals.downloadProgress.close')" @click="closeModal();"></button>
         </div>
     </div>
 </template>

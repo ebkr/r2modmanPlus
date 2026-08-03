@@ -56,23 +56,23 @@ async function trustPackage() {
 <template>
     <ModalCard id="review-package-modal" v-if="isOpen && modToReview" :is-active="isOpen" :can-close="true" @close-modal="close">
         <template v-slot:header>
-            <h2 class="modal-title">{{ t('translations.pages.manager.modals.concerningPackage.title', { modName: modToReview.getName() }) }}</h2>
+            <h2 class="modal-title">{{ t('translations.modals.concerningPackage.title', { modName: modToReview.getName() }) }}</h2>
         </template>
         <template v-slot:body>
-            <p class="notification is-warning">{{ t('translations.pages.manager.modals.concerningPackage.recommendation') }}</p>
+            <p class="notification is-warning">{{ t('translations.modals.concerningPackage.recommendation') }}</p>
             <div>
                 <hr/>
-                <p class="margin-bottom">{{ t('translations.pages.manager.modals.concerningPackage.notFound') }}</p>
-                <p class="margin-bottom">{{ t('translations.pages.manager.modals.concerningPackage.whyRemoved') }}</p>
-                <p>{{ t('translations.pages.manager.modals.concerningPackage.exportWarning') }}</p>
+                <p class="margin-bottom">{{ t('translations.modals.concerningPackage.notFound') }}</p>
+                <p class="margin-bottom">{{ t('translations.modals.concerningPackage.whyRemoved') }}</p>
+                <p>{{ t('translations.modals.concerningPackage.exportWarning') }}</p>
             </div>
         </template>
         <template v-slot:footer>
             <button class="button" @click.stop.prevent="trustPackage">
-                {{ t('translations.pages.manager.modals.concerningPackage.actions.markSafe') }}
+                {{ t('translations.modals.concerningPackage.actions.markSafe') }}
             </button>
             <button class="button is-danger" @click.stop.prevent="removeMod">
-                {{ t('translations.pages.manager.modals.concerningPackage.actions.remove') }}
+                {{ t('translations.modals.concerningPackage.actions.remove') }}
             </button>
         </template>
     </ModalCard>

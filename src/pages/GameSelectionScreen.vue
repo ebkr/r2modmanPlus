@@ -9,7 +9,7 @@
         <EcosystemUpdateIndicator />
         <ModalCard id="select-platform-modal" v-show="showPlatformModal" :is-active="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
             <template v-slot:header>
-                <h2 class='modal-title'>{{ t('translations.pages.gameSelection.platformModal.header') }}</h2>
+                <h2 class='modal-title'>{{ t('translations.modals.platform.header') }}</h2>
             </template>
             <template v-slot:body>
                 <div v-if="selectedGame !== null">
@@ -21,7 +21,7 @@
             </template>
             <template v-slot:footer>
                 <button class='button is-info' @click='selectPlatform'>
-                    {{ t('translations.pages.gameSelection.platformModal.selectAction') }}
+                    {{ t('translations.modals.platform.selectAction') }}
                 </button>
             </template>
         </ModalCard>

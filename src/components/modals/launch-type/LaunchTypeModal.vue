@@ -47,7 +47,7 @@ async function updateAndClose() {
     <ModalCard id="launch-type-modal" v-show="LaunchTypeModalOpen" :is-active="LaunchTypeModalOpen" :can-close="true" @close-modal="closeModal">
         <template v-slot:header>
             <h2 class="modal-title">
-                {{ t('translations.pages.manager.modals.launchType.title') }}
+                {{ t('translations.modals.launchType.title') }}
             </h2>
         </template>
         <template v-slot:body>
@@ -70,15 +70,15 @@ async function updateAndClose() {
               </label>
           </div>
             <div class="notification margin-top" v-if="launchOption === LaunchType.AUTO">
-                {{ t(`translations.pages.manager.modals.launchType.auto.${EnumResolver.from(LaunchType, determinedLaunchType)}`) }}
+                {{ t(`translations.modals.launchType.auto.${EnumResolver.from(LaunchType, determinedLaunchType)}`) }}
             </div>
 
           <div v-if="determinedLaunchType === LaunchType.NATIVE && !wrapperProvided" class="margin-top">
             <p>
-              {{ t('translations.pages.manager.modals.launchType.native.unsureWrapperArgsPresent') }}
+              {{ t('translations.modals.launchType.native.unsureWrapperArgsPresent') }}
             </p>
             <p>
-              {{ t('translations.pages.manager.modals.launchType.native.addArgumentsInfo') }}
+              {{ t('translations.modals.launchType.native.addArgumentsInfo') }}
             </p>
             <div>
               <code>
@@ -87,14 +87,14 @@ async function updateAndClose() {
             </div>
             <div class="margin-top">
               <CopyToClipboardButton :copy-value="launchArgs" id="launch-type-modal-copy-button">
-                {{ t('translations.pages.manager.modals.launchType.actions.copyLaunchArgs') }}
+                {{ t('translations.modals.launchType.actions.copyLaunchArgs') }}
               </CopyToClipboardButton>
             </div>
           </div>
         </template>
         <template v-slot:footer>
             <button id="launch-type-modal-update-button" class="button is-info" @click="updateAndClose">
-                {{ t('translations.pages.manager.modals.launchType.actions.update') }}
+                {{ t('translations.modals.launchType.actions.update') }}
             </button>
         </template>
     </ModalCard>

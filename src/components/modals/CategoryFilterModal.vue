@@ -38,16 +38,16 @@ const isOpen = computed(() => store.state.modals.isCategoryFilterModalOpen);
     <ModalCard id="mod-category-filter-modal" v-show="isOpen" :is-active="isOpen" :can-close="false">
         <template v-slot:header>
             <h2 class="modal-title">
-                {{ t('translations.pages.manager.online.modals.modFilter.title') }}
+                {{ t('translations.modals.modFilter.title') }}
             </h2>
         </template>
         <template v-slot:body>
             <div class="notification is-warning margin-bottom" v-if="locale !== 'en'">
-                {{ t('translations.pages.manager.online.modals.modFilter.languageDisclaimer') }}
+                {{ t('translations.modals.modFilter.languageDisclaimer') }}
             </div>
             <div>
                 <CategorySelectorModal
-                    :title="t('translations.pages.manager.online.modals.modFilter.selectors.atLeastOneCategory')"
+                    :title="t('translations.modals.modFilter.selectors.atLeastOneCategory')"
                     :selected-categories="selectedCategoriesCompareOne"
                     :selectable-categories="unselectedCategories"
                     @selected-category="selectCategoryToCompareOne"
@@ -55,7 +55,7 @@ const isOpen = computed(() => store.state.modals.isCategoryFilterModalOpen);
                 />
                 <hr/>
                 <CategorySelectorModal
-                    :title="t('translations.pages.manager.online.modals.modFilter.selectors.allCategories')"
+                    :title="t('translations.modals.modFilter.selectors.allCategories')"
                     :selected-categories="selectedCategoriesCompareAll"
                     :selectable-categories="unselectedCategories"
                     @selected-category="selectCategoryToCompareAll"
@@ -63,7 +63,7 @@ const isOpen = computed(() => store.state.modals.isCategoryFilterModalOpen);
                 />
                 <hr/>
                 <CategorySelectorModal
-                    :title="t('translations.pages.manager.online.modals.modFilter.selectors.noneCategories')"
+                    :title="t('translations.modals.modFilter.selectors.noneCategories')"
                     :selected-categories="selectedCategoriesToExclude"
                     :selectable-categories="unselectedCategories"
                     @selected-category="selectCategoryToExclude"
@@ -81,7 +81,7 @@ const isOpen = computed(() => store.state.modals.isCategoryFilterModalOpen);
                         :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
                     >
                     <label for="nsfwCheckbox">
-                        {{ t('translations.pages.manager.online.modals.modFilter.allowNsfw') }}
+                        {{ t('translations.modals.modFilter.allowNsfw') }}
                     </label>
                 </div>
                 <div>
@@ -93,14 +93,14 @@ const isOpen = computed(() => store.state.modals.isCategoryFilterModalOpen);
                         :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
                     >
                     <label for="showDeprecatedCheckbox">
-                        {{ t('translations.pages.manager.online.modals.modFilter.showDeprecated') }}
+                        {{ t('translations.modals.modFilter.showDeprecated') }}
                     </label>
                 </div>
             </div>
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="close">
-                {{ t('translations.pages.manager.online.modals.modFilter.apply') }}
+                {{ t('translations.modals.modFilter.apply') }}
             </button>
         </template>
     </ModalCard>

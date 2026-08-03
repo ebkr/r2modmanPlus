@@ -68,18 +68,18 @@ function onClose() {
 <template>
     <ModalCard id="disable-mod-modal" v-if="isOpen" :is-active="isOpen" :can-close="!isLocked" @close-modal="onClose">
         <template v-slot:header>
-            <h2 class="modal-title">{{ t('translations.pages.manager.modals.disableMod.title', { modName: mod.getName() }) }}</h2>
+            <h2 class="modal-title">{{ t('translations.modals.disableMod.title', { modName: mod.getName() }) }}</h2>
         </template>
         <template v-slot:body>
             <div class="max-height-100 is-flex is-flex-direction-column">
                 <div class='notification is-warning'>
-                    <i18n-t tag="p" keypath="translations.pages.manager.modals.disableMod.dependantsWarning">
+                    <i18n-t tag="p" keypath="translations.modals.disableMod.dependantsWarning">
                         <template v-slot:disableAllAction>
-                            <strong>{{ t('translations.pages.manager.modals.disableMod.actions.disableAll') }}</strong>
+                            <strong>{{ t('translations.modals.disableMod.actions.disableAll') }}</strong>
                         </template>
                     </i18n-t>
                 </div>
-                <h3 class="subtitle mb-3">{{ t('translations.pages.manager.modals.disableMod.modsToBeDisabled') }}</h3>
+                <h3 class="subtitle mb-3">{{ t('translations.modals.disableMod.modsToBeDisabled') }}</h3>
                 <div class="is-flex-shrink-1 overflow-auto code-snippet">
                     <ul class="list">
                         <li class="list-item">{{mod.getName()}}</li>
@@ -90,7 +90,7 @@ function onClose() {
                     </ul>
                 </div>
                 <div v-if="isLocked" class="mt-3">
-                    <h3 class="subtitle mb-3">{{ t('translations.pages.manager.modals.disableMod.title', { modName: modBeingDisabled }) }}</h3>
+                    <h3 class="subtitle mb-3">{{ t('translations.modals.disableMod.title', { modName: modBeingDisabled }) }}</h3>
                     <progress class="progress is-small is-info"/>
                 </div>
             </div>
@@ -99,12 +99,12 @@ function onClose() {
             <button class="button is-info"
                     :disabled="isLocked"
                     @click="disableModIncludingDependants">
-                {{ t('translations.pages.manager.modals.disableMod.actions.disableAllRecommended') }}
+                {{ t('translations.modals.disableMod.actions.disableAllRecommended') }}
             </button>
             <button class="button"
                     :disabled="isLocked"
                     @click="disableModExcludingDependants">
-                {{ t('translations.pages.manager.modals.disableMod.actions.disableOnly', { modName: mod.getName() }) }}
+                {{ t('translations.modals.disableMod.actions.disableOnly', { modName: mod.getName() }) }}
             </button>
         </template>
     </ModalCard>

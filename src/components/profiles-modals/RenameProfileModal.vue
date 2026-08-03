@@ -63,12 +63,12 @@ async function performRename() {
 
         <template v-slot:header>
             <h2 class="modal-title">
-                {{ t('translations.pages.profileSelection.renameProfileModal.title') }}
+                {{ t('translations.modals.renameProfile.title') }}
             </h2>
         </template>
         <template v-slot:body>
             <p>
-                {{ t('translations.pages.profileSelection.renameProfileModal.content') }}
+                {{ t('translations.modals.renameProfile.content') }}
             </p>
 
             <input
@@ -81,21 +81,21 @@ async function performRename() {
             />
 
             <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
-                {{ t('translations.pages.profileSelection.renameProfileModal.tagStates.required') }}
+                {{ t('translations.modals.renameProfile.tagStates.required') }}
             </span>
             <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
-                {{ t('translations.pages.profileSelection.renameProfileModal.tagStates.valid', { profileName: makeProfileNameSafe(newProfileName) }) }}
+                {{ t('translations.modals.renameProfile.tagStates.valid', { profileName: makeProfileNameSafe(newProfileName) }) }}
             </span>
             <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
-                {{ t('translations.pages.profileSelection.renameProfileModal.tagStates.error', { profileName: makeProfileNameSafe(newProfileName) }) }}
+                {{ t('translations.modals.renameProfile.tagStates.error', { profileName: makeProfileNameSafe(newProfileName) }) }}
             </span>
         </template>
         <template v-slot:footer>
             <button class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>
-                {{ t('translations.pages.profileSelection.renameProfileModal.actions.rename') }}
+                {{ t('translations.modals.renameProfile.actions.rename') }}
             </button>
             <button class="button is-info" @click="performRename()" :disabled="renamingInProgress" v-else>
-                {{ t('translations.pages.profileSelection.renameProfileModal.actions.rename') }}
+                {{ t('translations.modals.renameProfile.actions.rename') }}
             </button>
         </template>
 

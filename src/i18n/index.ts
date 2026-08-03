@@ -3,6 +3,7 @@ import langFr, { dateTimeFormat as frDateTimeFormat } from './fr';
 import { PlatformMessageFormat } from './base/platforms/PlatformMessageFormat';
 import { ModListStatusMessageFormat } from './base/modListStatus/ModListStatusMessageFormat';
 import { BannerMessageFormat } from './base/banners/BannerMessageFormat';
+import { ModalMessageFormat } from './base/modals/ModalMessageFormat';
 import { GameSelectionMessageFormat } from './base/pages/GameSelectionMessageFormat';
 import { SplashMessageFormat } from './base/pages/SplashMessageFormat';
 import { ProfileSelectionMessageFormat } from './base/pages/ProfileSelectionMessageFormat';
@@ -45,6 +46,7 @@ export type MessageFormat = {
         platforms: PlatformMessageFormat;
         modListStatus: ModListStatusMessageFormat;
         banners: BannerMessageFormat;
+        modals: ModalMessageFormat;
         enums: EnumMessageFormat;
     }
 }

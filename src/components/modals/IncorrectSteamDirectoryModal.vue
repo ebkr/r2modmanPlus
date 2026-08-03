@@ -19,15 +19,15 @@ function close() {
 <template>
     <ModalCard id="incorrect-steam-directory-modal" v-show="isOpen" :is-active="isOpen" @close-modal="close">
         <template v-slot:header>
-            <h2 class="modal-title">{{ t('translations.pages.manager.modals.failedToSetSteamFolder.title') }}</h2>
+            <h2 class="modal-title">{{ t('translations.modals.failedToSetSteamFolder.title') }}</h2>
         </template>
         <template v-slot:body>
-            <p>{{ t('translations.pages.manager.modals.failedToSetSteamFolder.steamExecutableNotSelected') }}</p>
-            <p>{{ t('translations.pages.manager.modals.failedToSetSteamFolder.solution') }}</p>
+            <p>{{ t('translations.modals.failedToSetSteamFolder.steamExecutableNotSelected') }}</p>
+            <p>{{ t('translations.modals.failedToSetSteamFolder.solution') }}</p>
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="close">
-                {{ t('translations.pages.manager.modals.clearingGameDirectory.confirmation') }}
+                {{ t('translations.modals.clearingGameDirectory.confirmation') }}
             </button>
         </template>
     </ModalCard>

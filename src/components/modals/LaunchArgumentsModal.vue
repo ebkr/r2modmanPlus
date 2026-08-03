@@ -67,37 +67,37 @@ function close() {
 <template>
     <ModalCard id="launch-arguments-modal" v-show="isOpen" :is-active="isOpen" @close-modal="close">
         <template v-slot:header>
-            <h2 class="modal-title">{{ t('translations.pages.manager.modals.launchArguments.title') }}</h2>
+            <h2 class="modal-title">{{ t('translations.modals.launchArguments.title') }}</h2>
         </template>
         <template v-slot:body>
-            <p>{{ t('translations.pages.manager.modals.launchArguments.someProvidedByDefault') }}</p>
+            <p>{{ t('translations.modals.launchArguments.someProvidedByDefault') }}</p>
             <br/>
-            <p>{{ t('translations.pages.manager.modals.launchArguments.moddedLabel') }}
+            <p>{{ t('translations.modals.launchArguments.moddedLabel') }}
                 <br/>
                 <code v-if="doorstopTarget.length > 0">{{ doorstopTarget }}</code>
-                <code v-else>{{ t('translations.pages.manager.modals.launchArguments.availableAfterInstallingLoader') }}</code>
+                <code v-else>{{ t('translations.modals.launchArguments.availableAfterInstallingLoader') }}</code>
             </p>
             <br/>
-            <p>{{ t('translations.pages.manager.modals.launchArguments.vanillaLabel') }}
+            <p>{{ t('translations.modals.launchArguments.vanillaLabel') }}
                 <br/>
                 <code>{{ vanillaLaunchArgs }}</code>
             </p>
             <br/>
             <p>
-                <strong>{{ t('translations.pages.manager.modals.launchArguments.pleaseNote') }}</strong>
+                <strong>{{ t('translations.modals.launchArguments.pleaseNote') }}</strong>
             </p>
             <br/>
             <input
                 v-model="launchArguments"
                 id="launch-arguments-modal-input"
                 class="input"
-                :placeholder="t('translations.pages.manager.modals.launchArguments.placeholder')"
+                :placeholder="t('translations.modals.launchArguments.placeholder')"
                 autocomplete="off"
             />
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="updateLaunchArguments">
-                {{ t('translations.pages.manager.modals.launchArguments.updateArguments') }}
+                {{ t('translations.modals.launchArguments.updateArguments') }}
             </button>
         </template>
     </ModalCard>

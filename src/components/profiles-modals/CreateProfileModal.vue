@@ -58,12 +58,12 @@ async function createProfile() {
     <ModalCard id="create-profile-modal" v-if="isOpen" :is-active="isOpen" @close-modal="closeModal">
 
         <template v-slot:header>
-            <h2 class="modal-title">{{ t('translations.pages.profileSelection.createProfileModal.title') }}</h2>
+            <h2 class="modal-title">{{ t('translations.modals.createProfile.title') }}</h2>
         </template>
 
         <template v-slot:body>
             <p>
-                {{ t('translations.pages.profileSelection.createProfileModal.description')}}
+                {{ t('translations.modals.createProfile.description')}}
             </p>
             <br/>
             <input
@@ -76,22 +76,22 @@ async function createProfile() {
             />
             <br/><br/>
             <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
-                {{ t('translations.pages.profileSelection.createProfileModal.tagStates.required') }}
+                {{ t('translations.modals.createProfile.tagStates.required') }}
             </span>
             <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
-                {{ t('translations.pages.profileSelection.createProfileModal.tagStates.valid', { profileName: makeProfileNameSafe(newProfileName) }) }}
+                {{ t('translations.modals.createProfile.tagStates.valid', { profileName: makeProfileNameSafe(newProfileName) }) }}
             </span>
             <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
-                {{ t('translations.pages.profileSelection.createProfileModal.tagStates.error', { profileName: makeProfileNameSafe(newProfileName) }) }}
+                {{ t('translations.modals.createProfile.tagStates.error', { profileName: makeProfileNameSafe(newProfileName) }) }}
             </span>
         </template>
 
         <template v-slot:footer>
             <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>
-                {{ t('translations.pages.profileSelection.createProfileModal.actions.create') }}
+                {{ t('translations.modals.createProfile.actions.create') }}
             </button>
             <button id="modal-create-profile" class="button is-info" @click="createProfile()" :disabled="creatingInProgress" v-else>
-                {{ t('translations.pages.profileSelection.createProfileModal.actions.create') }}
+                {{ t('translations.modals.createProfile.actions.create') }}
             </button>
         </template>
 
