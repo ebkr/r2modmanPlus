@@ -106,13 +106,13 @@ export const ManagerTranslation: ManagerMessageFormat = {
             solution: 'Si cette erreur apparaît alors que l\'exécutable est correct, veuillez exécuter en tant qu\'administrateur.'
         },
         failedToSetTheGameFolder: {
-            title: 'Échec du changement de dossier {gameName}',
+            title: 'Échec de la configuration du dossier {gameName}',
             listedExecutableNames: 'L\'exécutable doit être l\'un des suivants : "{options}".',
             executableMustBeOneOf: 'L\'exécutable sélectionné doit être l\'un des suivants :',
             solution: 'Si cette erreur apparaît alors que l\'exécutable est correct, veuillez exécuter en tant qu\'administrateur.'
         },
         clearingGameDirectory: {
-            title: 'Nettoyage du répertoire d\'installation de {gameName}',
+            title: 'Nettoyage du dossier d\'installation de {gameName}',
             waitToLaunchGame: 'Vous ne pourrez pas lancer le jeu tant que Steam n\'aura pas vérifié l\'intégrité des fichiers du jeu.',
             steamWillBeStarted: 'Steam va démarrer et tenter de vérifier l\'intégrité de {gameName}.',
             checkSteamForProgress: `

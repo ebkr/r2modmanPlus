@@ -77,11 +77,11 @@ export const ProfileSelectionTranslation: ProfileSelectionMessageFormat = {
                 }
             },
             refresh: {
-                title: 'Actualisation de la liste de mods en ligne',
+                title: 'Actualisation de la liste des mods en ligne',
                 content: {
                     description: `
                     Certains des paquets dans le profil ne sont pas reconnus par le gestionnaire de mods.
-                    L'actualisation de la liste de mods en ligne pourrait résoudre le problème. Veuillez patienter.
+                    L'actualisation de la liste des mods en ligne pourrait résoudre le problème. Veuillez patienter.
                     `,
                     waitingForModDownloads: 'En attente de la fin des téléchargements de mods avant d\'actualiser la liste en ligne',
                     refreshStatus: {
