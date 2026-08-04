@@ -16,7 +16,7 @@ const isCopied = ref<boolean>(false);
 const exportCodeText = computed(() => isCopied.value ? 'Copied to clipboard' : exportCode.value);
 
 function copyCode() {
-    InteractionProvider.instance.copyToClipboard(exportCode.value);
+    InteractionProvider.instance.copyToClipboard(exportCode.value!);
     isCopied.value = true;
     setTimeout(() => {
         isCopied.value = false;

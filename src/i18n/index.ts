@@ -52,18 +52,6 @@ export type MessageFormat = {
 }
 
 export type DateTimeFormat = {
-    short: {
-        year: string;
-        month: string;
-        day: string;
-    },
-    long: {
-        year: string;
-        month: string;
-        day: string;
-        weekday: string;
-        hour: string;
-        minute: string;
-        hour12?: string; // If unspecified then is OS locale dependent
-    }
+    short: Intl.DateTimeFormatOptions;
+    long: Intl.DateTimeFormatOptions;
 }
