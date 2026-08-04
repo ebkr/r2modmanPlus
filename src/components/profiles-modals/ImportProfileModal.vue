@@ -372,10 +372,10 @@ function onContentOrPathNotSet() {
         <template v-slot:footer>
             <div>
                 <p>
-                    {{ t('translations.modals.importProfile.states.refresh.description') }}
+                    {{ t('translations.modals.importProfile.states.refresh.content.description') }}
                 </p>
                 <p v-if="store.getters['download/activeDownloadCount'] > 0" class="margin-top">
-                    {{ t('translations.modals.importProfile.states.refresh.waitingForModDownloads') }}
+                    {{ t('translations.modals.importProfile.states.refresh.content.waitingForModDownloads') }}
                 </p>
                 <p v-else class="margin-top">
                     {{ t(`translations.modListStatus.${store.state.tsMods.thunderstoreModListUpdateStatus}`, { progress: store.state.tsMods.thunderstoreModListUpdateProgress }) }}
