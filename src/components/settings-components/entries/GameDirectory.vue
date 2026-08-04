@@ -59,7 +59,7 @@ function changeGameInstallDirectory() {
 function changeGameInstallDirectoryGeneral() {
     const ror2Directory: string = settings.value!.getContext().gameSpecific.gameDirectory || computeDefaultInstallDirectory();
     InteractionProvider.instance.selectFile({
-        title: `Locate ${activeGame.value.displayName} Executable`,
+        title: t('translations.pages.manager.actions.locateGameExecutable', { gameName: activeGame.value.displayName }),
         // Lazy reduce. Assume Linux name and Windows name are identical besides extension.
         // Should fix if needed, although unlikely.
         filters: (activeGame.value.exeName.map(value => {
@@ -73,7 +73,7 @@ function changeGameInstallDirectoryGeneral() {
             return previousValue;
         })),
         defaultPath: ror2Directory,
-        buttonLabel: 'Select Executable'
+        buttonLabel: t('translations.pages.manager.actions.selectExecutable')
     }).then(async files => {
         if (files.length === 1) {
             try {
@@ -95,10 +95,10 @@ function changeGameInstallDirectoryGeneral() {
 function changeGameInstallDirectoryGamePass() {
     const ror2Directory: string = settings.value!.getContext().gameSpecific.gameDirectory || computeDefaultInstallDirectory();
     InteractionProvider.instance.selectFile({
-        title: `Locate gamelaunchhelper Executable`,
+        title: t('translations.pages.manager.actions.locateGameLaunchHelper'),
         filters: [{ name: "gamelaunchhelper", extensions: ["exe"] }],
         defaultPath: ror2Directory,
-        buttonLabel: 'Select Executable'
+        buttonLabel: t('translations.pages.manager.actions.selectExecutable')
     }).then(async files => {
         if (files.length === 1) {
             try {

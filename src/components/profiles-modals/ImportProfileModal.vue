@@ -109,12 +109,12 @@ async function onFileOrCodeSelect(mode: 'FILE' | 'CODE') {
         activeStep.value = 'IMPORT_FILE';
         Promise.resolve().then(async () => {
             const files = await InteractionProvider.instance.selectFile({
-                title: 'Import Profile',
+                title: t('translations.modals.importProfile.dialogTitle'),
                 filters: [{
                     name: "*",
                     extensions: ["r2z"]
                 }],
-                buttonLabel: 'Import'
+                buttonLabel: t('translations.modals.importProfile.dialogButton')
             });
             await validateProfileFile(files);
         });

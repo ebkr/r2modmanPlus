@@ -80,10 +80,10 @@ async function checkIfSteamExecutableIsValid(file: string): Promise<boolean> {
 function changeSteamDirectory() {
     const steamDir: string = settings.value!.getContext().global.steamDirectory || computeDefaultSteamDirectory();
     InteractionProvider.instance.selectFile({
-        title: 'Locate Steam Executable',
+        title: t('translations.pages.manager.actions.locateSteamExecutable'),
         defaultPath: steamDir,
         filters: [{ name: "steam", extensions: ["exe", "sh", "app"] }],
-        buttonLabel: 'Select Executable'
+        buttonLabel: t('translations.pages.manager.actions.selectExecutable')
     }).then(async files => {
         if (files.length === 1) {
             try {

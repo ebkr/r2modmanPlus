@@ -75,6 +75,10 @@ export const SettingsTranslation: SettingsMessageFormat = {
             warning: 'Modifier le dossier de données ne déplace ni ne supprime les profils existants. Ils resteront toutefois dans l\'ancien dossier.',
             dataFolder: 'Dossier de données',
             profileFolder: 'Dossier du profil',
+            dialog: {
+                title: 'Sélectionner un nouveau dossier pour stocker les données de {appName}',
+                button: 'Sélectionner le dossier',
+            },
             searchTerms: [
                 'Dossiers de données et de profil',
                 'Modifier',
@@ -112,6 +116,10 @@ export const SettingsTranslation: SettingsMessageFormat = {
             description: 'Exportez votre liste de mods et vos configurations pour les partager avec vos amis et obtenir un profil identique rapidement et facilement.',
             asFile: 'En tant que fichier',
             asCode: 'En tant que code',
+            dialog: {
+                title: "Sélectionner le dossier d'exportation du profil",
+                button: 'Sélectionner le dossier',
+            },
             searchTerms: [
                 'Exporter le profil',
                 'En tant que fichier',

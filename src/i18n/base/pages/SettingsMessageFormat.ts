@@ -39,6 +39,10 @@ export type SettingsMessageFormat = {
             warning: string;
             dataFolder: string;
             profileFolder: string;
+            dialog: {
+                title: string;
+                button: string;
+            };
         },
         downloadCache: SettingsEntry & {
             enabled: string;
@@ -51,6 +55,10 @@ export type SettingsMessageFormat = {
         exportProfile: SettingsEntry & {
             asFile: string;
             asCode: string;
+            dialog: {
+                title: string;
+                button: string;
+            };
         },
         funkyMode: SettingsEntry & {
             enabled: string;
