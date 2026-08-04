@@ -358,4 +358,12 @@ export const ModalTranslation: ModalMessageFormat = {
         header: "Which store manages your game?",
         selectAction: "Select platform",
     },
+    settingsLoader: {
+        managerProblem: 'This is a problem with the mod manager itself. If there\'s a newer version of the manager available, try installing it.',
+        loadFailed: 'Loading of local user settings failed. You can use the button below to reset the settings, but note that all settings for all games will be lost and this can\'t be undone.',
+        resetAction: 'Reset settings',
+        resetFailed: 'Resetting of the settings failed. You can still try to reset the settings manually by following these {instructionsLink}.',
+        instructionsLinkText: 'instructions',
+        resetDidNotHelp: 'Locally stored settings were reset, but that didn\'t solve the issue with loading the settings. If there\'s a newer version of the manager available, try installing it.'
+    },
 }

@@ -337,4 +337,12 @@ export type ModalMessageFormat = {
         header: string;
         selectAction: string;
     },
+    settingsLoader: {
+        managerProblem: string;
+        loadFailed: string;
+        resetAction: string;
+        resetFailed: string;
+        instructionsLinkText: string;
+        resetDidNotHelp: string;
+    },
 }

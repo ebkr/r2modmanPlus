@@ -351,4 +351,12 @@ export const ModalTranslation: ModalMessageFormat = {
         header: "Sélectionnez le magasin pour vos jeux",
         selectAction: "Sélectionnez le magasin"
     },
+    settingsLoader: {
+        managerProblem: 'Il s\'agit d\'un problème du gestionnaire de mods lui-même. Si une version plus récente est disponible, essayez de l\'installer.',
+        loadFailed: 'Le chargement de vos paramètres locaux a échoué. Vous pouvez utiliser le bouton ci-dessous pour les réinitialiser, mais tous les paramètres de tous les jeux seront perdus et cette action est irréversible.',
+        resetAction: 'Réinitialiser les paramètres',
+        resetFailed: 'La réinitialisation des paramètres a échoué. Vous pouvez toutefois essayer de les réinitialiser manuellement en suivant ces {instructionsLink}.',
+        instructionsLinkText: 'instructions',
+        resetDidNotHelp: 'Les paramètres stockés localement ont été réinitialisés, mais cela n\'a pas résolu le problème de chargement. Si une version plus récente du gestionnaire est disponible, essayez de l\'installer.'
+    },
 }
