@@ -12,6 +12,7 @@ import { HelpTranslation } from './pages/HelpTranslation';
 import { SettingsTranslation } from './pages/SettingsTranslation';
 import { ConfigEditorTranslation } from './pages/ConfigEditorTranslation';
 import { DownloadMonitorTranslation } from './pages/DownloadMonitorTranslation';
+import { LinuxSetupTranslation } from './pages/LinuxSetupTranslation';
 
 const message = {
     metadata: {
@@ -28,6 +29,7 @@ const message = {
             settings: SettingsTranslation,
             configEditor: ConfigEditorTranslation,
             downloadMonitor: DownloadMonitorTranslation,
+            linuxSetup: LinuxSetupTranslation,
         },
         platforms: PlatformTranslation,
         modListStatus: ModListStatusTranslation,

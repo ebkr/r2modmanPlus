@@ -13,6 +13,7 @@ import { HelpMessageFormat } from './base/pages/HelpMessageFormat';
 import { SettingsMessageFormat } from './base/pages/SettingsMessageFormat';
 import { ConfigEditorMessageFormat } from './base/pages/ConfigEditorMessageFormat';
 import { DownloadMonitorMessageFormat } from './base/pages/DownloadMonitorMessageFormat';
+import { LinuxSetupMessageFormat } from './base/pages/LinuxSetupMessageFormat';
 
 export default {
     'en': langEn,
@@ -42,6 +43,7 @@ export type MessageFormat = {
             settings: SettingsMessageFormat,
             configEditor: ConfigEditorMessageFormat,
             downloadMonitor: DownloadMonitorMessageFormat,
+            linuxSetup: LinuxSetupMessageFormat,
         },
         platforms: PlatformMessageFormat;
         modListStatus: ModListStatusMessageFormat;
