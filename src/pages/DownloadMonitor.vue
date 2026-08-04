@@ -113,7 +113,7 @@
                                         <i class="fas fa-cog" spin />
                                         {{ t('translations.pages.downloadMonitor.state.modProgress.installing', {modName: downloadObject.modName}) }}
                                     </p>
-                                    <p>{{Math.min(Math.floor(downloadObject.installProgress), 100)}}% complete</p>
+                                    <p>{{ t('translations.pages.downloadMonitor.state.modProgress.installProgress', { progress: Math.min(Math.floor(downloadObject.installProgress), 100) }) }}</p>
                                     <Progress
                                         :max='100'
                                         :value='downloadObject.installProgress'
@@ -126,7 +126,7 @@
                         <button
                             v-if="downloadObject.status === DownloadStatusEnum.FAILED"
                             class="button download-item-action-button"
-                            v-tooltip.left="'Retry'"
+                            v-tooltip.left="t('translations.pages.downloadMonitor.actions.retry')"
                             @click="store.dispatch('download/retryDownload', { download: downloadObject, hideModal: true })"
                         >
                             <i class="fas fa-redo redo-icon" />
@@ -134,7 +134,7 @@
                         <button
                             v-if="downloadObject.status === DownloadStatusEnum.FAILED || downloadObject.status === DownloadStatusEnum.INSTALLED"
                             class="button download-item-action-button"
-                            v-tooltip.left="'Remove'"
+                            v-tooltip.left="t('translations.pages.downloadMonitor.actions.remove')"
                             @click="store.commit('download/removeDownload', downloadObject)"
                         >
                             <i class="fas fa-times x-icon" />
