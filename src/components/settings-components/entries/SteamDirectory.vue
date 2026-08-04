@@ -26,10 +26,11 @@ const appName = ManagerInformation.APP_NAME;
 const activeGame = computed<Game>(() => store.state.activeGame);
 const settings = ref<ManagerSettings | null>(null);
 
-const steamDirectory = ref<string>('Not set');
+const steamDirectoryPath = ref<string>('');
+const steamDirectory = computed<string>(() => steamDirectoryPath.value || t('translations.pages.settings.actions.notSet'));
 
 function syncSteamDirectory() {
-    steamDirectory.value = settings.value?.getContext().global.steamDirectory || 'Not set';
+    steamDirectoryPath.value = settings.value?.getContext().global.steamDirectory || '';
 }
 
 const { t } = useI18n();

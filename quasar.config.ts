@@ -92,7 +92,6 @@ export default defineConfig((ctx: QuasarContext) => {
                         'floating-vue',
                         'vue-i18n',
                         'lodash.debounce',
-                        'moment',
                         'quill',
                         'sanitize-filename',
                         'vuedraggable',
