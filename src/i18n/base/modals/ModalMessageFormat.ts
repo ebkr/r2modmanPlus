@@ -132,6 +132,7 @@ export type ModalMessageFormat = {
         title: string;
         description: string;
         done: string;
+        copied: string;
     },
     downloadProgress: {
         states: {
@@ -344,5 +345,8 @@ export type ModalMessageFormat = {
         resetFailed: string;
         instructionsLinkText: string;
         resetDidNotHelp: string;
+    },
+    actions: {
+        close: string;
     },
 }
