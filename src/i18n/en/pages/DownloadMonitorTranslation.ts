@@ -5,6 +5,10 @@ export const DownloadMonitorTranslation: DownloadMonitorMessageFormat = {
         text: 'Downloads',
         subtitle: 'Monitor progress of downloads'
     },
+    actions: {
+        retry: 'Retry',
+        remove: 'Remove'
+    },
     state: {
         hasNothing: {
             inform: `You don't have anything downloading`,
@@ -21,6 +25,7 @@ export const DownloadMonitorTranslation: DownloadMonitorMessageFormat = {
             progress: '{progress}% of {totalSize}',
             installing: 'Installing: {modName}',
             waiting: 'Waiting for download to finish',
+            installProgress: '{progress}% complete',
         }
     }
 }

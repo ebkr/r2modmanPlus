@@ -3,6 +3,10 @@ export type DownloadMonitorMessageFormat = {
         text: string;
         subtitle: string;
     },
+    actions: {
+        retry: string;
+        remove: string;
+    },
     state: {
         hasNothing: {
             inform: string;
@@ -19,6 +23,7 @@ export type DownloadMonitorMessageFormat = {
             progress: string;
             installing: string;
             waiting: string;
+            installProgress: string;
         }
     }
 }
