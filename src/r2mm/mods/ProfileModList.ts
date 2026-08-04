@@ -18,6 +18,7 @@ import AsyncLock from 'async-lock';
 import FileTree from '../../model/file/FileTree';
 import ZipBuilder from '../../providers/generic/zip/ZipBuilder';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
+import { i18n } from '../../i18n/instance';
 import { ProfileApiClient } from '../profiles/ProfilesClient';
 import path from '../../providers/node/path/path';
 import Buffer from '../../providers/node/buffer/buffer';
@@ -231,9 +232,9 @@ export default class ProfileModList {
                 `Try running ${ManagerInformation.APP_NAME} as an administrator`);
         }
         const dir = await InteractionProvider.instance.selectFolder({
-            title: `Select the folder to export your profile to`,
+            title: i18n.global.t('translations.pages.settings.entries.exportProfile.dialog.title'),
             defaultPath: exportDirectory,
-            buttonLabel: 'Select export folder'
+            buttonLabel: i18n.global.t('translations.pages.settings.entries.exportProfile.dialog.button')
         });
         if (dir.length === 0) {
             return new R2Error("Failed to export profile", "No export folder was selected", null);

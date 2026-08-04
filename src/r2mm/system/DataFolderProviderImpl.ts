@@ -5,6 +5,7 @@ import FsProvider from "../../providers/generic/file/FsProvider";
 import { DataFolderProvider } from "../../providers/ror2/system/DataFolderProvider";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import PathResolver from "../../r2mm/manager/PathResolver";
+import { i18n } from "../../i18n/instance";
 
 export class DataFolderProviderImpl extends DataFolderProvider {
     readonly overrideFile: string = ".ddir.mm"
@@ -14,9 +15,9 @@ export class DataFolderProviderImpl extends DataFolderProvider {
      */
     async showSelectionDialog(): Promise<string|null> {
         const files = await InteractionProvider.instance.selectFolder({
-            title: `Select a new folder to store ${ManagerInformation.APP_NAME} data`,
+            title: i18n.global.t('translations.pages.settings.entries.dataDirectory.dialog.title', { appName: ManagerInformation.APP_NAME }),
             defaultPath: PathResolver.ROOT,
-            buttonLabel: "Select data folder"
+            buttonLabel: i18n.global.t('translations.pages.settings.entries.dataDirectory.dialog.button')
         });
 
         // User closed the dialog without selecting a folder.

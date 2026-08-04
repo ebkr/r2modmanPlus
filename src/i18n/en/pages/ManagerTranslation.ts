@@ -152,8 +152,8 @@ export const ManagerTranslation: ManagerMessageFormat = {
     },
     actions: {
         locateGameExecutable: 'Locate {gameName} executable',
-        selectExecutable: 'Select Executable',
-        locateGameLaunchHelper: 'Locate gamelaunchhelper Executable',
-        locateSteamExecutable: 'Locate Steam Executable',
+        selectExecutable: 'Select executable',
+        locateGameLaunchHelper: 'Locate gamelaunchhelper executable',
+        locateSteamExecutable: 'Locate Steam executable',
     }
 }

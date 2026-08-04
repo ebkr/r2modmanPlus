@@ -156,8 +156,8 @@ let resultingManifest = new ManifestV2();
 async function selectFile() {
     waitingForSelection.value = true;
     InteractionProvider.instance.selectFile({
-        buttonLabel: "Select file",
-        title: "Import local mod from file",
+        buttonLabel: t('translations.modals.importLocalMod.actions.selectFile'),
+        title: t('translations.modals.importLocalMod.dialogTitle'),
         filters: []
     }).then(value => {
         if (value.length > 0) {

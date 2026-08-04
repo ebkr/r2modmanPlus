@@ -46,6 +46,7 @@ export const ModalTranslation: ModalMessageFormat = {
     },
     importLocalMod: {
         title: 'Importer un mod depuis un fichier',
+        dialogTitle: 'Importer un mod local depuis un fichier',
         actions: {
             selectFile: 'Sélectionner un fichier',
             importLocalMod: 'Importer un mod local',
@@ -255,6 +256,8 @@ export const ModalTranslation: ModalMessageFormat = {
         },
     },
     importProfile: {
+        dialogTitle: 'Importer un profil',
+        dialogButton: 'Importer',
         states: {
             fileCodeSelection: {
                 title: 'Comment souhaitez-vous importer un profil ?',

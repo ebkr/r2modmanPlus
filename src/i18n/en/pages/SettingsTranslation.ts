@@ -74,6 +74,10 @@ export const SettingsTranslation: SettingsMessageFormat = {
             warning: 'Changing the data folder does not move or delete existing profiles. They will however remain in the old folder.',
             dataFolder: 'Data folder',
             profileFolder: 'Profile folder',
+            dialog: {
+                title: 'Select a new folder to store {appName} data',
+                button: 'Select data folder',
+            },
             searchTerms: [
                 'Data and profile directories',
                 'Change',
@@ -110,6 +114,10 @@ export const SettingsTranslation: SettingsMessageFormat = {
             description: 'Export your mod list and configs to share with friends and get an identical profile quickly and easily.',
             asFile: 'As a file',
             asCode: 'As a code',
+            dialog: {
+                title: 'Select the folder to export your profile to',
+                button: 'Select export folder',
+            },
             searchTerms: [
                 'Export profile',
                 'As file',

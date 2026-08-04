@@ -52,6 +52,7 @@ export const ModalTranslation: ModalMessageFormat = {
     },
     importLocalMod: {
         title: 'Import mod from file',
+        dialogTitle: 'Import local mod from file',
         actions: {
             selectFile: 'Select file',
             importLocalMod: 'Import local mod',
@@ -261,6 +262,8 @@ export const ModalTranslation: ModalMessageFormat = {
         },
     },
     importProfile: {
+        dialogTitle: 'Import profile',
+        dialogButton: 'Import',
         states: {
             fileCodeSelection: {
                 title: 'How are you importing a profile?',

@@ -38,6 +38,7 @@ export type ModalMessageFormat = {
     },
     importLocalMod: {
         title: string;
+        dialogTitle: string;
         actions: {
             selectFile: string;
             importLocalMod: string;
@@ -244,6 +245,8 @@ export type ModalMessageFormat = {
         },
     },
     importProfile: {
+        dialogTitle: string;
+        dialogButton: string;
         states: {
             fileCodeSelection: {
                 title: string;
