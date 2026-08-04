@@ -12,6 +12,7 @@ import {HelpTranslation} from './pages/HelpTranslation';
 import {SettingsTranslation} from "./pages/SettingsTranslation";
 import { ConfigEditorTranslation } from './pages/ConfigEditorTranslation';
 import { DownloadMonitorTranslation } from './pages/DownloadMonitorTranslation';
+import { LinuxSetupTranslation } from './pages/LinuxSetupTranslation';
 
 const message: MessageFormat = {
     metadata: {
@@ -27,7 +28,8 @@ const message: MessageFormat = {
             help: HelpTranslation,
             settings: SettingsTranslation,
             configEditor: ConfigEditorTranslation,
-            downloadMonitor: DownloadMonitorTranslation
+            downloadMonitor: DownloadMonitorTranslation,
+            linuxSetup: LinuxSetupTranslation
         },
         platforms: PlatformTranslation,
         modListStatus: ModListStatusTranslation,
