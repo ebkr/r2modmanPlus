@@ -13,6 +13,7 @@ import {SettingsTranslation} from "./pages/SettingsTranslation";
 import { ConfigEditorTranslation } from './pages/ConfigEditorTranslation';
 import { DownloadMonitorTranslation } from './pages/DownloadMonitorTranslation';
 import { LinuxSetupTranslation } from './pages/LinuxSetupTranslation';
+import { Error404Translation } from './pages/Error404Translation';
 
 const message: MessageFormat = {
     metadata: {
@@ -29,7 +30,8 @@ const message: MessageFormat = {
             settings: SettingsTranslation,
             configEditor: ConfigEditorTranslation,
             downloadMonitor: DownloadMonitorTranslation,
-            linuxSetup: LinuxSetupTranslation
+            linuxSetup: LinuxSetupTranslation,
+            error404: Error404Translation
         },
         platforms: PlatformTranslation,
         modListStatus: ModListStatusTranslation,

@@ -14,6 +14,7 @@ import { SettingsMessageFormat } from './base/pages/SettingsMessageFormat';
 import { ConfigEditorMessageFormat } from './base/pages/ConfigEditorMessageFormat';
 import { DownloadMonitorMessageFormat } from './base/pages/DownloadMonitorMessageFormat';
 import { LinuxSetupMessageFormat } from './base/pages/LinuxSetupMessageFormat';
+import { Error404MessageFormat } from './base/pages/Error404MessageFormat';
 
 export default {
     'en': langEn,
@@ -44,6 +45,7 @@ export type MessageFormat = {
             configEditor: ConfigEditorMessageFormat,
             downloadMonitor: DownloadMonitorMessageFormat,
             linuxSetup: LinuxSetupMessageFormat,
+            error404: Error404MessageFormat,
         },
         platforms: PlatformMessageFormat;
         modListStatus: ModListStatusMessageFormat;
