@@ -16,11 +16,15 @@
                 </footer>
             </template>
         </div>
-        <button v-if="canClose" class="modal-close is-large" aria-label="close" @click="closeModal"/>
+        <button v-if="canClose" class="modal-close is-large" :aria-label="t('translations.modals.actions.close')" @click="closeModal"/>
     </div>
 </template>
 
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
 type ModalCardProps = {
     id: string;
     isActive?: boolean;

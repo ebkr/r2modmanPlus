@@ -143,6 +143,7 @@ export const ModalTranslation: ModalMessageFormat = {
         title: 'Profil exporté',
         description: 'Votre code a été copié dans votre presse-papiers, mais peut également être copié manuellement ci-dessous :',
         done: 'Terminé',
+        copied: 'Copié dans le presse-papiers',
     },
     downloadProgress: {
         states: {
@@ -358,5 +359,8 @@ export const ModalTranslation: ModalMessageFormat = {
         resetFailed: 'La réinitialisation des paramètres a échoué. Vous pouvez toutefois essayer de les réinitialiser manuellement en suivant ces {instructionsLink}.',
         instructionsLinkText: 'instructions',
         resetDidNotHelp: 'Les paramètres stockés localement ont été réinitialisés, mais cela n\'a pas résolu le problème de chargement. Si une version plus récente du gestionnaire est disponible, essayez de l\'installer.'
+    },
+    actions: {
+        close: 'Fermer',
     },
 }

@@ -13,7 +13,7 @@ const isOpen = computed(() => store.state.modals.isProfileCodeExportModalOpen);
 const exportCode = computed(() => store.state.profileExport.exportCode);
 
 const isCopied = ref<boolean>(false);
-const exportCodeText = computed(() => isCopied.value ? 'Copied to clipboard' : exportCode.value);
+const exportCodeText = computed(() => isCopied.value ? t('translations.modals.codeExport.copied') : exportCode.value);
 
 function copyCode() {
     InteractionProvider.instance.copyToClipboard(exportCode.value!);

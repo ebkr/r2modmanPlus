@@ -149,6 +149,7 @@ export const ModalTranslation: ModalMessageFormat = {
         title: 'Profile exported',
         description: 'Your code has been copied to your clipboard but may also be copied manually below:',
         done: 'Done',
+        copied: 'Copied to clipboard',
     },
     downloadProgress: {
         states: {
@@ -365,5 +366,8 @@ export const ModalTranslation: ModalMessageFormat = {
         resetFailed: 'Resetting of the settings failed. You can still try to reset the settings manually by following these {instructionsLink}.',
         instructionsLinkText: 'instructions',
         resetDidNotHelp: 'Locally stored settings were reset, but that didn\'t solve the issue with loading the settings. If there\'s a newer version of the manager available, try installing it.'
+    },
+    actions: {
+        close: 'Close',
     },
 }
