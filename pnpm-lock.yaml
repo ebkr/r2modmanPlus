@@ -86,9 +86,6 @@ importers:
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
-      moment:
-        specifier: ^2.29.1
-        version: 2.30.1
       quasar:
         specifier: ^2.18.6
         version: 2.19.1
@@ -3399,9 +3396,6 @@ packages:
   mock-require@3.0.3:
     resolution: {integrity: sha512-lLzfLHcyc10MKQnNUCv7dMcoY/2Qxd6wJfbqCcVk3LDb8An4hF6ohk5AztrvgKhJCqj36uyzi/p5se+tvyD+Wg==}
     engines: {node: '>=4.3.0'}
-
-  moment@2.30.1:
-    resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
 
   ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
@@ -8371,8 +8365,6 @@ snapshots:
     dependencies:
       get-caller-file: 1.0.3
       normalize-path: 2.1.1
-
-  moment@2.30.1: {}
 
   ms@2.0.0: {}
 

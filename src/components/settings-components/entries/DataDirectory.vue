@@ -19,12 +19,12 @@ const props = defineProps<{
     searchTerm?: string;
 }>();
 
-const dataDirectory = ref<string>(PathResolver.ROOT || 'Not set');
+const dataDirectory = computed<string>(() => PathResolver.ROOT || t('translations.pages.settings.actions.notSet'));
 const activeGame = computed<Game>(() => store.state.activeGame);
 const settings = ref<ManagerSettings | null>(null);
 
 const profileDirectory = computed<string>(() =>
-    store.getters['profile/activeProfile']?.getProfilePath() || 'Not set'
+    store.getters['profile/activeProfile']?.getProfilePath() || t('translations.pages.settings.actions.notSet')
 );
 
 const { t } = useI18n();

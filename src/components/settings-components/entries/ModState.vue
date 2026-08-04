@@ -29,12 +29,16 @@ const numberDisabled = computed<number>(() => localModList.value.length - number
 
 const statusText = computed<string>(() => {
     if (numberEnabled.value === localModList.value.length) {
-        return 'All of your mods are currently enabled.';
+        return t('translations.pages.settings.entries.modState.allEnabled');
     }
     if (numberDisabled.value === localModList.value.length) {
-        return 'All of your mods are currently disabled.';
+        return t('translations.pages.settings.entries.modState.allDisabled');
     }
-    return `You have ${numberDisabled.value} mod${numberDisabled.value > 1 ? 's' : ''} disabled.`;
+    return t(
+        'translations.pages.settings.entries.modState.someDisabled',
+        numberDisabled.value,
+        { named: { count: numberDisabled.value } }
+    );
 });
 
 async function enableAllMods() {

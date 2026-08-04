@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import moment from 'moment';
 import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
 import { useI18n } from 'vue-i18n';
+import { useDateLocale } from '../../composables/DateLocaleComposable';
 import R2Error from '../../../model/errors/R2Error';
 
 const store = getStore<State>();
@@ -14,27 +14,33 @@ const props = defineProps<{
     searchTerm?: string;
 }>();
 
+const { t, d } = useI18n();
+const { getDateLocale } = useDateLocale();
+const dateLocale = getDateLocale();
+
 const isRefreshing = computed<boolean>(() => store.state.tsMods.isThunderstoreModListUpdateInProgress);
 const hasActiveDownloads = computed<boolean>(() => store.getters['download/activeDownloadCount'] > 0);
 const isCleaning = ref<boolean>(false);
 
 const status = computed<string>(() => {
     if (isRefreshing.value) {
-        return store.state.tsMods.thunderstoreModListUpdateStatus || 'Refreshing...';
+        const statusKey = store.state.tsMods.thunderstoreModListUpdateStatus;
+        return statusKey
+            ? t(`translations.modListStatus.${statusKey}`, { progress: store.state.tsMods.thunderstoreModListUpdateProgress })
+            : t('translations.pages.settings.entries.onlineModList.states.refreshing');
     }
     if (store.state.tsMods.thunderstoreModListUpdateError) {
-        return `Error refreshing the mod list: ${store.state.tsMods.thunderstoreModListUpdateError.message}`;
+        return t('translations.pages.settings.entries.onlineModList.states.error', { message: store.state.tsMods.thunderstoreModListUpdateError.message });
     }
     if (hasActiveDownloads.value) {
-        return 'Refreshing the mod list is disabled while there are active downloads.';
+        return t('translations.pages.settings.entries.onlineModList.states.disabledWhileDownloading');
     }
     if (store.state.tsMods.modsLastUpdated !== undefined) {
-        return 'Last updated on: ' + moment(store.state.tsMods.modsLastUpdated).format('MMMM Do YYYY, h:mm:ss a');
+        return t('translations.pages.settings.entries.onlineModList.states.lastUpdated', { date: d(store.state.tsMods.modsLastUpdated!, 'long', dateLocale.value) });
     }
-    return 'No API information available';
+    return t('translations.pages.settings.entries.onlineModList.states.noApiInfo');
 });
 
-const { t } = useI18n();
 
 const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.onlineModList.searchTerms');
 

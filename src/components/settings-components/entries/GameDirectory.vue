@@ -26,10 +26,11 @@ const props = defineProps<{
 const activeGame = computed<Game>(() => store.state.activeGame);
 const settings = ref<ManagerSettings | null>(null);
 
-const gameDirectory = ref<string>('Not set');
+const gameDirectoryPath = ref<string>('');
+const gameDirectory = computed<string>(() => gameDirectoryPath.value || t('translations.pages.settings.actions.notSet'));
 
 function syncGameDirectory() {
-    gameDirectory.value = settings.value?.getContext().gameSpecific.gameDirectory || 'Not set';
+    gameDirectoryPath.value = settings.value?.getContext().gameSpecific.gameDirectory || '';
 }
 
 const { t } = useI18n();
