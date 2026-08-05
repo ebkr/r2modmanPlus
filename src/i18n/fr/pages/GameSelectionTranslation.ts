@@ -65,5 +65,6 @@ export const GameSelectionTranslation: GameSelectionMessageFormat = {
         upToDate: 'Votre liste de jeux est à jour',
         failed: 'Échec de la mise à jour de la liste des jeux',
         retry: 'Réessayer la mise à jour de la liste des jeux',
-    }
+    },
+    loading: 'Préparation des jeux',
 }

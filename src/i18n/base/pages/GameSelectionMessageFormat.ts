@@ -63,5 +63,6 @@ export type GameSelectionMessageFormat = {
         upToDate: string;
         failed: string;
         retry: string;
-    }
+    },
+    loading: string;
 }

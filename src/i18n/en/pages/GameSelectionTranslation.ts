@@ -65,5 +65,6 @@ export const GameSelectionTranslation: GameSelectionMessageFormat = {
         upToDate: 'You have the latest game list',
         failed: 'Failed to update game list',
         retry: 'Retry game list update',
-    }
+    },
+    loading: 'Preparing games',
 }
