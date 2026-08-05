@@ -292,7 +292,7 @@ function dragEnd(event: DragEvent) {
                     <template v-if="readmeError !== null">
                         <div class="notification is-danger">
                             <h2 class="title is-6">
-                                {{ t('translations.pages.manager.online.previewPanel.tabs.unableToFetchReadme') }}
+                                {{ t('translations.pages.manager.online.previewPanel.unableToFetchReadme') }}
                             </h2>
                             <p>{{ readmeError.message }}</p>
                         </div>
