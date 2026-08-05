@@ -117,6 +117,10 @@ export const ModalTranslation: ModalMessageFormat = {
         title: 'Error',
         suggestion: 'Suggestion',
         close: 'Close',
+        actions: {
+            showInEnglish: 'Show in English',
+            showTranslated: 'Show translated',
+        },
     },
     disableMod: {
         title: 'Disabling {modName}',

@@ -100,6 +100,10 @@ export type ModalMessageFormat = {
         title: string;
         suggestion: string;
         close: string;
+        actions: {
+            showInEnglish: string;
+            showTranslated: string;
+        },
     },
     disableMod: {
         title: string;
