@@ -16,7 +16,15 @@ import EnumResolver from "../../../model/enums/_EnumResolver";
 
 const FORCE_PROTON_FILENAME = ".forceproton";
 
+// Snap's Steam package keeps its data under the snap's own "common" directory rather than $HOME directly.
+const SNAP_STEAM_COMMON_DIR = 'snap/steam/common';
+
 export default class GameDirectoryResolverImpl extends GameDirectoryResolverProvider {
+
+    // Callers use this to know when to launch via /snap/bin/steam instead of steamDir/steam.sh.
+    public static isSnapSteamDirectory(steamDir: string): boolean {
+        return steamDir.includes(SNAP_STEAM_COMMON_DIR);
+    }
 
     public async getSteamDirectory(): Promise<string | R2Error> {
         const settings = await ManagerSettings.getSingleton(GameManager.activeGame);
@@ -32,7 +40,11 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 path.resolve(os.homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.local', 'share', 'Steam'),
                 path.resolve(os.homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'steam'),
                 path.resolve(os.homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'root'),
-                path.resolve(os.homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam')
+                path.resolve(os.homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam'),
+                path.resolve(os.homedir(), 'snap', 'steam', 'common', '.local', 'share', 'Steam'),
+                path.resolve(os.homedir(), 'snap', 'steam', 'common', '.steam', 'steam'),
+                path.resolve(os.homedir(), 'snap', 'steam', 'common', '.steam', 'root'),
+                path.resolve(os.homedir(), 'snap', 'steam', 'common', '.steam'),
             ];
             for (let dir of dirs) {
                 if (await FsProvider.instance.exists(dir) && (await FsProvider.instance.readdir(dir))
