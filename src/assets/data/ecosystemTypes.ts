@@ -16,6 +16,8 @@ export interface ThunderstoreEcosyste {
     categories:          { [key: string]: Category };
     discordUrl?:         string;
     displayName:         string;
+    listed?:             boolean;
+    meta?:               CommunityMeta;
     sections:            { [key: string]: Section };
     shortDescription?:   string;
     wikiUrl?:            string;
@@ -24,6 +26,13 @@ export interface ThunderstoreEcosyste {
 export interface Category {
     hidden?: boolean;
     label:   string;
+}
+
+export interface CommunityMeta {
+    background?: string;
+    cover?:      string;
+    hero?:       string;
+    icon?:       string;
 }
 
 export interface Section {
@@ -35,7 +44,7 @@ export interface Section {
 export interface Game {
     distributions: Distribution[];
     label:         string;
-    meta:          Meta;
+    meta:          GameMeta;
     r2modman:      R2Modman[] | null;
     tcli?:         { [key: string]: any };
     thunderstore?: ThunderstoreEcosyste;
@@ -57,7 +66,7 @@ export enum Platform {
     XBOX_GAME_PASS = "xbox-game-pass",
 }
 
-export interface Meta {
+export interface GameMeta {
     displayName: string;
     iconUrl:     null | string;
 }
@@ -71,7 +80,7 @@ export interface R2Modman {
     gameSelectionDisplayMode: GameSelectionDisplayMode;
     installRules:             InstallRule[];
     internalFolderName:       string;
-    meta:                     Meta;
+    meta:                     GameMeta;
     packageIndex:             string;
     packageLoader:            Loader;
     relativeFileExclusions:   string[] | null;
@@ -309,6 +318,8 @@ const typeMap: any = {
         { json: "categories", js: "categories", typ: m(r("Category")) },
         { json: "discordUrl", js: "discordUrl", typ: u(undefined, "") },
         { json: "displayName", js: "displayName", typ: "" },
+        { json: "listed", js: "listed", typ: u(undefined, true) },
+        { json: "meta", js: "meta", typ: u(undefined, r("CommunityMeta")) },
         { json: "sections", js: "sections", typ: m(r("Section")) },
         { json: "shortDescription", js: "shortDescription", typ: u(undefined, "") },
         { json: "wikiUrl", js: "wikiUrl", typ: u(undefined, "") },
@@ -316,6 +327,12 @@ const typeMap: any = {
     "Category": o([
         { json: "hidden", js: "hidden", typ: u(undefined, true) },
         { json: "label", js: "label", typ: "" },
+    ], false),
+    "CommunityMeta": o([
+        { json: "background", js: "background", typ: u(undefined, "") },
+        { json: "cover", js: "cover", typ: u(undefined, "") },
+        { json: "hero", js: "hero", typ: u(undefined, "") },
+        { json: "icon", js: "icon", typ: u(undefined, "") },
     ], false),
     "Section": o([
         { json: "excludeCategories", js: "excludeCategories", typ: u(undefined, a("")) },
@@ -325,7 +342,7 @@ const typeMap: any = {
     "Game": o([
         { json: "distributions", js: "distributions", typ: a(r("Distribution")) },
         { json: "label", js: "label", typ: "" },
-        { json: "meta", js: "meta", typ: r("Meta") },
+        { json: "meta", js: "meta", typ: r("GameMeta") },
         { json: "r2modman", js: "r2modman", typ: u(a(r("R2Modman")), null) },
         { json: "tcli", js: "tcli", typ: u(undefined, m("any")) },
         { json: "thunderstore", js: "thunderstore", typ: u(undefined, r("ThunderstoreEcosyste")) },
@@ -335,7 +352,7 @@ const typeMap: any = {
         { json: "identifier", js: "identifier", typ: u(undefined, "any") },
         { json: "platform", js: "platform", typ: r("Platform") },
     ], false),
-    "Meta": o([
+    "GameMeta": o([
         { json: "displayName", js: "displayName", typ: "" },
         { json: "iconUrl", js: "iconUrl", typ: u(null, "") },
     ], false),
@@ -348,7 +365,7 @@ const typeMap: any = {
         { json: "gameSelectionDisplayMode", js: "gameSelectionDisplayMode", typ: r("GameSelectionDisplayMode") },
         { json: "installRules", js: "installRules", typ: a(r("InstallRule")) },
         { json: "internalFolderName", js: "internalFolderName", typ: "" },
-        { json: "meta", js: "meta", typ: r("Meta") },
+        { json: "meta", js: "meta", typ: r("GameMeta") },
         { json: "packageIndex", js: "packageIndex", typ: "" },
         { json: "packageLoader", js: "packageLoader", typ: r("Loader") },
         { json: "relativeFileExclusions", js: "relativeFileExclusions", typ: u(a(""), null) },
