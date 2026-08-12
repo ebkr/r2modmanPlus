@@ -109,7 +109,7 @@ function runSort() {
             case SortingStyle.RATING:
                 result = a.getRating() < b.getRating();
                 break;
-            case SortingStyle.RELEVANCE:
+            default: // case SortingStyle.RELEVANCE
                 result = true;
                 break;
         }
