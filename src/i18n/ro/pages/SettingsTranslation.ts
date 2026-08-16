@@ -242,7 +242,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
         },
         resetGameInstallation: {
             title: 'Resetează instalația {gameName}',
-            description: 'Repară problemele cauzate de fișiere corupte sau fișiere lăsate în urmă după tentative de modare manuală. Asta va șterge toate conținuturile dosarului {folderName} și va verifica fișierele prin Steam',
+            description: 'Repară problemele cauzate de fișiere corupte sau fișiere lăsate în urmă după tentative de modare manuală. Asta va șterge toate conținuturile dosarului {folderName} și va verifica fișierele prin Steam.',
             action: 'Resetează instalația',
             searchTerms: [
                 'Resetează instalația {gameName}',

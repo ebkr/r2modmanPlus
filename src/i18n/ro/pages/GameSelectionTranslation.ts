@@ -65,5 +65,6 @@ export const GameSelectionTranslation: GameSelectionMessageFormat = {
         upToDate: 'Ai cea mai actuală listă de jocuri',
         failed: 'Nu am reușit să actualizăm lista de jocuri',
         retry: 'Reîncearcă actualizarea listei de jocuri',
-    }
+    },
+    loading: 'Pregătim jocurile',
 }

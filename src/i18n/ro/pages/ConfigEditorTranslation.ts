@@ -2,7 +2,7 @@ import { ConfigEditorMessageFormat } from '../../base/pages/ConfigEditorMessageF
 
 export const ConfigEditorTranslation: ConfigEditorMessageFormat = {
     hero: {
-        title: 'Configurare editor',
+        title: 'Editor de configurări',
         subtitle: 'Selectează un fișier de configurare pentru a-l edita'
     },
     warning: {

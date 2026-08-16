@@ -117,6 +117,10 @@ export const ModalTranslation: ModalMessageFormat = {
         title: 'Eroare',
         suggestion: 'Sugestie',
         close: 'Închide',
+        actions: {
+            showInEnglish: 'Arată în engleză',
+            showTranslated: 'Arată traducerea',
+        },
     },
     disableMod: {
         title: 'Dezactivare {modName}',
@@ -228,7 +232,7 @@ export const ModalTranslation: ModalMessageFormat = {
         close: 'Închide',
     },
     createProfile: {
-        title: 'Crează un profil',
+        title: 'Creează un profil',
         description: 'Acest profil își va stoca mod-urile independent de restul profilurilor.',
         tagStates: {
             required: 'Trebuie să introduci un nume de profil',
@@ -236,7 +240,7 @@ export const ModalTranslation: ModalMessageFormat = {
             error: '"{profileName}" ori este deja folosit, ori conține caractere nevalide.'
         },
         actions: {
-            create: 'Crează'
+            create: 'Creează'
         }
     },
     deleteProfile: {
@@ -334,7 +338,7 @@ export const ModalTranslation: ModalMessageFormat = {
                     error: '"{profileName}" ori este deja folosit, ori conține caractere nevalide.'
                 },
                 actions: {
-                    create: 'Crează',
+                    create: 'Creează',
                     update: 'Actualizează profilul: {profileName}'
                 }
             },
