@@ -1,5 +1,21 @@
 ### 3.2.19
 
+#### Flatpak Remote Repository
+
+With an incredible amount of work and support from [@TB516](https://github.com/TB516), the Flatpak remote repository is now available for Linux users.
+
+This now means that Flatpak users can finally update r2modman like a normal Flatpak application.
+Updates via Flatpak are also much smaller and quicker to install.
+
+You can install it via the included `flatpak-setup.sh` script or manually with these commands:
+
+```bash
+flatpak remote-add --if-not-exists r2builds http://r2builds.ebkr.dev/flatpak/r2modman.flatpakrepo
+flatpak install io.github.ebkr.r2modman
+```
+
+The README has more detailed setup information for Flatpaks if needed.
+
 #### Improvements
 
 - Redesigned settings screen, including:

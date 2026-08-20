@@ -34,31 +34,62 @@ You can choose to update, enable/disable or even uninstall mods with a simple cl
 
 ## Installing
 
-### First time installing
-#### Windows
+### Windows
 1. Click "Manual Download" on Thunderstore.
 2. Inside the downloaded **.zip** file. Run the "r2modman Setup X.X.X.exe" (where X.X.X is the current version).
 3. Follow the steps in the installer.
 
-#### Linux
+### Linux
+
+If you are on Linux, please do not install the `.exe` files of r2modman. Instead, use one of the following methods:
+
+#### Steam Deck
+
+The Steam Deck relies on Flatpak installations if you'd like to use r2modman in game mode.
+
+If you prefer to run the manager in desktop mode, you can use either the Flatpak (recommended) or the AppImage.
+
+#### Flatpak and AppImage
+
 1. Click "Manual Download" on Thunderstore.
-2. Inside the download **.zip** file there is an AppImage release.
+2. Extract the downloaded **.zip** file.
+2. Inside the extracted folder, there will be:
+  - A `flatpak-setup.sh` file. Run this script if you want to install r2modman via Flatpak. (Recommended).
+  - An AppImage file for regular usage. This file may need to be marked as executable (`chmod +x <filename>.AppImage`).
 
-**If you'd prefer to install platform specific builds then you can find them under the latest GitHub release on the ebkr/r2modmanPlus repository**
+The `flatpak-setup.sh` script consists of:
+```bash
+flatpak remote-add --if-not-exists r2builds http://r2builds.ebkr.dev/flatpak/r2modman.flatpakrepo
+flatpak install io.github.ebkr.r2modman
+```
 
-**Platform builds:**
+You will need elevated privileges (sudo) to run the `flatpak-setup.sh` script or the commands as listed above.
+
+If you'd prefer not to use sudo/elevated privileges to install the Flatpak, then you can run the following manually:
+```bash
+flatpak remote-add --user --if-not-exists r2builds http://r2builds.ebkr.dev/flatpak/r2modman.flatpakrepo
+flatpak install --user io.github.ebkr.r2modman
+```
+
+#### Platform-specific builds
+
+_If you'd prefer to install platform specific builds then you can find them under the latest GitHub release on the ebkr/r2modmanPlus repository_
+
+Platform builds:
  - deb
  - rpm
  - pacman
  - tar.gz
 
+ You can access the list of release files here: https://github.com/ebkr/r2modmanPlus/releases/latest
+
  _Problems with Linux builds should be reported in the [r2modman discord](https://discord.gg/jE2zWHY)._
 
-##### Note
+#### Note
 - Temporary workaround to force Proton on Linux systems
     - Place a `.forceproton` file in the game directory whilst a solution is in development
 
-### Updating
+## Updating
 r2modman will automatically download any available updates whilst you use it.
 
 If an update has been downloaded, it will be installed once you have closed the application.
@@ -100,4 +131,3 @@ Config editor
 Profiles
 
 ![](https://cdn.imgchest.com/files/a23d6834a8d5.png)
-
