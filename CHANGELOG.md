@@ -1,3 +1,40 @@
+### 3.2.19
+
+#### Improvements
+
+- Redesigned settings screen, including:
+    - Fewer items / actions are grouped together.
+    - Smarter search.
+- Peak memory usage reduction.
+- You will now be informed when packages you have installed are removed from Thunderstore.
+- Improved online mod list searching:
+    - "Default" has been renamed to "Relevance"
+    - Relevance searches now bump results matching name/author exactly.
+- Spaces anmd underscores are now ignored in search results, meaning you don't need to remember the exact package name.
+- Folders containing special characters can now be opened via settings.
+
+
+#### Games Added
+
+- A Dance of Fire and Ice
+- Big Walk
+- Block Story
+- Cairn
+- Grain Rot
+- Home Safety Hotline
+- Inside the Backrooms
+- Iron Nest
+- LumenTale: Memories of Trey
+- Shift At Midnight
+- Sineus Arena Survivors
+- Slip & Skid
+- Stick Fight: The Game
+- SUPERHOT
+- SUPERHOT: MIND CONTROL DELETE
+- The Lab
+- Waterpark Simulator
+- Wobbly Life
+
 ### 3.2.18
 
 #### Performance Improvements
