@@ -59,8 +59,8 @@ If you prefer to run the manager in desktop mode, you can use either the Flatpak
 
 The `flatpak-setup.sh` script consists of:
 ```bash
-flatpak remote-add --if-not-exists r2builds http://r2builds.ebkr.dev/flatpak/r2modman.flatpakrepo
-flatpak install io.github.ebkr.r2modman
+flatpak remote-add --if-not-exists r2builds https://r2builds.ebkr.dev/flatpak/r2modman.flatpakrepo
+flatpak install -y r2builds io.github.ebkr.r2modman
 ```
 
 You will need elevated privileges (sudo) to run the `flatpak-setup.sh` script or the commands as listed above.

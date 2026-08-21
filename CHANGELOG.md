@@ -10,8 +10,8 @@ Updates via Flatpak are also much smaller and quicker to install.
 You can install it via the included `flatpak-setup.sh` script or manually with these commands:
 
 ```bash
-flatpak remote-add --if-not-exists r2builds http://r2builds.ebkr.dev/flatpak/r2modman.flatpakrepo
-flatpak install io.github.ebkr.r2modman
+flatpak remote-add --if-not-exists r2builds https://r2builds.ebkr.dev/flatpak/r2modman.flatpakrepo
+flatpak install -y r2builds io.github.ebkr.r2modman
 ```
 
 The README has more detailed setup information for Flatpaks if needed.
