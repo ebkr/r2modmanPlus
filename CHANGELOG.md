@@ -1,3 +1,56 @@
+### 3.2.19
+
+#### Flatpak Remote Repository
+
+With an incredible amount of work and support from [@TB516](https://github.com/TB516), the Flatpak remote repository is now available for Linux users.
+
+This now means that Flatpak users can finally update r2modman like a normal Flatpak application.
+Updates via Flatpak are also much smaller and quicker to install.
+
+You can install it via the included `flatpak-setup.sh` script or manually with these commands:
+
+```bash
+flatpak remote-add --if-not-exists r2builds http://r2builds.ebkr.dev/flatpak/r2modman.flatpakrepo
+flatpak install io.github.ebkr.r2modman
+```
+
+The README has more detailed setup information for Flatpaks if needed.
+
+#### Improvements
+
+- Redesigned settings screen, including:
+    - Fewer items / actions are grouped together.
+    - Smarter search.
+- Peak memory usage reduction.
+- You will now be informed when packages you have installed are removed from Thunderstore.
+- Improved online mod list searching:
+    - "Default" has been renamed to "Relevance"
+    - Relevance searches now bump results matching name/author exactly.
+- Spaces anmd underscores are now ignored in search results, meaning you don't need to remember the exact package name.
+- Folders containing special characters can now be opened via settings.
+
+
+#### Games Added
+
+- A Dance of Fire and Ice
+- Big Walk
+- Block Story
+- Cairn
+- Grain Rot
+- Home Safety Hotline
+- Inside the Backrooms
+- Iron Nest
+- LumenTale: Memories of Trey
+- Shift At Midnight
+- Sineus Arena Survivors
+- Slip & Skid
+- Stick Fight: The Game
+- SUPERHOT
+- SUPERHOT: MIND CONTROL DELETE
+- The Lab
+- Waterpark Simulator
+- Wobbly Life
+
 ### 3.2.18
 
 #### Performance Improvements

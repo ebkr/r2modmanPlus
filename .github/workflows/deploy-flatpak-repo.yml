@@ -19,10 +19,17 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.FLATPAK_R2_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.FLATPAK_R2_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: auto
+      MISE_ENV: ci
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
+
+      - uses: jdx/mise-action@v3
+        with:
+          install: true
+          cache: true
+          log_level: debug
 
       - name: Import GPG key
         env:
