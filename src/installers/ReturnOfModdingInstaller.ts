@@ -2,9 +2,8 @@ import path from "../providers/node/path/path";
 import { InstallRulePluginInstaller } from "./InstallRulePluginInstaller";
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import FileWriteError from "../model/errors/FileWriteError";
-import { PackageLoader } from "../model/schema/ThunderstoreSchema";
+import { getModLoaderMapping } from "../model/schema/ThunderstoreSchema";
 import FsProvider from "../providers/generic/file/FsProvider";
-import { MODLOADER_PACKAGES } from "../r2mm/installing/profile_installers/ModLoaderVariantRecord";
 import FileUtils from "../utils/FileUtils";
 import { TrackingMethod } from "../model/schema/ThunderstoreSchema";
 
@@ -17,10 +16,7 @@ export class ReturnOfModdingInstaller implements PackageInstaller {
     async install(args: InstallArgs) {
         const {mod, packagePath, profile} = args;
 
-        const mapping = MODLOADER_PACKAGES.find((entry) =>
-            entry.packageName.toLowerCase() == mod.getName().toLowerCase() &&
-            entry.loaderType == PackageLoader.RETURN_OF_MODDING,
-        );
+        const mapping = getModLoaderMapping(mod.getName());
 
         if (mapping === undefined) {
             throw new Error(`ReturnOfModdingInstaller found no loader for ${mod.getName()}`);
