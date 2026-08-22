@@ -8,4 +8,5 @@ export const TestPathProvider = {
     basename: (pathName: string) => path.basename(pathName),
     relative: (pathOne: string, pathTwo: string) => path.relative(pathOne, pathTwo),
     resolve: (...paths: string[]) => path.resolve(...paths),
+    sep: path.sep,
 } as NodePathProvider;
