@@ -68,11 +68,17 @@ provideStoreImplementation(() => store);
 const quasar = useQuasar();
 
 document.addEventListener('auxclick', e => {
+    if (e.button !== 1) {
+        return;
+    }
     const target = e.target! as any;
     if (target.localName == 'a') {
-        LinkProvider.instance.openLink(target.getAttribute("href"))
+        const href = target.getAttribute("href");
+        if (href !== null && href !== undefined) {
+            LinkProvider.instance.openLink(href);
+        }
+        e.preventDefault();
     }
-    e.preventDefault();
 }, false);
 
 const {
