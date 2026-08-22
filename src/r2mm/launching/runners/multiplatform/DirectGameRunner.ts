@@ -9,6 +9,7 @@ import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameD
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
 import ChildProcess from '../../../../providers/node/child_process/child_process';
+import { parse as parseShell } from "shell-quote";
 
 export default class DirectGameRunner extends GameRunnerProvider {
 
@@ -45,20 +46,23 @@ export default class DirectGameRunner extends GameRunnerProvider {
 
             const mappedArgs = args.map(value => `"${value}"`).join(' ');
 
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`);
+            const allArgs = [
+                ...args,
+                ...parseShell(settings.getContext().gameSpecific.launchParameters)
+            ];
 
-            const childProcess = ChildProcess.exec(`"${gameExecutable}" ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`, {
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${allArgs.join(" ")}`);
+
+            ChildProcess.spawn(`"${gameExecutable}"`, allArgs, {
                 cwd: gameDir,
-                windowsHide: false,
-            }, (err => {
-                if (err !== null) {
-                    LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
-                    LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);
-                    const r2err = new R2Error('Error starting the game', err.message, 'Ensure that the game folder has been set correctly in the settings');
-                    return reject(r2err);
-                }
-                return resolve();
-            }));
+                shell: true,
+                detached: true,
+            }).catch(reason => {
+                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
+                LoggerProvider.instance.Log(LogSeverity.ERROR, reason);
+                const r2err = new R2Error('Error starting the game', reason, 'Ensure that the game folder has been set correctly in the settings');
+                return reject(r2err);
+            });
         });
     }
 }
