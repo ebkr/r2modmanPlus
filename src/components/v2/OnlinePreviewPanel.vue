@@ -192,7 +192,7 @@ function dragEnd(event: DragEvent) {
                     <i class="fas fa-times"/>
                 </button>
                 <h1 class="title">
-                    {{ mod.getName() }}
+                    {{ mod.getName().replaceAll('_', ' ') }}
                 </h1>
                 <h2 class="subtitle">
                     By {{ mod.getOwner() }}

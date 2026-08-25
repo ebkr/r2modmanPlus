@@ -8,7 +8,7 @@
             @click="() => emitCardClick(key)">
             <template v-slot:title>
                 <div>
-                    <span class="selectable">{{key.getName()}}</span>
+                    <span class="selectable">{{key.getName().replaceAll('_', ' ')}}</span>
                     <div>
                         <span class="card-byline">{{key.getOwner()}}</span>
                     </div>

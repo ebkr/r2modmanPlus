@@ -28,7 +28,7 @@ const icon = useModIcon(() => props.mod);
                 </span>
                 <span class="card-title selectable">
                     <component :is="mod.isEnabled() ? 'span' : 'strike'" class="selectable">
-                        {{mod.getDisplayName()}}
+                        {{mod.getDisplayName().replaceAll('_', ' ')}}
                         <span class="selectable card-byline">
                             v{{mod.getVersionNumber()}}
                         </span>
