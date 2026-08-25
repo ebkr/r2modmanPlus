@@ -11,6 +11,7 @@ import { useI18n } from 'vue-i18n';
 const store = getStore<State>();
 const settings = ref<ManagerSettings | null>(null);
 const theme = ref<'light' | 'dark'>('dark');
+const { locale } = useI18n();
 
 const props = defineProps<{
     searchTerm?: string;
@@ -23,6 +24,8 @@ const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pag
 onMounted(async () => {
     settings.value = await ManagerSettings.getSingleton(store.state.activeGame);
     theme.value = settings.value.getContext().global.darkTheme ? 'dark' : 'light';
+    const savedLang = settings.value.getContext().global.language || 'en';
+    locale.value = savedLang; 
 });
 
 async function setTheme(value: 'light' | 'dark') {

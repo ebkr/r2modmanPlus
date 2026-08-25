@@ -211,6 +211,7 @@ export interface ManagerSettingsInterfaceGlobal_V2 {
     defaultStore: Platform | undefined;
     gameSelectionViewMode: GameSelectionViewMode;
     previewPanelWidth: number;
+    language?: string;
 }
 
 /**
