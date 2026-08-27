@@ -1,4 +1,5 @@
 import langEn, { dateTimeFormat as enDateTimeFormat } from './en';
+import langDe, { dateTimeFormat as deDateTimeFormat } from './de';
 import langPl, { dateTimeFormat as plDateTimeFormat } from './pl';
 import langFr, { dateTimeFormat as frDateTimeFormat } from './fr';
 import { PlatformMessageFormat } from './base/platforms/PlatformMessageFormat';
@@ -19,12 +20,14 @@ import { Error404MessageFormat } from './base/pages/Error404MessageFormat';
 
 export default {
     'en': langEn,
+    'de': langDe,
     'pl': langPl,
     'fr': langFr,
 };
 
 export const datetimeFormats = {
     [langEn.metadata.locale]: enDateTimeFormat,
+    [langDe.metadata.locale]: deDateTimeFormat,
     [langPl.metadata.locale]: plDateTimeFormat,
     [langFr.metadata.locale]: frDateTimeFormat,
 };
