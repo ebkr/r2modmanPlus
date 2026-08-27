@@ -18,9 +18,11 @@
                             </button>
                             <template #popper>
                             <ul class="menu-list">
-                                <li v-for="lang in availableLocales" :key="`locale-select-${lang}`"><a v-close-popper @click="() => locale = lang">{{ lang }} ({{ t('metadata.name', 0, {
-                                    locale: lang
-                                }) }})</a></li>
+                                 <li v-for="lang in availableLocales" :key="`locale-select-${lang}`">
+                                    <a v-close-popper @click="selectLanguage(lang)">
+                                        {{ lang }} ({{ t('metadata.name', 0, { locale: lang }) }})
+                                    </a>
+                                </li>
                             </ul>
                             </template>
                         </ActivityDropdown>
@@ -176,6 +178,13 @@ onMounted(async () => {
 watchEffect(() => {
     document.documentElement.classList.toggle('html--dark', quasar.dark.isActive);
 })
+
+async function selectLanguage(lang: string): Promise<void> {
+    locale.value = lang;
+    const settings = await ManagerSettings.getSingleton(store.state.activeGame);
+    await settings.setLanguage(lang);
+}
+
 </script>
 
 <style lang="scss">

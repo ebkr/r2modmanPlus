@@ -112,6 +112,11 @@ export default class ManagerSettings {
         ManagerSettings.CONTEXT.global.darkTheme = !ManagerSettings.CONTEXT.global.darkTheme;
         await this.save();
     }
+    
+    public async setLanguage(lang: string) {
+        ManagerSettings.CONTEXT.global.language = lang;
+        await this.save();
+    }
 
     public async setLaunchParameters(launchParams: string) {
         ManagerSettings.CONTEXT.gameSpecific.launchParameters = launchParams;
