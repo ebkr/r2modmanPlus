@@ -1,3 +1,4 @@
+import { markRaw } from 'vue';
 import { ActionTree, GetterTree } from 'vuex';
 
 import { CachedMod } from './TsModsModule';
@@ -197,7 +198,7 @@ export default {
         // Avoid calling this directly, prefer updateModList action to
         // ensure TSMM specific code gets called.
         setModList(state: State, list: ManifestV2[]) {
-            state.modList = list;
+            state.modList = list.map(markRaw);
         },
 
         setOrder(state: State, value: SortNaming) {
