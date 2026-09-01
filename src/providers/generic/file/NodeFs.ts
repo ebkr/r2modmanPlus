@@ -8,6 +8,21 @@ export default class NodeFs extends FsProvider {
 
     private static lock = new Lock();
 
+    async emptyDirectory(directory: string): Promise<void> {
+        for (const entry of await fs.promises.readdir(directory)) {
+            await fs.promises.rm(path.join(directory, entry), { recursive: true, force: true });
+        }
+    }
+
+    async removeDirectoryRecursively(directory: string): Promise<void> {
+        const stat = await fs.promises.lstat(directory).catch(() => undefined);
+        if (stat === undefined || !stat.isDirectory()) {
+            return;
+        }
+
+        await fs.promises.rm(directory, { recursive: true, force: true });
+    }
+
     async exists(path: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(path, async () => {

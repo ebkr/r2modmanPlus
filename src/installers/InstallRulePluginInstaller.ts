@@ -258,22 +258,16 @@ async function installState(args: InstallRuleArgs) {
     await addToStateFile(mod, fileRelocations, profile);
 }
 
-async function uninstallPackageZip(mod: ManifestV2, profile: ImmutableProfile) {
-    const fs = FsProvider.instance;
+async function uninstallPackageZip(mod: ManifestV2, profile: ImmutableProfile, rule: CoreRuleType) {
+    const packageZipRoutes = InstallationRules.getAllManagedPaths(rule.rules)
+        .filter(value => value.trackingMethod === TrackingMethod.PACKAGE_ZIP);
 
-    const recursiveDelete = async (mainPath: string, match: string) => {
-        for (const subpath of (await fs.readdir(mainPath))) {
-            const fullSubpath = path.join(mainPath, subpath);
-            const subpathInfo = await fs.lstat(fullSubpath);
-            if (subpathInfo.isDirectory()) {
-                await recursiveDelete(fullSubpath, match);
-            } else if (subpathInfo.isFile() && subpath == match) {
-                await fs.unlink(fullSubpath);
-            }
+    for (const managedRule of packageZipRoutes) {
+        const zipPath = profile.joinToProfilePath(managedRule.route, `${mod.getName()}.ts.zip`);
+        if (await FsProvider.instance.exists(zipPath)) {
+            await FsProvider.instance.unlink(zipPath);
         }
     }
-
-    await recursiveDelete(profile.getProfilePath(), `${mod.getName()}.ts.zip`);
 }
 
 async function uninstallSubDir(mod: ManifestV2, profile: ImmutableProfile) {
@@ -432,7 +426,7 @@ export class InstallRulePluginInstaller implements PackageInstaller {
         try {
             await uninstallState(args.mod, args.profile);
             await uninstallSubDir(args.mod, args.profile);
-            await uninstallPackageZip(args.mod, args.profile);
+            await uninstallPackageZip(args.mod, args.profile, this.rule);
         } catch (e) {
             const name = 'Failed to remove files';
             const solution = 'Is the game still running? If so, close it and try again.';

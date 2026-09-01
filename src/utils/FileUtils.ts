@@ -1,5 +1,4 @@
 import FsProvider from '../providers/generic/file/FsProvider';
-import path from "../providers/node/path/path";
 
 export default class FileUtils {
 
@@ -17,18 +16,7 @@ export default class FileUtils {
     }
 
     public static async emptyDirectory(dir: string) {
-        const fs = FsProvider.instance;
-        const files = await fs.readdir(dir);
-        for (const filename of files) {
-            const file = path.join(dir, filename);
-            if ((await fs.lstat(file)).isDirectory()) {
-                await this.emptyDirectory(file);
-                await fs.rmdir(file);
-            } else {
-                await fs.unlink(file);
-            }
-        }
-        return Promise.resolve();
+        await FsProvider.instance.emptyDirectory(dir);
     }
 
     // Obfuscates the Windows username if it's part of the path.
@@ -58,13 +46,6 @@ export default class FileUtils {
     };
 
     public static async recursiveRemoveDirectoryIfExists(dir: string) {
-        const fs = FsProvider.instance;
-
-        if (!(await fs.exists(dir)) || !(await fs.lstat(dir)).isDirectory()) {
-            return;
-        }
-
-        await FileUtils.emptyDirectory(dir);
-        await fs.rmdir(dir);
+        await FsProvider.instance.removeDirectoryRecursively(dir);
     }
 }
