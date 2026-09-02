@@ -9,7 +9,11 @@ export class Logger {
     private static logList: string[] = [];
 
     public async Log(severity: LogSeverity, error: string) {
-        Logger.logList.push(`${new Date().toLocaleTimeString()} [${severity}]: ${error}`);
+        const logLine = `${new Date().toLocaleTimeString()} [${severity}]: ${error}`;
+        if (severity === LogSeverity.DEBUG) {
+            console.debug(logLine);
+        }
+        Logger.logList.push(logLine);
         await this.Write();
     }
 
