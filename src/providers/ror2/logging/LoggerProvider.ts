@@ -37,5 +37,6 @@ export enum LogSeverity {
     ACTION_STOPPED = 'ACTION_STOPPED',
     BREAKING = 'BREAKING',
     INFO = 'INFO',
-    ERROR = 'ERROR'
+    ERROR = 'ERROR',
+    DEBUG = 'DEBUG'
 }
