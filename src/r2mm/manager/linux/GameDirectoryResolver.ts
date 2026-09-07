@@ -13,6 +13,7 @@ import DepotLoader from '../../../depots/loader/DepotLoader';
 import path from '../../../providers/node/path/path';
 import {getLaunchType, LaunchType} from "../../../model/real_enums/launch/LaunchType";
 import EnumResolver from "../../../model/enums/_EnumResolver";
+import LoggerProvider, { LogSeverity } from '@r2/providers/ror2/logging/LoggerProvider';
 
 const FORCE_PROTON_FILENAME = ".forceproton";
 
@@ -198,7 +199,10 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
     // TODO: Move this to Steam Utils when the multiple store refactor is made
     public async getLaunchArgs(game: Game): Promise<R2Error | string> {
         const steamDir = await this.getSteamDirectory();
-        if (steamDir instanceof R2Error) return steamDir;
+        if (steamDir instanceof R2Error) {
+            LoggerProvider.instance.Log(LogSeverity.DEBUG, '[LinuxWrapperDetection] Steam directory not found');
+            return steamDir;
+        }
 
         let steamBaseDir;
         const probableSteamBaseDirs = [
@@ -216,40 +220,46 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 break;
             }
 
-        if (typeof steamBaseDir === "undefined")
+        if (typeof steamBaseDir === "undefined") {
+            LoggerProvider.instance.Log(LogSeverity.DEBUG, `[LinuxWrapperDetection] No steamBaseDir detected. Tried the following paths: ${probableSteamBaseDirs.join(", ")}`);
             return new R2Error(
                 'An error occured whilst searching Steam user data locations',
                 'Cannot define the steam config location',
                 null
             );
+        }
 
         const loginUsers = vdf.parse((await FsProvider.instance.readFile(path.join(steamBaseDir, 'config', 'loginusers.vdf'))).toString());
         let userSteamID64 = '';
-        for(let _id in loginUsers.users) {
+        for (let _id in loginUsers.users) {
             if(loginUsers.users[_id].MostRecent == 1) {
                 userSteamID64 = _id;
                 break;
             }
         }
 
-        if(userSteamID64.length === 0) return new R2Error(
-            'Unable to get the current Steam User ID',
-            'Please try again',
-            null
-        );
+        if (userSteamID64.length === 0) {
+            const users = loginUsers.users.map((user: unknown) => JSON.stringify(user));
+            LoggerProvider.instance.Log(LogSeverity.DEBUG, `Unable to get the current Steam UserID. Tried: ${users.join(', ')}`);
+            return new R2Error(
+                'Unable to get the current Steam User ID',
+                'Please try again',
+                null
+            );
+        }
 
         const userAccountID = (BigInt(userSteamID64) & BigInt(0xFFFFFFFF)).toString();
 
         const localConfig = vdf.parse((await FsProvider.instance.readFile(path.join(steamBaseDir, 'userdata', userAccountID, 'config', 'localconfig.vdf'))).toString());
 
-        //find apps in one of possible locations.
+        // Find apps in one of possible locations.
         const apps = getPropertyFromPath(localConfig, [
             'UserLocalConfigStore.Software.Valve.Steam.Apps',
             'UserLocalConfigStore.Software.Valve.Steam.apps',
             'UserLocalConfigStore.Software.Valve.steam.apps'
         ]);
         if (!apps) {
-            console.warn('Steam.Apps not found !');
+            LoggerProvider.instance.Log(LogSeverity.DEBUG, 'Steam.Apps not found');
         }
 
         return apps[game.activePlatform.storeIdentifier!].LaunchOptions || '';
