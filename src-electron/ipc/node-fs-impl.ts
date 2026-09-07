@@ -70,6 +70,29 @@ export function hookFsIpc(browserWindow: BrowserWindow) {
     ipcMain.handle('node:fs:setModifiedTime', (event, path, time) => {
         return fs.promises.utimes(path, time, time)
     });
+
+    ipcMain.handle('node:fs:emptyDirectory', (event, directory) => {
+        return emptyDirectory(directory);
+    });
+
+    ipcMain.handle('node:fs:removeDirectoryRecursively', (event, directory) => {
+        return removeDirectoryRecursively(directory);
+    });
+}
+
+async function emptyDirectory(directory: string) {
+    for (const entry of await fs.promises.readdir(directory)) {
+        await fs.promises.rm(path.join(directory, entry), { recursive: true, force: true });
+    }
+}
+
+async function removeDirectoryRecursively(directory: string) {
+    const stat = await fs.promises.lstat(directory).catch(() => undefined);
+    if (stat === undefined || !stat.isDirectory()) {
+        return;
+    }
+
+    await fs.promises.rm(directory, { recursive: true, force: true });
 }
 
 async function copyFile(from: string, to: string) {

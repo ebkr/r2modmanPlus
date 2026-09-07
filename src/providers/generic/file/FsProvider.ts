@@ -31,5 +31,7 @@ export default abstract class FsProvider {
     public abstract copyFolder(from: string, to: string): Promise<void>;
     public abstract base64FromZip(path: string): Promise<string>;
     public abstract setModifiedTime(path: string, time: Date): Promise<void>;
+    public abstract emptyDirectory(directory: string): Promise<void>;
+    public abstract removeDirectoryRecursively(directory: string): Promise<void>;
 
 }
