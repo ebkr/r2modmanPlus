@@ -30,6 +30,7 @@ declare global {
 
     interface ImportMeta {
         readonly env: ImportMetaEnv;
+        glob<T = unknown>(pattern: string, options: { eager: true, import: 'default' }): Record<string, T>;
     }
 
     interface Window {

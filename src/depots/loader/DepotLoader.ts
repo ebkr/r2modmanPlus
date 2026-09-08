@@ -1,6 +1,9 @@
 import { Depot } from '../../depots/loader/Depot';
 import R2Error from '../../model/errors/R2Error';
 import Game from '../../model/game/Game';
+import master from '../master.json';
+
+const DEPOT_FILES = import.meta.glob<{ depots: Depot }>('../*.depot.json', { eager: true, import: 'default' });
 
 export default class DepotLoader {
 
@@ -9,11 +12,17 @@ export default class DepotLoader {
     private static LOADED_DEPOTS: Map<string, Depot> = new Map();
 
     private static load(): Map<string, Depot> {
-        const master = require('../master.json');
-        console.log("Master:", master);
         const depotMap = new Map<string, Depot>();
         for (let depotsKey in master.depots) {
-            depotMap.set(depotsKey, require(`../${master.depots[depotsKey]}`).depots as Depot);
+            const fileName = (master.depots as Record<string, string>)[depotsKey];
+            const depotFile = DEPOT_FILES[`../${fileName}`];
+            if (depotFile === undefined) {
+                throw new R2Error(
+                    `Unable to find depot file ${fileName} for ${depotsKey}`,
+                    "This may be an issue with the manager. Report the issue in the appropriate discord server."
+                );
+            }
+            depotMap.set(depotsKey, depotFile.depots);
         }
         this.LOADED_DEPOTS = depotMap;
         return depotMap;
