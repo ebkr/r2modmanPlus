@@ -117,6 +117,7 @@ export enum TrackingMethod {
 export enum Loader {
     BEPINEX = "bepinex",
     BEPISLOADER = "bepisloader",
+    GDPATCH = "gdpatch",
     GDWEAVE = "gdweave",
     GODOTML = "godotml",
     LOVELY = "lovely",
@@ -415,6 +416,7 @@ const typeMap: any = {
     "Loader": [
         "bepinex",
         "bepisloader",
+        "gdpatch",
         "gdweave",
         "godotml",
         "lovely",

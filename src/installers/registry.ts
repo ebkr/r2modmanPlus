@@ -8,6 +8,7 @@ import { ShimloaderInstaller } from './ShimloaderInstaller';
 import { LovelyInstaller, LovelyPluginInstaller } from './LovelyInstaller';
 import { NorthstarInstaller } from './NorthstarInstaller';
 import { ReturnOfModdingInstaller, ReturnOfModdingPluginInstaller } from './ReturnOfModdingInstaller';
+import { GDPatchInstaller, GDPatchPluginInstaller } from './GDPatchInstaller';
 import { GDWeaveInstaller, GDWeavePluginInstaller } from './GDWeaveInstaller';
 import { RecursiveMelonLoaderInstaller, RecursiveMelonLoaderPluginInstaller } from './RecursiveMelonLoaderInstaller';
 import { DirectCopyInstaller } from './DirectCopyInstaller';
@@ -19,6 +20,7 @@ import { PackageLoader } from '../model/schema/ThunderstoreSchema';
 export const PackageLoaderInstallers: Record<PackageLoader, PackageInstaller> = {
     [PackageLoader.BEPINEX]: new BepInExInstaller(),
     [PackageLoader.BEPISLOADER]: new BepisLoaderInstaller(),
+    [PackageLoader.GDPATCH]: new GDPatchInstaller(),
     [PackageLoader.GDWEAVE]: new GDWeaveInstaller(),
     [PackageLoader.GODOTML]: new GodotMLInstaller(),
     [PackageLoader.LOVELY]: new LovelyInstaller(),
@@ -37,6 +39,7 @@ const installRulePluginInstaller = new InstallRulePluginInstaller();
 export const PluginInstallers: Record<PackageLoader, PackageInstaller> = {
     [PackageLoader.BEPINEX]: installRulePluginInstaller,
     [PackageLoader.BEPISLOADER]: installRulePluginInstaller,
+    [PackageLoader.GDPATCH]: new GDPatchPluginInstaller(),
     [PackageLoader.GDWEAVE]: new GDWeavePluginInstaller(),
     [PackageLoader.GODOTML]: installRulePluginInstaller,
     [PackageLoader.LOVELY]: new LovelyPluginInstaller(),
