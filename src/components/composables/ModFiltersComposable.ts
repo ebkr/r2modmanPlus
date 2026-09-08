@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue';
+import { ref, shallowRef, watch } from 'vue';
 
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import SortingStyle from '../../model/enums/SortingStyle';
@@ -10,15 +10,15 @@ import SearchUtils, { ExactSearchMatchRank } from '../../utils/SearchUtils';
 const store = getStore<State>();
 
 const searchFilter = ref('');
-const sortedMods = ref<ThunderstoreMod[]>([]);
-const filteredMods = ref<ThunderstoreMod[]>([]);
+const sortedMods = shallowRef<ThunderstoreMod[]>([]);
+const filteredMods = shallowRef<ThunderstoreMod[]>([]);
 const filteredModCount = ref(0);
 
 function runFilter() {
     let result = sortedMods.value as ThunderstoreMod[];
 
-    const searchKeys = SearchUtils.makeKeys(searchFilter.value);
-    if (searchKeys.length > 0) {
+    if (searchFilter.value.trim().length > 0) {
+        const searchKeys = SearchUtils.makeKeys(searchFilter.value);
         result = result.filter(x => SearchUtils.isSearched(searchKeys, x.getFullName(), x.getDescription()));
     }
 
@@ -93,10 +93,11 @@ function bumpExactMatches(mods: ThunderstoreMod[], query: string): ThunderstoreM
 
 function runSort() {
     const sortDescending = store.state.modFilters.sortDirection === SortDirection.STANDARD;
+    const sortBehaviour = store.state.modFilters.sortBehaviour;
     const sorted = [...store.state.tsMods.mods];
     sorted.sort((a, b) => {
         let result: boolean;
-        switch (store.state.modFilters.sortBehaviour) {
+        switch (sortBehaviour) {
             case SortingStyle.LAST_UPDATED:
                 result = a.getDateUpdated() < b.getDateUpdated();
                 break;
