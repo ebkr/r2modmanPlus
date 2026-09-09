@@ -33,7 +33,6 @@
                     : 'Which dedicated server are you managing your mods for?'
             "
             :heroType="activeTab === GameInstanceType.GAME ? 'primary' : 'warning'"
-            :constrained="true"
         />
         <div class="notification is-warning is-square" v-if="runningMigration">
             <div class="container">

@@ -9,7 +9,6 @@
             title="Profile selection"
             subtitle="Profiles help to organise mods easily"
             heroType="primary"
-            :constrained="true"
         />
         <div class='notification'>
             <div class="container">
