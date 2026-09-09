@@ -1,6 +1,6 @@
 <template>
     <section :class="['c-hero', heroTypeClass]" ref="section">
-        <div class="c-hero__container">
+        <div :class="[{ 'c-hero__container': constrained}]">
             <h1 class="c-hero__title" ref="title">
                 {{ title }}
             </h1>
@@ -18,10 +18,12 @@ interface HeroProps {
     title: string;
     subtitle: string;
     heroType: 'primary' | 'warning';
+    constrained?: boolean;
 }
 
 const heroProps = withDefaults(defineProps<HeroProps>(), {
-  heroType: 'primary'
+    heroType: 'primary',
+    constrained: false,
 });
 
 const heroTypeClass = computed(() => {
