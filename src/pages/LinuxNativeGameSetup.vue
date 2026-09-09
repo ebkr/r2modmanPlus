@@ -1,6 +1,6 @@
 <template>
     <div id="setup-body">
-		<Hero :title="`Getting started on ${platformName}`" subtitle="Let's configure the game properly" heroType="primary" />
+		<Hero :title="`Getting started on ${platformName}`" subtitle="Let's configure the game properly" heroType="primary" :constrained="true"/>
 		<br/>
         <div class="container margin-bottom" v-if="alreadyHadValuesSet && isFlatpak">
             <div class="notification is-warning">
