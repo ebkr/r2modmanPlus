@@ -22,7 +22,7 @@ export interface PackageInstaller {
     // Plugin installers only.
     enable?(args: InstallArgs): Promise<void>;
     disable?(args: InstallArgs): Promise<void>;
-    isLoaderDisabled?(args: InstallArgs): Promise<boolean>;
+    isLoaderDisabled?(args: InstallArgs): Promise<boolean | undefined>;
 }
 
 export async function disableModByRenamingFiles(folderName: string) {

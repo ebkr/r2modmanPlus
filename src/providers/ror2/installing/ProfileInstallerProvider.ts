@@ -41,12 +41,6 @@ export default abstract class ProfileInstallerProvider {
     public abstract installMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null>;
 
     /**
-     * Installs a mod to the profile.
-     * @param mod
-     */
-    public abstract installMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null>;
-
-    /**
      * Returns a boolean if a mod is disabled in the loader. Returns undefined if the loader doesn't support disabling.
      * For loaders without a disabling mechanism, this function should always return false.
      * @param mod
