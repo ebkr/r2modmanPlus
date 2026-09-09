@@ -4,6 +4,7 @@ export type NodeChildProcessProvider = {
     execSync: (path: string, options?: any) => string;
     exec: (path: string, options?: any, callback?: (err: Error) => void) => Promise<void>;
     spawnSync: (path: string, args?: string[], options?: object) => string;
+    spawn: (path: string, args?: string[], options?: object) => Promise<any>;
 }
 
 let implementation: () => NodeChildProcessProvider;
@@ -23,6 +24,7 @@ const childProcess: NodeChildProcessProvider = {
     execSync: path => getImplementation().execSync(path),
     exec: (path, options, callback) => getImplementation().exec(path, options, callback),
     spawnSync: (path, args, options) => getImplementation().spawnSync(path, args, options),
+    spawn: (path, args, options) => getImplementation().spawn(path, args, options),
 };
 
 export default childProcess;
