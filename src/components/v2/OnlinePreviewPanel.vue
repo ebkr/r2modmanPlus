@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import { computed, ref, watch, watchEffect } from 'vue';
+import { computed, ref, watch } from 'vue';
 import MarkdownRender from './MarkdownRender.vue';
 import { valueToReadableDate } from '../../utils/DateUtils';
 import OnlineModList from '../views/OnlineModList.vue';
@@ -9,10 +9,10 @@ import { getCombosByDependencyStrings } from '../../r2mm/manager/PackageDexieSto
 import { ExternalLink } from '../all';
 import R2Error from '../../model/errors/R2Error';
 import { getFullDependencyList, InstallMode } from '../../utils/DependencyUtils';
-import debounce from 'lodash.debounce';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { transformPackageUrl } from '../../providers/cdn/PackageUrlTransformer';
+import { clampPreviewPanelWidth, MIN_PREVIEW_PANEL_WIDTH } from '../../utils/PreviewPanelResizeUtils';
 
 const store = getStore<State>();
 
@@ -37,7 +37,8 @@ const isNsfw = computed<boolean>(() => props.mod?.getNsfwFlag())
 const maxPanelWidth = ref(getMaxPanelWidth());
 
 function getMaxPanelWidth(): number {
-    return window.outerWidth - document.getElementsByClassName("nav-column")[0]!.scrollWidth;
+    const navigationWidth = document.querySelector<HTMLElement>(".nav-column")?.scrollWidth ?? 0;
+    return Math.max(MIN_PREVIEW_PANEL_WIDTH, window.innerWidth - navigationWidth);
 }
 
 function setActiveTab(tab: "README" | "CHANGELOG" | "Dependencies") {
@@ -153,28 +154,49 @@ function showDownloadModal(mod: ThunderstoreMod) {
 
 const previewPanelWidth = ref(450);
 ManagerSettings.getSingleton(store.state.activeGame)
-    .then(async settings => previewPanelWidth.value = await settings.getPreviewPanelWidth())
+    .then(async settings => {
+        previewPanelWidth.value = clampPreviewPanelWidth(
+            await settings.getPreviewPanelWidth(),
+            getMaxPanelWidth()
+        );
+    });
 
-watchEffect(() => {
-    const varWidth = previewPanelWidth.value;
-    const root = document.querySelector(':root')! as HTMLElement;
-    root.style.setProperty('--preview-panel-width', varWidth.toString());
-    maxPanelWidth.value = getMaxPanelWidth();
-});
+const resizePointerId = ref<number | null>(null);
 
-const resizeDebounce = debounce((event: DragEvent) => {
-    // Require conditional as on-release this is reset.
-    if (event.clientX > 0) {
-        previewPanelWidth.value = window.innerWidth - event.clientX;
+function startResize(event: PointerEvent) {
+    if (!event.isPrimary || event.button !== 0) {
+        return;
     }
-}, 1);
 
-function dragStart(event: DragEvent) {
-    (event.target as HTMLElement).style.opacity = '0';
+    resizePointerId.value = event.pointerId;
+    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+    event.preventDefault();
 }
 
-function dragEnd(event: DragEvent) {
-    (event.target as HTMLElement).style.opacity = '1';
+function resizePanel(event: PointerEvent) {
+    if (resizePointerId.value !== event.pointerId) {
+        return;
+    }
+
+    maxPanelWidth.value = getMaxPanelWidth();
+    previewPanelWidth.value = clampPreviewPanelWidth(
+        window.innerWidth - event.clientX,
+        maxPanelWidth.value
+    );
+    event.preventDefault();
+}
+
+function stopResize(event: PointerEvent) {
+    if (resizePointerId.value !== event.pointerId) {
+        return;
+    }
+
+    resizePointerId.value = null;
+    const resizeHandle = event.currentTarget as HTMLElement;
+    if (resizeHandle.hasPointerCapture(event.pointerId)) {
+        resizeHandle.releasePointerCapture(event.pointerId);
+    }
+
     ManagerSettings.getSingleton(store.state.activeGame)
         .then(settings => settings.setPreviewPanelWidth(previewPanelWidth.value));
 }
@@ -183,7 +205,17 @@ function dragEnd(event: DragEvent) {
 
 <template>
     <div class="c-panel-window">
-        <div class="c-drag-pane" @drag.prevent.stop="resizeDebounce" @dragstart="dragStart" @dragend="dragEnd" draggable="true">
+        <div
+            class="c-drag-pane"
+            :class="{ 'c-drag-pane--resizing': resizePointerId !== null }"
+            role="separator"
+            aria-orientation="vertical"
+            @pointerdown="startResize"
+            @pointermove="resizePanel"
+            @pointerup="stopResize"
+            @pointercancel="stopResize"
+            @lostpointercapture="stopResize"
+        >
             <i class="fas fa-grip-lines-vertical drag-item"></i>
         </div>
         <div class="c-preview-panel" :style="`width: calc(${previewPanelWidth}px - 2.5rem + 5px); max-width: ${maxPanelWidth}px`">
@@ -289,9 +321,10 @@ function dragEnd(event: DragEvent) {
     align-items: center;
     padding-left: 1rem;
     user-select: none !important;
+    touch-action: none;
 }
 
-.c-drag-pane:active {
+.c-drag-pane--resizing {
     cursor: none;
 }
 
