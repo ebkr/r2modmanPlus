@@ -5,6 +5,7 @@ import { hookFsIpc } from 'app/src-electron/ipc/node-fs-impl';
 import { hookZipIpc } from 'app/src-electron/ipc/zip-hook';
 import { hookElectronIpc } from 'app/src-electron/ipc/electron-hook';
 import {hookOsIpc} from "app/src-electron/ipc/node-os-impl";
+import { hookDirectoryTreeIpc } from 'app/src-electron/ipc/directory-tree-hook';
 
 export function hookIpc(browserWindow: BrowserWindow) {
     hookPathIpc(browserWindow);
@@ -13,4 +14,5 @@ export function hookIpc(browserWindow: BrowserWindow) {
     hookOsIpc(browserWindow);
     hookZipIpc(browserWindow);
     hookElectronIpc(browserWindow);
+    hookDirectoryTreeIpc(browserWindow);
 }

@@ -24,7 +24,7 @@ flatpak/build
 .flatpak-builder
 flatpak/r2modman.flatpak
 flatpak/generated-sources.json
-
+quasar.config.*.temporary.compiled*
 # Editor directories and files
 .idea
 .vscode

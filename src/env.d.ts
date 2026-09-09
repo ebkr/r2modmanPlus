@@ -4,6 +4,7 @@ import { NodePathProvider } from '../src/providers/node/path/path';
 import { NodeOsProvider } from '../src/providers/node/os/os';
 import { NodeChildProcessProvider } from '../src/providers/node/child_process/child_process';
 import { NodeBufferProvider } from '../src/providers/node/buffer/buffer';
+import { DirectoryTreeMessage } from '../src/providers/generic/file/DirectoryTreeProvider';
 import {
     InteractionProviderFileProperties,
     InteractionProviderFolderProperties
@@ -68,6 +69,9 @@ declare global {
             openExternal: (path: string) => void;
             selectFile: (path: string) => void;
             getEnvironmentVariables: () => Promise<string>;
+        },
+        directoryTree: {
+            readDirectoryTree: (id: number, rootPath: string, messageCallback: (message: DirectoryTreeMessage) => void) => void;
         }
     }
 }

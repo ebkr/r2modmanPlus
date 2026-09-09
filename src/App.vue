@@ -34,6 +34,8 @@ import FileUtils from './utils/FileUtils';
 import LinkProvider from './providers/components/LinkProvider';
 import LinkImpl from './r2mm/component_override/LinkImpl';
 import FsProvider from './providers/generic/file/FsProvider';
+import DirectoryTreeProvider from './providers/generic/file/DirectoryTreeProvider';
+import DirectoryTreeProviderImpl from './providers/generic/file/DirectoryTreeProviderImpl';
 import { DataFolderProvider } from './providers/ror2/system/DataFolderProvider';
 import { DataFolderProviderImpl } from './r2mm/system/DataFolderProviderImpl';
 import InteractionProvider from './providers/ror2/system/InteractionProvider';
@@ -84,6 +86,7 @@ const {
 const visible = ref<boolean>(false);
 
 FsProvider.provide(() => NodeFsImplementation);
+DirectoryTreeProvider.provide(() => new DirectoryTreeProviderImpl());
 
 ProfileProvider.provide(() => new ProfileImpl());
 LogOutputProvider.provide(() => LogOutput.getSingleton());

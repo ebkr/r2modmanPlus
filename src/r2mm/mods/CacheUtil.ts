@@ -11,21 +11,21 @@ import * as DownloadUtils from '../../utils/DownloadUtils';
 
 export default class CacheUtil {
 
-    public static async clean() {
-        const profiles: string[] = [];
-        const originalProfile = Profile.getActiveProfile();
-
+    public static async clean(): Promise<void> {
         const fs = FsProvider.instance;
 
         // Store profile name to allow returning back to current profile.
-        fs.readdir(Profile.getRootDir()).then(async dir => {
-            for (const value of dir) {
-                if ((await fs.stat(path.join(Profile.getRootDir(), value))).isDirectory()) {
-                    profiles.push(value);
-                }
+        const originalProfile = Profile.getActiveProfile();
+
+        const profiles: string[] = [];
+        for (const value of (await fs.readdir(Profile.getRootDir()))) {
+            if ((await fs.stat(path.join(Profile.getRootDir(), value))).isDirectory()) {
+                profiles.push(value);
             }
-        }).then(async () => {
-            const activeModSet = new Set<ManifestV2>();
+        }
+
+        const activeModSet = new Set<ManifestV2>();
+        try {
             for (const value of profiles) {
                 const profile = new Profile(value);
                 const modList = await ProfileModList.getModList(profile.asImmutableProfile());
@@ -36,44 +36,43 @@ export default class CacheUtil {
                     activeModSet.add(value);
                 });
             }
-
-            // Go back to original profile
+        } finally {
             new Profile(originalProfile.getProfileName());
+        }
 
-            const cacheDirectory = path.join(PathResolver.MOD_ROOT, "cache");
-            await FileUtils.ensureDirectory(cacheDirectory);
-            for (const folder of (await fs.readdir(cacheDirectory))) {
-                if (folder === '_state') {
-                    continue;
-                }
-                if ((await fs.stat(path.join(cacheDirectory, folder))).isDirectory()) {
-                    if (this.hasNoVersions(folder, activeModSet)) {
-                        // Remove all online state files for this mod before deleting the folder
-                        for (const versionFolder of (await fs.readdir(path.join(cacheDirectory, folder)))) {
-                            await DownloadUtils.removeOnlineStateFile(folder, versionFolder);
-                        }
-                        await FileUtils.emptyDirectory(path.join(cacheDirectory, folder))
-                        await fs.rmdir(path.join(cacheDirectory, folder));
-                    } else {
-                        const versions = this.getVersionsInstalled(folder, activeModSet);
-                        for (const versionFolder of (await fs.readdir(path.join(cacheDirectory, folder)))) {
-                            const matchingVersion = versions.find(value => value.toString() === versionFolder);
-                            if (matchingVersion === undefined) {
-                                try {
-                                    // Remove online state file for this version
-                                    await DownloadUtils.removeOnlineStateFile(folder, versionFolder);
-                                    await FileUtils.emptyDirectory(path.join(cacheDirectory, folder, versionFolder));
-                                    await fs.rmdir(path.join(cacheDirectory, folder, versionFolder));
-                                } catch (e) {
-                                    // An error occurred when deleting the directory. Unknown cause as folder is visually empty.
-                                    // Calling fs.rmdirSync does however solve this issue, so unsure why this is an issue.
-                                }
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, "cache");
+        await FileUtils.ensureDirectory(cacheDirectory);
+        for (const folder of (await fs.readdir(cacheDirectory))) {
+            if (folder === '_state') {
+                continue;
+            }
+            if ((await fs.stat(path.join(cacheDirectory, folder))).isDirectory()) {
+                if (this.hasNoVersions(folder, activeModSet)) {
+                    // Remove all online state files for this mod before deleting the folder
+                    for (const versionFolder of (await fs.readdir(path.join(cacheDirectory, folder)))) {
+                        await DownloadUtils.removeOnlineStateFile(folder, versionFolder);
+                    }
+                    await FileUtils.emptyDirectory(path.join(cacheDirectory, folder))
+                    await fs.rmdir(path.join(cacheDirectory, folder));
+                } else {
+                    const versions = this.getVersionsInstalled(folder, activeModSet);
+                    for (const versionFolder of (await fs.readdir(path.join(cacheDirectory, folder)))) {
+                        const matchingVersion = versions.find(value => value.toString() === versionFolder);
+                        if (matchingVersion === undefined) {
+                            try {
+                                // Remove online state file for this version
+                                await DownloadUtils.removeOnlineStateFile(folder, versionFolder);
+                                await FileUtils.emptyDirectory(path.join(cacheDirectory, folder, versionFolder));
+                                await fs.rmdir(path.join(cacheDirectory, folder, versionFolder));
+                            } catch (e) {
+                                // An error occurred when deleting the directory. Unknown cause as folder is visually empty.
+                                // Calling fs.rmdirSync does however solve this issue, so unsure why this is an issue.
                             }
                         }
                     }
                 }
             }
-        });
+        }
     }
 
     private static hasNoVersions(modName: string, mods: Set<ManifestV2>): boolean {
