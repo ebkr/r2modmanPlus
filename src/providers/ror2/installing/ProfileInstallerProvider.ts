@@ -4,7 +4,6 @@ import R2Error from '../../../model/errors/R2Error';
 import { ImmutableProfile } from '../../../model/Profile';
 
 export default abstract class ProfileInstallerProvider {
-
     private static provider: () => ProfileInstallerProvider;
     static provide(provided: () => ProfileInstallerProvider): void {
         this.provider = provided;
@@ -40,4 +39,17 @@ export default abstract class ProfileInstallerProvider {
      * @param mod
      */
     public abstract installMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null>;
+
+    /**
+     * Installs a mod to the profile.
+     * @param mod
+     */
+    public abstract installMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null>;
+
+    /**
+     * Returns a boolean if a mod is disabled in the loader. Returns undefined if the loader doesn't support disabling.
+     * For loaders without a disabling mechanism, this function should always return false.
+     * @param mod
+     */
+    public abstract isModLoaderDisabled(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | boolean | undefined> ;
 }
