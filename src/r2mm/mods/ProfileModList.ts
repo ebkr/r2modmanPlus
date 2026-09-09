@@ -21,6 +21,8 @@ import InteractionProvider from '../../providers/ror2/system/InteractionProvider
 import { ProfileApiClient } from '../profiles/ProfilesClient';
 import path from '../../providers/node/path/path';
 import Buffer from '../../providers/node/buffer/buffer';
+import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
+
 
 export default class ProfileModList {
 
@@ -46,8 +48,20 @@ export default class ProfileModList {
             try {
                 const fileContent = (await fs.readFile(profile.joinToProfilePath('mods.yml'))).toString();
                 const parsedYaml: any = parseYaml(fileContent) || [];
+                const installer = ProfileInstallerProvider.instance;
                 for(let modIndex in parsedYaml){
                     const mod = new ManifestV2().fromJsObject(parsedYaml[modIndex]);
+                    // Mod loaders don't support disabling.
+                    if (!installer.isModLoader(mod)) {
+                        const loaderDisabled = await installer.isModLoaderDisabled(mod, profile);
+                        if (loaderDisabled instanceof R2Error) {
+                            return loaderDisabled;
+                        }
+                        if (loaderDisabled)
+                            mod.disable();
+                        else if (loaderDisabled === false)
+                            mod.enable();
+                    }
                     parsedYaml[modIndex] = mod;
                 }
                 return parsedYaml;
