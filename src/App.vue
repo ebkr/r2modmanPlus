@@ -45,7 +45,6 @@ import BindLoaderImpl from './providers/components/loaders/bind_impls/BindLoader
 import PlatformInterceptorProvider from './providers/generic/game/platform_interceptor/PlatformInterceptorProvider';
 import PlatformInterceptorImpl from './providers/generic/game/platform_interceptor/PlatformInterceptorImpl';
 import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
-import InstallationRules from './r2mm/installing/InstallationRules';
 import GenericProfileInstaller from './r2mm/installing/profile_installers/GenericProfileInstaller';
 import ErrorModal from './components/modals/ErrorModal.vue';
 import { provideStoreImplementation } from './providers/generic/store/StoreProvider';
@@ -113,9 +112,6 @@ onMounted(async () => {
     hookModInstallingViaProtocol(router);
     await checkCdnConnection();
 
-    InstallationRules.apply();
-    InstallationRules.validate();
-
     window.app.getAppDataDirectory().then(async (appData: string) => {
         PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
         // Legacy path. Needed for migration.
@@ -147,7 +143,6 @@ onMounted(async () => {
         });
     });
 
-    store.commit('updateModLoaderPackageNames');
     store.dispatch('tsMods/updateExclusions');
 });
 

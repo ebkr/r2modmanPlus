@@ -7,8 +7,7 @@ import {
 import path from "../providers/node/path/path";
 import FsProvider from '../providers/generic/file/FsProvider';
 import FileUtils from '../utils/FileUtils';
-import { MODLOADER_PACKAGES } from '../r2mm/installing/profile_installers/ModLoaderVariantRecord';
-import { PackageLoader } from '../model/schema/ThunderstoreSchema';
+import { getModLoaderMapping } from '../model/schema/ThunderstoreSchema';
 import FileWriteError from '../model/errors/FileWriteError';
 import R2Error from '../model/errors/R2Error';
 
@@ -16,12 +15,7 @@ export class GDWeaveInstaller implements PackageInstaller {
     async install(args: InstallArgs) {
         const { mod, packagePath, profile } = args;
 
-        const mapping = MODLOADER_PACKAGES.find(
-            (entry) =>
-                entry.packageName.toLowerCase() ==
-                    mod.getName().toLowerCase() &&
-                entry.loaderType == PackageLoader.GDWEAVE
-        );
+        const mapping = getModLoaderMapping(mod.getName());
 
         if (!mapping) {
             throw new Error(`Missing modloader for ${mod.getName()}`);
