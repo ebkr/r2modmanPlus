@@ -18,7 +18,8 @@ import { Error404Translation } from './pages/Error404Translation';
 const message = {
     metadata: {
         name: 'Français',
-        locale: 'fr-FR'
+        locale: 'fr-FR',
+        wip: "WIP",
     },
     translations: {
         pages: {
