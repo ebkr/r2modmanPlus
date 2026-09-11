@@ -1,4 +1,4 @@
-import {SortLocalDisabledMods} from "src/model/real_enums/sort/SortLocalDisabledMods";
+import {SortLocalDisabledMods} from "../../../model/real_enums/sort/SortLocalDisabledMods";
 
 export type EnumMessageFormat = {
     sortNaming: {
