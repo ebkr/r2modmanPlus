@@ -1,4 +1,4 @@
-import {SettingsMessageFormat} from "src/i18n/base/pages/SettingsMessageFormat";
+import {SettingsMessageFormat} from "../../../i18n/base/pages/SettingsMessageFormat";
 
 export const SettingsTranslation: SettingsMessageFormat = {
     hero: {

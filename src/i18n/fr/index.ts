@@ -6,7 +6,7 @@ import { BannerTranslation } from './banners/BannerTranslation';
 import { ModalTranslation } from './modals/ModalTranslation';
 import {ProfileSelectionTranslation} from "./pages/ProfileSelectionTranslation";
 import {ManagerTranslation} from './pages/ManagerTranslation';
-import { DateTimeFormat } from 'src/i18n';
+import { DateTimeFormat } from '../../i18n';
 import { EnumTranslation } from './enums/EnumTranslation';
 import { HelpTranslation } from './pages/HelpTranslation';
 import { SettingsTranslation } from './pages/SettingsTranslation';
