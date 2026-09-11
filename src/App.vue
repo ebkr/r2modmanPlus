@@ -19,7 +19,7 @@
                             <template #popper>
                             <ul class="menu-list">
                                 <li v-for="lang in availableLocales" :key="`locale-select-${lang}`">
-                                    <a v-close-popper @click="() => locale = lang">
+                                    <a v-close-popper @click="() => LocaleManager.save(lang)">
                                         <div class="locale-list__item">
                                             <span class="locale-list__text">{{ lang }} ({{ t('metadata.name', 0, {locale: lang}) }})</span>
                                             <span class="locale-list__divider"></span>
@@ -87,6 +87,7 @@ import GameImageProvider, { provideGameImageImplementation } from './providers/g
 import { GameImageProviderImplementation } from './r2mm/image/GameImageProviderImpl';
 import { useI18n } from 'vue-i18n';
 import { ActivityDropdown } from './components/all';
+import LocaleManager from './r2mm/manager/LocaleManager';
 
 const store = baseStore;
 const router = useRouter();
@@ -136,6 +137,8 @@ BindLoaderImpl.bind();
 
 onMounted(async () => {
     const settings: ManagerSettings = await store.dispatch('resetActiveGame');
+
+    await LocaleManager.apply();
 
     hookBackgroundUpdateThunderstoreModList(router);
     hookModInstallingViaProtocol(router);
