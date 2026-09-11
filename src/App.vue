@@ -18,9 +18,15 @@
                             </button>
                             <template #popper>
                             <ul class="menu-list">
-                                <li v-for="lang in availableLocales" :key="`locale-select-${lang}`"><a v-close-popper @click="() => locale = lang">{{ lang }} ({{ t('metadata.name', 0, {
-                                    locale: lang
-                                }) }})</a></li>
+                                <li v-for="lang in availableLocales" :key="`locale-select-${lang}`">
+                                    <a v-close-popper @click="() => locale = lang">
+                                        <div class="locale-list__item">
+                                            <span class="locale-list__text">{{ lang }} ({{ t('metadata.name', 0, {locale: lang}) }})</span>
+                                            <span class="locale-list__divider"></span>
+                                            <span class="locale-list__tag tag is-warning" v-if="((messages[lang]?.metadata as any).wip || '').length > 0">{{ t('metadata.wip', 0, {locale: lang}) }}</span>
+                                        </div>
+                                    </a>
+                                </li>
                             </ul>
                             </template>
                         </ActivityDropdown>
@@ -87,7 +93,7 @@ const router = useRouter();
 provideStoreImplementation(() => store);
 
 const quasar = useQuasar();
-const { t, locale, availableLocales } = useI18n();
+const { t, locale, availableLocales, messages } = useI18n();
 
 document.addEventListener('auxclick', e => {
     const target = e.target! as any;
@@ -237,6 +243,15 @@ main {
         flex-direction: row-reverse;
         gap: 1rem;
         align-items: center;
+    }
+}
+
+.locale-list__item {
+    display: flex;
+    place-items: center;
+
+    .locale-list__divider {
+        flex: 1;
     }
 }
 </style>
