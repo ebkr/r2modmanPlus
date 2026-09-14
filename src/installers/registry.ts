@@ -14,6 +14,7 @@ import { DirectCopyInstaller } from './DirectCopyInstaller';
 import { BepisLoaderInstaller } from './BepisLoaderInstaller';
 import { UMMInstaller } from './UMMInstaller';
 import { RivetInstaller, RivetPluginInstaller } from './RivetInstaller';
+import { MioInstaller, MioPluginInstaller } from './MioInstaller';
 import { PackageLoader } from '../model/schema/ThunderstoreSchema';
 
 export const PackageLoaderInstallers: Record<PackageLoader, PackageInstaller> = {
@@ -23,6 +24,7 @@ export const PackageLoaderInstallers: Record<PackageLoader, PackageInstaller> = 
     [PackageLoader.GODOTML]: new GodotMLInstaller(),
     [PackageLoader.LOVELY]: new LovelyInstaller(),
     [PackageLoader.MELONLOADER]: new MelonLoaderInstaller(),
+    [PackageLoader.MIO]: new MioInstaller(),
     [PackageLoader.NONE]: new NoOpInstaller(),
     [PackageLoader.NORTHSTAR]: new NorthstarInstaller(),
     [PackageLoader.RECURSIVE_MELONLOADER]: new RecursiveMelonLoaderInstaller(),
@@ -41,6 +43,7 @@ export const PluginInstallers: Record<PackageLoader, PackageInstaller> = {
     [PackageLoader.GODOTML]: installRulePluginInstaller,
     [PackageLoader.LOVELY]: new LovelyPluginInstaller(),
     [PackageLoader.MELONLOADER]: installRulePluginInstaller,
+    [PackageLoader.MIO]: new MioPluginInstaller(),
     [PackageLoader.NORTHSTAR]: installRulePluginInstaller,
     [PackageLoader.NONE]: new DirectCopyInstaller(),
     [PackageLoader.RECURSIVE_MELONLOADER]: new RecursiveMelonLoaderPluginInstaller(),
