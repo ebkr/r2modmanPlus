@@ -62,6 +62,7 @@ function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
         [PackageLoader.BEPINEX]: runners,
         [PackageLoader.BEPISLOADER]: runners,
         [PackageLoader.MELONLOADER]: runners,
+        [PackageLoader.MIO]: runners,
         [PackageLoader.NORTHSTAR]: runners,
         [PackageLoader.NONE]: runners,
         [PackageLoader.GODOTML]: runners,
