@@ -1,24 +1,30 @@
 <template>
     <div id="setup-body">
-		<Hero :title="`Getting started on ${platformName}`" subtitle="Let's configure the game properly" heroType="primary" />
+		<Hero
+			:title="t('translations.pages.linuxSetup.hero.title', { platformName })"
+			:subtitle="t('translations.pages.linuxSetup.hero.subtitle')"
+			heroType="primary"
+		/>
 		<br/>
         <div class="container margin-bottom" v-if="alreadyHadValuesSet && isFlatpak">
             <div class="notification is-warning">
-                <p>It looks like you've previously set launch arguments.</p>
-                <p>The Flatpak version of {{ appName }} now uses a different wrapper script.</p>
-                <p>You must update your launch arguments to support this.</p>
+                <p>{{ t('translations.pages.linuxSetup.flatpakWarning.existingArguments') }}</p>
+                <p>{{ t('translations.pages.linuxSetup.flatpakWarning.notice', { appName }) }}</p>
+                <p>{{ t('translations.pages.linuxSetup.flatpakWarning.mustUpdate') }}</p>
             </div>
         </div>
 		<div class="container">
-			To be able to launch {{ activeGame.displayName }} on Linux, you must first setup your Steam launch options correctly.<br/>
-			This needs to be done because of how the BepInEx injection works on Unix systems.<br/>
+			{{ t('translations.pages.linuxSetup.instructions.intro', { gameName: activeGame.displayName }) }}<br/>
+			{{ t('translations.pages.linuxSetup.instructions.whyNeeded') }}<br/>
 			<br/>
-			Please copy and paste the following to your {{ activeGame.displayName }} launch options:<br/>
+			{{ t('translations.pages.linuxSetup.instructions.copyInstruction', { gameName: activeGame.displayName }) }}<br/>
 			<code id="copyableArgs">{{ finalArgs }}</code>
 			<br/>
 			<br/>
-			<a id="copy-action" class="button margin-right margin-right--half-width" @click="copy">Copy to clipboard</a>
-			<a class="button is-info" @click="acknowledge">Continue</a>
+			<a id="copy-action" class="button margin-right margin-right--half-width" @click="copy">
+				{{ isCopied ? t('translations.pages.linuxSetup.actions.copied') : t('translations.pages.linuxSetup.actions.copy') }}
+			</a>
+			<a class="button is-info" @click="acknowledge">{{ t('translations.pages.linuxSetup.actions.continue') }}</a>
 		</div>
 	</div>
 </template>
@@ -37,9 +43,11 @@ import {
     isManagerRunningOnFlatpak
 } from '../utils/LaunchUtils';
 import ManagerInformation from "../_managerinf/ManagerInformation";
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
 let router = useRouter();
+const { t } = useI18n();
 
 const appName = computed(() => ManagerInformation.APP_NAME);
 const activeGame = computed(() => store.state.activeGame);
@@ -59,6 +67,8 @@ areAnyWrapperArgumentsProvided(activeGame.value).then(value => alreadyHadValuesS
 const isFlatpak = ref<boolean>(false);
 isManagerRunningOnFlatpak().then(value => isFlatpak.value = value);
 
+const isCopied = ref<boolean>(false);
+
 function copy(){
     let range = document.createRange();
     range.selectNode(document.getElementById('copyableArgs') as Node);
@@ -68,12 +78,9 @@ function copy(){
         selection.addRange(range);
     }
     InteractionProviderImpl.instance.copyToClipboard(finalArgs.value);
-    document.getElementById('copy-action')!.innerHTML = 'Copied!';
+    isCopied.value = true;
     setTimeout(() => {
-        const element = document.getElementById('copy-action');
-        if (element) {
-            element.innerHTML = 'Copy to clipboard';
-        }
+        isCopied.value = false;
     }, 2000);
 }
 

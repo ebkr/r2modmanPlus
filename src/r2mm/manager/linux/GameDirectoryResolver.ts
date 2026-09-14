@@ -218,7 +218,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
 
         if (typeof steamBaseDir === "undefined")
             return new R2Error(
-                'An error occured whilst searching Steam user data locations',
+                'An error occurred whilst searching Steam user data locations',
                 'Cannot define the steam config location',
                 null
             );
@@ -271,7 +271,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
 
         if (steamapps === undefined) {
             return new R2Error(
-                'An error occured whilst searching Steam library locations',
+                'An error occurred whilst searching Steam library locations',
                 'Cannot define the root steamapps location',
                 null
             );
@@ -344,7 +344,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             }
             const err: Error = e as Error;
             return new R2Error(
-                'An error occured whilst searching Steam library locations',
+                'An error occurred whilst searching Steam library locations',
                 err.message,
                 null
             )
@@ -368,7 +368,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error(
-                `An error occured whilst locating the ${game.displayName} install folder from manifest in ${manifestLocation}`,
+                `An error occurred whilst locating the ${game.displayName} install folder from manifest in ${manifestLocation}`,
                 err.message,
                 null
             )

@@ -5,6 +5,7 @@ import { State } from '../../../store';
 import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
 
@@ -15,12 +16,9 @@ const props = defineProps<{
 const settings = ref<ManagerSettings | null>(null);
 const expandedCards = ref<boolean>(false);
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Expand cards by default',
-    'Toggle',
-    'Collapsed',
-    'Expanded',
-]);
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.expandCards.searchTerms');
 
 onMounted(async () => {
     settings.value = await ManagerSettings.getSingleton(store.state.activeGame);
@@ -39,9 +37,9 @@ async function setExpanded(expanded: boolean) {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Expand cards by default</template>
+        <template #title>{{ t('translations.pages.settings.entries.expandCards.title') }}</template>
         <template #description>
-            Show mod cards fully expanded rather than collapsed when opening a mod list.
+            {{ t('translations.pages.settings.entries.expandCards.description') }}
         </template>
         <div class="field" @click.prevent.stop="setExpanded(!expandedCards)">
             <input
@@ -50,7 +48,7 @@ async function setExpanded(expanded: boolean) {
                 :class="['switch', { 'is-info': expandedCards }]"
                 :checked="expandedCards"
             />
-            <label for="switch-expand-cards">{{ expandedCards ? 'Expanded' : 'Collapsed' }}</label>
+            <label for="switch-expand-cards">{{ expandedCards ? t('translations.pages.settings.entries.expandCards.expanded') : t('translations.pages.settings.entries.expandCards.collapsed') }}</label>
         </div>
     </SettingsViewWrapper>
 </template>

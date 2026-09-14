@@ -6,7 +6,7 @@ import GameDirectoryResolverImpl from '../../../../../src/r2mm/manager/win32/Gam
 import InMemoryFsProvider from '../../../stubs/providers/InMemory.FsProvider';
 import { providePathImplementation } from '../../../../../src/providers/node/path/path';
 import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
-import {updateEcosystemReactives} from "src/r2mm/ecosystem/EcosystemSchema";
+import {updateEcosystemReactives} from "../../../../../src/r2mm/ecosystem/EcosystemSchema";
 import StubLoggerProvider from '../../../stubs/providers/stub.LoggerProvider';
 import LoggerProvider from '../../../../../src/providers/ror2/logging/LoggerProvider';
 

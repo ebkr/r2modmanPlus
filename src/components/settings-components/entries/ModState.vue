@@ -5,6 +5,7 @@ import { State } from '../../../store';
 import R2Error from '../../../model/errors/R2Error';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ManifestV2 from '../../../model/ManifestV2';
 
@@ -19,24 +20,25 @@ const props = defineProps<{
 
 const localModList = computed<ManifestV2[]>(() => store.state.profile.modList);
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Change mod state',
-    'Toggle',
-    'Enable all mods',
-    'Disable all mods',
-]);
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.modState.searchTerms');
 
 const numberEnabled = computed<number>(() => localModList.value.filter(mod => mod.isEnabled()).length);
 const numberDisabled = computed<number>(() => localModList.value.length - numberEnabled.value);
 
 const statusText = computed<string>(() => {
     if (numberEnabled.value === localModList.value.length) {
-        return 'All of your mods are currently enabled.';
+        return t('translations.pages.settings.entries.modState.allEnabled');
     }
     if (numberDisabled.value === localModList.value.length) {
-        return 'All of your mods are currently disabled.';
+        return t('translations.pages.settings.entries.modState.allDisabled');
     }
-    return `You have ${numberDisabled.value} mod${numberDisabled.value > 1 ? 's' : ''} disabled.`;
+    return t(
+        'translations.pages.settings.entries.modState.someDisabled',
+        numberDisabled.value,
+        { named: { count: numberDisabled.value } }
+    );
 });
 
 async function enableAllMods() {
@@ -62,9 +64,9 @@ async function disableAllMods() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Change mod state</template>
+        <template #title>{{ t('translations.pages.settings.entries.modState.title') }}</template>
         <template #description>
-        <p>Enable / disable all of the mods in your profile.</p>
+        <p>{{ t('translations.pages.settings.entries.modState.description') }}</p>
         <p>{{ statusText }}</p>
         </template>
         <div class="setting-row">
@@ -74,7 +76,7 @@ async function disableAllMods() {
                 :disabled="isEnablingState || isDisablingState"
                 @click="enableAllMods"
             >
-                Enable all mods
+                {{ t('translations.pages.settings.entries.modState.enableAll') }}
             </button>
             <button
                 class="button"
@@ -82,7 +84,7 @@ async function disableAllMods() {
                 :disabled="isEnablingState || isDisablingState"
                 @click="disableAllMods"
             >
-                Disable all mods
+                {{ t('translations.pages.settings.entries.modState.disableAll') }}
             </button>
         </div>
     </SettingsViewWrapper>

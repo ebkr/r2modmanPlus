@@ -1,9 +1,7 @@
 <template>
-    <Teleport to="#activity-bar">
-        <div class="activity-bar--left"></div>
-        <div class="activity-bar--right">
+    <Teleport to="#activity-bar__right">
+        <div v-if="status.onClick">
             <button
-                v-if="status.onClick"
                 type="button"
                 :class="['activity-bar__action', 'status-indicator', { 'status-indicator--error-action': status.isError }]"
                 :title="status.tooltip"
@@ -12,13 +10,13 @@
                 <i :class="status.iconClass"></i>
                 <span class="status-indicator__text">{{ status.text }}</span>
             </button>
-            <div
-                v-else
-                :class="['status-indicator', { 'status-indicator--error': status.isError }]"
-            >
-                <i :class="status.iconClass"></i>
-                <span class="status-indicator__text">{{ status.text }}</span>
-            </div>
+        </div>
+        <div
+            v-else
+            :class="['status-indicator', { 'status-indicator--error': status.isError }]"
+        >
+            <i :class="status.iconClass"></i>
+            <span class="status-indicator__text">{{ status.text }}</span>
         </div>
     </Teleport>
 </template>
@@ -27,8 +25,11 @@
 import { computed } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
+
+const { t } = useI18n();
 
 function retryEcosystemUpdate() {
     store.dispatch('ecosystemUpdate/updateEcosystemSchema');
@@ -37,7 +38,7 @@ function retryEcosystemUpdate() {
 const status = computed(() => {
     if (store.state.ecosystemUpdate.isInProgress) {
         return {
-            text: "Updating game list",
+            text: t('translations.pages.gameSelection.ecosystemUpdate.updating'),
             iconClass: "fas fa-sync-alt fa-spin",
             isError: false,
             onClick: undefined,
@@ -46,18 +47,19 @@ const status = computed(() => {
     }
 
     const errorMessage = store.getters['ecosystemUpdate/conciseEcosystemUpdateErrorMessage'];
-    if (errorMessage) {
+    if (errorMessage !== undefined) {
         return {
-            text: errorMessage,
+
+            text: errorMessage || t('translations.pages.gameSelection.ecosystemUpdate.failed'),
             iconClass: "fas fa-exclamation-circle",
             isError: true,
             onClick: retryEcosystemUpdate,
-            tooltip: "Retry game list update",
+            tooltip: t('translations.pages.gameSelection.ecosystemUpdate.retry'),
         };
     }
 
     return {
-        text: "You have the latest game list",
+        text: t('translations.pages.gameSelection.ecosystemUpdate.upToDate'),
         iconClass: "fas fa-check",
         isError: false,
         onClick: undefined,

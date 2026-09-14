@@ -80,7 +80,7 @@ export default class GameInstructionParser {
             return await FsProvider.instance.realpath(profile.joinToProfilePath("unstripped_corlib"));
         } catch (e) {
             const err: Error = e as Error;
-            return new R2Error("Unable to resolver Corelibs folder", `"unstripped_corlib" folder failed. No such folder exists for path: ${Profile.getActiveProfile().getProfilePath()}.\nReason: ${err.message}`, null);
+            return new R2Error("Unable to resolve Corelibs folder", `"unstripped_corlib" folder failed. No such folder exists for path: ${Profile.getActiveProfile().getProfilePath()}.\nReason: ${err.message}`, null);
         }
     }
 

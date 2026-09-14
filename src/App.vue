@@ -6,7 +6,33 @@
                     <router-view />
                 </div>
             </main>
-            <div id="activity-bar"></div>
+            <div id="activity-bar">
+                <div id="activity-bar__left"></div>
+                <div id="activity-bar__right">
+                    <div>
+                        <ActivityDropdown>
+                            <button type="button" class="activity-bar__action"
+                                :aria-label="`${t('metadata.name', 0, { locale })}`"
+                            >
+                                <i class="fas fa-globe-europe"></i> {{ locale }}
+                            </button>
+                            <template #popper>
+                            <ul class="menu-list">
+                                <li v-for="lang in availableLocales" :key="`locale-select-${lang}`">
+                                    <a v-close-popper @click="() => LocaleManager.save(lang)">
+                                        <div class="locale-list__item">
+                                            <span class="locale-list__text">{{ lang }} ({{ t('metadata.name', 0, {locale: lang}) }})</span>
+                                            <span class="locale-list__divider"></span>
+                                            <span class="locale-list__tag tag is-warning" v-if="((messages[lang]?.metadata as any).wip || '').length > 0">{{ t('metadata.wip', 0, {locale: lang}) }}</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                            </template>
+                        </ActivityDropdown>
+                    </div>
+                </div>
+            </div>
         </div>
         <ErrorModal />
     </div>
@@ -59,13 +85,16 @@ import { ProtocolProviderImplementation } from './providers/generic/protocol/Pro
 import { provideProtocolImplementation } from './providers/generic/protocol/ProtocolProvider';
 import GameImageProvider, { provideGameImageImplementation } from './providers/generic/image/GameImageProvider';
 import { GameImageProviderImplementation } from './r2mm/image/GameImageProviderImpl';
-import BreadcrumbNavigator from 'components/breadcrumbs/BreadcrumbNavigator.vue';
+import { useI18n } from 'vue-i18n';
+import { ActivityDropdown } from './components/all';
+import LocaleManager from './r2mm/manager/LocaleManager';
 
 const store = baseStore;
 const router = useRouter();
 provideStoreImplementation(() => store);
 
 const quasar = useQuasar();
+const { t, locale, availableLocales, messages } = useI18n();
 
 document.addEventListener('auxclick', e => {
     const target = e.target! as any;
@@ -108,6 +137,8 @@ BindLoaderImpl.bind();
 
 onMounted(async () => {
     const settings: ManagerSettings = await store.dispatch('resetActiveGame');
+
+    await LocaleManager.apply();
 
     hookBackgroundUpdateThunderstoreModList(router);
     hookModInstallingViaProtocol(router);
@@ -200,6 +231,30 @@ main {
         padding: 0.25rem 0.75rem;
         gap: 0.5rem;
         overflow: hidden;
+    }
+
+    &__left {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.375rem;
+    }
+
+    &__right {
+        display: flex;
+        flex-direction: row-reverse;
+        gap: 1rem;
+        align-items: center;
+    }
+}
+
+.locale-list__item {
+    display: flex;
+    place-items: center;
+
+    .locale-list__divider {
+        flex: 1;
     }
 }
 </style>

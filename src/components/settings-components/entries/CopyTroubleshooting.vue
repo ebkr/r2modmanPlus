@@ -4,6 +4,7 @@ import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 import InteractionProvider from '../../../providers/ror2/system/InteractionProvider';
 import R2Error from '../../../model/errors/R2Error';
 
@@ -15,11 +16,9 @@ const props = defineProps<{
 
 const isCopying = ref<boolean>(false);
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Copy troubleshooting information to clipboard',
-    'Discord',
-    'support',
-]);
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.copyTroubleshooting.searchTerms');
 
 async function copyTroubleshootingInfoToClipboard() {
     isCopying.value = true;
@@ -36,9 +35,9 @@ async function copyTroubleshootingInfoToClipboard() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Copy troubleshooting info to clipboard</template>
+        <template #title>{{ t('translations.pages.settings.entries.copyTroubleshooting.title') }}</template>
         <template #description>
-            Copy settings and other information to your clipboard, formatted for Discord. Share this when requesting support.
+            {{ t('translations.pages.settings.entries.copyTroubleshooting.description') }}
         </template>
         <button
             class="button"
@@ -46,7 +45,7 @@ async function copyTroubleshootingInfoToClipboard() {
             :disabled="isCopying"
             @click="copyTroubleshootingInfoToClipboard"
         >
-            Copy troubleshooting info to clipboard
+            {{ t('translations.pages.settings.entries.copyTroubleshooting.title') }}
         </button>
     </SettingsViewWrapper>
 </template>

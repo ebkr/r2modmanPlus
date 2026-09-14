@@ -5,6 +5,7 @@ import { State } from '../../../store';
 import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
 const settings = ref<ManagerSettings | null>(null);
@@ -14,10 +15,9 @@ const props = defineProps<{
     searchTerm?: string;
 }>();
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Enable funky mode',
-    'Toggle',
-]);
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.funkyMode.searchTerms');
 
 onMounted(async () => {
     settings.value = await ManagerSettings.getSingleton(store.state.activeGame);
@@ -32,9 +32,9 @@ async function setFunkyMode(enabled: boolean) {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Enable funky mode</template>
+        <template #title>{{ t('translations.pages.settings.entries.funkyMode.title') }}</template>
         <template #description>
-        It's funky mode.
+        {{ t('translations.pages.settings.entries.funkyMode.description') }}
         </template>
         <div class="field" @click.prevent.stop="setFunkyMode(!funkyModeEnabled)">
             <input
@@ -43,7 +43,7 @@ async function setFunkyMode(enabled: boolean) {
                 :class="['switch', { 'is-info': funkyModeEnabled }]"
                 :checked="funkyModeEnabled"
             />
-            <label for="switch-funky-mode">{{ funkyModeEnabled ? 'Enabled' : 'Disabled' }}</label>
+            <label for="switch-funky-mode">{{ funkyModeEnabled ? t('translations.pages.settings.entries.funkyMode.enabled') : t('translations.pages.settings.entries.funkyMode.disabled') }}</label>
         </div>
     </SettingsViewWrapper>
 </template>
