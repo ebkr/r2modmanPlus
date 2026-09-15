@@ -16,7 +16,7 @@ import FileUtils from '../utils/FileUtils';
  * Handles (un)installation of MelonLoader v0.7.0 and above.
  */
 export class RecursiveMelonLoaderInstaller implements PackageInstaller {
-    private static readonly TRACKED = ['MelonLoader', 'version.dll'];
+    private static readonly TRACKED = ['MelonLoader', 'version.dll', 'winhttp.dll'];
 
     async install(args: InstallArgs): Promise<void> {
         const { mod, packagePath, profile } = args;
@@ -38,7 +38,11 @@ export class RecursiveMelonLoaderInstaller implements PackageInstaller {
             for (const fileOrFolder of RecursiveMelonLoaderInstaller.TRACKED) {
                 const cachePath = path.join(packagePath, fileOrFolder);
                 const profilePath = profile.joinToProfilePath(fileOrFolder);
-                await FileUtils.copyFileOrFolder(cachePath, profilePath);
+                if (await FsProvider.instance.exists(cachePath)) {
+                    await FileUtils.copyFileOrFolder(cachePath, profilePath);
+                } else {
+                    console.warn('Skipped installing', fileOrFolder, 'because it does not exist in the cache');
+                }
             }
         } catch (e) {
             throw FileWriteError.fromThrownValue(e, 'Failed to install MelonLoader');

@@ -230,4 +230,24 @@ export default class InMemoryFsProvider extends FsProvider {
         const found = this.findFileType(file);
         found.mtime = time;
     }
+
+    async emptyDirectory(directory: string): Promise<void> {
+        for (const entry of await this.readdir(directory)) {
+            const entryPath = path.join(directory, entry);
+            if ((await this.lstat(entryPath)).isDirectory()) {
+                await this.removeDirectoryRecursively(entryPath);
+            } else {
+                await this.unlink(entryPath);
+            }
+        }
+    }
+
+    async removeDirectoryRecursively(directory: string): Promise<void> {
+        if (!(await this.exists(directory)) || !(await this.lstat(directory)).isDirectory()) {
+            return;
+        }
+
+        await this.emptyDirectory(directory);
+        await this.rmdir(directory);
+    }
 }

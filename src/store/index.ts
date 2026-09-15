@@ -78,7 +78,7 @@ export const store = {
 
             const settings = await ManagerSettings.getSingleton(game);
             commit('setSettings', settings);
-            commit('download/setIgnoreCacheVuexOnly', settings.getContext().global.ignoreCache);
+            commit('download/setIgnoreCacheVuexOnly', settings.getContext().global?.ignoreCache || false);
 
             // Return settings for the new active game. This comes handy
             // when accessing settings before user has selected the game

@@ -208,4 +208,42 @@ describe("InMemoryFsProvider", () => {
         expect(stat.size).toBe("test_content".length);
     });
 
+    test("EmptyDirectory keeps the directory and clears its contents", async () => {
+        const nestedFile = path.join("Test", "Nested", "Deeper", "TestFile");
+        const topLevelFile = path.join("Test", "TestFile");
+        await FsProvider.instance.mkdirs(path.dirname(nestedFile));
+        await FsProvider.instance.writeFile(nestedFile, "content");
+        await FsProvider.instance.writeFile(topLevelFile, "content");
+
+        await FsProvider.instance.emptyDirectory("Test");
+
+        expect(await FsProvider.instance.exists("Test")).toBeTruthy();
+        expect(await FsProvider.instance.readdir("Test")).toStrictEqual([]);
+        expect(await FsProvider.instance.exists(nestedFile)).toBeFalsy();
+        expect(await FsProvider.instance.exists(topLevelFile)).toBeFalsy();
+    });
+
+    test("RemoveDirectoryRecursively removes the directory itself", async () => {
+        const target = path.join("Test", "Target");
+        const nestedFile = path.join(target, "Nested", "TestFile");
+        await FsProvider.instance.mkdirs(path.dirname(nestedFile));
+        await FsProvider.instance.writeFile(nestedFile, "content");
+
+        await FsProvider.instance.removeDirectoryRecursively(target);
+
+        expect(await FsProvider.instance.exists(target)).toBeFalsy();
+        expect(await FsProvider.instance.exists("Test")).toBeTruthy();
+    });
+
+    test("RemoveDirectoryRecursively ignores missing paths and files", async () => {
+        const testFilePath = path.join("Test", "TestFile");
+        await FsProvider.instance.mkdirs(path.dirname(testFilePath));
+        await FsProvider.instance.writeFile(testFilePath, "content");
+
+        await FsProvider.instance.removeDirectoryRecursively(path.join("Test", "DoesNotExist"));
+        await FsProvider.instance.removeDirectoryRecursively(testFilePath);
+
+        expect(await FsProvider.instance.exists(testFilePath)).toBeTruthy();
+    });
+
 });

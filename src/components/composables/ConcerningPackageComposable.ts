@@ -26,6 +26,9 @@ const onlineModList = computed<Map<string, ConcerningPackage>>(() => {
 const allConcerningPackages = ref<ManifestV2[]>([]);
 const activeConcerningPackages = ref<ManifestV2[]>([]);
 
+const allConcerningNames = computed(() => new Set(allConcerningPackages.value.map(mod => mod.getName())));
+const activeConcerningNames = computed(() => new Set(activeConcerningPackages.value.map(mod => mod.getName())));
+
 async function updateConcerningPackages() {
     const game = activeGame.value;
     const localMods = localModList.value;
@@ -60,24 +63,28 @@ async function updateConcerningPackages() {
     activeConcerningPackages.value = concerningPackages.filter(value => !value.isTrustedPackage());
 }
 
-watch([activeGame, localModList], async () => {
+watch([activeGame, localModList, onlineModList], async () => {
     await updateConcerningPackages();
 });
 
+let initialLoad: Promise<void> | null = null;
+
 export function useConcerningPackageComposable() {
 
-    onMounted(async () => {
-        await updateConcerningPackages();
+    onMounted(() => {
+        if (initialLoad === null) {
+            initialLoad = updateConcerningPackages();
+        }
     });
 
     const hasConcerningPackages = computed<boolean>(() => activeConcerningPackages.value.length > 0);
 
     function isConcerningPackage(mod: ManifestV2) {
-        return activeConcerningPackages.value.findIndex(value => value.getName() === mod.getName()) >= 0;
+        return activeConcerningNames.value.has(mod.getName());
     }
 
     function wasConcerningPackage(mod: ManifestV2) {
-        return allConcerningPackages.value.findIndex(value => value.getName() === mod.getName()) >= 0;
+        return allConcerningNames.value.has(mod.getName());
     }
 
     return {
