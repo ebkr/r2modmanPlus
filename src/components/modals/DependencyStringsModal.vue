@@ -23,7 +23,7 @@ function close() {
         <template v-slot:body>
             <ul>
                 <li v-for="(mod, index) in localModList" :key="`dep-str-${index}`">
-                    {{ mod.getName() }}-{{ mod.getVersionNumber().toString() }}
+                    {{ mod.getName().replaceAll('_', ' ') }}-{{ mod.getVersionNumber().toString() }}
                 </li>
             </ul>
         </template>

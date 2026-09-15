@@ -11,17 +11,17 @@
                           v-tooltip.right="'Pinned on Thunderstore'">
                         Pinned
                     </span>
-                    <span class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></span>
+                    <span class="selectable">{{key.getName().replaceAll('_', ' ')}} <span class="card-byline">by {{key.getOwner()}}</span></span>
                 </span>
                 <span v-else-if="isModDeprecated(key)">
                     <span class="tag is-danger margin-right margin-right--half-width"
                           v-tooltip.right="'This mod is potentially broken'">
                         Deprecated
                     </span>
-                    <strike class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></strike>
+                    <strike class="selectable">{{key.getName().replaceAll('_', ' ')}} <span class="card-byline">by {{key.getOwner()}}</span></strike>
                 </span>
                 <span v-else class='selectable'>
-                    {{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span>
+                    {{key.getName().replaceAll('_', ' ')}} <span class="card-byline">by {{key.getOwner()}}</span>
                 </span>
             </template>
             <template v-slot:other-icons>
