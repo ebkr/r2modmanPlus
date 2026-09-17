@@ -2,7 +2,7 @@ import FsProvider from '../../../../src/providers/generic/file/FsProvider';
 import StatInterface from '../../../../src/providers/generic/file/StatInterface';
 import * as path from 'path';
 
-type FileType = {name: string, type: "FILE" | "DIR", nodes: FileType[] | undefined, content: string | undefined, mtime: Date};
+type FileType = {name: string, type: "FILE" | "DIR", nodes: FileType[] | undefined, content: string | Buffer | undefined, mtime: Date};
 
 
 /**
@@ -229,5 +229,25 @@ export default class InMemoryFsProvider extends FsProvider {
     async setModifiedTime(file: string, time: Date): Promise<void> {
         const found = this.findFileType(file);
         found.mtime = time;
+    }
+
+    async emptyDirectory(directory: string): Promise<void> {
+        for (const entry of await this.readdir(directory)) {
+            const entryPath = path.join(directory, entry);
+            if ((await this.lstat(entryPath)).isDirectory()) {
+                await this.removeDirectoryRecursively(entryPath);
+            } else {
+                await this.unlink(entryPath);
+            }
+        }
+    }
+
+    async removeDirectoryRecursively(directory: string): Promise<void> {
+        if (!(await this.exists(directory)) || !(await this.lstat(directory)).isDirectory()) {
+            return;
+        }
+
+        await this.emptyDirectory(directory);
+        await this.rmdir(directory);
     }
 }

@@ -1,4 +1,11 @@
 [tools]
-node = '22'
-python = { version = "3.12", postinstall = "python -m pip install pipx" }
-yarn = "4.11.0"
+node = "22.23.1"
+"npm:corepack" = { version = "latest", postinstall = "corepack enable" }
+
+[tasks.dev]
+description = "Start in dev mode"
+run = "pnpm run dev"
+
+[tasks.typecheck]
+description = "Ensure that the app is appropriately typed"
+run = "pnpm typecheck"

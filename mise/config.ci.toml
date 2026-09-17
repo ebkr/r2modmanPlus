@@ -1,0 +1,6 @@
+[tasks.typecheck]
+description = "Perform typechecking tasks"
+run = [
+    "npx @quasar/cli prepare",
+    "pnpm typecheck",
+]

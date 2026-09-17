@@ -3,10 +3,10 @@ import electronUpdater from 'electron-updater';
 import os from 'os';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { isManagerRunningOnFlatpak } from 'src/utils/LaunchUtils';
 
 let browserWindow: BrowserWindow;
 let app: App;
+const anyGlobal: any = global;
 
 export class Listeners {
     constructor(window: BrowserWindow, electronApp: App) {
@@ -19,9 +19,8 @@ ipcMain.on('get-browser-window', () => {
     browserWindow.webContents.send('receive-browser-window', browserWindow);
 });
 
-ipcMain.on('update-app', async () => {
-    if (await isManagerRunningOnFlatpak()) return;
-    
+ipcMain.on('update-app', () => {
+    if (process.env.FLATPAK_ID) return;
     electronUpdater.autoUpdater.checkForUpdatesAndNotify();
 });
 
@@ -56,7 +55,7 @@ ipcMain.on('restart', () => {
 
 ipcMain.on('get-assets-path', () => {
     if (process.env.PROD) {
-        browserWindow.webContents.send('receive-assets-path', global.__statics);
+        browserWindow.webContents.send('receive-assets-path', anyGlobal.__statics);
     } else {
         browserWindow.webContents.send('receive-assets-path', 'src/statics/');
     }

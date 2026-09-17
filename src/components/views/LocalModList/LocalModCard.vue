@@ -7,23 +7,32 @@ import ManifestV2 from '../../../model/ManifestV2';
 import VersionNumber from '../../../model/VersionNumber';
 import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
+import { useModIcon } from '../../composables/ModIconComposable';
 import { valueToReadableDate } from '../../../utils/DateUtils';
 import { splitToNameAndVersion } from '../../../utils/DependencyUtils';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
+import { UnsatisfiedDependencies } from '../../../store/modules/ProfileModule';
+import ThunderstoreMod from "../../../model/ThunderstoreMod";
+import ThunderstoreVersion from "../../../model/ThunderstoreVersion";
+import { useConcerningPackageComposable } from '@r2/components/composables/ConcerningPackageComposable';
+import { useModManagementComposable } from '@r2/components/composables/ModManagementComposable';
 
 const store = getStore<State>();
 
 type LocalModCardProps = {
     mod: ManifestV2;
+    version?: ThunderstoreVersion | undefined;
 }
 
 const props = defineProps<LocalModCardProps>();
 
-const disabledDependencies = ref<ManifestV2[]>([]);
-const missingDependencies = ref<string[]>([]);
+const { isConcerningPackage, wasConcerningPackage } = useConcerningPackageComposable();
+const { uninstallMod } = useModManagementComposable();
+
 const disableChangePending = ref<boolean>(false);
+const icon = useModIcon(() => props.mod);
 
 // Mod loader packages can't be disabled as it's hard to define
 // what that should even do in all cases.
@@ -32,36 +41,13 @@ const canBeDisabled = computed(() => !store.getters['isModLoader'](props.mod.get
 const isDeprecated = computed(() => store.state.tsMods.deprecated.get(props.mod.getName()) || false);
 const isLatestVersion = computed(() => store.getters['tsMods/isLatestVersion'](props.mod));
 const localModList = computed(() => store.state.profile.modList);
-const tsMod = computed(() => store.getters['tsMods/tsMod'](props.mod));
+const tsMod = computed<ThunderstoreMod>(() => store.getters['tsMods/tsMod'](props.mod));
 
-async function updateDependencies() {
-    if (props.mod.getDependencies().length === 0) {
-        return;
-    }
-
-    const dependencies = props.mod.getDependencies();
-    const dependencyNames = dependencies.map(dependencyStringToModName);
-    const foundDependencies: ManifestV2[] = [];
-
-    for (const mod of localModList.value) {
-        if (foundDependencies.length === dependencyNames.length) {
-            break;
-        }
-
-        if (dependencyNames.includes(mod.getName())) {
-            foundDependencies.push(mod);
-        }
-    }
-
-    const foundNames = foundDependencies.map((mod) => mod.getName());
-
-    disabledDependencies.value = foundDependencies.filter((d) => !d.isEnabled());
-    missingDependencies.value = dependencies.filter(
-        (d) => !foundNames.includes(dependencyStringToModName(d))
-    );
-}
-
-watch(localModList, updateDependencies);
+const unsatisfiedDependencies = computed<UnsatisfiedDependencies | undefined>(() =>
+    store.getters['profile/unsatisfiedDependencies'].get(props.mod.getName())
+);
+const disabledDependencies = computed<ManifestV2[]>(() => unsatisfiedDependencies.value?.disabledDependencies ?? []);
+const missingDependencies = computed<string[]>(() => unsatisfiedDependencies.value?.missingDependencies ?? []);
 
 async function disableMod() {
     if (disableChangePending.value) {
@@ -117,27 +103,6 @@ async function enableMod(mod: ManifestV2) {
     disableChangePending.value = false;
 }
 
-async function uninstallMod() {
-    const dependants = Dependants.getDependantList(props.mod, localModList.value);
-
-    if (dependants.size > 0) {
-        store.commit('openUninstallModModal', props.mod);
-        return;
-    }
-
-    try {
-        await store.dispatch(
-            'profile/uninstallModsFromActiveProfile',
-            { mods: [props.mod] }
-        );
-    } catch (e) {
-        store.commit('error/handleError', {
-            error: R2Error.fromThrownValue(e),
-            severity: LogSeverity.ACTION_STOPPED
-        });
-    }
-}
-
 function updateMod() {
     if (tsMod.value !== undefined) {
         store.commit('openDownloadModVersionSelectModal', tsMod.value);
@@ -167,10 +132,6 @@ function viewAssociatedMods() {
     store.commit('openAssociatedModsModal', props.mod);
 }
 
-onMounted(() => {
-    updateDependencies();
-})
-
 // Need to wrap util call in method to allow access from Vue context
 function getReadableDate(value: number): string {
     return valueToReadableDate(value);
@@ -179,6 +140,10 @@ function getReadableDate(value: number): string {
 function dependencyStringToModName(x: string) {
     return x.substring(0, x.lastIndexOf('-'));
 }
+
+function openReviewModal() {
+    store.commit('openConcerningModReviewModal', props.mod);
+}
 </script>
 
 <template>
@@ -186,8 +151,10 @@ function dependencyStringToModName(x: string) {
         :description="mod.getDescription()"
         :enabled="mod.isEnabled()"
         :id="`${mod.getAuthorName()}-${mod.getName()}-${mod.getVersionNumber()}`"
-        :image="mod.getIcon()"
-        :allowSorting="true">
+        :image="icon"
+        :allowSorting="true"
+        :class="[{'card--is-concern': isConcerningPackage(props.mod)}]"
+    >
 
         <template v-slot:title>
             <span class="non-selectable">
@@ -217,10 +184,26 @@ function dependencyStringToModName(x: string) {
 
         <template v-slot:description>
             <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0"><strong>Installed on:</strong> {{ getReadableDate(mod.getInstalledAtTime()) }}</p>
+            <p class='card-timestamp' v-if="version && version.getDateCreated()"><strong>Released on:</strong>
+                {{ getReadableDate(version!.getDateCreated()!.getTime()) }}
+            </p>
+            <div class="notification is-warning" v-if="isConcerningPackage(props.mod)">
+                <p>This mod was originally downloaded from Thunderstore, but can no longer be found on the site.</p>
+                <p><strong>It is recommended that you remove this mod.</strong></p>
+                <button class="button" @click.stop.prevent="openReviewModal">
+                    Review mod
+                </button>
+            </div>
         </template>
 
         <!-- Show icon button row even when card is collapsed -->
         <template v-slot:other-icons>
+            <span v-if="wasConcerningPackage(props.mod)"
+                  class='card-header-icon'>
+                <i v-tooltip.left="`This package can no longer be found on Thunderstore`"
+                   class='fas fa-unlink'
+                ></i>
+            </span>
             <DonateIconButton :mod="tsMod" v-if="tsMod"/>
             <span v-if="!isLatestVersion"
                 @click.prevent.stop="updateMod()"
@@ -248,7 +231,7 @@ function dependencyStringToModName(x: string) {
         </template>
 
         <!-- Show bottom button row -->
-        <button @click="uninstallMod()" class='button'>
+        <button @click="uninstallMod(props.mod)" class='button'>
             Uninstall
         </button>
 
@@ -273,15 +256,15 @@ function dependencyStringToModName(x: string) {
         </button>
 
         <button v-if="missingDependencies.length"
-            @click="downloadDependency(missingDependencies[0])"
+            @click="downloadDependency(missingDependencies[0]!)"
             class='button'>
             Download dependency
         </button>
 
         <button v-if="disabledDependencies.length"
-            @click="enableMod(disabledDependencies[0])"
+            @click="enableMod(disabledDependencies[0]!)"
             class='button'>
-            Enable {{disabledDependencies[0].getDisplayName()}}
+            Enable {{disabledDependencies[0]!.getDisplayName()}}
         </button>
 
         <DonateButton v-if="tsMod" :mod="tsMod"/>

@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 
 import { decompressArrayBuffer } from "./GzipUtils";
-import Buffer from "../providers/node/buffer/buffer";
 
 const newAbortSignal = (timeoutMs: number) => {
     const abortController = new AbortController();
@@ -104,24 +103,26 @@ export const makeLongRunningGetRequest = async (
     }
 }
 
+interface ProcessBlobOptions {
+    computeHash?: boolean;
+}
+
 /**
  * Download blob files containing gzip compressed JSON strings and
  * return them as objects. This is used for data that's shared by
  * all users and can be cached heavily on CDN level.
  */
-export const fetchAndProcessBlobFile = async (url: string) => {
-    const dateFetched = new Date();
+export const fetchAndProcessBlobFile = async (url: string, options: ProcessBlobOptions = {}) => {
     const response = await makeLongRunningGetRequest(url, {axiosConfig: {responseType: 'arraybuffer'}});
-    const buffer = Buffer.from(response.data);
-    const hash = await getSha256Hash(buffer);
-    const jsonString = await decompressArrayBuffer(buffer);
+    const compressed = new Uint8Array(response.data);
+    const hash = options.computeHash ? await getSha256Hash(compressed) : undefined;
+    const jsonString = await decompressArrayBuffer(compressed);
     const content = JSON.parse(jsonString);
-    return {content, hash, dateFetched};
+    return {content, hash};
 }
 
-async function getSha256Hash(buffer: Buffer): Promise<string> {
-    const arrayBuffer = new Uint8Array(buffer);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+async function getSha256Hash(data: Uint8Array): Promise<string> {
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data as BufferSource);
     const hashByteArray = Array.from(new Uint8Array(hashBuffer));
     const hexHash = hashByteArray.map(b => b.toString(16).padStart(2, '0')).join('');
     return hexHash;

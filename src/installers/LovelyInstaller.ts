@@ -18,11 +18,20 @@ export class LovelyInstaller implements PackageInstaller {
         const fs = FsProvider.instance;
         const fileRelocations = new Map<string, string>();
 
-        // Manually copy over version.dll
-        const dwmSrc = path.join(packagePath, "version.dll");
-        const dwmDest = profile.joinToProfilePath("version.dll");
-        await fs.copyFile(dwmSrc, dwmDest);
-        fileRelocations.set(dwmSrc, "version.dll");
+        // 0.9.0 was version.dll, 0.10.0+ is winmm.dll.
+        const dllTargets = ["version.dll", "winmm.dll"];
+
+        for (const dllTarget of dllTargets) {
+            const dwmSrc = path.join(packagePath, dllTarget);
+            const dwmDest = profile.joinToProfilePath(dllTarget);
+
+            if (!await fs.exists(dwmSrc)) {
+                continue;
+            }
+
+            await fs.copyFile(dwmSrc, dwmDest);
+            fileRelocations.set(dwmSrc, dllTarget);
+        }
 
         // Files within the lovely subdirectory need to be recursively copied into the destination.
         const lovelyTree = await FileTree.buildFromLocation(path.join(packagePath, "lovely"));
@@ -32,13 +41,13 @@ export class LovelyInstaller implements PackageInstaller {
 
         const targets = lovelyTree.getRecursiveFiles().map((x) => x.replace(packagePath, "")).map((x) => [x, path.join("mods", x)]);
         for (const target of targets) {
-            const absSrc = path.join(packagePath, target[0]);
-            const absDest = profile.joinToProfilePath(target[1]);
+            const absSrc = path.join(packagePath, target[0]!);
+            const absDest = profile.joinToProfilePath(target[1]!);
 
             await FileUtils.ensureDirectory(path.dirname(absDest));
             await fs.copyFile(absSrc, absDest);
 
-            fileRelocations.set(absSrc, target[1]);
+            fileRelocations.set(absSrc, target[1]!);
         }
 
         await addToStateFile(mod, fileRelocations, profile);

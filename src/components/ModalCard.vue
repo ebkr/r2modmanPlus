@@ -44,5 +44,7 @@ function closeModal() {
 
 
 <style scoped lang="scss">
-
+.modal {
+    backdrop-filter: blur(5px);
+}
 </style>

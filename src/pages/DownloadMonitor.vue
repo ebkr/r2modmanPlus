@@ -23,10 +23,10 @@
                 </button>
             </div>
             <div v-for="(downloadObject, index) of store.getters['download/profileDownloadsNewestFirst']" :key="`download-progress-${index}`">
-                <div class="container">
+                <div>
                     <div class="row no-wrap border-at-bottom pad pad--sides">
                         <div class="is-flex-grow-1 margin-right card is-shadowless">
-                            <p><strong>{{ downloadObject.initialMods.map(tsCombo => tsCombo.getUserFriendlyString()).join(", ") }}</strong></p>
+                            <p><strong>{{ downloadObject.initialMods.map((tsCombo: ThunderstoreCombo) => tsCombo.getUserFriendlyString()).join(", ") }}</strong></p>
 
                             <div class="row" v-if="downloadObject.status === DownloadStatusEnum.FAILED">
                                 <div class="col">
@@ -148,6 +148,7 @@ import * as DownloadUtils from '../utils/DownloadUtils';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import ManagerActivityBar from '../components/navigation/ManagerActivityBar.vue';
+import ThunderstoreCombo from '../model/ThunderstoreCombo';
 
 const store = getStore<State>();
 </script>

@@ -69,6 +69,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
     }
 
     private async findSteamAppManifest(steamPath: string, game: Game): Promise<R2Error | string> {
+        LoggerProvider.instance.Log(LogSeverity.DEBUG, '[findSteamAppManifest] Kicked off');
         const steamapps = path.join(steamPath, 'steamapps');
         const locations: string[] = [steamapps];
         const fs = FsProvider.instance;
@@ -79,6 +80,9 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 if (file.toLowerCase() === 'libraryfolders.vdf') {
                     try {
                         const parsedVdf: any = vdf.parse((await fs.readFile(path.join(steamapps, file))).toString());
+                        LoggerProvider.instance.Log(LogSeverity.DEBUG, `[findSteamAppManifest] Parsed VDF:
+                            ${parsedVdf}
+                        `);
                         if (parsedVdf.libraryfolders !== undefined) {
                             for (const key of Object.keys(parsedVdf.libraryfolders)) {
                                 if (!isNaN(Number(key))) {
@@ -98,6 +102,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                         }
                     } catch(e) {
                         const err: Error = e as Error;
+                        LoggerProvider.instance.Log(LogSeverity.ERROR, `[findSteamAppManifest] Failed to parse VDF at '${path.join(steamapps, file)}'`);
                         // Need to throw when inside forEach.
                         throw new VdfParseError(
                             'Unable to parse libraryfolders.vdf',
@@ -151,28 +156,44 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 null
             )
         }
+
         // Game manifest found at ${manifestLocation}
+        LoggerProvider.instance.Log(LogSeverity.DEBUG, `[findSteamAppManifest] Manifest found at '${manifestLocation}'`);
         try {
-            const manifestVdf: string = (await fs.readFile(path.join(manifestLocation, `appmanifest_${game.activePlatform.storeIdentifier}.acf`))).toString();
-            const parsedVdf: any = vdf.parse(manifestVdf);
+            const manifestVdf: string = (await fs.readFile(path.join(manifestLocation, `appmanifest_${game.activePlatform.storeIdentifier}.acf`))).toString();;
+            let parsedVdf;
+            try {
+                parsedVdf = vdf.parse(manifestVdf);
+            } catch (e) {
+                LoggerProvider.instance.Log(LogSeverity.ERROR, (e as Error).message);
+                console.error("Failed to parse vdf", e);
+                throw e;
+            }
+            LoggerProvider.instance.Log(LogSeverity.DEBUG, `[findSteamAppManifest] Parsed VDF:
+                ${manifestVdf}
+            `);
             const folderName = parsedVdf.AppState.installdir;
-            const riskOfRain2Path = path.join(manifestLocation, 'common', folderName);
-            if (await fs.exists(riskOfRain2Path)) {
-                const hasNestedSteamFolder = GameManager.activeGame.steamFolderName.startsWith(`${folderName}/`);
+            LoggerProvider.instance.Log(LogSeverity.DEBUG, `[findSteamAppManifest] Identified ${game.displayName} 'reported' folder name: ${folderName}`);
+            const gamePath = path.join(manifestLocation, 'common', folderName);
+            if (await fs.exists(gamePath)) {
+                const hasNestedSteamFolder = GameManager.activeGame.steamFolderName.includes(`/`);
                 if (hasNestedSteamFolder) {
-                    const dir = path.dirname(riskOfRain2Path);
-                    return path.join(dir, GameManager.activeGame.steamFolderName);
+                    LoggerProvider.instance.Log(LogSeverity.DEBUG, `[findSteamAppManifest] ${game.displayName} is installed using a nested folder format. Rewriting path.`);
+                    const dir = path.dirname(gamePath);
+                    const rewrittenGamePath = path.join(dir, ...GameManager.activeGame.steamFolderName.split('/'));
+                    LoggerProvider.instance.Log(LogSeverity.DEBUG, `[findSteamAppManifest] Path rewritten to: ${rewrittenGamePath}`);
+                    return rewrittenGamePath;
                 } else {
-                    return riskOfRain2Path;
+                    return gamePath;
                 }
             } else {
                 return new FileNotFoundError(
                     `${game.displayName} does not exist in Steam\'s specified location`,
-                    `Failed to find folder: ${riskOfRain2Path}`,
+                    `Failed to find folder: ${gamePath}`,
                     null
                 )
             }
-        } catch(e) {
+        } catch (e) {
             const err: Error = e as Error;
             return new R2Error(
                 `An error occurred whilst locating the ${game.displayName} install folder from manifest in ${manifestLocation}`,

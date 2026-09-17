@@ -1,3 +1,6 @@
+@use "scheme/variables" as *;
+@use "quasar.variables" as *;
+
 // fix color vars that we can't override
 html {
     background-color: $scheme-background;
@@ -527,4 +530,8 @@ code {
 
 .v-popper__popper {
     z-index: 100 !important;
+}
+
+.modal-background {
+    backdrop-filter: blur(5px);
 }

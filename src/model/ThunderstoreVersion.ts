@@ -13,6 +13,7 @@ export default class ThunderstoreVersion  {
     private downloads: number = 0;
     private downloadUrl: string = '';
     private fileSize: number = 0;
+    private dateCreated: string = '';
 
     public static parseFromThunderstoreData(data: any): ThunderstoreVersion {
         const version = new ThunderstoreVersion();
@@ -30,6 +31,8 @@ export default class ThunderstoreVersion  {
         this.setDownloadCount(version.downloads);
         this.setDownloadUrl(version.download_url);
         this.setFileSize(version.file_size);
+        this.setFileSize(version.file_size);
+        this.setDateCreated(version.date_created);
         return this;
     }
 
@@ -115,5 +118,17 @@ export default class ThunderstoreVersion  {
 
     public getFileSize(): number {
         return this.fileSize;
+    }
+
+    public setDateCreated(dateCreated: string) {
+        this.dateCreated = dateCreated;
+    }
+
+    public getDateCreated(): Date | undefined {
+        try {
+            return new Date(this.dateCreated);
+        } catch (e) {
+            return undefined;
+        }
     }
 }

@@ -18,4 +18,6 @@ export default abstract class LinkProvider {
 
     public abstract selectFile(url: string): void;
 
+    public abstract openPath(path: string): void;
+
 }

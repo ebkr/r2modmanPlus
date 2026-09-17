@@ -133,7 +133,7 @@ async function selectFile() {
         filters: []
     }).then(value => {
         if (value.length > 0) {
-            fileToImport.value = value[0];
+            fileToImport.value = value[0]!;
             assumeDefaults();
         } else {
             waitingForSelection.value = false;
@@ -228,28 +228,28 @@ function inferFieldValuesFromFile(file: string): ImportFieldAttributes {
     }
 
     if (hyphenSeparated.length === 3) {
-        data.modAuthor = hyphenSeparated[0];
-        data.modName = hyphenSeparated[1];
-        const modVersion = santizeVersionNumber(hyphenSeparated[2]).toString().split(".");
+        data.modAuthor = hyphenSeparated[0]!;
+        data.modName = hyphenSeparated[1]!;
+        const modVersion = santizeVersionNumber(hyphenSeparated[2]!).toString().split(".");
         data.modVersionMajor = Number(modVersion[0]);
         data.modVersionMinor = Number(modVersion[1]);
         data.modVersionPatch = Number(modVersion[2]);
     } else if (hyphenSeparated.length === 2) {
-        data.modName = hyphenSeparated[0];
-        const modVersion = santizeVersionNumber(hyphenSeparated[1]).toString().split(".");
+        data.modName = hyphenSeparated[0]!;
+        const modVersion = santizeVersionNumber(hyphenSeparated[1]!).toString().split(".");
         data.modVersionMajor = Number(modVersion[0]);
         data.modVersionMinor = Number(modVersion[1]);
         data.modVersionPatch = Number(modVersion[2]);
     } else if (underscoreSeparated.length === 3) {
-        data.modAuthor = underscoreSeparated[0];
-        data.modName = underscoreSeparated[1];
-        const modVersion = santizeVersionNumber(underscoreSeparated[2]).toString().split(".");
+        data.modAuthor = underscoreSeparated[0]!;
+        data.modName = underscoreSeparated[1]!;
+        const modVersion = santizeVersionNumber(underscoreSeparated[2]!).toString().split(".");
         data.modVersionMajor = Number(modVersion[0]);
         data.modVersionMinor = Number(modVersion[1]);
         data.modVersionPatch = Number(modVersion[2]);
     } else if (underscoreSeparated.length === 2) {
-        data.modName = underscoreSeparated[0];
-        const modVersion = santizeVersionNumber(underscoreSeparated[1]).toString().split(".");
+        data.modName = underscoreSeparated[0]!;
+        const modVersion = santizeVersionNumber(underscoreSeparated[1]!).toString().split(".");
         data.modVersionMajor = Number(modVersion[0]);
         data.modVersionMinor = Number(modVersion[1]);
         data.modVersionPatch = Number(modVersion[2]);

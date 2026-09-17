@@ -27,4 +27,3 @@ export default abstract class ZipProvider {
     public abstract zipBuilder(): ZipBuilder;
 
 }
-

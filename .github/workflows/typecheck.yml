@@ -1,0 +1,24 @@
+name: Typecheck
+
+on: [push]
+
+jobs:
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    env:
+      MISE_ENV: ci
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jdx/mise-action@v3
+        with:
+          install: true
+          cache: true
+          log_level: debug
+
+      - name: Install pnpm dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check type validity
+        run: mise typecheck

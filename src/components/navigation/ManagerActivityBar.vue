@@ -3,7 +3,7 @@
         <div class="activity-bar--left">
             <div class="activity-bar__group">
                 <button class="activity-bar__context-item" id="game-switch-button" @click.prevent.stop="changeGame">
-                    <img class="game-icon" :src="ProtocolProvider.getPublicAssetUrl(`/images/game_selection/${activeGame.gameImage}`)" alt="Game icon"/>
+                    <img class="game-icon" :src="imageSrc" alt="Game icon"/>
                     <span>{{ activeGame.displayName }}</span>
                 </button>
                 <span class="activity-bar__item-label non-selectable activity-bar__item-divider">/</span>
@@ -32,18 +32,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { ActivityDropdown } from '../all';
-import ProtocolProvider from '../../providers/generic/protocol/ProtocolProvider';
+import { useGameImageComposable } from '../composables/GameImageComposable';
 
 const store = getStore<State>();
 const router = useRouter();
 
 const activeGame = computed(() => store.state.activeGame);
 const profile = computed(() => store.getters['profile/activeProfile']);
+
+const { imageSrc, setIcon } = useGameImageComposable();
+watch(() => activeGame.value.iconUrl, setIcon, { immediate: true });
 
 function changeGame() {
     router.push('/');

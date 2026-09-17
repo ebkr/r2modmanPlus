@@ -90,7 +90,7 @@ watchEffect(async () => {
 
 // Required to trigger a re-render of the modlist in preview step
 // when the online modlist is refreshed.
-watch(store.state.tsMods.mods, async() => {
+watch(() => store.state.tsMods.mods, async() => {
     if (profileImportContent.value === null) {
         return;
     }
@@ -142,8 +142,10 @@ async function validateProfileFile(files: string[] | null) {
         return;
     }
 
+    const selectedFile = files[0]!;
+
     try {
-        const yamlContent = await ProfileUtils.readProfileFile(files[0]);
+        const yamlContent = await ProfileUtils.readProfileFile(selectedFile);
         profileImportContent.value = await ProfileUtils.parseYamlToExportFormat(yamlContent);
         profileMods.value = await ProfileUtils.exportModsToCombos(
             profileImportContent.value.getMods(),
@@ -156,7 +158,7 @@ async function validateProfileFile(files: string[] | null) {
         return;
     }
 
-    profileImportFilePath.value = files[0];
+    profileImportFilePath.value = selectedFile;
 
     if (profileMods.value.unknown.length > 0) {
         // Sometimes the reason some packages are unknown is that

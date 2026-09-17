@@ -8,6 +8,7 @@ export const NodePathImplementation: NodePathProvider = {
     dirname: (...args) => window.node.path.dirname(...args),
     resolve: (...args) => window.node.path.resolve(...args),
     get sep() {
+        // @ts-ignore
         return window.node.path.sep()
     }
 }

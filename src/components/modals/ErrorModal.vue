@@ -28,8 +28,8 @@ function close() {
                     <h5 class="title is-5">Suggestion</h5>
                     <p>{{solution}}</p>
                 </div>
-                <div class="mt-3 text-right" v-if="error.action">
-                    <button class="button is-white" @click="() => { error.action.function(); close(); }">
+                <div class="mt-3 text-right" v-if="error && error.action">
+                    <button class="button is-white" @click="() => { error?.action?.function(); close(); }">
                         {{error.action.label}}
                     </button>
                 </div>

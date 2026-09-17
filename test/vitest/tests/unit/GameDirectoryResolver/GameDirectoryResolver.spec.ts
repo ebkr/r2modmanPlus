@@ -1,4 +1,4 @@
-import {beforeAll, beforeEach, describe, expect, test} from 'vitest';
+import {beforeAll, beforeEach, describe, expect, MockInstance, test, vi} from 'vitest';
 import path from 'path';
 import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
 import GameManager from '../../../../../src/model/game/GameManager';
@@ -7,16 +7,22 @@ import InMemoryFsProvider from '../../../stubs/providers/InMemory.FsProvider';
 import { providePathImplementation } from '../../../../../src/providers/node/path/path';
 import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
 import {updateEcosystemReactives} from "src/r2mm/ecosystem/EcosystemSchema";
+import StubLoggerProvider from '../../../stubs/providers/stub.LoggerProvider';
+import LoggerProvider from '../../../../../src/providers/ror2/logging/LoggerProvider';
 
 describe.skipIf(process.platform !== 'win32')('GameDirectoryResolver', () => {
     const steamRoot = 'TEST_STEAM_PATH';
     let resolver: GameDirectoryResolverImpl;
+    let spyLogger: MockInstance;
 
     beforeAll(async () => {
         const inMemoryFs = new InMemoryFsProvider();
         FsProvider.provide(() => inMemoryFs);
         InMemoryFsProvider.clear();
         providePathImplementation(() => TestPathProvider);
+        const loggerImpl = new StubLoggerProvider();
+        LoggerProvider.provide(() => loggerImpl);
+        spyLogger = vi.spyOn(LoggerProvider.instance, 'Log').mockImplementation(() => {});
         await updateEcosystemReactives();
     })
 

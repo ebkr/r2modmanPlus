@@ -10,4 +10,8 @@ export default class LinkImpl extends LinkProvider {
         window.electron.selectFile(url);
     }
 
+    openPath(path: string): void {
+        window.electron.openPath(path);
+    }
+
 }

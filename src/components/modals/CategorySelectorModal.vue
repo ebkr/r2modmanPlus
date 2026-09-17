@@ -9,7 +9,7 @@ type CategorySelectorModalProps = {
 const props = defineProps<CategorySelectorModalProps>();
 const emits = defineEmits<{
     'selected-category': [ev: Event];
-    'deselectedCategory': [value: string];
+    'deselected-category': [value: string];
 }>();
 
 function emitSelected(event: Event) {
@@ -17,7 +17,7 @@ function emitSelected(event: Event) {
 }
 
 function emitDeselected(key: string) {
-    emits("deselected-category", key);
+    emits('deselected-category', key);
 }
 </script>
 

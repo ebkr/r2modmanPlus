@@ -1,7 +1,7 @@
 import GameInstructionGenerator from "../GameInstructionGenerator";
 import { GameInstruction } from "../../GameInstructions";
-import Game from "src/model/game/Game";
-import Profile from "src/model/Profile";
+import Game from "../../../../../model/game/Game";
+import Profile from "../../../../../model/Profile";
 
 export default class RivetGameInstructions extends GameInstructionGenerator {
     /*

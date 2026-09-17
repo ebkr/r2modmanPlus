@@ -1,5 +1,5 @@
 import {ModloaderPackage, R2Modman as GameConfig} from "../../assets/data/ecosystemTypes";
-import {ref} from "@vue/reactivity";
+import {ref} from "vue";
 
 // Re-export generated types/Enums to avoid having the whole codebase
 // tightly coupled with the generated ecosystemTypes.

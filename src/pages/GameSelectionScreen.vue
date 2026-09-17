@@ -1,5 +1,11 @@
 <template>
-    <div id="game-selection-screen">
+    <div id="game-list-loading" v-if="!visible">
+        <div class="fa-3x">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </div>
+        <p>Preparing games</p>
+    </div>
+    <div id="game-selection-screen" v-else>
         <EcosystemUpdateIndicator />
         <ModalCard id="select-platform-modal" v-show="showPlatformModal" :is-active="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
             <template v-slot:header>
@@ -41,7 +47,8 @@
                         <nav class="pad--sides pad--top-none flex">
                             <div class="input-group input-group--flex margin-right">
                                 <input
-                                    v-model="filterText"
+                                    :value="filterText"
+                                    @input="(e: Event) => debouncedFilter((e.target as HTMLInputElement).value)"
                                     id="game-selection-search"
                                     class="input margin-right"
                                     type="text"
@@ -52,11 +59,11 @@
                             <template v-if="viewMode === GameSelectionViewMode.LIST">
                                 <div class="margin-right">
                                     <button class="button is-info"
-                                       :disabled="selectedGame === null || runningMigration" @click="selectGame(selectedGame!)">Select {{ activeTab.toLowerCase() }}</button>
+                                       :disabled="selectedGame === null || runningMigration" @click="selectGame(selectedGame! as Game)">Select {{ activeTab.toLowerCase() }}</button>
                                 </div>
                                 <div class="margin-right">
                                     <button class="button"
-                                       :disabled="selectedGame === null || runningMigration" @click="selectDefaultGame(selectedGame!)">Set as default</button>
+                                       :disabled="selectedGame === null || runningMigration" @click="selectDefaultGame(selectedGame! as Game)">Set as default</button>
                                 </div>
                             </template>
                             <div>
@@ -92,13 +99,19 @@ import { GameInstanceType } from '../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import ModalCard from '../components/ModalCard.vue';
 import { onMounted, ref, provide } from 'vue';
+import debounce from 'lodash.debounce';
 import { useGameSelectionComposable, gameSelectionKey } from '../components/composables/GameSelectionComposable';
 import GameSelectionList from '../components/game-selection/GameSelectionList.vue';
 import Game from '../model/game/Game';
 import { capitalize } from '../utils/StringUtils';
 import { StorePlatform as platformLabels } from '../model/platform/StorePlatform';
 import EcosystemUpdateIndicator from '../components/navigation/EcosystemUpdateIndicator.vue';
+import { getStore } from '../providers/generic/store/StoreProvider';
+import { State } from '../store';
 
+const store = getStore<State>();
+
+const visible = ref<boolean>(false);
 
 const gameSelection = useGameSelectionComposable();
 provide(gameSelectionKey, gameSelection);
@@ -121,6 +134,7 @@ const {
 } = gameSelection;
 
 const showPlatformModal = ref<boolean>(false);
+const debouncedFilter = debounce((value: string) => { filterText.value = value; }, 100);
 
 function selectGame(game: Game) {
     markAsSelectedGame(game);
@@ -158,7 +172,12 @@ function selectPlatform() {
 
 onMounted(async () => {
     window.app.checkForApplicationUpdates();
-    await initialize();
+    try {
+        await initialize();
+    } finally {
+        visible.value = true;
+        void store.dispatch('ecosystemUpdate/updateEcosystemSchema');
+    }
 });
 </script>
 
@@ -178,5 +197,13 @@ onMounted(async () => {
 
 #game-selection-search {
     min-width: 100px;
+}
+
+#game-list-loading {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 </style>

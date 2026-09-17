@@ -25,7 +25,7 @@ export default class ThunderstoreCombo {
             );
         }
 
-        return foundMod[0];
+        return foundMod[0]!;
     }
 
     public getMod(): ThunderstoreMod {

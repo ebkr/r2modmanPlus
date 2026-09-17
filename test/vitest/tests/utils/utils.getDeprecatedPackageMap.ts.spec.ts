@@ -2,7 +2,7 @@ import ThunderstoreMod from "../../../../src/model/ThunderstoreMod";
 import ThunderstoreVersion from "../../../../src/model/ThunderstoreVersion";
 import { Deprecations } from "../../../../src/utils/Deprecations";
 import {describe, beforeEach, afterEach, test, expect, vi} from 'vitest';
-import { MockInstance } from '@vitest/spy';
+import type { MockInstance } from 'vitest';
 
 
 // TODO: The implementation is currently intentionally broken (see the

@@ -23,7 +23,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             throw new R2Error('No mods to download', 'An empty list of mods was passed to the downloader');
         }
 
-        let modInProgressName = combos[0].getMod().getName();
+        let modInProgressName = combos[0]!.getMod().getName();
         let finishedModsDownloadedSize = 0;
 
         const singleModProgressCallback = (downloadedBytes: number, status: DownloadStatusEnum, err: R2Error | null) => {

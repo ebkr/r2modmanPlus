@@ -98,6 +98,7 @@ export function hookZipIpc(browserWindow: BrowserWindow) {
                 } else {
                     resolve(undefined);
                 }
+                zipCreatorCache.delete(identifier);
             });
         });
     });

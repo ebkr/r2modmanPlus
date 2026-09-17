@@ -66,4 +66,12 @@ export default class StubFsProvider extends FsProvider {
     async setModifiedTime(path: string, time: Date): Promise<void> {
         throw new Error("Stub access must be mocked or spied");
     }
+
+    async emptyDirectory(directory: string): Promise<void> {
+        throw new Error("Stub access must be mocked or spied");
+    }
+
+    async removeDirectoryRecursively(directory: string): Promise<void> {
+        throw new Error("Stub access must be mocked or spied");
+    }
 }

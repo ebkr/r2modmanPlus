@@ -33,13 +33,7 @@ function closeModal() {
 }
 
 async function updateAndClose() {
-  console.debug(
-      "Updating launch type for game.",
-      `Active game in Vuex: "${store.state.activeGame.settingsIdentifier}".`,
-      `Active game in local ref: "${activeGame.value.settingsIdentifier}".`,
-  );
   const settings = await ManagerSettings.getSingleton(activeGame.value);
-  settings.logActiveGameInDexieStore();
   await settings.setLaunchType(launchOption.value);
   closeModal();
 }

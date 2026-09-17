@@ -26,24 +26,28 @@
   </description>
 
   <releases>
+    <release version="3.2.19" date="2026-08-21" />
+    <release version="3.2.18" date="2026-06-24" />
+    <release version="3.2.17" date="2026-05-22" />
+    <release version="3.2.16" date="2026-05-13" />
     <release version="3.2.15" date="2026-05-11" />
   </releases>
 
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/docs/images/gameselection.png</image>
+      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/refs/tags/v3.2.16/docs/images/gameselection.png</image>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/docs/images/installedmodview.png</image>
+      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/refs/tags/v3.2.16/docs/images/installedmodview.png</image>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/docs/images/downloadablemods.png</image>
+      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/refs/tags/v3.2.16/docs/images/downloadablemods.png</image>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/docs/images/configeditor.png</image>
+      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/refs/tags/v3.2.16/docs/images/configeditor.png</image>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/docs/images/profiles.png</image>
+      <image>https://raw.githubusercontent.com/ebkr/r2modmanPlus/refs/tags/v3.2.16/docs/images/profiles.png</image>
     </screenshot>
   </screenshots>
 </component>

@@ -94,7 +94,7 @@ watch(() => store.state.modals.downloadModalMod, async () => {
             mod.getFullName()
         );
 
-        const foundRecommendedVersion = MOD_LOADER_VARIANTS[activeGame.internalFolderName]
+        const foundRecommendedVersion = MOD_LOADER_VARIANTS[activeGame.internalFolderName]!
             .find(value => value.packageName === mod.getFullName());
 
         if (foundRecommendedVersion && foundRecommendedVersion.recommendedVersion) {
@@ -149,8 +149,8 @@ async function downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVe
     closeModal();
 
     const combos = [new ThunderstoreCombo()];
-    combos[0].setMod(tsMod);
-    combos[0].setVersion(tsVersion);
+    combos[0]!.setMod(tsMod);
+    combos[0]!.setVersion(tsVersion);
 
     await store.dispatch('download/downloadAndInstallCombos', {
         combos,

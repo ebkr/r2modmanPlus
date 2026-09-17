@@ -135,6 +135,7 @@ import Buffer from '../providers/node/buffer/buffer';
 import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { LaunchType } from '../model/real_enums/launch/LaunchType';
+import { UpdateRequestItemBody } from '../store/modules/SplashModule';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -144,7 +145,7 @@ const {
 } = useSplashComposable();
 
 const heroTitle = ref<string>('Starting r2modman');
-const heroType = ref<string>('primary');
+const heroType = ref<'primary' | 'warning'>('primary');
 const view = ref<string>('main');
 const splashText = computed(() => store.state.splash.splashText);
 
@@ -190,7 +191,6 @@ async function ensureWrapperInGameFolder(wrapperName: WrapperScript) {
         }
         const wrapperFileResult = await fetch(ProtocolProvider.getPublicAssetUrl(`/${wrapperName}`)).then(res => res.arrayBuffer());
         const wrapperFileContent = Buffer.from(wrapperFileResult);
-        await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, wrapperName), wrapperFileContent);
         await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, wrapperName), wrapperFileContent);
     }
     await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, wrapperName), 0o755);

@@ -1,3 +1,4 @@
+import { markRaw } from 'vue';
 import { ActionTree, GetterTree } from 'vuex';
 
 import { CachedMod } from './TsModsModule';
@@ -21,16 +22,22 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import FileUtils from '../../utils/FileUtils';
 import SearchUtils from '../../utils/SearchUtils';
 
-interface State {
+export interface UnsatisfiedDependencies {
+    disabledDependencies: ManifestV2[];
+    missingDependencies: string[];
+}
+
+export interface State {
     activeProfile: Profile | null;
     expandedByDefault: boolean;
     funkyMode: boolean;
     modList: ManifestV2[];
-    order?: SortNaming;
-    direction?: SortDirection;
-    disabledPosition?: SortLocalDisabledMods;
+    order?: SortNaming | undefined;
+    direction?: SortDirection | undefined;
+    disabledPosition?: SortLocalDisabledMods | undefined;
     searchQuery: string;
     dismissedUpdateAll: boolean;
+    filters: Set<'Unlinked'>;
 }
 
 /**
@@ -49,6 +56,7 @@ export default {
         disabledPosition: undefined,
         searchQuery: '',
         dismissedUpdateAll: false,
+        filters: new Set(),
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -89,6 +97,33 @@ export default {
             return state.modList;
         },
 
+        unsatisfiedDependencies(state): ReadonlyMap<string, UnsatisfiedDependencies> {
+            const modsByName = new Map(state.modList.map((mod) => [mod.getName(), mod]));
+            const unsatisfied = new Map<string, UnsatisfiedDependencies>();
+
+            for (const mod of state.modList) {
+                const disabledDependencies: ManifestV2[] = [];
+                const missingDependencies: string[] = [];
+
+                for (const dependency of mod.getDependencies()) {
+                    const dependencyName = dependency.substring(0, dependency.lastIndexOf('-'));
+                    const installed = modsByName.get(dependencyName);
+
+                    if (installed === undefined) {
+                        missingDependencies.push(dependency);
+                    } else if (!installed.isEnabled()) {
+                        disabledDependencies.push(installed);
+                    }
+                }
+
+                if (disabledDependencies.length || missingDependencies.length) {
+                    unsatisfied.set(mod.getName(), {disabledDependencies, missingDependencies});
+                }
+            }
+
+            return unsatisfied;
+        },
+
         // Swap the ManifestV2s to ThunderstoreMods as the latter knows the version number
         // of the latest version, which we need when showing how mods will be updated.
         modsWithUpdates(state, _getters, _rootState, rootGetters): ThunderstoreMod[] {
@@ -124,7 +159,8 @@ export default {
             return state.order === SortNaming.CUSTOM
                 && state.direction === SortDirection.STANDARD
                 && state.disabledPosition === SortLocalDisabledMods.CUSTOM
-                && state.searchQuery.length === 0;
+                && state.searchQuery.length === 0
+                && !state.filters.has('Unlinked');
         },
     },
 
@@ -162,7 +198,7 @@ export default {
         // Avoid calling this directly, prefer updateModList action to
         // ensure TSMM specific code gets called.
         setModList(state: State, list: ManifestV2[]) {
-            state.modList = list;
+            state.modList = list.map(markRaw);
         },
 
         setOrder(state: State, value: SortNaming) {
@@ -180,6 +216,14 @@ export default {
         setSearchQuery(state: State, value: string) {
             state.searchQuery = value.trim();
         },
+
+        scopeLocalModListToUnlinkedPackages(state: State) {
+            state.filters.add('Unlinked');
+        },
+
+        removeFilter(state: State, filter: string) {
+            state.filters.delete(filter as any);
+        }
     },
 
     actions: <ActionTree<State, RootState>>{

@@ -18,6 +18,8 @@ export type NodeFsProvider = {
     copyFolder: (from: string, to: string) => Promise<void>;
     base64FromZip: (path: string) => Promise<string>;
     setModifiedTime: (path: string, time: Date) => Promise<void>;
+    emptyDirectory: (directory: string) => Promise<void>;
+    removeDirectoryRecursively: (directory: string) => Promise<void>;
 }
 
 let implementation: () => NodeFsProvider;
@@ -50,6 +52,8 @@ const fs: NodeFsProvider = {
     copyFolder: async (...args) => getImplementation().copyFolder(...args),
     base64FromZip: async (...args) => getImplementation().base64FromZip(...args),
     setModifiedTime: async (...args) => getImplementation().setModifiedTime(...args),
+    emptyDirectory: async (...args) => getImplementation().emptyDirectory(...args),
+    removeDirectoryRecursively: async (...args) => getImplementation().removeDirectoryRecursively(...args),
 };
 
 export default fs;

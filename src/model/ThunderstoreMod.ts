@@ -4,7 +4,6 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
     private rating: number = 0;
     private owner: string = '';
     private packageUrl: string = '';
-    private dateCreated: string = '';
     private dateUpdated: string = '';
     private uuid4: string = '';
     private pinned: boolean = false;
@@ -30,7 +29,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
         return a.getDateUpdated() >= b.getDateUpdated() ? -1 : 1;
     }
 
-    public static parseFromThunderstoreData(data: any): ThunderstoreMod {
+        public static override parseFromThunderstoreData(data: any): ThunderstoreMod {
         const mod = new ThunderstoreMod();
         mod.setName(data.name);
         mod.setFullName(data.full_name);
@@ -53,6 +52,29 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
         mod.setLatestVersion(data.versions[0].version_number);
         mod.setDescription(data.versions[0].description);
         mod.setIcon(data.versions[0].icon);
+        return mod;
+    }
+
+    // Must set the same fields as parseFromThunderstoreData from the summary
+    // table's precomputed values, otherwise the online mod list desyncs.
+    public static parseFromSummary(data: any): ThunderstoreMod {
+        const mod = new ThunderstoreMod();
+        mod.setName(data.name);
+        mod.setFullName(data.full_name);
+        mod.setOwner(data.owner);
+        mod.setDateCreated(data.date_created);
+        mod.setDateUpdated(data.date_updated);
+        mod.setDeprecatedStatus(data.is_deprecated);
+        mod.setPinnedStatus(data.is_pinned);
+        mod.setRating(data.rating_score);
+        mod.setDownloadCount(data.total_downloads);
+        mod.setPackageUrl(data.package_url);
+        mod.setCategories(data.categories);
+        mod.setNsfwFlag(data.has_nsfw_content);
+        mod.setDonationLink(data.donation_link);
+        mod.setLatestVersion(data.latest_version_number);
+        mod.setDescription(data.latest_description);
+        mod.setIcon(data.latest_icon);
         return mod;
     }
 
@@ -90,14 +112,6 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
 
     public setPackageUrl(url: string) {
         this.packageUrl = url;
-    }
-
-    public getDateCreated(): string {
-        return this.dateCreated;
-    }
-
-    public setDateCreated(date: string) {
-        this.dateCreated = date;
     }
 
     public getDateUpdated(): string {

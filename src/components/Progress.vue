@@ -18,8 +18,7 @@ type ProgressProps = {
 
 const props = withDefaults(defineProps<ProgressProps>(), {
     max: 100,
-    value: undefined,
-    className: []
+    className: () => [] as string[]
 });
 </script>
 

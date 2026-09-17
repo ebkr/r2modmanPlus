@@ -26,6 +26,7 @@ export default class InteractionProviderImpl extends InteractionProvider {
     }
 
     async getEnvironmentVariables() {
-        return JSON.parse((await window.electron.getEnvironmentVariables()));
+        const envVars = await window.electron.getEnvironmentVariables();
+        return JSON.parse(envVars);
     }
 }

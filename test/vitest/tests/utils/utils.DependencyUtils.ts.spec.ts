@@ -82,10 +82,10 @@ function addMockPackage(modData: {
 
     // Use original, unsorted arguments to return the first version passed in.
     const version = new ThunderstoreVersion();
-    const versionStr = modData.versions[0].version;
+    const versionStr = modData.versions[0]!.version;
     version.setVersionNumber(new VersionNumber(versionStr));
     version.setName(`${data.full_name}-${versionStr}`);
-    version.setDependencies(modData.versions[0].dependencies || []);
+    version.setDependencies(modData.versions[0]!.dependencies || []);
     firstCombo.setVersion(version);
 
     return firstCombo;

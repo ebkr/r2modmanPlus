@@ -2,7 +2,7 @@
     <ManagerActivityBar />
     <div id="config-editor">
         <ConfigSelectionLayout v-show="editing === null" @edit="bindEdit($event)"/>
-        <ConfigEditLayout :config-file="editing" @changed="editing = null" v-if="editing"/>
+        <ConfigEditLayout :config-file="(editing as ConfigFile)" @changed="editing = null" v-if="editing"/>
     </div>
 </template>
 

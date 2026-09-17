@@ -63,3 +63,11 @@ export async function base64FromZip(path: string) {
 export async function setModifiedTime(path: string, time: Date) {
     return ipcRenderer.invoke('node:fs:setModifiedTime', path, time);
 }
+
+export async function emptyDirectory(directory: string) {
+    return ipcRenderer.invoke('node:fs:emptyDirectory', directory);
+}
+
+export async function removeDirectoryRecursively(directory: string) {
+    return ipcRenderer.invoke('node:fs:removeDirectoryRecursively', directory);
+}
