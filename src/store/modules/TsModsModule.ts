@@ -28,8 +28,8 @@ export interface State {
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date | undefined;
     thunderstoreModListUpdateError: Error|undefined;
+    thunderstoreModListUpdateProgress: number|undefined;
     thunderstoreModListUpdateStatus: string;
-    thunderstoreModListUpdateProgress: number;
 }
 
 type ProgressCallback = (progress: number) => void;
@@ -73,9 +73,10 @@ export const TsModsModule = {
         modsLastUpdated: undefined,
         /*** Error shown on UI after mod list refresh fails */
         thunderstoreModListUpdateError: undefined,
+        /*** Progress percentage of package list chunk fetch */
+        thunderstoreModListUpdateProgress: undefined,
         /*** Status shown on UI during mod list refresh */
         thunderstoreModListUpdateStatus: '',
-        thunderstoreModListUpdateProgress: 0,
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -145,6 +146,7 @@ export const TsModsModule = {
             state.mods = [];
             state.modsLastUpdated = undefined;
             state.thunderstoreModListUpdateError = undefined;
+            state.thunderstoreModListUpdateProgress = undefined;
             state.thunderstoreModListUpdateStatus = '';
         },
         clearModCache(state) {
@@ -152,6 +154,7 @@ export const TsModsModule = {
         },
         finishThunderstoreModListUpdate(state) {
             state.isThunderstoreModListUpdateInProgress = false;
+            state.thunderstoreModListUpdateProgress = undefined;
             state.thunderstoreModListUpdateStatus = '';
         },
         setActiveGameCacheStatus(state, status: string|undefined) {
@@ -173,11 +176,11 @@ export const TsModsModule = {
         setThunderstoreModListUpdateError(state, error: Error) {
             state.thunderstoreModListUpdateError = error instanceof Error ? error : new Error(error);
         },
+        setThunderstoreModListUpdateProgress(state, progress: number|undefined) {
+            state.thunderstoreModListUpdateProgress = progress;
+        },
         setThunderstoreModListUpdateStatus(state, status: string) {
             state.thunderstoreModListUpdateStatus = status;
-        },
-        setThunderstoreModListUpdateProgress(state, progress: number) {
-            state.thunderstoreModListUpdateProgress = progress;
         },
         startThunderstoreModListUpdate(state) {
             state.isThunderstoreModListUpdateInProgress = true;
@@ -228,13 +231,14 @@ export const TsModsModule = {
                 if (packageListIndex.isLatest) {
                     await dispatch('cacheIndexHash', packageListIndex.hash);
                 } else {
+                    commit('setThunderstoreModListUpdateProgress', 0);
                     await dispatch(
                         'fetchAndCachePackageListChunks',
                         {
                             packageListIndex,
                             progressCallback: (progress: number) => {
-                                commit('setThunderstoreModListUpdateStatus', 'loadingLatestModList');
                                 commit('setThunderstoreModListUpdateProgress', progress);
+                                commit('setThunderstoreModListUpdateStatus', 'loadingLatestModList');
                             },
                         },
                     );

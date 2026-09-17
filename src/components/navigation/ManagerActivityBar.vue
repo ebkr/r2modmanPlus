@@ -26,6 +26,12 @@
                 </template>
             </ActivityDropdown>
         </div>
+        <div class="activity-bar--right" v-if="modListRefreshProgress !== undefined">
+            <div class="refresh-indicator non-selectable" :title="modListRefreshStatus">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                <span>Refreshing mod list {{ modListRefreshProgress }}%</span>
+            </div>
+        </div>
     </Teleport>
 </template>
 
@@ -44,6 +50,11 @@ const { t } = useI18n();
 
 const activeGame = computed(() => store.state.activeGame);
 const profile = computed(() => store.getters['profile/activeProfile']);
+const modListRefreshProgress = computed(() => store.state.tsMods.thunderstoreModListUpdateProgress);
+const modListRefreshStatus = computed(() => {
+    const statusKey = store.state.tsMods.thunderstoreModListUpdateStatus;
+    return statusKey ? t(`translations.modListStatus.${statusKey}`, { progress: modListRefreshProgress.value }) : '';
+});
 
 const { imageSrc, setIcon } = useGameImageComposable();
 watch(() => activeGame.value.iconUrl, setIcon, { immediate: true });
@@ -56,3 +67,16 @@ function changeProfile() {
     router.push('/profiles');
 }
 </script>
+
+<style lang="scss" scoped>
+.refresh-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-secondary, #6b7280);
+    white-space: nowrap;
+}
+</style>
