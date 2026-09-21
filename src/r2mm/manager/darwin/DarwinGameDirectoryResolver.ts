@@ -110,7 +110,7 @@ export default class DarwinGameDirectoryResolver extends GameDirectoryResolverPr
             }
             const err: Error = e as Error;
             return new R2Error(
-                'An error occured whilst searching Steam library locations',
+                'An error occurred whilst searching Steam library locations',
                 err.message,
                 null
             )

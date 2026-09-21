@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
-import moment from 'moment';
 import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../../components/composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
+import { useDateLocale } from '../../../components/composables/DateLocaleComposable';
 
 const store = getStore<State>();
 
@@ -12,28 +13,32 @@ const props = defineProps<{
     searchTerm?: string;
 }>();
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Refresh online mod list',
-    'Check for new mod releases',
-]);
+const { t, d } = useI18n();
+const { getDateLocale } = useDateLocale();
+const dateLocale = getDateLocale();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.refreshOnlineModList.searchTerms');
 
 const isRefreshing = computed<boolean>(() => store.state.tsMods.isThunderstoreModListUpdateInProgress);
 const hasActiveDownloads = computed<boolean>(() => store.getters['download/activeDownloadCount'] > 0);
 
 const status = computed<string>(() => {
     if (isRefreshing.value) {
-        return store.state.tsMods.thunderstoreModListUpdateStatus || 'Refreshing...';
+        const statusKey = store.state.tsMods.thunderstoreModListUpdateStatus;
+        return statusKey
+            ? t(`translations.modListStatus.${statusKey}`, { progress: store.state.tsMods.thunderstoreModListUpdateProgress })
+            : t('translations.pages.settings.entries.refreshOnlineModList.states.refreshing');
     }
     if (store.state.tsMods.thunderstoreModListUpdateError) {
-        return `Error refreshing the mod list: ${store.state.tsMods.thunderstoreModListUpdateError.message}`;
+        return t('translations.pages.settings.entries.refreshOnlineModList.states.error', { message: store.state.tsMods.thunderstoreModListUpdateError.message });
     }
     if (hasActiveDownloads.value) {
-        return 'Refreshing the mod list is disabled while there are active downloads.';
+        return t('translations.pages.settings.entries.refreshOnlineModList.states.disabledWhileDownloading');
     }
     if (store.state.tsMods.modsLastUpdated !== undefined) {
-        return 'Cache date: ' + moment(store.state.tsMods.modsLastUpdated).format('MMMM Do YYYY, h:mm:ss a');
+        return t('translations.pages.settings.entries.refreshOnlineModList.states.cacheDate', { date: d(store.state.tsMods.modsLastUpdated!, 'long', dateLocale.value) });
     }
-    return 'No API information available';
+    return t('translations.pages.settings.entries.refreshOnlineModList.states.noApiInfo');
 });
 
 async function refresh() {
@@ -46,9 +51,9 @@ async function refresh() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Refresh online mod list</template>
+        <template #title>{{ t('translations.pages.settings.entries.refreshOnlineModList.title') }}</template>
         <template #description>
-            Check for any new mod releases. {{ status }}
+            {{ t('translations.pages.settings.entries.refreshOnlineModList.description', { status }) }}
         </template>
         <button
             class="button"
@@ -56,7 +61,7 @@ async function refresh() {
             :disabled="isRefreshing || hasActiveDownloads"
             @click="refresh"
         >
-            Refresh
+            {{ t('translations.pages.settings.entries.refreshOnlineModList.action') }}
         </button>
     </SettingsViewWrapper>
 </template>

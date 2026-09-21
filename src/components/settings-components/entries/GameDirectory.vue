@@ -14,6 +14,7 @@ import AppWindow from '../../../providers/node/app/app_window';
 import os from '../../../providers/node/os/os';
 import R2Error from '../../../model/errors/R2Error';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 import ManagerInformation from '../../../_managerinf/ManagerInformation';
 
 const store = getStore<State>();
@@ -25,20 +26,17 @@ const props = defineProps<{
 const activeGame = computed<Game>(() => store.state.activeGame);
 const settings = ref<ManagerSettings | null>(null);
 
-const gameDirectory = ref<string>('Not set');
+const gameDirectoryPath = ref<string>('');
+const gameDirectory = computed<string>(() => gameDirectoryPath.value || t('translations.pages.settings.actions.notSet'));
 
 function syncGameDirectory() {
-    gameDirectory.value = settings.value?.getContext().gameSpecific.gameDirectory || 'Not set';
+    gameDirectoryPath.value = settings.value?.getContext().gameSpecific.gameDirectory || '';
 }
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
-    `${activeGame.value.displayName} folder`,
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.gameDirectory.searchTerms', () => [
     gameDirectory.value,
-    'Change',
-    'Browse',
-    "Game",
-    "Directory",
-    "Directories"
 ]);
 
 onMounted(async () => {
@@ -62,7 +60,7 @@ function changeGameInstallDirectory() {
 function changeGameInstallDirectoryGeneral() {
     const ror2Directory: string = settings.value!.getContext().gameSpecific.gameDirectory || computeDefaultInstallDirectory();
     InteractionProvider.instance.selectFile({
-        title: `Locate ${activeGame.value.displayName} Executable`,
+        title: t('translations.pages.manager.actions.locateGameExecutable', { gameName: activeGame.value.displayName }),
         // Lazy reduce. Assume Linux name and Windows name are identical besides extension.
         // Should fix if needed, although unlikely.
         filters: (activeGame.value.exeName.map(value => {
@@ -76,7 +74,7 @@ function changeGameInstallDirectoryGeneral() {
             return previousValue;
         })),
         defaultPath: ror2Directory,
-        buttonLabel: 'Select Executable'
+        buttonLabel: t('translations.pages.manager.actions.selectExecutable')
     }).then(async files => {
         if (files.length === 1) {
             try {
@@ -98,10 +96,10 @@ function changeGameInstallDirectoryGeneral() {
 function changeGameInstallDirectoryGamePass() {
     const ror2Directory: string = settings.value!.getContext().gameSpecific.gameDirectory || computeDefaultInstallDirectory();
     InteractionProvider.instance.selectFile({
-        title: `Locate gamelaunchhelper Executable`,
+        title: t('translations.pages.manager.actions.locateGameLaunchHelper'),
         filters: [{ name: "gamelaunchhelper", extensions: ["exe"] }],
         defaultPath: ror2Directory,
-        buttonLabel: 'Select Executable'
+        buttonLabel: t('translations.pages.manager.actions.selectExecutable')
     }).then(async files => {
         if (files.length === 1) {
             try {
@@ -150,14 +148,20 @@ function openHelpLink() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>{{ activeGame.displayName }} folder</template>
+        <template #title>{{ t('translations.pages.settings.entries.gameDirectory.title', { gameName: activeGame.displayName }) }}</template>
         <template #description>
             <p>
-                The game directory is required to place the appropriate files correctly.
+                {{ t('translations.pages.settings.entries.gameDirectory.description') }}
             </p>
-            <p v-if="StorePlatform[activeGame.activePlatform.storePlatform] === StorePlatform.steam">
-                <code class="code">{{ activeGame.displayName }}</code> will launch without mods if this is not set appropriately.
-            </p>
+            <i18n-t
+                tag="p"
+                keypath="translations.pages.settings.entries.gameDirectory.warning"
+                v-if="StorePlatform[activeGame.activePlatform.storePlatform] === StorePlatform.steam"
+            >
+                <template v-slot:gameName>
+                    <code class="code">{{ activeGame.displayName }}</code>
+                </template>
+            </i18n-t>
         </template>
         <div class="setting-column">
             <div class="setting-row">
@@ -167,10 +171,10 @@ function openHelpLink() {
                     :value="gameDirectory"
                     readonly
                 />
-                <button class="button" @click="changeGameInstallDirectory">Change</button>
-                <button class="button" @click="browseDirectory">Browse</button>
+                <button class="button" @click="changeGameInstallDirectory">{{ t('translations.pages.settings.actions.change') }}</button>
+                <button class="button" @click="browseDirectory">{{ t('translations.pages.settings.actions.browse') }}</button>
             </div>
-            <a href="#" class="help-link" @click.prevent.stop="openHelpLink">I'm not sure what this should be</a>
+            <a href="#" class="help-link" @click.prevent.stop="openHelpLink">{{ t('translations.pages.settings.entries.gameDirectory.unsure') }}</a>
         </div>
     </SettingsViewWrapper>
 </template>

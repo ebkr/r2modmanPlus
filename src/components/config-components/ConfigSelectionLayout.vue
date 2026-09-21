@@ -1,16 +1,13 @@
 <template>
     <div class="config-editor-selection-body">
         <Hero
-            title="Config editor"
-            subtitle="Select a configuration file to edit"
+            :title="t('translations.pages.configEditor.hero.title')"
+            :subtitle="t('translations.pages.configEditor.hero.subtitle')"
             hero-type="primary"
         />
         <div class="notification is-warning is-square">
             <div class="container">
-                <p>
-                    Configuration files are generated after launching the game, with the mod installed, at least
-                    once.
-                </p>
+                <p>{{ t('translations.pages.configEditor.warning.content') }}</p>
             </div>
         </div>
         <div class="sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding">
@@ -18,32 +15,34 @@
                 <div class='card-header-title'>
 
                     <div class="input-group input-group--flex margin-right">
-                        <label for="config-search" class="non-selectable">Search</label>
+                        <label for="config-search" class="non-selectable">{{ t('translations.pages.configEditor.actions.search.label') }}</label>
                         <input
                             v-model="filterText"
                             id="config-search"
                             class="input margin-right"
                             type="text"
-                            placeholder="Search for config files"
+                            :placeholder="t('translations.pages.configEditor.actions.search.placeholder')"
                             autocomplete="off"
                         />
                     </div>
 
                     <div class="input-group margin-right">
-                        <label for="config-sort-order" class="non-selectable">Sort</label>
+                        <label for="config-sort-order" class="non-selectable">{{ t('translations.pages.configEditor.actions.sort.label') }}</label>
                         <select id="config-sort-order"
                                 class="select select--content-spacing margin-right margin-right--half-width"
                                 v-model="sortOrder">
-                            <option v-for="(key, index) in getSortOrderOptions()"
-                                    :key="`${index}-deprecated-position-option`">
-                                {{ key }}
+                            <option v-for="(value, key) in SortConfigFile"
+                                    :value="value"
+                                    :key="`config-sort-order--${key}`">
+                                {{ t(`translations.enums.sortConfigFile.${key}`) }}
                             </option>
                         </select>
                         <select id="config-sort-direction" class="select select--content-spacing"
                                 v-model="sortDirection">
-                            <option v-for="(key, index) in getSortDirectionOptions()"
-                                    :key="`${index}-deprecated-position-option`">
-                                {{ key }}
+                            <option v-for="(value, key) in SortDirection"
+                                    :value="value"
+                                    :key="`config-sort-direction--${key}`">
+                                {{ t(`translations.enums.sortDirection.${key}`) }}
                             </option>
                         </select>
                     </div>
@@ -59,11 +58,11 @@
                     <template v-slot:title>
                         <span>{{ file.getName() }}</span>
                     </template>
-                    <button class='button' @click="editConfig(file)">Edit Config</button>
-                    <button class='button' @click="openConfig(file)">Open File</button>
+                    <button class='button' @click="editConfig(file)">{{ t('translations.pages.configEditor.actions.editConfig') }}</button>
+                    <button class='button' @click="openConfig(file)">{{ t('translations.pages.configEditor.actions.openFile') }}</button>
                     <button class='button' @click="deleteConfig(file)">
                         <i class="fas fa-trash margin-right margin-right--half-width"/>
-                        Delete
+                        {{ t('translations.pages.configEditor.actions.delete') }}
                     </button>
                 </ExpandableCard>
             </div>
@@ -73,7 +72,7 @@
                 <div class="fa-3x">
                     <i class="fas fa-circle-notch fa-spin"></i>
                 </div>
-                <p>Looking for config files</p>
+                <p>{{ t('translations.pages.configEditor.loading') }}</p>
             </div>
         </div>
     </div>
@@ -95,8 +94,11 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import path from '../../providers/node/path/path';
+import { useI18n } from 'vue-i18n';
+import EnumResolver from '../../model/enums/_EnumResolver';
 
 const store = getStore<State>();
+const { t, d, messages, locale } = useI18n();
 
 const emits = defineEmits<{
     (e: 'edit', file: ConfigFile): void;
@@ -118,14 +120,6 @@ function updateShownConfigFiles(configFiles: ConfigFile[]) {
 watch(filterText, () => {
     updateShownConfigFiles(configFiles.value as ConfigFile[]);
 });
-
-function getSortOrderOptions() {
-    return Object.values(SortConfigFile);
-}
-
-function getSortDirectionOptions() {
-    return Object.values(SortDirection);
-}
 
 const sortedConfigFiles = computed(() => {
     return ConfigSort.sort(shownConfigFiles.value as ConfigFile[], sortOrder.value, sortDirection.value);

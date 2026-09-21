@@ -3,22 +3,22 @@
         <div class="game-card">
             <div class="game-card__image">
                 <template v-if="activeTab === GameInstanceType.GAME">
-                    <img :src="imageSrc" alt="Game Logo" class="game-card__thumbnail"/>
+                    <img :src="imageSrc" :alt="t('translations.pages.gameSelection.cardView.imageAltText')" class="game-card__thumbnail"/>
                 </template>
                 <template v-else>
                     <div class="game-card__placeholder">{{ game.displayName }}</div>
                 </template>
             </div>
             <div class="game-card__new-badge" v-if="isNew">
-                <i class="fas fa-bolt game-card__new-badge-icon"></i> New
+                <i class="fas fa-bolt game-card__new-badge-icon"></i> {{ t('translations.pages.gameSelection.cardView.newBadge') }}
             </div>
             <div class="game-card__overlay">
                 <div class="game-card__overlay-spacer"></div>
                 <div class="game-card__overlay-body">
                     <button class="button is-info" @click="emit('select', game)">
-                        Select {{ activeTab.toLowerCase() }}
+                        {{ t('translations.pages.gameSelection.actions.select.' + activeTab) }}
                     </button>
-                    <button class="button" @click="emit('set-default', game)">Set as default</button>
+                    <button class="button" @click="emit('set-default', game)">{{ t('translations.pages.gameSelection.actions.setAsDefault') }}</button>
                 </div>
                 <div class="game-card__overlay-spacer"></div>
             </div>
@@ -38,6 +38,9 @@ import { watch } from 'vue';
 import Game from '../../model/game/Game';
 import { GameInstanceType } from '../../model/schema/ThunderstoreSchema';
 import { useGameImageComposable } from '../composables/GameImageComposable';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 type Props = {
     game: Game;

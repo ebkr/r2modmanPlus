@@ -11,6 +11,7 @@ import Game from '../../../model/game/Game';
 import InteractionProvider from '../../../providers/ror2/system/InteractionProvider';
 import R2Error from '../../../model/errors/R2Error';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
 
@@ -18,22 +19,19 @@ const props = defineProps<{
     searchTerm?: string;
 }>();
 
-const dataDirectory = ref<string>(PathResolver.ROOT || 'Not set');
+const dataDirectory = computed<string>(() => PathResolver.ROOT || t('translations.pages.settings.actions.notSet'));
 const activeGame = computed<Game>(() => store.state.activeGame);
 const settings = ref<ManagerSettings | null>(null);
 
 const profileDirectory = computed<string>(() =>
-    store.getters['profile/activeProfile']?.getProfilePath() || 'Not set'
+    store.getters['profile/activeProfile']?.getProfilePath() || t('translations.pages.settings.actions.notSet')
 );
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
-    'Data and profile directories',
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.dataDirectory.searchTerms', () => [
     dataDirectory.value,
     profileDirectory.value,
-    'Change',
-    'Browse',
-    "Folder",
-    "Directory"
 ]);
 
 onMounted(async () => {
@@ -78,32 +76,32 @@ function browseProfileFolder() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Data and profile folders</template>
+        <template #title>{{ t('translations.pages.settings.entries.dataDirectory.title') }}</template>
         <template #description>
-            <p>The folder where mods are stored for all games and profiles.</p>
-            <p>Changing the data folder does not move or delete existing profiles. They will however remain in the old folder.</p>
+            <p>{{ t('translations.pages.settings.entries.dataDirectory.description') }}</p>
+            <p>{{ t('translations.pages.settings.entries.dataDirectory.warning') }}</p>
         </template>
         <div class="setting-column">
             <div class="setting-row">
-                <label class="setting-label">Data folder</label>
+                <label class="setting-label">{{ t('translations.pages.settings.entries.dataDirectory.dataFolder') }}</label>
                 <input
                     class="input setting-input"
                     type="text"
                     :value="dataDirectory"
                     readonly
                 />
-                <button class="button" @click="changeDataFolder">Change</button>
-                <button class="button" @click="browseDataFolder">Browse</button>
+                <button class="button" @click="changeDataFolder">{{ t('translations.pages.settings.actions.change') }}</button>
+                <button class="button" @click="browseDataFolder">{{ t('translations.pages.settings.actions.browse') }}</button>
             </div>
             <div class="setting-row">
-                <label class="setting-label">Profile folder</label>
+                <label class="setting-label">{{ t('translations.pages.settings.entries.dataDirectory.profileFolder') }}</label>
                 <input
                     class="input setting-input"
                     type="text"
                     :value="profileDirectory"
                     readonly
                 />
-                <button class="button" @click="browseProfileFolder">Browse</button>
+                <button class="button" @click="browseProfileFolder">{{ t('translations.pages.settings.actions.browse') }}</button>
             </div>
         </div>
     </SettingsViewWrapper>

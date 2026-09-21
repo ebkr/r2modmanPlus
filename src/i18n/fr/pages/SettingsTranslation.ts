@@ -1,0 +1,305 @@
+import {SettingsMessageFormat} from "../../../i18n/base/pages/SettingsMessageFormat";
+
+export const SettingsTranslation: SettingsMessageFormat = {
+    hero: {
+        title: 'Paramètres',
+        subtitle: 'Options avancées pour {appName} : {version}',
+    },
+    nav: {
+        label: 'Sections',
+        categories: {
+            all: 'Tous',
+            directories: 'Dossiers',
+            profile: 'Profil',
+            appearance: 'Apparence',
+            debugging: 'Débogage',
+            modpacks: 'Packs de mods',
+            other: 'Autres',
+        }
+    },
+    search: {
+        label: 'Recherche',
+        placeholder: 'Rechercher un paramètre',
+    },
+    actions: {
+        change: 'Modifier',
+        browse: 'Parcourir',
+        notSet: 'Non défini',
+    },
+    entries: {
+        changeLaunchBehaviour: {
+            title: 'Modifier le comportement de lancement',
+            description: 'Sélectionnez un comportement de lancement spécifique. Vous pouvez indiquer au gestionnaire qu\'un jeu utilise explicitement Natif ou Proton.',
+            current: 'Le comportement de lancement actuel est défini sur :',
+            searchTerms: [
+                'Modifier le comportement de lancement',
+                'Définir le mode de lancement',
+                'Proton',
+                'Natif',
+                'Auto',
+            ],
+        },
+        cleanOnlineModListCache: {
+            title: 'Nettoyer le cache de la liste des mods en ligne',
+            description: 'Supprime la copie locale de la liste des mods et en récupère une nouvelle.',
+            action: 'Nettoyer la liste des mods en ligne',
+            searchTerms: [
+                'Nettoyer le cache de la liste des mods en ligne',
+                'Réinitialiser',
+            ],
+        },
+        copyLogToClipboard: {
+            title: 'Copier le journal dans le presse-papiers',
+            description: 'Copier le contenu du fichier journal dans votre presse-papiers, avec un formatage Discord.',
+            searchTerms: [
+                'Copier le contenu du fichier journal dans le presse-papiers',
+                'LogOutput',
+                'LogOutput.txt',
+                'Discord',
+            ],
+        },
+        copyTroubleshooting: {
+            title: 'Copier les informations de dépannage dans le presse-papiers',
+            description: 'Copier les paramètres et autres informations dans votre presse-papiers, avec un formatage Discord. Partagez-les lorsque vous demandez de l\'aide.',
+            searchTerms: [
+                'Copier les informations de dépannage dans le presse-papiers',
+                'Discord',
+                'Assistance',
+                'Aide',
+                'Système',
+            ],
+        },
+        dataDirectory: {
+            title: 'Dossiers de données et de profil',
+            description: 'Le dossier où les mods sont stockés pour tous les jeux et profils.',
+            warning: 'Modifier le dossier de données ne déplace ni ne supprime les profils existants. Ils resteront toutefois dans l\'ancien dossier.',
+            dataFolder: 'Dossier de données',
+            profileFolder: 'Dossier du profil',
+            dialog: {
+                title: 'Sélectionner un nouveau dossier pour stocker les données de {appName}',
+                button: 'Sélectionner le dossier',
+            },
+            searchTerms: [
+                'Dossiers de données et de profil',
+                'Modifier',
+                'Parcourir',
+                'Dossier',
+                'Répertoire',
+                'Emplacement',
+            ],
+        },
+        downloadCache: {
+            title: 'Cache de téléchargement',
+            description: 'Lorsque cette option est activée, les téléchargements sont ignorés si une copie se trouve déjà dans le cache.',
+            enabled: 'Activé (recommandé)',
+            disabled: 'Désactivé',
+            searchTerms: [
+                'Activer le cache de téléchargement',
+                'Cache de téléchargement',
+                'Basculer',
+            ],
+        },
+        expandCards: {
+            title: 'Développer les cartes par défaut',
+            description: 'Afficher les cartes de mods entièrement développées plutôt que réduites à l\'ouverture d\'une liste de mods.',
+            expanded: 'Développées',
+            collapsed: 'Réduites',
+            searchTerms: [
+                'Développer les cartes par défaut',
+                'Basculer',
+                'Réduites',
+                'Développées',
+            ],
+        },
+        exportProfile: {
+            title: 'Exporter le profil',
+            description: 'Exportez votre liste de mods et vos configurations pour les partager avec vos amis et obtenir un profil identique rapidement et facilement.',
+            asFile: 'En tant que fichier',
+            asCode: 'En tant que code',
+            dialog: {
+                title: "Sélectionner le dossier d'exportation du profil",
+                button: 'Sélectionner le dossier',
+            },
+            searchTerms: [
+                'Exporter le profil',
+                'En tant que fichier',
+                'En tant que code',
+            ],
+        },
+        funkyMode: {
+            title: 'Activer le mode funky',
+            description: 'C\'est le mode funky.',
+            enabled: 'Activé',
+            disabled: 'Désactivé',
+            searchTerms: [
+                'Activer le mode funky',
+                'Basculer',
+                'Désactiver',
+            ],
+        },
+        gameDirectory: {
+            title: 'Dossier de {gameName}',
+            description: 'Le dossier du jeu est nécessaire pour placer correctement les fichiers.',
+            warning: '{gameName} se lancera sans mods si ce dossier n\'est pas correctement défini.',
+            unsure: 'Je ne sais pas quoi indiquer ici',
+            searchTerms: [
+                'Dossier de {gameName}',
+                'Modifier',
+                'Parcourir',
+                'Jeu',
+                'Répertoire',
+                'Dossiers',
+            ],
+        },
+        importLocalMod: {
+            title: 'Importer un mod local',
+            description: 'Installer un mod hors ligne depuis vos fichiers. Tous les mods ne peuvent pas être installés localement.',
+            searchTerms: [
+                'Importer un mod local',
+                'Installer hors ligne',
+                'Importer',
+            ],
+        },
+        launchArguments: {
+            title: 'Arguments de lancement',
+            description: 'Fournir des arguments personnalisés ajoutés au démarrage du jeu.',
+            action: 'Définir les arguments de lancement',
+            searchTerms: [
+                'Définir des arguments de lancement personnalisés',
+                'Paramètres de lancement',
+            ],
+        },
+        modCache: {
+            title: 'Cache des mods',
+            description: 'Les mods téléchargés sont conservés dans un cache pour ne pas avoir à les télécharger à nouveau.',
+            stillWritten: 'Les mods seront tout de même écrits dans le cache et continueront d\'occuper de l\'espace disque.',
+            action: 'Nettoyer le cache',
+            actionDescription: 'Supprime les mods en cache qui ne sont dans aucun profil afin de libérer de l\'espace.',
+            enabled: 'Activé',
+            disabled: 'Désactivé',
+            enabledHint: 'Réutilise les téléchargements en cache (recommandé)',
+            disabledHint: 'Ignore le cache lors du téléchargement des mods. Télécharge à nouveau à chaque fois.',
+            searchTerms: [
+                'Cache des mods',
+                'Téléchargements',
+                'Réutiliser les téléchargements en cache',
+                'Basculer',
+                'Nettoyer le cache des mods',
+                'Libérer de l\'espace',
+                'Vider',
+                'Stockage',
+            ],
+        },
+        modState: {
+            title: 'Modifier l\'état des mods',
+            description: 'Activer ou désactiver tous les mods de votre profil.',
+            enableAll: 'Activer tous les mods',
+            disableAll: 'Désactiver tous les mods',
+            allEnabled: 'Tous vos mods sont actuellement activés.',
+            allDisabled: 'Tous vos mods sont actuellement désactivés.',
+            someDisabled: 'Vous avez 1 mod désactivé. | Vous avez {count} mods désactivés.',
+            searchTerms: [
+                'Modifier l\'état des mods',
+                'Basculer',
+                'Activer tous les mods',
+                'Désactiver tous les mods',
+            ],
+        },
+        onlineModList: {
+            title: 'Liste des mods en ligne',
+            description: 'Vérifier les nouvelles versions de mods ou supprimer la copie locale.',
+            refresh: 'Actualiser',
+            deleteCopy: 'Supprimer la copie',
+            states: {
+                refreshing: 'Actualisation…',
+                error: 'Erreur lors de l\'actualisation de la liste des mods : {message}',
+                disabledWhileDownloading: 'L\'actualisation de la liste des mods est désactivée tant que des téléchargements sont en cours.',
+                lastUpdated: 'Dernière mise à jour le : {date}',
+                noApiInfo: 'Aucune information API disponible',
+            },
+            searchTerms: [
+                'Actualiser la liste des mods en ligne',
+                'Vérifier les nouvelles versions de mods',
+                'Nettoyer le cache de la liste des mods',
+                'Réinitialiser',
+            ],
+        },
+        refreshOnlineModList: {
+            title: 'Actualiser la liste des mods en ligne',
+            description: 'Vérifier les nouvelles versions de mods. {status}',
+            action: 'Actualiser',
+            states: {
+                refreshing: 'Actualisation…',
+                error: 'Erreur lors de l\'actualisation de la liste des mods : {message}',
+                disabledWhileDownloading: 'L\'actualisation de la liste des mods est désactivée tant que des téléchargements sont en cours.',
+                cacheDate: 'Date du cache : {date}',
+                noApiInfo: 'Aucune information API disponible',
+            },
+            searchTerms: [
+                'Actualiser la liste des mods en ligne',
+                'Vérifier les nouvelles versions de mods',
+                'Mods Thunderstore',
+            ],
+        },
+        resetGameInstallation: {
+            title: 'Réinitialiser l\'installation de {gameName}',
+            description: 'Résoudre les problèmes causés par des fichiers corrompus ou des fichiers restants des tentatives de modding manuel. Tout le contenu du dossier {folderName} sera supprimé et les fichiers seront vérifiés via Steam.',
+            action: 'Réinitialiser l\'installation',
+            searchTerms: [
+                'Réinitialiser l\'installation de {gameName}',
+                'Valider les fichiers',
+                'Vérifier l\'intégrité',
+                'Corrompus',
+                'Fichier',
+            ],
+        },
+        showDependencyStrings: {
+            title: 'Afficher les chaînes de dépendance',
+            description: 'Afficher la liste des mods installés avec leurs chaînes de version, telles qu\'utilisées dans le tableau dependencies d\'un fichier manifest.json. Affiche les chaînes de dépendance pour {modCount} mod(s).',
+            searchTerms: [
+                'Afficher les chaînes de dépendance',
+            ],
+        },
+        steamDirectory: {
+            title: 'Dossier Steam',
+            description: 'Le dossier Steam contenant l\'exécutable Steam.',
+            value: 'C\'est ainsi que {appName} lancera le jeu.',
+            searchTerms: [
+                'Modifier le dossier Steam',
+                'Répertoire',
+                'Parcourir',
+                'Dossiers',
+            ],
+        },
+        theme: {
+            title: 'Thème',
+            description: 'Choisissez entre une apparence claire ou sombre pour le gestionnaire.',
+            light: 'Clair',
+            dark: 'Sombre',
+            searchTerms: [
+                'Thème',
+                'Clair',
+                'Sombre',
+                'Apparence',
+            ],
+        },
+        toggleCdn: {
+            title: 'Changer le CDN Thunderstore préféré',
+            description: 'Changer le CDN jusqu\'au redémarrage de l\'application. Cela pourrait contourner les problèmes de téléchargement des mods.',
+            action: 'Changer de CDN',
+            current: 'Actuel : {label}',
+            searchTerms: [
+                'Changer le CDN Thunderstore préféré',
+                'Modifier',
+            ],
+        },
+        updateAllMods: {
+            title: 'Mettre à jour tous les mods',
+            description: 'Mettre rapidement à jour tous les mods installés vers leurs dernières versions. {status}',
+            status: '1 mod a une mise à jour disponible. | {count} mods ont une mise à jour disponible.',
+            searchTerms: [
+                'Mettre à jour tous les mods',
+            ],
+        },
+    }
+};

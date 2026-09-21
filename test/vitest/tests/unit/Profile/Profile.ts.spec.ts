@@ -9,7 +9,7 @@ import PathResolver from '../../../../../src/r2mm/manager/PathResolver';
 import { beforeAll, describe, expect, test } from 'vitest';
 import { providePathImplementation } from '../../../../../src/providers/node/path/path';
 import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
-import { updateEcosystemReactives } from "src/r2mm/ecosystem/EcosystemSchema";
+import { updateEcosystemReactives } from "../../../../../src/r2mm/ecosystem/EcosystemSchema";
 
 
 class ProfileProviderImpl extends ProfileProvider {

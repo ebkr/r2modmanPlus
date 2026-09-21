@@ -4,6 +4,7 @@ import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
 
@@ -13,10 +14,9 @@ const props = defineProps<{
 
 const modCount = computed<number>(() => store.state.profile.modList.length);
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, [
-    'Show dependency strings',
-    'Dependency',
-]);
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.showDependencyStrings.searchTerms');
 
 function showDependencyStrings() {
     store.commit('openDependencyStringsModal');
@@ -25,11 +25,10 @@ function showDependencyStrings() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Show dependency strings</template>
+        <template #title>{{ t('translations.pages.settings.entries.showDependencyStrings.title') }}</template>
         <template #description>
-            View a list of installed mods with their version strings, as used inside the dependencies array of a
-            manifest.json file. Shows dependency strings for {{ modCount }} mod(s).
+            {{ t('translations.pages.settings.entries.showDependencyStrings.description', { modCount }) }}
         </template>
-        <button class="button" @click="showDependencyStrings">Show dependency strings</button>
+        <button class="button" @click="showDependencyStrings">{{ t('translations.pages.settings.entries.showDependencyStrings.title') }}</button>
     </SettingsViewWrapper>
 </template>

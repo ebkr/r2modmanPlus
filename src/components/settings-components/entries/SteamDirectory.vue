@@ -6,6 +6,7 @@ import { State } from '../../../store';
 import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 import SettingsViewWrapper from '../SettingsViewWrapper.vue';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
+import { useI18n } from 'vue-i18n';
 import InteractionProvider from '../../../providers/ror2/system/InteractionProvider';
 import path from '../../../providers/node/path/path';
 import FsProvider from '../../../providers/generic/file/FsProvider';
@@ -25,18 +26,17 @@ const appName = ManagerInformation.APP_NAME;
 const activeGame = computed<Game>(() => store.state.activeGame);
 const settings = ref<ManagerSettings | null>(null);
 
-const steamDirectory = ref<string>('Not set');
+const steamDirectoryPath = ref<string>('');
+const steamDirectory = computed<string>(() => steamDirectoryPath.value || t('translations.pages.settings.actions.notSet'));
 
 function syncSteamDirectory() {
-    steamDirectory.value = settings.value?.getContext().global.steamDirectory || 'Not set';
+    steamDirectoryPath.value = settings.value?.getContext().global.steamDirectory || '';
 }
 
-const { isVisible } = useSettingSearch(() => props.searchTerm, () => [
-    'Change Steam folder',
-    'Change Steam directory',
+const { t } = useI18n();
+
+const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.steamDirectory.searchTerms', () => [
     steamDirectory.value,
-    'Browse',
-    'Directories',
 ]);
 
 onMounted(async () => {
@@ -81,10 +81,10 @@ async function checkIfSteamExecutableIsValid(file: string): Promise<boolean> {
 function changeSteamDirectory() {
     const steamDir: string = settings.value!.getContext().global.steamDirectory || computeDefaultSteamDirectory();
     InteractionProvider.instance.selectFile({
-        title: 'Locate Steam Executable',
+        title: t('translations.pages.manager.actions.locateSteamExecutable'),
         defaultPath: steamDir,
         filters: [{ name: "steam", extensions: ["exe", "sh", "app"] }],
-        buttonLabel: 'Select Executable'
+        buttonLabel: t('translations.pages.manager.actions.selectExecutable')
     }).then(async files => {
         if (files.length === 1) {
             try {
@@ -112,10 +112,10 @@ function browseDirectory() {
 
 <template>
     <SettingsViewWrapper v-show="isVisible">
-        <template #title>Steam folder</template>
+        <template #title>{{ t('translations.pages.settings.entries.steamDirectory.title') }}</template>
         <template #description>
-            <p>The Steam folder containing the Steam executable.</p>
-            <p>This is how {{ appName }} will launch the game.</p>
+            <p>{{ t('translations.pages.settings.entries.steamDirectory.description') }}</p>
+            <p>{{ t('translations.pages.settings.entries.steamDirectory.value', { appName }) }}</p>
         </template>
         <div class="setting-column">
             <div class="setting-row">
@@ -125,8 +125,8 @@ function browseDirectory() {
                     :value="steamDirectory"
                     readonly
                 />
-                <button class="button" @click="changeSteamDirectory">Change</button>
-                <button class="button" @click="browseDirectory">Browse</button>
+                <button class="button" @click="changeSteamDirectory">{{ t('translations.pages.settings.actions.change') }}</button>
+                <button class="button" @click="browseDirectory">{{ t('translations.pages.settings.actions.browse') }}</button>
             </div>
         </div>
     </SettingsViewWrapper>
