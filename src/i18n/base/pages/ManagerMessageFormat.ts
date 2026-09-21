@@ -24,6 +24,7 @@ export type ManagerMessageFormat = {
             exportProfile: string;
             exportToCode: string;
             exportToFile: string;
+            refreshingModList: string;
         }
     },
     installed: {
