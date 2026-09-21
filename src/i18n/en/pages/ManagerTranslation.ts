@@ -26,6 +26,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
             exportProfile: 'Export profile',
             exportToCode: 'Export to code',
             exportToFile: 'Export to file',
+            refreshingModList: 'Refreshing mod list: {progress}%',
         }
     },
     installed: {

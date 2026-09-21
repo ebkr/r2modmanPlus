@@ -26,11 +26,11 @@
                 </template>
             </ActivityDropdown>
         </div>
-        <div class="activity-bar--right" v-if="modListRefreshProgress !== undefined">
-            <div class="refresh-indicator non-selectable" :title="modListRefreshStatus">
-                <i class="fas fa-circle-notch fa-spin"></i>
-                <span>Refreshing mod list {{ modListRefreshProgress }}%</span>
-            </div>
+    </Teleport>
+    <Teleport to="#activity-bar__right">
+        <div class="refresh-indicator non-selectable" v-if="modListRefreshProgress !== undefined" :title="modListRefreshStatus">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>{{ t('translations.pages.manager.navigation.activityBar.refreshingModList', { progress: modListRefreshProgress }) }}</span>
         </div>
     </Teleport>
 </template>
