@@ -18,7 +18,7 @@ export const EnumTranslation: EnumMessageFormat = {
         LAST: 'En dernier',
     },
     sortingStyle: {
-        DEFAULT: 'Par défaut',
+        RELEVANCE: 'Pertinence',
         LAST_UPDATED: 'Dernière mise à jour',
         ALPHABETICAL: 'Alphabétique',
         DOWNLOADS: 'Nombre de téléchargements',

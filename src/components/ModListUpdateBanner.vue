@@ -30,7 +30,7 @@ function openErrorModal() {
     <div v-if="!isModListLoaded" id="mod-list-update-banner" class="margin-bottom">
         <div class="notification is-warning margin-right">
             <span v-if="isUpdateInProgress">
-                {{ t(`translations.modListStatus.${store.state.tsMods.thunderstoreModListUpdateStatus}`) }}
+                {{ t(`translations.modListStatus.${store.state.tsMods.thunderstoreModListUpdateStatus}`, { progress: store.state.tsMods.thunderstoreModListUpdateProgress }) }}
             </span>
             <span v-else-if="updateError">
                 {{ t('translations.banners.modListUpdate.error') }}

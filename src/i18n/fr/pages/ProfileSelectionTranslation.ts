@@ -9,7 +9,7 @@ export const ProfileSelectionTranslation: ProfileSelectionMessageFormat = {
         backToGameSelection: 'Retour à la sélection du jeu',
         select: 'Sélectionner',
         rename: 'Renommer',
-        create: 'Créer un nouveau',
+        create: 'Créer',
         import: 'Importer / Mettre à jour',
         delete: 'Supprimer'
     },

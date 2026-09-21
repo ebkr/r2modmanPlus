@@ -1,36 +1,17 @@
+import SortingStyle from "../../../model/enums/SortingStyle";
+import { LaunchType } from "../../../model/real_enums/launch/LaunchType";
+import { SortConfigFile } from "../../../model/real_enums/sort/SortConfigFile";
+import { SortDirection } from "../../../model/real_enums/sort/SortDirection";
 import {SortLocalDisabledMods} from "../../../model/real_enums/sort/SortLocalDisabledMods";
+import { SortNaming } from "../../../model/real_enums/sort/SortNaming";
+
+
 
 export type EnumMessageFormat = {
-    sortNaming: {
-        CUSTOM: string;
-        MOD_NAME: string;
-        AUTHOR: string;
-        INSTALL_DATE: string;
-    },
-    sortDirection: {
-        STANDARD: string;
-        REVERSE: string;
-    },
-    sortLocalDisabledMods: {
-        NONE: string;
-        CUSTOM: string;
-        FIRST: string;
-        LAST: string;
-    },
-    sortingStyle: {
-        DEFAULT: string;
-        LAST_UPDATED: string;
-        ALPHABETICAL: string;
-        DOWNLOADS: string;
-        RATING: string;
-    },
-    launchType: {
-        AUTO: string;
-        NATIVE: string;
-        PROTON: string;
-    },
-    sortConfigFile: {
-        NAME: string;
-        LAST_UPDATED: string;
-    }
+    sortNaming: { [key in keyof typeof SortNaming]: string; },
+    sortDirection: { [key in keyof typeof SortDirection]: string; },
+    sortLocalDisabledMods: { [key in keyof typeof SortLocalDisabledMods]: string; },
+    sortingStyle: { [key in keyof typeof SortingStyle]: string; },
+    launchType: { [key in keyof typeof LaunchType]: string; },
+    sortConfigFile: { [key in keyof typeof SortConfigFile]: string; }
 }

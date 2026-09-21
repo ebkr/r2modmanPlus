@@ -2,6 +2,8 @@ import { computed, toValue, type ComputedRef, type MaybeRefOrGetter } from 'vue'
 import { useI18n } from 'vue-i18n';
 
 import SearchUtils from '../../utils/SearchUtils';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
 
 export type SettingSearchPhrases = MaybeRefOrGetter<(string | undefined | null)[]>;
 
@@ -14,11 +16,13 @@ export function useSettingSearch(
     termsKey: string,
     extraPhrases?: SettingSearchPhrases
 ): { isVisible: ComputedRef<boolean> } {
+    const store = getStore<State>();
     const { tm, rt } = useI18n();
 
     const localisedPhrases = computed<string[]>(() => {
         const phrases = tm(termsKey) as unknown[];
-        return Array.isArray(phrases) ? phrases.map((phrase) => rt(phrase as string)) : [];
+        const named = { gameName: store.state.activeGame.displayName };
+        return Array.isArray(phrases) ? phrases.map((phrase) => rt(phrase as string, named)) : [];
     });
 
     const isVisible = computed<boolean>(() => {

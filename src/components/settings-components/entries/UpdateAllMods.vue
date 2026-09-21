@@ -14,13 +14,15 @@ const props = defineProps<{
 
 const outdatedCount = computed<number>(() => store.getters['profile/modsWithUpdates'].length);
 
-const statusText = computed<string>(() =>
-    outdatedCount.value === 1
-        ? '1 mod has an update available.'
-        : `${outdatedCount.value} mods have an update available.`
-);
-
 const { t } = useI18n();
+
+const statusText = computed<string>(() =>
+    t(
+        'translations.pages.settings.entries.updateAllMods.status',
+        outdatedCount.value,
+        { named: { count: outdatedCount.value } }
+    )
+);
 
 const { isVisible } = useSettingSearch(() => props.searchTerm, 'translations.pages.settings.entries.updateAllMods.searchTerms');
 

@@ -84,7 +84,7 @@
                                           <i class='fas fa-address-card' />
                                         </span>
                                         <strong>
-                                            {{ t('translations.pages.splash.content.about.title') }}
+                                            {{ t('translations.pages.splash.content.about.title', { appName: ManagerInformation.APP_NAME }) }}
                                         </strong>
                                     </p>
                                     <p>{{ t('translations.pages.splash.content.about.creator') }}</p>
