@@ -115,20 +115,20 @@ The only thing you have to consider when suggesting a feature is the impact it w
 
 Game selection
 
-![](https://cdn.imgchest.com/files/865952ff6b49.png)
+![](https://r2modman-readme-assets.ebkr.dev/GameSelection.png)
 
 Installed mod view
 
-![](https://cdn.imgchest.com/files/30a03e402178.png)
+![](https://r2modman-readme-assets.ebkr.dev/InstalledList.png)
 
 Online mods
 
-![](https://cdn.imgchest.com/files/fe4abf3f137c.png)
+![](https://r2modman-readme-assets.ebkr.dev/OnlineList.png)
 
 Config editor
 
-![](https://cdn.imgchest.com/files/06ed5a930bf1.png)
+![](https://r2modman-readme-assets.ebkr.dev/ConfigEditor.png)
 
 Profiles
 
-![](https://cdn.imgchest.com/files/a23d6834a8d5.png)
+![](https://r2modman-readme-assets.ebkr.dev/ProfileSelection.png)
