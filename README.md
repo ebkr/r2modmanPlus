@@ -1,10 +1,11 @@
 > [!WARNING]
 > There has been a rise in third-party redistribution sites which are claiming to be official.
 >
-> There are only two legitimate places to download r2modman which are:
+> There are only three legitimate places to download r2modman which are:
 >
 > - [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/)
 > - [GitHub](https://github.com/ebkr/r2modmanPlus/releases/latest)
+> - [ebkr.dev](https://r2builds.ebkr.dev/) (for hosted Flatpak builds)
 
 # r2modman
 
