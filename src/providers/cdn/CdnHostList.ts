@@ -4,6 +4,7 @@ export type CdnDefinition = {
 }
 
 let CDNS: CdnDefinition[] = [
+    { protocol: 'https', host: 'ccdn.thunderstore.io'},
     { protocol: 'https', host: 'gcdn.thunderstore.io'},
     { protocol: 'https', host: 'hcdn-1.hcdn.thunderstore.io' },
 ];
