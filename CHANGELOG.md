@@ -1,3 +1,52 @@
+### 3.2.20
+
+#### Multiple Languages (i18n)
+
+We now support multiple languages! Add support for your language by contributing to: https://github.com/ebkr/r2modmanPlus/
+
+Our initial supported languages on 3.2.20 are:
+- English (like always)
+- French
+
+French is still considered a work in progress, but is fully functional. The only exception currently are error message translations, which are still in English.
+
+#### Performance Improvements
+
+- Fixed a regression caused in 3.2.19 by the feature that warns when mods are removed.
+- Massively improved performance when installing/uninstalling mods in large profiles.
+- Faster mod sorting
+
+#### New Additions
+
+- Refresh indicator to show when the mod list is updating + the percentage of progress.
+
+#### Games Added
+
+- AI LIMIT
+- Among Us 3D
+- BOMBANANA!
+- Cast N Chill
+- Cult of PiN
+- Cuphead
+- Electoral Carnage
+- Holdfast: Nations At War
+- How to Fish
+- Inferno Protocol
+- Last Pirates: Die Together
+- Lazy Witch's Factory
+- Limitless Survivor
+- Moonlighter
+- Nucleares
+- Offscreen
+- Re:Legend
+- Rhythm Doctor
+- Stonewards
+- Survival: Fountain of Youth
+- The Message from Deep Space
+- The Sexy Brutale
+- Tiny Rogues
+- Tunguska: The Visitation
+
 ### 3.2.19
 
 #### Flatpak Remote Repository
@@ -26,7 +75,7 @@ The README has more detailed setup information for Flatpaks if needed.
 - Improved online mod list searching:
     - "Default" has been renamed to "Relevance"
     - Relevance searches now bump results matching name/author exactly.
-- Spaces anmd underscores are now ignored in search results, meaning you don't need to remember the exact package name.
+- Spaces and underscores are now ignored in search results, meaning you don't need to remember the exact package name.
 - Folders containing special characters can now be opened via settings.
 
 
