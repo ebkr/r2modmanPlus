@@ -22,7 +22,7 @@ export const DownloadMonitorTranslation: DownloadMonitorMessageFormat = {
         modProgress: {
             downloading: '다운로드 중: {modName}',
             extracting: '추출 중: {modName}',
-            progress: '{progress}% of {totalSize}',
+            progress: '{totalSize} 중 {progress}%',
             installing: '설치 중: {modName}',
             waiting: '다운로드 완료 대기 중',
             installProgress: '{progress}% 완료',

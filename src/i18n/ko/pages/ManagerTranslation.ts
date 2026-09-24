@@ -23,9 +23,9 @@ export const ManagerTranslation: ManagerMessageFormat = {
             close: '닫기',
         },
         activityBar: {
-            exportProfile: '프로필 추출',
-            exportToCode: '코드로 추출',
-            exportToFile: '파일로 추출',
+            exportProfile: '프로필 내보내기',
+            exportToCode: '코드로 내보내기',
+            exportToFile: '파일로 내보내기',
             refreshingModList: '모드 목록 새로 고치는 중: {progress}%',
         }
     },
@@ -57,7 +57,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 releasedAt: '최초 공개일: {formattedDate}',
             },
             concerning: {
-                recommendation: '이 모드를 제거하는걸 권장드립니다.',
+                recommendation: '이 모드를 제거하는 걸 권장드립니다.',
             },
             tooltips: {
                 updateAvailable: '업데이트가 가능합니다.',
@@ -65,7 +65,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 disable: '비활성화',
                 enable: '활성화',
                 donate: '모드 제작자에게 후원하기',
-                willNotBeUsed: '이 모드는 인게임에서 작동하지 않을 것입니다.',
+                willNotBeUsed: '이 모드는 인게임에서 작동하지 않습니다.',
             },
             actions: {
                 uninstall: '설치 제거',
@@ -138,7 +138,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
                     short: '사용 중단됨',
                     long: '이 모드는 고장났을 수 있습니다'
                 },
-                donate: '모드 제작자를 후원하기',
+                donate: '모드 제작자 후원하기',
                 installed: '모드가 이미 설치되었습니다',
                 nsfw: 'NSFW로 표시됨',
             },

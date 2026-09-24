@@ -52,7 +52,7 @@ export const SplashTranslation: SplashMessageFormat = {
                 title: '모드로 게임 시작하기',
                 body: `
                             매니저에서 게임을 시작시켜야 합니다.
-                            스팀에서 시작하면 별도의 작업 없이는 불가능합니다.
+                            스팀에서 시작하면 별도의 작업 없이는 모드가 적용되지 않습니다.
                             `
             }
         }

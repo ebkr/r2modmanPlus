@@ -9,7 +9,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
         label: '섹션',
         categories: {
             all: '전체',
-            directories: '디렉토리',
+            directories: '디렉터리',
             profile: '프로필',
             appearance: '디자인',
             debugging: '디버깅',
@@ -24,7 +24,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
     actions: {
         change: '변경',
         browse: '탐색',
-        notSet: '설정 안함',
+        notSet: '설정되지 않음',
     },
     entries: {
         changeLaunchBehaviour: {
@@ -50,7 +50,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
         },
         copyLogToClipboard: {
             title: '로그를 클립보드에 복사',
-            description: '로그 파일의 내용을 디스코드에 공유하기 적합한 형식으로 클립보드에 복사합니다.',
+            description: '로그 파일 내용을 디스코드에 공유하기 적합한 형식으로 클립보드에 복사합니다.',
             searchTerms: [
                 '로그를 클립보드에 복사',
                 'LogOutput',
@@ -75,7 +75,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
             dataFolder: '데이터 폴더',
             profileFolder: '프로필 폴더',
             dialog: {
-                title: '{appName} 데이터를 저장할 새로운 폴더를 지정하세요',
+                title: '{appName}의 데이터를 저장할 새로운 폴더를 지정하세요',
                 button: '데이터 폴더 지정',
             },
             searchTerms: [
@@ -138,7 +138,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
         gameDirectory: {
             title: '{gameName} 폴더',
             description: '게임 디렉터리는 적절한 파일을 정확하게 배치하기 위해 필요합니다.',
-            warning: '이 경로가 제대로 지정되어 있지 않다면 {gameName} 는 모드가 적용되지 않은 상태로 실행될 것입니다.',
+            warning: '이 경로가 제대로 지정되어 있지 않다면 {gameName}은(는) 모드가 적용되지 않은 상태로 실행될 것입니다.',
             unsure: '어디로 지정해야 하는지 모르겠어요',
             searchTerms: [
                 '{gameName} 폴더',
@@ -151,7 +151,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
         },
         importLocalMod: {
             title: '로컬 모드 가져오기',
-            description: '오프라인 상태에서 당신의 파일로 모드를 설치합니다. 모든 모드가 로컬 데이터로 설치될 수는 없습니다.',
+            description: '오프라인 상태에서 파일로 모드를 설치합니다. 모든 모드가 로컬 데이터로 설치될 수는 없습니다.',
             searchTerms: [
                 '로컬 모드 가져오기',
                 '오프라인으로 설치',
@@ -190,11 +190,11 @@ export const SettingsTranslation: SettingsMessageFormat = {
         },
         modState: {
             title: '모드 상태 변경',
-            description: '프로필에 있는 모든 모드들을 활성화 / 비활성화 합니다.',
+            description: '현재 프로필에 있는 모든 모드들을 활성화 / 비활성화합니다.',
             enableAll: '모든 모드 활성화',
             disableAll: '모든 모드 비활성화',
-            allEnabled: '당신의 모든 모드는 현재 활성화된 상태입니다.',
-            allDisabled: '당신의 모든 모드는 현재 비활성화된 상태입니다.',
+            allEnabled: '모든 모드가 현재 활성화된 상태입니다.',
+            allDisabled: '모든 모드가 현재 비활성화된 상태입니다.',
             someDisabled: '현재 1개의 모드가 비활성화된 상태입니다. | 현재 {count}개의 모드가 비활성화된 상태입니다.',
             searchTerms: [
                 '모드 상태 변경',
@@ -209,10 +209,10 @@ export const SettingsTranslation: SettingsMessageFormat = {
             refresh: '새로고침',
             deleteCopy: '사본 제거',
             states: {
-                refreshing: '새로고치는 중...',
-                error: '새로고치기 실패: {message}',
-                disabledWhileDownloading: '진행 중인 다운로드가 있을 경우 새로고침이 비활성화 됩니다.',
-                lastUpdated: '최근 새로고친 시기: {date}',
+                refreshing: '새로 고치는 중...',
+                error: '새로 고치기 실패: {message}',
+                disabledWhileDownloading: '진행 중인 다운로드가 있을 경우 새로고침이 비활성화됩니다.',
+                lastUpdated: '마지막으로 실행한 시기: {date}',
                 noApiInfo: '가능한 API 정보가 없음',
             },
             searchTerms: [
@@ -227,9 +227,9 @@ export const SettingsTranslation: SettingsMessageFormat = {
             description: '새로운 모드 출시 여부를 확인합니다 {status}',
             action: '새로고침',
             states: {
-                refreshing: '새로고치는 중...',
-                error: '새로고치기 실패: {message}',
-                disabledWhileDownloading: '진행 중인 다운로드가 있을 경우 새로고침이 비활성화 됩니다.',
+                refreshing: '새로 고치는 중...',
+                error: '새로 고치기 실패: {message}',
+                disabledWhileDownloading: '진행 중인 다운로드가 있을 경우 새로고침이 비활성화됩니다.',
                 cacheDate: '캐시 데이터: {date}',
                 noApiInfo: '가능한 API 정보가 없음',
             },
@@ -261,7 +261,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
         steamDirectory: {
             title: '스팀 폴더',
             description: '스팀 실행기가 있는 스팀 폴더',
-            value: '이를 통해 {appName}가 게임을 실행합니다.',
+            value: '이를 통해 {appName}이 게임을 실행합니다.',
             searchTerms: [
                 '스팀 폴더 변경',
                 '스팀 디렉터리 변경',

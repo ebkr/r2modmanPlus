@@ -7,24 +7,24 @@ export const HelpTranslation: HelpMessageFormat = {
     },
     tabs: {
         general: '일반',
-        gameWontStart: '게임 시작이 안돼요',
+        gameWontStart: '게임 시작이 안 됩니다',
         modsNotShowing: '모드가 안 나타나요',
         updating: '업데이트',
     },
     general: {
         gettingStarted: {
-            title: '모드를 다운로드 하는 법',
+            title: '모드를 다운로드하는 법',
             whereToFindMods: `
             "{''}@:translations.pages.manager.navigation.modsActions.online{''}" 탭으로 가셔서, 모드를 찾고, 다운로드하세요.
-            당신의 시간을 절약하기 위해 종속성도 같이 다운로드될 겁니다.
+            시간을 절약하기 위해 종속성도 같이 다운로드될 겁니다.
             `,
-            onceInstalled: '사용하고 싶은 모드를 다운로드 했다면, 좌측 상단에 {startModdedAction}를 누르세요.',
+            onceInstalled: '사용하고 싶은 모드를 다운로드했다면, 좌측 상단에 {startModdedAction}을 누르세요.',
         },
         slowGame: {
             title: '모드를 쓰면 느려짐 / 버벅거림?',
             likelyCause: `
             몇몇 모드가 오류를 출력하고 있을 수 있습니다.
-            해결책 중 하나는 당신의 모드 중 절반을 끄고 그 현상이 사라졌는지 확인하는 겁니다.
+            해결책 중 하나는 모드 중 절반을 끄고 그 현상이 사라졌는지 확인하는 겁니다.
             `,
             issuePersisting: `
             만약 여전히 이상하다면 절반의 절반을 끄고 다시 해보세요.
@@ -52,7 +52,7 @@ export const HelpTranslation: HelpMessageFormat = {
     gameWontStart: {
         errorModal: {
             title: '게임을 시작하려 하면 빨간 경고가 뜹니다',
-            solution: '주로 경고 박스 하단에 제안 사항이 표시됩니다. 그 설명이 문제를 해결할 수도 있습니다.',
+            solution: '주로 경고 박스 하단에 제안 사항이 표시됩니다. 그 안내가 문제를 해결할 수도 있습니다.',
         },
         redirectedToStorePage: {
             title: '스팀 상점 페이지로 이동됩니다',
@@ -60,7 +60,7 @@ export const HelpTranslation: HelpMessageFormat = {
         },
         consoleCloses: {
             title: '텍스트 창이 나타났다가 바로 닫힙니다',
-            tryRunning: '설정에 "{gameName} 설치 폴더 초기화" 를 시도해 보세요', // TODO - Reference translation via Settings screen
+            tryRunning: '설정에서 "{gameName} 설치 초기화"를 시도해 보세요', // TODO - Reference translation via Settings screen
             ifPersists: '문제가 계속되면 스팀을 완전히 종료한 후에 모드로 실행해 보세요.',
         }
     },
@@ -76,12 +76,12 @@ export const HelpTranslation: HelpMessageFormat = {
             title: '자동 업데이트',
             whenDoesItUpdate: '매니저는 업데이트가 가능한 경우, 앱을 닫았을 때 자동으로 진행합니다.',
             downloadedInBackground: '업데이트는 백그라운드에서 다운로드됩니다.',
-            promptToRunOldInstaller: '"{oldInstaller}"를 관리자 권한으로 실행하라는 메시지가 표시될 수 있습니다. 이 파일이 업데이트 파일입니다.',
-            ifProblemOccurs: '업데이트 도중 문제가 발생할 경우, 최신 Installer를 다운로드해서 실행해보세요.',
+            promptToRunOldInstaller: '"{oldInstaller}"을(를) 관리자 권한으로 실행하라는 메시지가 표시될 수 있습니다. 이 파일이 업데이트 파일입니다.',
+            ifProblemOccurs: '업데이트 도중 문제가 발생할 경우, 최신 설치 프로그렘을 다운로드해서 실행해보세요.',
         },
         ignoreUpdates: {
             title: '업데이트를 원하지 않습니다',
-            content: 'Github에는 자동 업데이트 기능이 없는 Portable 버전이 있습니다. 하지만 업데이트가 있다는 알림은 표시됩니다.'
+            content: '깃허브(GitHub)에는 자동 업데이트 기능이 없는 포터블(Portable) 버전이 있습니다. 하지만 업데이트가 있다는 알림은 표시됩니다.'
         }
     }
 }
