@@ -1,5 +1,6 @@
 import langEn, { dateTimeFormat as enDateTimeFormat } from './en';
 import langFr, { dateTimeFormat as frDateTimeFormat } from './fr';
+import langKo, { dateTimeFormat as koDateTimeFormat } from './ko';
 import { PlatformMessageFormat } from './base/platforms/PlatformMessageFormat';
 import { ModListStatusMessageFormat } from './base/modListStatus/ModListStatusMessageFormat';
 import { BannerMessageFormat } from './base/banners/BannerMessageFormat';
@@ -19,11 +20,13 @@ import { Error404MessageFormat } from './base/pages/Error404MessageFormat';
 export default {
     'en': langEn,
     'fr': langFr,
+    'ko': langKo,
 };
 
 export const datetimeFormats = {
     [langEn.metadata.locale]: enDateTimeFormat,
     [langFr.metadata.locale]: frDateTimeFormat,
+    [langKo.metadata.locale]: koDateTimeFormat,
 };
 
 // TODO - Use for language selection screens
