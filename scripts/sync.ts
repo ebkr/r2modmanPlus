@@ -16,6 +16,7 @@ const LOCAL_SOURCE = {
 
 const ECOSYSTEM_DATA_PATH = "./src/assets/data/ecosystem.json";
 const ECOSYSTEM_JSON_SCHEMA_PATH = "./src/assets/data/ecosystemJsonSchema.json";
+const ECOSYSTEM_VALIDATION_SCHEMA_PATH = "./src/assets/data/ecosystemValidationSchema.json";
 const ECOSYSTEM_DATA_TYPES_PATH = "./src/assets/data/ecosystemTypes.ts";
 const GAME_IMAGE_DIR_PATH = "./public/images/game_selection";
 
@@ -58,6 +59,9 @@ async function updateSchema() {
         fs.writeFileSync(ECOSYSTEM_JSON_SCHEMA_PATH, schema);
     }
 
+    console.log("Updating ecosystemValidationSchema.json...");
+    fs.writeFileSync(ECOSYSTEM_VALIDATION_SCHEMA_PATH, deriveValidationSchema(schema));
+
     console.log("Updating ecosystemTypes.ts...");
     const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore());
     await schemaInput.addSource({name: "ThunderstoreEcosystem", schema: schema.toString()});
@@ -76,6 +80,31 @@ async function updateSchema() {
 }
 
 updateSchema();
+
+const ROOT_PROPERTIES_POINTER = "#/definitions/thunderstore/properties";
+const GAME_PROPERTIES_POINTER = `${ROOT_PROPERTIES_POINTER}/games/additionalProperties/properties`;
+
+function deriveValidationSchema(schema: Buffer): string {
+    const parsed = JSON.parse(schema.toString());
+
+    return JSON.stringify({
+        $schema: parsed.$schema,
+        definitions: parsed.definitions,
+        type: "object",
+        properties: {
+            games: {
+                type: "object",
+                additionalProperties: {
+                    type: "object",
+                    properties: {r2modman: {$ref: `${GAME_PROPERTIES_POINTER}/r2modman`}},
+                    required: ["r2modman"],
+                },
+            },
+            modloaderPackages: {$ref: `${ROOT_PROPERTIES_POINTER}/modloaderPackages`},
+        },
+        required: ["games", "modloaderPackages"],
+    }, null, 2);
+}
 
 async function updateGameImages(ecosystemData: Buffer, baseUrl: string): Promise<void> {
     const ecosystem = JSON.parse(ecosystemData.toString());
