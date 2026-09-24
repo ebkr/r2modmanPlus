@@ -80,7 +80,12 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         if (steamDir instanceof R2Error) {
             return steamDir;
         }
-        const steamExecutable = `${steamDir}/steam.sh`;
+
+        // The Steam snap's steam.sh cannot reliably be executed directly due to snap confinement.
+        // Its own wrapper at /snap/bin/steam handles entering the snap sandbox correctly.
+        const steamExecutable = LinuxGameDirectoryResolver.isSnapSteamDirectory(steamDir)
+            ? '/snap/bin/steam'
+            : `${steamDir}/steam.sh`;
 
         LoggerProvider.instance.Log(LogSeverity.INFO, `Steam executable to call is: ${steamExecutable}`);
 
