@@ -264,6 +264,7 @@
                             "bepisloader",
                             "umm",
                             "rivet",
+                            "mio",
                             "none"
                           ]
                         },
@@ -417,6 +418,7 @@
                   "bepisloader",
                   "umm",
                   "rivet",
+                  "mio",
                   "none"
                 ]
               }
