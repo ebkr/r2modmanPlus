@@ -9,5 +9,9 @@ export function exec(path: string, options: any) {
 }
 
 export function spawnSync(path: string, args: string[], options: object) {
-    return ipcRenderer.sendSync('node:child_process:spawnSync', path, options);
+    return ipcRenderer.sendSync('node:child_process:spawnSync', path, args, options);
+}
+
+export function spawn(path: string, args: string[], options: object) {
+    return ipcRenderer.invoke('node:child_process:spawn', path, args, options);
 }
