@@ -14,9 +14,9 @@ export default abstract class LinkProvider {
         return LinkProvider.provider();
     }
 
-    public abstract openLink(url: string): void;
+    public abstract openLink(url: string | null | undefined): void;
 
-    public abstract selectFile(url: string): void;
+    public abstract selectFile(url: string | null | undefined): void;
 
     public abstract openPath(path: string): void;
 
