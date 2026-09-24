@@ -89,7 +89,16 @@ export default class GameInstructionParser {
     }
 
     private static async northstarDirectoryResolver(game: Game, profile: Profile): Promise<string | R2Error> {
-        return profile.joinToProfilePath("R2Northstar");
+        try {
+            if (appWindow.getPlatform().toLowerCase() === "linux" && await GameInstructionParser.isProton(game)) {
+                const northstarPath = await FsProvider.instance.realpath(profile.joinToProfilePath("R2Northstar"));
+                return `Z:${northstarPath}`;
+            }
+            return profile.joinToProfilePath("R2Northstar");
+        } catch (e) {
+            const err: Error = e as Error;
+            return new R2Error("Failed to resolve Northstar directory", err.message, "Northstar may not be installed correctly. Further help may be required.");
+        }
     }
 
     private static async gdweaveFolderResolver(game: Game, profile: Profile): Promise<string | R2Error> {

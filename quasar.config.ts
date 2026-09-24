@@ -50,6 +50,8 @@ export default defineConfig((ctx: QuasarContext) => {
                 strict: true,
                 vueShim: true,
                 extendTsConfig(tsConfig: any) {
+                    // Flatpak output includes bundled JavaScript that should not be type-checked.
+                    tsConfig.exclude.push('../flatpak/build', '../flatpak/repo', '../.flatpak-builder');
                     tsConfig.compilerOptions.paths = {
                         '@r2': ['../src'],
                         '@r2/*': ['../src/*'],
