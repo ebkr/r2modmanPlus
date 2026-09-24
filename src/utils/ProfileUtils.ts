@@ -87,6 +87,7 @@ export async function installModsToProfile(
         throw profileMods;
     }
 
+    const installerInstance = ProfileInstallerProvider.instance;
     const installedVersions = profileMods.map((m) => m.getDependencyString());
     const disabledMods = disabledModsOverride || profileMods.filter((m) => !m.isEnabled()).map((m) => m.getName());
     let modName = 'Unknown';
@@ -110,12 +111,12 @@ export async function installModsToProfile(
             const positionInProfile = profileMods.findIndex((m) => m.getName() === manifestMod.getName());
 
             // Uninstall possible different version of the mod before installing the target version.
-            throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile));
+            throwForR2Error(await installerInstance.uninstallMod(manifestMod, profile));
             if (positionInProfile >= 0) {
                 profileMods.splice(positionInProfile, 1);  // Remove from list in case the install throws.
             }
 
-            throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifestMod, profile));
+            throwForR2Error(await installerInstance.installMod(manifestMod, profile));
             if (positionInProfile >= 0) {
                 profileMods.splice(positionInProfile, 0, manifestMod);  // Inject back to original position.
             } else {
@@ -123,7 +124,7 @@ export async function installModsToProfile(
             }
 
             if (disabledMods.includes(manifestMod.getName())) {
-                throwForR2Error(await ProfileInstallerProvider.instance.disableMod(manifestMod, profile));
+                throwForR2Error(await installerInstance.disableMod(manifestMod, profile));
                 manifestMod.disable();
             }
 

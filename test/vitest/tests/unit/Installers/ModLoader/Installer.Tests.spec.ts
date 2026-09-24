@@ -5,13 +5,12 @@ import Profile from '../../../../../../src/model/Profile';
 import ProfileInstallerProvider from '../../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
 import GameManager from '../../../../../../src/model/game/GameManager';
 import GenericProfileInstaller from '../../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
-import InstallationRules from '../../../../../../src/r2mm/installing/InstallationRules';
 import { createManifest, installLogicBeforeEach } from '../../../../utils/InstallLogicUtils';
 import { getGameConfigBySettingsIdentifier, TrackingMethod } from '../../../../../../src/model/schema/ThunderstoreSchema';
 import { describe, beforeEach, test, expect } from 'vitest';
 import { providePathImplementation } from '../../../../../../src/providers/node/path/path';
 import { TestPathProvider } from '../../../../stubs/providers/node/Node.Path.Provider';
-import { InstallRulePluginInstaller } from '../../../../../../src/installers/InstallRulePluginInstaller';
+import { getAllManagedPaths, InstallRulePluginInstaller } from '../../../../../../src/installers/InstallRulePluginInstaller';
 import { getInstallArgs } from '../../../../../../src/installers/PackageInstaller';
 
 describe('Installer Tests', () => {
@@ -191,8 +190,7 @@ describe('Installer Tests', () => {
                 throw new Error(`Game config not found for ${GameManager.activeGame.internalFolderName}`);
             }
 
-            const defaultRuleSubtype = InstallationRules.getAllManagedPaths(config.installRules)
-                .find(value => value.isDefaultLocation)!;
+            const defaultRuleSubtype = getAllManagedPaths(config.installRules).find(value => value.isDefaultLocation)!;
 
             // Expect DLL to be installed as intended
             expect(await FsProvider.instance.exists(
