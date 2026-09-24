@@ -21,11 +21,11 @@ export const GameSelectionTranslation: GameSelectionMessageFormat = {
     },
     noResults: {
         empty: {
-            game: '"{filterText}"와 일치하는 게임이 없습니다',
-            server: '"{filterText}"와 일치하는 서버가 없습니다',
+            game: '"{filterText}"와(과) 일치하는 게임이 없습니다',
+            server: '"{filterText}"와(과) 일치하는 서버가 없습니다',
         },
         title: '원하시는걸 찾을 수 없나요?',
-        suggestion: '다른 이름이나 줄임말을 입력해 보세요. 저희가 아직 그 게임을 지원하지 않을 수 있습니다.',
+        suggestion: '다른 이름이나 줄임말을 입력해 보세요. 저희가 아직 그 게임을 지원하지 않을 수도 있습니다.',
     },
     actions: {
         select: {
