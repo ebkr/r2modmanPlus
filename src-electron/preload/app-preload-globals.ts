@@ -1,4 +1,4 @@
-import {ipcRenderer} from "electron/renderer";
+import {ipcRenderer} from "electron";
 
 export async function getAppDataDirectory(): Promise<string> {
     return ipcRenderer.invoke('get-appData-directory');

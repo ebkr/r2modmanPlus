@@ -2,10 +2,9 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
 import path from 'node:path';
-import { defineConfig } from '#q-app/wrappers';
-import { QuasarContext } from '@quasar/app-vite/types/configuration/context';
+import { defineConfig } from '#q-app';
 
-export default defineConfig((ctx: QuasarContext) => {
+export default defineConfig((ctx) => {
     const skipPackaging = process.env.SKIP_PACKING === 'true';
 
     return {
@@ -49,46 +48,33 @@ export default defineConfig((ctx: QuasarContext) => {
             typescript: {
                 strict: true,
                 vueShim: true,
-                extendTsConfig(tsConfig: any) {
-                    tsConfig.compilerOptions.paths = {
-                        '@r2': ['../src'],
-                        '@r2/*': ['../src/*'],
-                        ...tsConfig.compilerOptions.paths,
-                    };
-                }
+            },
+
+            alias: {
+                '@r2': path.join(import.meta.dirname, 'src'),
             },
 
             vueRouterMode: 'history', // available values: 'hash', 'history'
             // vueRouterBase,
             // vueDevtools,
-            // vueOptionsAPI: false,
 
-            rebuildCache: false, // rebuilds Vite/linter/etc cache on startup
+            vueOptionsAPI: true,
 
             publicPath: '/',
-            // analyze: true,
-            // env: {},
-            // rawDefine: {}
+            // define: {},
+            // defineEnv: {},
             // ignorePublicFolder: true,
-            polyfillModulePreload: true,
             // distDir
 
-            cssMinify: 'esbuild',
-            minify: 'esbuild',
+            minify: true,
 
             extendViteConf (viteConf: any) {
                 // Force Vite to use esbuild for CSS, overriding any defaults
                 viteConf.build!.cssMinify = 'esbuild';
 
-                // Allow @r2 alias
-                viteConf.resolve ??= {};
-                viteConf.resolve.alias ??= {};
-                (viteConf.resolve.alias as Record<string, string>)['@r2'] = path.resolve(__dirname, 'src');
-
                 if (ctx.dev) {
                     viteConf.optimizeDeps!.include = [
                         ...(viteConf.optimizeDeps!.include ?? []),
-                        '@quasar/app-vite/wrappers',
                         'floating-vue',
                         'vue-i18n',
                         'lodash.debounce',
@@ -171,7 +157,6 @@ export default defineConfig((ctx: QuasarContext) => {
                 process.env.NODE_ENV === 'development'
                     ? 'src-electron/electron-main.dev.ts'
                     : 'src-electron/electron-main.ts',
-            electronPreload: 'src-electron/electron-preload',
             //   bexManifestFile: 'src-bex/manifest.json
         },
 
@@ -224,8 +209,8 @@ export default defineConfig((ctx: QuasarContext) => {
 
         // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/configuring-electron
         electron: {
-            // extendElectronMainConf (esbuildConf) {},
-            // extendElectronPreloadConf (esbuildConf) {},
+            // extendElectronMainConf (rolldownConf) {},
+            // extendElectronPreloadConf (rolldownConf) {},
 
             // Electron preload scripts (if any) from /src-electron, WITHOUT file extension
             preloadScripts: ['electron-preload'],
@@ -256,20 +241,20 @@ export default defineConfig((ctx: QuasarContext) => {
 
                 win: {
                     target: ['nsis', 'portable'],
-                    icon: 'src/assets/icon.ico',
+                    icon: ctx.appPaths.resolve.app('src/assets/icon.ico'),
                 },
                 nsis: {
                     oneClick: false,
                     allowToChangeInstallationDirectory: true,
                     allowElevation: false,
                     perMachine: false,
-                    include: 'build/installer.nsh',
+                    include: ctx.appPaths.resolve.app('build/installer.nsh'),
                 },
                 linux: {
                     target: !skipPackaging
                         ? ['AppImage', 'tar.gz', 'deb', 'rpm', 'pacman']
                         : 'dir',
-                    icon: 'src/assets/icon',
+                    icon: ctx.appPaths.resolve.app('src/assets/icon'),
                     maintainer: 'ebkr',
                     vendor: 'ebkr',
                     synopsis: 'Risk of Rain 2 Mod Manager',
@@ -278,11 +263,9 @@ export default defineConfig((ctx: QuasarContext) => {
                 },
                 mac: {
                     category: 'games',
-                    icon: 'src/assets/icon',
+                    icon: ctx.appPaths.resolve.app('src/assets/icon'),
                 },
             },
-
-            nodeIntegration: true,
         },
 
         // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-browser-extensions/configuring-bex

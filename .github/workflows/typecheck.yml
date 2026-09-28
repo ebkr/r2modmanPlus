@@ -20,5 +20,8 @@ jobs:
       - name: Install pnpm dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Electron pnpm dependencies
+        run: pnpm install --frozen-lockfile --dir src-electron
+
       - name: Check type validity
         run: mise typecheck

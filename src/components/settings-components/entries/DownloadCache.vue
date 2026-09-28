@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
 import SettingsViewWrapper from '../../../SettingsViewWrapper.vue';
-import { useSettingSearch } from 'components/composables/SettingSearchComposable';
+import { useSettingSearch } from '@r2/components/composables/SettingSearchComposable';
 import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();

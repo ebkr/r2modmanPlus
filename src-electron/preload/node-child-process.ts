@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron/renderer';
+import { ipcRenderer } from 'electron';
 
 export function execSync(identifier: string, path: string, options: any) {
     return ipcRenderer.sendSync('node:child_process:execSync', identifier, path, options);

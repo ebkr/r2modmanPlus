@@ -25,7 +25,7 @@ const routes: RouteRecordRaw[] = [
     {
         name: 'index',
         path: '/',
-        component: () => import("pages/GameSelectionScreen.vue"),
+        component: () => import("@r2/pages/GameSelectionScreen.vue"),
         meta: {
             title: appTitle,
             breadcrumbs: [{...gameSelectionBreadcrumb, isActive: true}],
@@ -34,13 +34,13 @@ const routes: RouteRecordRaw[] = [
     {
         name: 'splash',
         path: '/splash/',
-        component: () => import('pages/Splash.vue'),
+        component: () => import('@r2/pages/Splash.vue'),
         meta: {title: appTitle}
     },
     {
         name: 'linux',
         path: '/linux-native-game-setup/',
-        component: () => import('pages/LinuxNativeGameSetup.vue'),
+        component: () => import('@r2/pages/LinuxNativeGameSetup.vue'),
         meta: {
             title: () => ManagerInformation.APP_NAME
         }
@@ -48,7 +48,7 @@ const routes: RouteRecordRaw[] = [
     {
         name: 'profiles',
         path: '/profiles/',
-        component: () => import('pages/Profiles.vue'),
+        component: () => import('@r2/pages/Profiles.vue'),
         meta: {
             title: appTitle,
             breadcrumbs: [gameSelectionBreadcrumb, {...profilesBreadcrumb, isActive: true}]
@@ -56,13 +56,13 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: '/',
-        component: () => import('components/navigation/NavigationLayout.vue'),
+        component: () => import('@r2/components/navigation/NavigationLayout.vue'),
         meta: {title: appTitle},
         children: [
             {
                 name: 'manager',
                 path: 'manager/',
-                component: () => import('pages/Manager.vue'),
+                component: () => import('@r2/pages/Manager.vue'),
                 meta: {
                     title: () => profileTitle(),
                     breadcrumbs: [gameSelectionBreadcrumb, profilesBreadcrumb, {...managerMainViewBreadcrumb, isActive: true}]
@@ -73,7 +73,7 @@ const routes: RouteRecordRaw[] = [
                         path: 'installed/',
                         alias: '',
                         components: {
-                            subview: () => import('components/views/InstalledModView.vue')
+                            subview: () => import('@r2/components/views/InstalledModView.vue')
                         },
                         meta: {title: () => profileTitle()}
                     },
@@ -81,7 +81,7 @@ const routes: RouteRecordRaw[] = [
                         name: 'manager.online',
                         path: 'online/',
                         components: {
-                            subview: () => import('components/views/OnlineModView.vue')
+                            subview: () => import('@r2/components/views/OnlineModView.vue')
                         },
                         meta: {title: () => profileTitle()}
                     },
@@ -89,7 +89,7 @@ const routes: RouteRecordRaw[] = [
                         name: 'manager.settings',
                         path: 'settings/',
                         components: {
-                            subview: () => import('components/settings-components/SettingsView.vue')
+                            subview: () => import('@r2/components/settings-components/SettingsView.vue')
                         },
                         meta: {title: () => profileTitle()}
                     }
@@ -98,19 +98,19 @@ const routes: RouteRecordRaw[] = [
             {
                 name: 'config-editor',
                 path: 'config-editor/',
-                component: () => import('pages/ConfigEditor.vue'),
+                component: () => import('@r2/pages/ConfigEditor.vue'),
                 meta: {title: () => profileTitle()}
             },
             {
                 name: 'help',
                 path: 'help/',
-                component: () => import('pages/Help.vue'),
+                component: () => import('@r2/pages/Help.vue'),
                 meta: {title: () => profileTitle()}
             },
             {
                 name: 'downloads',
                 path: 'downloads/',
-                component: () => import('pages/DownloadMonitor.vue'),
+                component: () => import('@r2/pages/DownloadMonitor.vue'),
                 meta: {title: () => profileTitle()}
             }
         ]

@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron/renderer';
+import { ipcRenderer } from 'electron';
 
 export async function writeFile(path: string, content: string | Buffer): Promise<any> {
     return ipcRenderer.invoke('node:fs:writeFile', path, content);

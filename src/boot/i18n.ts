@@ -1,4 +1,4 @@
-import { defineBoot } from '#q-app/wrappers';
+import { defineBoot } from '#q-app';
 import { i18n } from '../i18n/instance';
 
 // @ts-ignore

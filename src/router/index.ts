@@ -15,7 +15,7 @@ const Router = createRouter({
     // Leave this as is and make changes in the quasar.config file instead!
     // quasar.config file -> build -> vueRouterMode
     // quasar.config file -> build -> publicPath
-    history: createHistory(process.env.VUE_ROUTER_BASE)
+    history: createHistory(import.meta.env.QUASAR_VUE_ROUTER_BASE)
 });
 
 Router.afterEach((to: RouteLocationNormalized, ignored: RouteLocationNormalized) => {

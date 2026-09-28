@@ -54,7 +54,7 @@ ipcMain.on('restart', () => {
 });
 
 ipcMain.on('get-assets-path', () => {
-    if (process.env.PROD) {
+    if (import.meta.env.QUASAR_PROD) {
         browserWindow.webContents.send('receive-assets-path', anyGlobal.__statics);
     } else {
         browserWindow.webContents.send('receive-assets-path', 'src/statics/');

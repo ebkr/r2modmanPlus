@@ -1,0 +1,19 @@
+{
+  "name": "r2modman-electron",
+  "version": "1.0.0",
+  "description": "r2modman main and preload context",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "adm-zip": "^0.5.5",
+    "electron-updater": "6.8.9",
+    "fs-extra": "^8.1.0",
+    "yaml": "^1.7.2"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.4.34",
+    "@types/fs-extra": "^8.0.1",
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3"
+  }
+}

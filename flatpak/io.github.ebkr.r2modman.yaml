@@ -42,6 +42,7 @@ modules:
         skip:
           - .git
           - node_modules
+          - src-electron/node_modules
           - dist
           - flatpak/build
           - flatpak/repo
@@ -56,6 +57,7 @@ modules:
     build-commands:
       - chmod +x pnpm-standalone/pnpm
       - pnpm install --frozen-lockfile
+      - pnpm install --frozen-lockfile --dir src-electron
       - pnpm build-linux-unpacked
 
       - cp -r dist/electron/Packaged/linux-unpacked/* /app/
