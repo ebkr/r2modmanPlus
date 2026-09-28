@@ -28,6 +28,18 @@ export default class ManagerSettings {
         return this.LOADED_SETTINGS;
     }
 
+    public static async getLastSelectedPlatforms(): Promise<Record<string, Platform>> {
+        const allGameSettings = await this.DEXIE_STORE.getAllGameSpecific();
+        const knownPlatforms: string[] = Object.values(Platform);
+        const platforms: Record<string, Platform> = {};
+        for (const [identifier, settings] of Object.entries(allGameSettings)) {
+            if (settings.lastSelectedPlatform && knownPlatforms.includes(settings.lastSelectedPlatform)) {
+                platforms[identifier] = settings.lastSelectedPlatform as Platform;
+            }
+        }
+        return platforms;
+    }
+
     public static discardSingleton() {
         this.LOADED_SETTINGS = undefined;
     }

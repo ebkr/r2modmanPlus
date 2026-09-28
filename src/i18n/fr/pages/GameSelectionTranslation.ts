@@ -47,6 +47,7 @@ export const GameSelectionTranslation: GameSelectionMessageFormat = {
     cardView: {
         imageAltText: 'Image du jeu',
         newBadge: 'Nouveau',
+        usingPlatform: 'Via {platform}',
         sections: {
             favourites: 'Favoris',
             games: 'Jeux',

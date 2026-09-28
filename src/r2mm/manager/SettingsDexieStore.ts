@@ -93,6 +93,11 @@ export default class SettingsDexieStore extends Dexie {
         return newGame.gameSpecific;
     }
 
+    public async getAllGameSpecific(): Promise<Record<string, ManagerSettingsInterfaceGame_V2>> {
+        const rows = await this.games.toArray();
+        return Object.fromEntries(rows.map(row => [row.identifier, JSON.parse(row.settings)]));
+    }
+
     public async getLatest(): Promise<ManagerSettingsInterfaceHolder> {
         const get = async () => {
             const latestGlobal = await this.getLatestGlobal();

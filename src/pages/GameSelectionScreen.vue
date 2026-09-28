@@ -7,24 +7,11 @@
     </div>
     <div id="game-selection-screen" v-else>
         <EcosystemUpdateIndicator />
-        <ModalCard id="select-platform-modal" v-show="showPlatformModal" :is-active="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
-            <template v-slot:header>
-                <h2 class='modal-title'>{{ t('translations.modals.platform.header') }}</h2>
-            </template>
-            <template v-slot:body>
-                <div v-if="selectedGame !== null">
-                    <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform}`">
-                        <input type="radio" :id="`${index}-${platform.storePlatform}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
-                        <label :for="`${index}-${platform.storePlatform}`"><span class="margin-right margin-right--half-width"/>{{ t(`translations.platforms.${getPlatformKey(platform.storePlatform)}`) }}</label>
-                    </div>
-                </div>
-            </template>
-            <template v-slot:footer>
-                <button class='button is-info' @click='selectPlatform'>
-                    {{ t('translations.modals.platform.selectAction') }}
-                </button>
-            </template>
-        </ModalCard>
+        <PlatformSelectionModal
+            :is-open="showPlatformModal"
+            @close="showPlatformModal = false"
+            @select-platform="selectPlatform"
+        />
         <hero
             :title="t(`translations.pages.gameSelection.pageTitle.title.${activeTab}`)"
             :subtitle="t(`translations.pages.gameSelection.pageTitle.subtitle.${activeTab}`)"
@@ -86,6 +73,7 @@
                     <GameSelectionList
                         @select-game="selectGame"
                         @set-default-game="selectDefaultGame"
+            @change-platform="changePlatform"
                     />
                 </div>
             </div>
@@ -97,17 +85,16 @@
 import { Hero } from '../components/all';
 import { GameInstanceType, Platform } from '../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
-import ModalCard from '../components/ModalCard.vue';
+import PlatformSelectionModal from '../components/modals/PlatformSelectionModal.vue';
 import { onMounted, ref, provide } from 'vue';
 import debounce from 'lodash.debounce';
-import { useGameSelectionComposable, gameSelectionKey } from '../components/composables/GameSelectionComposable';
+import { useGameSelectionComposable, gameSelectionKey, PlatformSelectionIntent } from '../components/composables/GameSelectionComposable';
 import GameSelectionList from '../components/game-selection/GameSelectionList.vue';
 import Game from '../model/game/Game';
 import EcosystemUpdateIndicator from '../components/navigation/EcosystemUpdateIndicator.vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import { useI18n } from 'vue-i18n';
-import EnumResolver from '../model/enums/_EnumResolver';
 
 const store = getStore<State>();
 const { t } = useI18n();
@@ -124,12 +111,14 @@ const {
     activeTab,
     viewMode,
     runningMigration,
-    isSettingDefaultPlatform,
+    platformSelectionIntent,
     markAsSelectedGame,
     changeTab,
     toggleViewMode,
     proceed,
     proceedDefault,
+    getLastSelectedPlatform,
+    changeLastSelectedPlatform,
     selectPlatformForGame,
     initialize,
 } = gameSelection;
@@ -137,41 +126,63 @@ const {
 const showPlatformModal = ref<boolean>(false);
 const debouncedFilter = debounce((value: string) => { filterText.value = value; }, 100);
 
-function getPlatformKey(platform: Platform) {
-    return EnumResolver.from(Platform, platform);
+function getSavedPlatform(game: Game): Platform | undefined {
+    const platform = getLastSelectedPlatform(game);
+    return game.storePlatformMetadata.some(meta => meta.storePlatform === platform) ? platform : undefined;
+}
+
+function needsPlatformPrompt(game: Game): boolean {
+    if (game.storePlatformMetadata.length <= 1) {
+        return false;
+    }
+    return viewMode.value === GameSelectionViewMode.LIST || getSavedPlatform(game) === undefined;
+}
+
+function showPlatformSelectionModal(game: Game, intent: PlatformSelectionIntent) {
+    markAsSelectedGame(game);
+    platformSelectionIntent.value = intent;
+    selectPlatformForGame(game);
+    showPlatformModal.value = true;
 }
 
 function selectGame(game: Game) {
-    markAsSelectedGame(game);
-    isSettingDefaultPlatform.value = false;
-    if (game.storePlatformMetadata.length > 1) {
-        selectPlatformForGame(game);
-        showPlatformModal.value = true;
-    } else {
-        selectedPlatform.value = game.storePlatformMetadata[0]!.storePlatform;
-        showPlatformModal.value = false;
-        proceed();
+    if (needsPlatformPrompt(game)) {
+        showPlatformSelectionModal(game, 'SELECT');
+        return;
     }
+    markAsSelectedGame(game);
+    selectedPlatform.value = getSavedPlatform(game) ?? game.storePlatformMetadata[0]!.storePlatform;
+    proceed();
 }
 
 function selectDefaultGame(game: Game) {
-    markAsSelectedGame(game);
-    isSettingDefaultPlatform.value = true;
-    if (game.storePlatformMetadata.length > 1) {
-        showPlatformModal.value = true;
-    } else {
-        selectedPlatform.value = game.storePlatformMetadata[0]!.storePlatform;
-        showPlatformModal.value = false;
-        proceedDefault();
+    if (needsPlatformPrompt(game)) {
+        showPlatformSelectionModal(game, 'SET_DEFAULT');
+        return;
     }
+    markAsSelectedGame(game);
+    selectedPlatform.value = getSavedPlatform(game) ?? game.storePlatformMetadata[0]!.storePlatform;
+    proceedDefault();
 }
 
-function selectPlatform() {
+function changePlatform(game: Game) {
+    showPlatformSelectionModal(game, 'CHANGE');
+}
+
+async function selectPlatform() {
     showPlatformModal.value = false;
-    if (isSettingDefaultPlatform.value) {
-        proceedDefault();
-    } else {
-        proceed();
+    switch (platformSelectionIntent.value) {
+        case 'CHANGE':
+            if (selectedGame.value !== null && selectedPlatform.value !== null) {
+                await changeLastSelectedPlatform(selectedGame.value as Game, selectedPlatform.value);
+            }
+            break;
+        case 'SET_DEFAULT':
+            await proceedDefault();
+            break;
+        case 'SELECT':
+            await proceed();
+            break;
     }
 }
 

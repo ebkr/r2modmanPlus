@@ -21,24 +21,35 @@
                     <button class="button" @click="emit('set-default', game)">{{ t('translations.pages.gameSelection.actions.setAsDefault') }}</button>
                 </div>
                 <div class="game-card__overlay-spacer"></div>
+                <div class="game-card__platform-wrapper" v-if="hasMultiplePlatforms && lastSelectedStorePlatform !== undefined">
+                    <i18n-t keypath="translations.pages.gameSelection.cardView.usingPlatform" tag="span">
+                        <template v-slot:platform>
+                            <a href="#" class="link" @click.prevent.stop="emit('change-platform', game)">{{ lastSelectedStorePlatform }}</a>
+                        </template>
+                    </i18n-t>
+                </div>
             </div>
         </div>
         <div class="game-card-wrapper__footer">
-            <p>{{ game.displayName }}</p>
-            <a :id="`${game.settingsIdentifier}-star`" href="#" @click.prevent="emit('toggle-favourite', game)">
-                <i class="fas fa-star text-warning" v-if="isFavourited"></i>
-                <i class="far fa-star" v-else></i>
-            </a>
+            <div class="game-card-wrapper__footer-row">
+                <span class="game-card-wrapper__footer-row-item">{{ game.displayName }}</span>
+                <a :id="`${game.settingsIdentifier}-star`" href="#" @click.prevent="emit('toggle-favourite', game)">
+                    <i class="fas fa-star text-warning" v-if="isFavourited"></i>
+                    <i class="far fa-star" v-else></i>
+                </a>
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { computed, inject, watch } from 'vue';
 import Game from '../../model/game/Game';
 import { GameInstanceType } from '../../model/schema/ThunderstoreSchema';
 import { useGameImageComposable } from '../composables/GameImageComposable';
 import { useI18n } from 'vue-i18n';
+import { gameSelectionKey } from '../composables/GameSelectionComposable';
+import { StorePlatform } from '../../model/platform/StorePlatform';
 
 const { t } = useI18n();
 
@@ -55,10 +66,20 @@ const emit = defineEmits<{
     select: [game: Game];
     'set-default': [game: Game];
     'toggle-favourite': [game: Game];
+    'change-platform': [game: Game];
 }>();
 
 const { imageSrc, setIcon } = useGameImageComposable();
 watch(() => props.game.iconUrl, setIcon, { immediate: true });
+
+const { getLastSelectedPlatform } = inject(gameSelectionKey)!;
+
+const hasMultiplePlatforms = computed(() => props.game.storePlatformMetadata.length > 1);
+
+const lastSelectedStorePlatform = computed(() => {
+    const platform = getLastSelectedPlatform(props.game);
+    return platform !== undefined ? StorePlatform[platform] : undefined;
+});
 </script>
 
 <style scoped lang="scss">
@@ -68,9 +89,46 @@ watch(() => props.game.iconUrl, setIcon, { immediate: true });
 
 .game-card-wrapper__footer {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
     margin-top: 0.4rem;
+
+    &-row {
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+        margin: 0;
+        padding: 0;
+
+        &-item {
+            display: flex;
+            flex: 1;
+        }
+    }
+}
+
+.game-card__platform-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-top: 3rem;
+    padding-bottom: 1rem;
+    color: white;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+
+    a {
+        color: var(--v2-link-text-color);
+
+        &:hover, &:focus, &:active {
+            color: var(--v2-link-active-text-color);
+        }
+    }
 }
 
 .game-card {

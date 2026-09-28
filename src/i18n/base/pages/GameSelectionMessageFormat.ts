@@ -45,6 +45,7 @@ export type GameSelectionMessageFormat = {
     cardView: {
         imageAltText: string;
         newBadge: string;
+        usingPlatform: string;
         sections: {
             favourites: string;
             games: string;

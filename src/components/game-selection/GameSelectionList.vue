@@ -70,6 +70,7 @@
                                         :is-new="newGameSet.has(game)"
                                         @select="emit('select-game', $event)"
                                         @set-default="emit('set-default-game', $event)"
+                                        @change-platform="emit('change-platform', $event)"
                                         @toggle-favourite="toggleFavourite($event)"
                                     />
                                 </div>
@@ -94,6 +95,7 @@
                                         :is-new="newGameSet.has(game)"
                                         @select="emit('select-game', $event)"
                                         @set-default="emit('set-default-game', $event)"
+                                        @change-platform="emit('change-platform', $event)"
                                         @toggle-favourite="toggleFavourite($event)"
                                     />
                                 </div>
@@ -118,6 +120,7 @@
                                         :is-new="newGameSet.has(game)"
                                         @select="emit('select-game', $event)"
                                         @set-default="emit('set-default-game', $event)"
+                                        @change-platform="emit('change-platform', $event)"
                                         @toggle-favourite="toggleFavourite($event)"
                                     />
                                 </div>
@@ -141,6 +144,7 @@
                                     :is-new="newGameSet.has(game)"
                                     @select="emit('select-game', $event)"
                                     @set-default="emit('set-default-game', $event)"
+                                    @change-platform="emit('change-platform', $event)"
                                     @toggle-favourite="toggleFavourite($event)"
                                 />
                             </div>
@@ -167,6 +171,7 @@
                                     :is-new="newGameSet.has(game)"
                                     @select="emit('select-game', $event)"
                                     @set-default="emit('set-default-game', $event)"
+                                    @change-platform="emit('change-platform', $event)"
                                     @toggle-favourite="toggleFavourite($event)"
                                 />
                             </div>
@@ -203,6 +208,7 @@ const { t } = useI18n();
 const emit = defineEmits<{
     'select-game': [game: Game];
     'set-default-game': [game: Game];
+    'change-platform': [game: Game];
 }>();
 
 const mergedGameList = computed(() => {
