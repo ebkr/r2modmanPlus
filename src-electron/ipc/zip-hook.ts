@@ -1,23 +1,14 @@
 import { BrowserWindow, ipcMain } from 'electron';
 import AdmZip from 'adm-zip';
+import extract from 'extract-zip';
 import path from 'path';
 
 let zipCreatorIdentifier = 0;
 const zipCreatorCache = new Map<number, AdmZip>();
 
 export function hookZipIpc(browserWindow: BrowserWindow) {
-    ipcMain.handle('zip:extractAllTo', (event, zip: string, outputFolder: string) => {
-        return new Promise((resolve, reject) => {
-            const adm = new AdmZip(zip);
-            outputFolder = outputFolder.replace(/\\/g, '/');
-            adm.extractAllToAsync(outputFolder, true, error => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(error);
-                }
-            });
-        });
+    ipcMain.handle('zip:extractAllTo', async (event, zip: string, outputFolder: string) => {
+        await extract(zip, { dir: path.resolve(outputFolder) });
     });
 
     ipcMain.handle('zip:readFile', (event, zip: string, fileName: string) => {
