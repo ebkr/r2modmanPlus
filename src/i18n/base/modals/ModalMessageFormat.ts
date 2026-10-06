@@ -12,7 +12,7 @@ export type ModalMessageFormat = {
     },
     clearingGameDirectory: {
         title: string;
-        waitToLaunchGame: string;
+        warning: string;
         steamWillBeStarted: string;
         checkSteamForProgress: string;
         confirmation: string;

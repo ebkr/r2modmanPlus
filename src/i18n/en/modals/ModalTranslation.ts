@@ -13,15 +13,11 @@ export const ModalTranslation: ModalMessageFormat = {
         solution: 'If this error has appeared but the executable is correct, please run as administrator.'
     },
     clearingGameDirectory: {
-        title: 'Clearing the {gameName} installation directory',
-        waitToLaunchGame: `
-            You will not be able to launch the game until
-            Steam has verified the integrity of the game files.
-            `,
+        title: 'Clear the {gameName} installation directory',
+        warning: 'This will delete all files in the game directory.',
         steamWillBeStarted: `
-            Steam will be started and will attempt to verify the
-            integrity of {gameName}.
-            `,
+            This will delete the game directory and will prompt Steam to verify the integrity of {gameName}.
+        `,
         checkSteamForProgress: `
             Please check the Steam window for validation progress.
             If the window has not yet appeared, please be patient.
