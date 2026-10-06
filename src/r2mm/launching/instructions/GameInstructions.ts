@@ -14,6 +14,7 @@ import GDWeaveGameInstructions from './instructions/loader/GDWeaveGameInstructio
 import BepisLoaderGameInstructions from './instructions/loader/BepisLoaderGameInstructions';
 import UMMGameInstructions from './instructions/loader/UMMGameInstructions';
 import RivetGameInstructions from './instructions/loader/RivetGameInstructions';
+import MioGameInstructions from './instructions/loader/MioGameInstructions';
 
 export interface GameInstruction {
     vanillaParameterList: string[],
@@ -30,6 +31,7 @@ export default class GameInstructions {
         [PackageLoader.BEPINEX, new BepInExGameInstructions()],
         [PackageLoader.BEPISLOADER, new BepisLoaderGameInstructions()],
         [PackageLoader.MELONLOADER, new MelonLoaderGameInstructions()],
+        [PackageLoader.MIO, new MioGameInstructions()],
         [PackageLoader.RECURSIVE_MELONLOADER, new MelonLoaderGameInstructions()],
         [PackageLoader.NORTHSTAR, new NorthstarGameInstructions()],
         [PackageLoader.GODOTML, new GodotMLGameInstructions()],
