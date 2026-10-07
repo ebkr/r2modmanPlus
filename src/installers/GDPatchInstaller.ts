@@ -1,9 +1,4 @@
-import {
-    disableModByRenamingFiles,
-    enableModByRenamingFiles,
-    InstallArgs,
-    PackageInstaller,
-} from "./PackageInstaller";
+import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import FileNotFoundError from "../model/errors/FileNotFoundError";
 import FileWriteError from "../model/errors/FileWriteError";
 import FsProvider from "../providers/generic/file/FsProvider";
@@ -108,8 +103,13 @@ export class GDPatchPluginInstaller implements PackageInstaller {
     }
 
     async enable(args: InstallArgs) {
+        const fs = FsProvider.instance;
+
         try {
-            await enableModByRenamingFiles(this.getModFolderInProfile(args));
+            const disabledMarkerPath = path.join(this.getModFolderInProfile(args), "gdpatch_disabled");
+            if (await fs.exists(disabledMarkerPath)) {
+                await fs.unlink(disabledMarkerPath);
+            }
         } catch (e) {
             const name = `Failed to enable ${args.mod.getName()}`;
             const solution = "Is the game still running?";
@@ -118,8 +118,11 @@ export class GDPatchPluginInstaller implements PackageInstaller {
     }
 
     async disable(args: InstallArgs) {
+        const fs = FsProvider.instance;
+
         try {
-            await disableModByRenamingFiles(this.getModFolderInProfile(args));
+            const disabledMarkerPath = path.join(this.getModFolderInProfile(args), "gdpatch_disabled");
+            await fs.writeFile(disabledMarkerPath, "");
         } catch (e) {
             const name = `Failed to disable ${args.mod.getName()}`;
             const solution = "Is the game still running?";
