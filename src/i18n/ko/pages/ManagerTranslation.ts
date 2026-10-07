@@ -48,7 +48,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
         },
         localModCard: {
             labels: {
-                deprecated: '사용 중단됨',
+                deprecated: '지원 중단됨',
                 disabled: '비활성화됨'
             },
             display: {
@@ -135,8 +135,8 @@ export const ManagerTranslation: ManagerMessageFormat = {
                     long: '썬더스토어에서 고정됨'
                 },
                 deprecated: {
-                    short: '사용 중단됨',
-                    long: '이 모드는 고장났을 수 있습니다'
+                    short: '지원 중단됨',
+                    long: '이 모드는 고장났을 수 있습니다.'
                 },
                 donate: '모드 제작자 후원하기',
                 installed: '모드가 이미 설치되었습니다',
