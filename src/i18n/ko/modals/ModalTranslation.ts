@@ -216,7 +216,7 @@ export const ModalTranslation: ModalMessageFormat = {
             noneCategories: '이 카테고리를 포함하지 않는 모드만 표시'
         },
         allowNsfw: 'NSFW(노골적일 수 있는) 모드 표시 허용',
-        showDeprecated: '사용 중단된 모드 표시 허용',
+        showDeprecated: '지원 중단된 모드 표시 허용',
         apply: '필터 적용'
     },
     sort: {
