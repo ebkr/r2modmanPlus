@@ -11,6 +11,7 @@ import GameManager from '../../../../../../src/model/game/GameManager';
 import Profile from '../../../../../../src/model/Profile';
 import R2Error from '../../../../../../src/model/errors/R2Error';
 import { EcosystemModloaderPackages, PackageLoader } from '../../../../../../src/model/schema/ThunderstoreSchema';
+import FsProvider from '../../../../../../src/providers/generic/file/FsProvider';
 import ProfileInstallerProvider from '../../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
 import { updateModLoaderExports } from '../../../../../../src/r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import {describe, beforeEach, afterEach, test, expect, vi} from 'vitest';
@@ -89,13 +90,15 @@ describe('GDPatch Installer Tests', () => {
         const pkg = createManifest('ExampleMod', 'Author');
         const name = pkg.getName();
         const modFiles = [`GDPatch/mods/${name}/gdpatch_mod.toml`, `GDPatch/mods/${name}/patcher.lua`];
+        const disabledMarker = `GDPatch/mods/${name}/gdpatch_disabled`;
         await createPackageFilesIntoCache(pkg, ['gdpatch_mod.toml', 'patcher.lua']);
         await ProfileInstallerProvider.instance.installMod(pkg, profile);
 
         await ProfileInstallerProvider.instance.disableMod(pkg, profile);
-        await expectFilesToExistInProfile(modFiles.map((file) => `${file}.old`));
+        await expectFilesToExistInProfile([...modFiles, disabledMarker]);
 
         await ProfileInstallerProvider.instance.enableMod(pkg, profile);
         await expectFilesToExistInProfile(modFiles);
+        expect(await FsProvider.instance.exists(profile.joinToProfilePath(disabledMarker))).toBeFalsy();
     });
 });
