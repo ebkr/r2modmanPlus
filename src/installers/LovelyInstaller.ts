@@ -1,5 +1,6 @@
-import { InstallArgs, PackageInstaller, uninstallModLoader } from "./PackageInstaller";
+import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import { addToStateFile, applyModeState, uninstallState } from "./InstallRulePluginInstaller";
+import FileWriteError from "../model/errors/FileWriteError";
 import FsProvider from "../providers/generic/file/FsProvider";
 import FileUtils from "../utils/FileUtils";
 import FileTree from "../model/file/FileTree";
@@ -8,6 +9,9 @@ import R2Error from "../model/errors/R2Error";
 import path from "../providers/node/path/path";
 
 export class LovelyInstaller implements PackageInstaller {
+    // 0.9.0 was version.dll, 0.10.0+ is winmm.dll.
+    private static readonly DLL_TARGETS = ["version.dll", "winmm.dll"];
+
     async install(args: InstallArgs) {
         const {
             mod,
@@ -18,10 +22,7 @@ export class LovelyInstaller implements PackageInstaller {
         const fs = FsProvider.instance;
         const fileRelocations = new Map<string, string>();
 
-        // 0.9.0 was version.dll, 0.10.0+ is winmm.dll.
-        const dllTargets = ["version.dll", "winmm.dll"];
-
-        for (const dllTarget of dllTargets) {
+        for (const dllTarget of LovelyInstaller.DLL_TARGETS) {
             const dwmSrc = path.join(packagePath, dllTarget);
             const dwmDest = profile.joinToProfilePath(dllTarget);
 
@@ -54,7 +55,24 @@ export class LovelyInstaller implements PackageInstaller {
     }
 
     async uninstall(args: InstallArgs) {
-        await uninstallModLoader(args.mod, args.profile);
+        const { mod, profile } = args;
+        const fs = FsProvider.instance;
+
+        try {
+            await uninstallState(mod, profile);
+
+            // Delete the lovely binary even if the state file is missing.
+            for (const dllTarget of LovelyInstaller.DLL_TARGETS) {
+                const dllPath = profile.joinToProfilePath(dllTarget);
+                if (await fs.exists(dllPath)) {
+                    await fs.unlink(dllPath);
+                }
+            }
+        } catch (e) {
+            const name = "Failed to delete lovely files from profile";
+            const solution = "Is the game still running?";
+            throw FileWriteError.fromThrownValue(e, name, solution);
+        }
     }
 }
 

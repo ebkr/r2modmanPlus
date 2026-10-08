@@ -1,7 +1,7 @@
 import bundledEcosystem from "../../assets/data/ecosystem.json";
 import {R2Modman, ThunderstoreEcosystem} from "../../assets/data/ecosystemTypes";
 import GameImageProvider from "../../providers/generic/image/GameImageProvider";
-import jsonSchema from "../../assets/data/ecosystemJsonSchema.json";
+import jsonSchema from "../../assets/data/ecosystemValidationSchema.json";
 import R2Error from "../../model/errors/R2Error";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
@@ -60,8 +60,7 @@ function validateSchema(schema: unknown): ThunderstoreEcosystem {
     if (!isOk) {
         throw new R2Error("Schema validation error", ajv.errorsText(validate.errors));
     }
-
-    return schema as ThunderstoreEcosystem;
+    return schema as unknown as ThunderstoreEcosystem;
 }
 
 function loadBundledSchema(): ThunderstoreEcosystem {

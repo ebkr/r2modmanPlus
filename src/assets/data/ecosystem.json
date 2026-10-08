@@ -56107,6 +56107,11 @@
       "packageId": "HoldfastModding-BepInExPack_Holdfast",
       "rootFolder": "BepInExPack",
       "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_Sineus",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
     }
   ]
 }
