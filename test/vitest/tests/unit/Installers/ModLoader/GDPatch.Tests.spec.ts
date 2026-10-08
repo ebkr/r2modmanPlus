@@ -37,7 +37,7 @@ describe('GDPatch Installer Tests', () => {
         const profile = Profile.getActiveProfile().asImmutableProfile();
         const pkg = createManifest('GDPatch', 'GDPatch');
         const sourceToExpectedDestination = {
-            'gdpatch_loader.dll': 'winmm.dll',
+            'winmm.dll': 'winmm.dll',
             'libgdpatch_loader.so': 'libgdpatch_loader.so',
             'libgdpatch_loader.dylib': 'libgdpatch_loader.dylib',
         };
