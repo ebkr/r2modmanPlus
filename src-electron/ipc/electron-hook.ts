@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, shell, clipboard } from 'electron';
+import { BrowserWindow, ipcMain, shell, clipboard, app } from 'electron';
 
 export function hookElectronIpc(browserWindow: BrowserWindow) {
     ipcMain.on('electron:shell:openExternal', (event, url) => {
@@ -20,5 +20,9 @@ export function hookElectronIpc(browserWindow: BrowserWindow) {
 
     ipcMain.handle('electron:getEnvironmentVariables', (event) => {
         return JSON.stringify(process.env);
-    })
+    });
+
+    ipcMain.handle('electron:getPreferredSystemLanguages', () => {
+        return app.getPreferredSystemLanguages();
+    });
 }

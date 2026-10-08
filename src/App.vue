@@ -12,14 +12,26 @@
                     <div>
                         <ActivityDropdown>
                             <button type="button" class="activity-bar__action"
-                                :aria-label="`${t('metadata.name', 0, { locale })}`"
+                                :aria-label="selectedLocale === SYSTEM_LOCALE
+                                    ? t('metadata.system')
+                                    : t('metadata.name', 0, { locale })"
                             >
-                                <i class="fas fa-globe-europe"></i> {{ locale }}
+                                <i class="fas fa-globe-europe"></i>
+                                {{ selectedLocale === SYSTEM_LOCALE ? t('metadata.system') : locale }}
                             </button>
+
                             <template #popper>
                             <ul class="menu-list">
+                                <li>
+                                    <a v-close-popper @click="() => selectLocale(SYSTEM_LOCALE)">
+                                        <div class="locale-list__item">
+                                            <span class="locale-list__text">{{ t('metadata.system') }}</span>
+                                        </div>
+                                    </a>
+                                </li>
+
                                 <li v-for="lang in availableLocales" :key="`locale-select-${lang}`">
-                                    <a v-close-popper @click="() => LocaleManager.save(lang)">
+                                    <a v-close-popper @click="() => selectLocale(lang)">
                                         <div class="locale-list__item">
                                             <span class="locale-list__text">{{ lang }} ({{ t('metadata.name', 0, {locale: lang}) }})</span>
                                             <span class="locale-list__divider"></span>
@@ -87,7 +99,7 @@ import GameImageProvider, { provideGameImageImplementation } from './providers/g
 import { GameImageProviderImplementation } from './r2mm/image/GameImageProviderImpl';
 import { useI18n } from 'vue-i18n';
 import { ActivityDropdown } from './components/all';
-import LocaleManager from './r2mm/manager/LocaleManager';
+import LocaleManager, { SYSTEM_LOCALE } from './r2mm/manager/LocaleManager';
 
 const store = baseStore;
 const router = useRouter();
@@ -95,6 +107,13 @@ provideStoreImplementation(() => store);
 
 const quasar = useQuasar();
 const { t, locale, availableLocales, messages } = useI18n();
+
+const selectedLocale = ref<string>(SYSTEM_LOCALE);
+
+async function selectLocale(localeValue: string) {
+    await LocaleManager.save(localeValue);
+    selectedLocale.value = localeValue;
+}
 
 document.addEventListener('auxclick', e => {
     const target = e.target! as any;
@@ -137,6 +156,8 @@ BindLoaderImpl.bind();
 
 onMounted(async () => {
     const settings: ManagerSettings = await store.dispatch('resetActiveGame');
+
+    selectedLocale.value = await settings.getLocale();
 
     await LocaleManager.apply();
 
