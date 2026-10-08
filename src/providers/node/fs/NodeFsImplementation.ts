@@ -102,4 +102,8 @@ export const NodeFsImplementation: NodeFsProvider = {
         const path = args[0];
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.removeDirectoryRecursively(...args).then(resolve).catch(reject));
     },
+    downloadFile: async (...args) => {
+        const path = args[1];
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.downloadFile(...args).then(resolve).catch(reject));
+    },
 }
