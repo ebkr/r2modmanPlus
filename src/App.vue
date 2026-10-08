@@ -16,8 +16,17 @@
                             >
                                 <i class="fas fa-globe-europe"></i> {{ locale }}
                             </button>
+
                             <template #popper>
                             <ul class="menu-list">
+                                <li>
+                                    <a v-close-popper @click="() => LocaleManager.save(SYSTEM_LOCALE)">
+                                        <div class="locale-list__item">
+                                            <span class="locale-list__text">{{ t('metadata.system') }}</span>
+                                        </div>
+                                    </a>
+                                </li>
+
                                 <li v-for="lang in availableLocales" :key="`locale-select-${lang}`">
                                     <a v-close-popper @click="() => LocaleManager.save(lang)">
                                         <div class="locale-list__item">
@@ -87,7 +96,7 @@ import GameImageProvider, { provideGameImageImplementation } from './providers/g
 import { GameImageProviderImplementation } from './r2mm/image/GameImageProviderImpl';
 import { useI18n } from 'vue-i18n';
 import { ActivityDropdown } from './components/all';
-import LocaleManager from './r2mm/manager/LocaleManager';
+import LocaleManager, { SYSTEM_LOCALE } from './r2mm/manager/LocaleManager';
 
 const store = baseStore;
 const router = useRouter();
