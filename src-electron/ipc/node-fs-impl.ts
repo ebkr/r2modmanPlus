@@ -1,8 +1,14 @@
-import { BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
+import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
+import { pipeline } from 'stream/promises';
 
 export function hookFsIpc(browserWindow: BrowserWindow) {
+    ipcMain.handle('node:fs:downloadFile', (event, downloadId: string, url: string, targetPath: string) => {
+        return downloadFile(event, downloadId, url, targetPath);
+    });
+
     ipcMain.handle('node:fs:writeFile', (event, path, content) => {
         return fs.promises.writeFile(path, content);
     });
@@ -143,3 +149,38 @@ function generateSerializableStat(statLike: fs.Stats): SerializableStat {
         isFile: statLike.isFile(),
     };
 }
+
+async function downloadFile(event: IpcMainInvokeEvent, downloadId: string, url: string, targetPath: string): Promise<void> {
+    await fs.promises.mkdir(path.dirname(targetPath), { recursive: true });
+    const response = await axios.get(url, {
+        responseType: 'stream',
+        maxRedirects: 10,
+        headers: {
+            'Accept': 'application/zip, application/octet-stream, */*',
+        },
+    });
+
+    const writer = fs.createWriteStream(targetPath);
+    let downloadedBytes = 0;
+    let lastEmittedBytes = 0;
+    let lastEmittedTime = 0;
+
+    response.data.on('data', (chunk: Buffer) => {
+        downloadedBytes += chunk.length;
+        const now = Date.now();
+        if (now - lastEmittedTime > 100 || downloadedBytes - lastEmittedBytes > 512 * 1024) {
+            lastEmittedTime = now;
+            lastEmittedBytes = downloadedBytes;
+            event.sender.send(`download:progress:${downloadId}`, downloadedBytes);
+        }
+    });
+
+    try {
+        await pipeline(response.data, writer);
+        event.sender.send(`download:progress:${downloadId}`, downloadedBytes);
+    } catch (err) {
+        await fs.promises.unlink(targetPath).catch(() => {});
+        throw err;
+    }
+}
+

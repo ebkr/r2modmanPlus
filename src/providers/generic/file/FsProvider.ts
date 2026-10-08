@@ -33,5 +33,6 @@ export default abstract class FsProvider {
     public abstract setModifiedTime(path: string, time: Date): Promise<void>;
     public abstract emptyDirectory(directory: string): Promise<void>;
     public abstract removeDirectoryRecursively(directory: string): Promise<void>;
+    public abstract downloadFile(url: string, targetPath: string, onProgress?: (loaded: number) => void): Promise<void>;
 
 }

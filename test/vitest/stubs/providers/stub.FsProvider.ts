@@ -74,4 +74,8 @@ export default class StubFsProvider extends FsProvider {
     async removeDirectoryRecursively(directory: string): Promise<void> {
         throw new Error("Stub access must be mocked or spied");
     }
+
+    async downloadFile(url: string, targetPath: string, onProgress?: (loaded: number) => void): Promise<void> {
+        throw new Error("Stub access must be mocked or spied");
+    }
 }
