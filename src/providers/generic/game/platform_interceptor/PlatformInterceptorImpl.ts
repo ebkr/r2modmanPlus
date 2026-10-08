@@ -72,6 +72,7 @@ function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
         [PackageLoader.RECURSIVE_MELONLOADER]: runners,
         [PackageLoader.UMM]: runners,
         [PackageLoader.RIVET]: runners,
+        [PackageLoader.GDPATCH]: runners,
     }
 }
 

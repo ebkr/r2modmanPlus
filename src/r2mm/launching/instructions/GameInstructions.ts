@@ -10,6 +10,7 @@ import { CustomInstructions, ModsPathInstructions } from "./instructions/loader/
 import ShimloaderGameInstructions from './instructions/loader/ShimloaderGameInstructions';
 import LovelyGameInstructions from './instructions/loader/LovelyGameInstructions';
 import ReturnOfModdingGameInstructions from './instructions/loader/ReturnOfModdingGameInstructions';
+import GDPatchGameInstructions from './instructions/loader/GDPatchGameInstructions';
 import GDWeaveGameInstructions from './instructions/loader/GDWeaveGameInstructions';
 import BepisLoaderGameInstructions from './instructions/loader/BepisLoaderGameInstructions';
 import UMMGameInstructions from './instructions/loader/UMMGameInstructions';
@@ -40,6 +41,7 @@ export default class GameInstructions {
         [PackageLoader.GDWEAVE, new GDWeaveGameInstructions()],
         [PackageLoader.UMM, new UMMGameInstructions()],
         [PackageLoader.RIVET, new RivetGameInstructions()],
+        [PackageLoader.GDPATCH, new GDPatchGameInstructions()],
     ]);
 
     public static async getInstructionsForGame(game: Game, profile: Profile): Promise<GameInstruction> {
