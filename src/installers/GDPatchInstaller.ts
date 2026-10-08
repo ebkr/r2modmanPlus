@@ -14,7 +14,7 @@ export class GDPatchInstaller implements PackageInstaller {
 
         const fs = FsProvider.instance;
 
-        const windowsLoaderSrc = path.join(packagePath, "gdpatch_loader.dll");
+        const windowsLoaderSrc = path.join(packagePath, "winmm.dll");
         const windowsLoaderDest = profile.joinToProfilePath("winmm.dll");
         await fs.copyFile(windowsLoaderSrc, windowsLoaderDest);
 
