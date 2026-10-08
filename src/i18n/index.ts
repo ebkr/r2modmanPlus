@@ -33,6 +33,7 @@ export const datetimeFormats = {
 export type MessageMetadata = {
     name: string;
     locale: string;
+    system: string;
     wip?: string;
 }
 

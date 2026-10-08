@@ -17,6 +17,7 @@
                             >
                                 <i class="fas fa-globe-europe"></i> {{ locale }}
                             </button>
+
                             <template #popper>
                                 <SelectOverlay/>
                             </template>
@@ -78,7 +79,7 @@ import GameImageProvider, { provideGameImageImplementation } from './providers/g
 import { GameImageProviderImplementation } from './r2mm/image/GameImageProviderImpl';
 import { useI18n } from 'vue-i18n';
 import { ActivityDropdown, SelectOverlay } from './components/all';
-import LocaleManager from './r2mm/manager/LocaleManager';
+import LocaleManager, { SYSTEM_LOCALE } from './r2mm/manager/LocaleManager';
 
 const store = baseStore;
 const router = useRouter();
