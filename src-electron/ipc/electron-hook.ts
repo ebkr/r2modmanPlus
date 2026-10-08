@@ -23,6 +23,6 @@ export function hookElectronIpc(browserWindow: BrowserWindow) {
     });
 
     ipcMain.handle('electron:getPreferredSystemLanguages', () => {
-    return app.getPreferredSystemLanguages();
+        return app.getPreferredSystemLanguages();
     });
 }
