@@ -17,17 +17,7 @@
                                 <i class="fas fa-globe-europe"></i> {{ locale }}
                             </button>
                             <template #popper>
-                            <ul class="menu-list">
-                                <li v-for="lang in availableLocales" :key="`locale-select-${lang}`">
-                                    <a v-close-popper @click="() => LocaleManager.save(lang)">
-                                        <div class="locale-list__item">
-                                            <span class="locale-list__text">{{ lang }} ({{ t('metadata.name', 0, {locale: lang}) }})</span>
-                                            <span class="locale-list__divider"></span>
-                                            <span class="locale-list__tag tag is-warning" v-if="((messages[lang]?.metadata as any).wip || '').length > 0">{{ t('metadata.wip', 0, {locale: lang}) }}</span>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
+                                <SelectOverlay/>
                             </template>
                         </ActivityDropdown>
                     </div>
@@ -86,7 +76,7 @@ import { provideProtocolImplementation } from './providers/generic/protocol/Prot
 import GameImageProvider, { provideGameImageImplementation } from './providers/generic/image/GameImageProvider';
 import { GameImageProviderImplementation } from './r2mm/image/GameImageProviderImpl';
 import { useI18n } from 'vue-i18n';
-import { ActivityDropdown } from './components/all';
+import { ActivityDropdown, SelectOverlay } from './components/all';
 import LocaleManager from './r2mm/manager/LocaleManager';
 
 const store = baseStore;
