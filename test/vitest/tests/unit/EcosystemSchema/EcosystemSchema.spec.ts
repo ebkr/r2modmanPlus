@@ -2,7 +2,7 @@ import * as path from 'path';
 import {afterEach, beforeEach, describe, expect, MockInstance, test, vi} from 'vitest';
 
 let mockJsonSchema: object = {};
-vi.mock('../../../../../src/assets/data/ecosystemJsonSchema.json', () => ({
+vi.mock('../../../../../src/assets/data/ecosystemValidationSchema.json', () => ({
     get default() { return mockJsonSchema; }
 }));
 
