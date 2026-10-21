@@ -22,7 +22,7 @@
                             </button>
 
                             <template #popper>
-                                <SelectOverlay/>
+                                <SelectOverlay @select-locale="selectLocale" />
                             </template>
                         </ActivityDropdown>
                     </div>
@@ -89,7 +89,7 @@ const router = useRouter();
 provideStoreImplementation(() => store);
 
 const quasar = useQuasar();
-const { t, locale, availableLocales, messages } = useI18n();
+const { t, locale } = useI18n();
 
 const selectedLocale = ref<string>(SYSTEM_LOCALE);
 
