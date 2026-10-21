@@ -13,6 +13,7 @@
                         <ActivityDropdown>
                             <button type="button" class="activity-bar__action"
                                 :aria-label="`${t('metadata.name', 0, { locale })}`"
+                                @click.stop.prevent="focusOnLanguageOverlaySearch"
                             >
                                 <i class="fas fa-globe-europe"></i> {{ locale }}
                             </button>
@@ -174,7 +175,14 @@ onMounted(async () => {
 
 watchEffect(() => {
     document.documentElement.classList.toggle('html--dark', quasar.dark.isActive);
-})
+});
+
+function focusOnLanguageOverlaySearch() {
+    const input = document.getElementById('language-overlay-search');
+    if (input) {
+        input.focus();
+    }
+}
 </script>
 
 <style lang="scss">
