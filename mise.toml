@@ -8,5 +8,5 @@ run = "pnpm run dev"
 raw = true
 
 [tasks.typecheck]
-description = "Ensure that the app is appropriately typed"
+description = "Ensure that the app follows typecheck requirements"
 run = "pnpm typecheck"
