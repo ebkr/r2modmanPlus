@@ -15,6 +15,7 @@ import AppWindow from '../../../providers/node/app/app_window';
 import os from '../../../providers/node/os/os';
 import R2Error from '../../../model/errors/R2Error';
 import ManagerInformation from '../../../_managerinf/ManagerInformation';
+import { getProgramFilesX86Directory } from '../../../utils/PlatformUtils';
 
 const store = getStore<State>();
 
@@ -49,11 +50,11 @@ watch(activeGame, async () => {
     syncSteamDirectory();
 });
 
-function computeDefaultSteamDirectory(): string {
+async function computeDefaultSteamDirectory(): Promise<string> {
     switch (AppWindow.getPlatform()) {
         case 'win32':
             return path.resolve(
-                process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
+                await getProgramFilesX86Directory(),
                 'Steam'
             );
         case 'linux':
@@ -78,8 +79,8 @@ async function checkIfSteamExecutableIsValid(file: string): Promise<boolean> {
     }
 }
 
-function changeSteamDirectory() {
-    const steamDir: string = settings.value!.getContext().global.steamDirectory || computeDefaultSteamDirectory();
+async function changeSteamDirectory() {
+    const steamDir: string = settings.value!.getContext().global.steamDirectory || await computeDefaultSteamDirectory();
     InteractionProvider.instance.selectFile({
         title: t('translations.pages.manager.actions.locateSteamExecutable'),
         defaultPath: steamDir,

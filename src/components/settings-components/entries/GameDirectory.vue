@@ -16,6 +16,7 @@ import R2Error from '../../../model/errors/R2Error';
 import { useSettingSearch } from '../../composables/SettingSearchComposable';
 import { useI18n } from 'vue-i18n';
 import ManagerInformation from '../../../_managerinf/ManagerInformation';
+import { getProgramFilesX86Directory } from '../../../utils/PlatformUtils';
 
 const store = getStore<State>();
 
@@ -57,8 +58,8 @@ function changeGameInstallDirectory() {
     }
 }
 
-function changeGameInstallDirectoryGeneral() {
-    const ror2Directory: string = settings.value!.getContext().gameSpecific.gameDirectory || computeDefaultInstallDirectory();
+async function changeGameInstallDirectoryGeneral() {
+    const ror2Directory: string = settings.value!.getContext().gameSpecific.gameDirectory || await computeDefaultInstallDirectory();
     InteractionProvider.instance.selectFile({
         title: t('translations.pages.manager.actions.locateGameExecutable', { gameName: activeGame.value.displayName }),
         // Lazy reduce. Assume Linux name and Windows name are identical besides extension.
@@ -93,8 +94,8 @@ function changeGameInstallDirectoryGeneral() {
     });
 }
 
-function changeGameInstallDirectoryGamePass() {
-    const ror2Directory: string = settings.value!.getContext().gameSpecific.gameDirectory || computeDefaultInstallDirectory();
+async function changeGameInstallDirectoryGamePass() {
+    const ror2Directory: string = settings.value!.getContext().gameSpecific.gameDirectory || await computeDefaultInstallDirectory();
     InteractionProvider.instance.selectFile({
         title: t('translations.pages.manager.actions.locateGameLaunchHelper'),
         filters: [{ name: "gamelaunchhelper", extensions: ["exe"] }],
@@ -118,11 +119,11 @@ function changeGameInstallDirectoryGamePass() {
     });
 }
 
-function computeDefaultInstallDirectory(): string {
+async function computeDefaultInstallDirectory(): Promise<string> {
     switch(AppWindow.getPlatform()){
         case 'win32':
             return path.resolve(
-                process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
+                await getProgramFilesX86Directory(),
                 'Steam', 'steamapps', 'common', activeGame.value.steamFolderName
             );
         case 'linux':
