@@ -12,22 +12,17 @@
                     <div>
                         <ActivityDropdown>
                             <button type="button" class="activity-bar__action"
-                                :aria-label="`${t('metadata.name', 0, { locale })}`"
+                                :aria-label="selectedLocale === SYSTEM_LOCALE
+                                    ? t('metadata.system')
+                                    : t('metadata.name', 0, { locale })"
+                                @click.stop.prevent="focusOnLanguageOverlaySearch"
                             >
-                                <i class="fas fa-globe-europe"></i> {{ locale }}
+                                <i class="fas fa-globe-europe"></i>
+                                {{ selectedLocale === SYSTEM_LOCALE ? t('metadata.system') : locale }}
                             </button>
+
                             <template #popper>
-                            <ul class="menu-list">
-                                <li v-for="lang in availableLocales" :key="`locale-select-${lang}`">
-                                    <a v-close-popper @click="() => LocaleManager.save(lang)">
-                                        <div class="locale-list__item">
-                                            <span class="locale-list__text">{{ lang }} ({{ t('metadata.name', 0, {locale: lang}) }})</span>
-                                            <span class="locale-list__divider"></span>
-                                            <span class="locale-list__tag tag is-warning" v-if="((messages[lang]?.metadata as any).wip || '').length > 0">{{ t('metadata.wip', 0, {locale: lang}) }}</span>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
+                                <SelectOverlay @select-locale="selectLocale" />
                             </template>
                         </ActivityDropdown>
                     </div>
@@ -86,15 +81,22 @@ import { provideProtocolImplementation } from './providers/generic/protocol/Prot
 import GameImageProvider, { provideGameImageImplementation } from './providers/generic/image/GameImageProvider';
 import { GameImageProviderImplementation } from './r2mm/image/GameImageProviderImpl';
 import { useI18n } from 'vue-i18n';
-import { ActivityDropdown } from './components/all';
-import LocaleManager from './r2mm/manager/LocaleManager';
+import { ActivityDropdown, SelectOverlay } from './components/all';
+import LocaleManager, { SYSTEM_LOCALE } from './r2mm/manager/LocaleManager';
 
 const store = baseStore;
 const router = useRouter();
 provideStoreImplementation(() => store);
 
 const quasar = useQuasar();
-const { t, locale, availableLocales, messages } = useI18n();
+const { t, locale } = useI18n();
+
+const selectedLocale = ref<string>(SYSTEM_LOCALE);
+
+async function selectLocale(localeValue: string) {
+    await LocaleManager.save(localeValue);
+    selectedLocale.value = localeValue;
+}
 
 document.addEventListener('auxclick', e => {
     const target = e.target! as any;
@@ -137,6 +139,8 @@ BindLoaderImpl.bind();
 
 onMounted(async () => {
     const settings: ManagerSettings = await store.dispatch('resetActiveGame');
+
+    selectedLocale.value = await settings.getLocale();
 
     await LocaleManager.apply();
 
@@ -184,7 +188,14 @@ onMounted(async () => {
 
 watchEffect(() => {
     document.documentElement.classList.toggle('html--dark', quasar.dark.isActive);
-})
+});
+
+function focusOnLanguageOverlaySearch() {
+    const input = document.getElementById('language-overlay-search');
+    if (input) {
+        input.focus();
+    }
+}
 </script>
 
 <style lang="scss">
