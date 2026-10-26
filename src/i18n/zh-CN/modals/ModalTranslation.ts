@@ -13,12 +13,10 @@ export const ModalTranslation: ModalMessageFormat = {
         solution: '如果可执行文件正确但仍出现此错误，请尝试以管理员身份运行。'
     },
     clearingGameDirectory: {
-        title: '正在清理 {gameName} 安装目录',
-        waitToLaunchGame: `
-            在 Steam 验证游戏文件完整性之前，您将无法启动游戏。
-            `,
+        title: '清理 {gameName} 安装目录',
+        warning: '这将删除游戏目录中的所有文件。',
         steamWillBeStarted: `
-            Steam 将会启动，并尝试验证 {gameName} 的文件完整性。
+            这将删除游戏目录，并提示 Steam 验证 {gameName} 的文件完整性。
             `,
         checkSteamForProgress: `
             请在 Steam 窗口中查看验证进度。
