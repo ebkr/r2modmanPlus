@@ -19,7 +19,7 @@ const message: MessageFormat = {
     metadata: {
         name: '한국어',
         locale: 'ko-KR',
-        wip: "WIP",
+        wip: "번역 중",
     },
     translations: {
         pages: {

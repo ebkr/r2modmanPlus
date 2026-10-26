@@ -18,7 +18,8 @@ import { ModalTranslation } from './modals/ModalTranslation';
 const message: MessageFormat = {
     metadata: {
         name: '简体中文',
-        locale: 'zh-CN'
+        locale: 'zh-CN',
+        wip: "翻译中",
     },
     translations: {
         pages: {
