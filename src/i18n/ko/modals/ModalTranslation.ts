@@ -13,12 +13,10 @@ export const ModalTranslation: ModalMessageFormat = {
         solution: '실행 파일을 제대로 선택했는데도 오류가 발생한다면, 관리자 권한으로 실행해 주세요.'
     },
     clearingGameDirectory: {
-        title: '{gameName} 설치 폴더를 초기화하는 중입니다',
-        waitToLaunchGame: `
-            스팀이 게임 파일 무결성 검사를 완료하기 전까진 게임을 실행할 수 없습니다.
-            `,
+        title: '{gameName} 설치 폴더 초기화',
+        warning: '게임 폴더의 모든 파일이 삭제됩니다.',
         steamWillBeStarted: `
-            곧 스팀이 실행되고 {gameName}의 무결성 검사를 시작할 겁니다.
+            게임 폴더를 삭제한 뒤 스팀에 {gameName}의 무결성 검사를 요청합니다.
             `,
         checkSteamForProgress: `
             스팀에서 진행 상황을 확인해주세요.
