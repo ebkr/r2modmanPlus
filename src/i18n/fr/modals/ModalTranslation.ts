@@ -13,9 +13,9 @@ export const ModalTranslation: ModalMessageFormat = {
         solution: 'Si cette erreur apparaît alors que l\'exécutable est correct, veuillez exécuter en tant qu\'administrateur.'
     },
     clearingGameDirectory: {
-        title: 'Nettoyage du dossier d\'installation de {gameName}',
-        waitToLaunchGame: 'Vous ne pourrez pas lancer le jeu tant que Steam n\'aura pas vérifié l\'intégrité des fichiers du jeu.',
-        steamWillBeStarted: 'Steam va démarrer et tenter de vérifier l\'intégrité de {gameName}.',
+        title: 'Nettoyer le dossier d\'installation de {gameName}',
+        warning: 'Cela supprimera tous les fichiers du dossier du jeu.',
+        steamWillBeStarted: 'Cela supprimera le dossier du jeu et demandera à Steam de vérifier l\'intégrité de {gameName}.',
         checkSteamForProgress: `
         Veuillez vérifier la fenêtre de Steam pour l'avancement de la validation.
         Si la fenêtre n'est pas encore apparue, veuillez patienter.
