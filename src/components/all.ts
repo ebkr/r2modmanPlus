@@ -5,6 +5,7 @@ import ModalCard from './ModalCard.vue';
 import DeferredInput from './DeferredInput.vue';
 import ExternalLink from './v2/ExternalLink.vue';
 import ActivityDropdown from './v2/ActivityDropdown.vue';
+import SelectOverlay from './v2/language/SelectOverlay.vue';
 
 export {
     Hero,
@@ -14,4 +15,5 @@ export {
     DeferredInput,
     ExternalLink,
     ActivityDropdown,
+    SelectOverlay,
 }
