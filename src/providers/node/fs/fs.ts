@@ -20,6 +20,7 @@ export type NodeFsProvider = {
     setModifiedTime: (path: string, time: Date) => Promise<void>;
     emptyDirectory: (directory: string) => Promise<void>;
     removeDirectoryRecursively: (directory: string) => Promise<void>;
+    downloadFile: (url: string, targetPath: string, onProgress?: (loaded: number) => void) => Promise<void>;
 }
 
 let implementation: () => NodeFsProvider;
@@ -54,6 +55,7 @@ const fs: NodeFsProvider = {
     setModifiedTime: async (...args) => getImplementation().setModifiedTime(...args),
     emptyDirectory: async (...args) => getImplementation().emptyDirectory(...args),
     removeDirectoryRecursively: async (...args) => getImplementation().removeDirectoryRecursively(...args),
+    downloadFile: async (...args) => getImplementation().downloadFile(...args),
 };
 
 export default fs;
