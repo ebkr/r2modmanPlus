@@ -1,3 +1,46 @@
+### 3.2.21
+
+#### New languages
+
+- Korean (thanks to @habacksill)
+- Chinese Simplified (thanks to @TianMengLucky)
+
+#### Games added
+
+- A Little to the Left
+- A Webbing Journey
+- Airport Security Sucks!
+- Approximately Up
+- Berry Bury Berry
+- Cat Mail Co.
+- Crawl
+- Dice Kingdoms
+- FATE Reawakened
+- Frozen Ship
+- FRUKT
+- Graveyard Keeper 2
+- Gunman Contracts - Stand Alone
+- In Falsus
+- IRONSTRIKE
+- Make Way
+- Minigunner
+- Nivalis Nights
+- Papers, Please
+- Pummel Party
+- Raft
+- Soulstone Survivors
+- Space Cat Digger
+- SUPERHOT VR
+- Trash Day
+- Whisper of the House
+
+#### Other improvements
+
+- Languages can now be searched
+- "Reset installation" button now requires confirmation
+- Lovely loader uninstall fixes
+- Added new primary Thunderstore CDN as default
+
 ### 3.2.20
 
 #### Multiple Languages (i18n)
