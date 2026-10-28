@@ -88,4 +88,24 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
         return null;
     }
+
+    async isModLoaderDisabled(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | boolean | undefined> {
+        try {
+            // Mod loaders don't support disabling.
+            if (this.isModLoader(mod)) {
+                return
+            }
+
+            if (this.pluginInstaller.isLoaderDisabled === undefined) {
+                return
+            }
+
+            const args = getInstallArgs(mod, profile);
+            return await this.pluginInstaller.isLoaderDisabled(args);
+        } catch (e) {
+            console.error(e);
+            return R2Error.fromThrownValue(e);
+        }
+    }
+
 }
