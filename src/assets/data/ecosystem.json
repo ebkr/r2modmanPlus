@@ -33595,6 +33595,103 @@
         "shortDescription": "Minos is a maze-building roguelite where you, the fabled Minotaur, must defend your sanctuary from bloodthirsty adventurers. Design and re-design deadly labyrinths, set traps, and turn every brave fool into your next victim."
       }
     },
+    "mio-memories-in-orbit": {
+      "uuid": "6ab233c8-1fa3-4944-b68a-778362e13261",
+      "label": "mio-memories-in-orbit",
+      "meta": {
+        "displayName": "MIO: Memories in Orbit",
+        "iconUrl": "mio-memories-in-orbit/mio-memories-in-orbit-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1672810"
+            },
+            {
+              "platform": "epic-games-store",
+              "identifier": "cf65e9d06d1c4bbe8267bdd65fb87a55"
+            },
+            {
+              "platform": "xbox-game-pass",
+              "identifier": "FocusHomeInteractiveSA.MioMemoriesinOrbit"
+            },
+            {
+              "platform": "other",
+              "identifier": null
+            }
+          ],
+          "steamFolderName": "MIO",
+          "dataFolderName": "",
+          "exeNames": [
+            "mio.exe"
+          ],
+          "packageLoader": "mio",
+          "meta": {
+            "displayName": "MIO: Memories in Orbit",
+            "iconUrl": "mio-memories-in-orbit/mio-memories-in-orbit-cover-360x480.webp"
+          },
+          "settingsIdentifier": "MioMemoriesInOrbit",
+          "internalFolderName": "MioMemoriesInOrbit",
+          "packageIndex": "https://thunderstore.io/c/mio-memories-in-orbit/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "MIO: Memories in Orbit",
+        "listed": true,
+        "meta": {
+          "icon": "mio-memories-in-orbit/mio-memories-in-orbit-icon-192x192.webp",
+          "cover": "mio-memories-in-orbit/mio-memories-in-orbit-cover-360x480.webp",
+          "background": "mio-memories-in-orbit/mio-memories-in-orbit-bg-1920x1080.webp",
+          "hero": "mio-memories-in-orbit/mio-memories-in-orbit-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "shortDescription": "Play as android MIO in this mesmerizing metroidvania where you explore the Vessel, an enormous technological ark overgrown with machines gone rogue. Uncover its secrets, enhance MIO's abilities, and save the spaceship and its residents from oblivion."
+      }
+    },
     "mirrors-edge": {
       "uuid": "bd2699ab-0ebf-4411-aab3-2132063361b0",
       "label": "mirrors-edge",
@@ -56669,6 +56766,54 @@
       ],
       "shortDescription": "Minos is a maze-building roguelite where you, the fabled Minotaur, must defend your sanctuary from bloodthirsty adventurers. Design and re-design deadly labyrinths, set traps, and turn every brave fool into your next victim."
     },
+    "mio-memories-in-orbit": {
+      "displayName": "MIO: Memories in Orbit",
+      "listed": true,
+      "meta": {
+        "icon": "mio-memories-in-orbit/mio-memories-in-orbit-icon-192x192.webp",
+        "cover": "mio-memories-in-orbit/mio-memories-in-orbit-cover-360x480.webp",
+        "background": "mio-memories-in-orbit/mio-memories-in-orbit-bg-1920x1080.webp",
+        "hero": "mio-memories-in-orbit/mio-memories-in-orbit-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "shortDescription": "Play as android MIO in this mesmerizing metroidvania where you explore the Vessel, an enormous technological ark overgrown with machines gone rogue. Uncover its secrets, enhance MIO's abilities, and save the spaceship and its residents from oblivion."
+    },
     "mirrors-edge": {
       "displayName": "Mirror's Edge",
       "listed": false,
@@ -61825,6 +61970,11 @@
       "packageId": "NotNet-GDWeave",
       "rootFolder": "",
       "loader": "gdweave"
+    },
+    {
+      "packageId": "MIO_Modding-MioModLoader",
+      "rootFolder": "MioModLoader",
+      "loader": "mio"
     },
     {
       "packageId": "BepInEx-BepInExPack_AmongUs",
