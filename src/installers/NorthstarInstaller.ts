@@ -1,8 +1,7 @@
 import { InstallArgs, PackageInstaller, uninstallModLoader } from './PackageInstaller';
 import path from "../providers/node/path/path";
 import FsProvider from '../providers/generic/file/FsProvider';
-import { MODLOADER_PACKAGES } from '../r2mm/installing/profile_installers/ModLoaderVariantRecord';
-import { PackageLoader } from '../model/schema/ThunderstoreSchema';
+import { getModLoaderMapping } from '../model/schema/ThunderstoreSchema';
 
 const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 
@@ -17,10 +16,7 @@ export class NorthstarInstaller implements PackageInstaller {
             profile,
         } = args;
 
-        const mapping = MODLOADER_PACKAGES.find((entry) =>
-            entry.packageName.toLowerCase() == mod.getName().toLowerCase() &&
-            entry.loaderType == PackageLoader.NORTHSTAR,
-        );
+        const mapping = getModLoaderMapping(mod.getName());
         const mappingRoot = mapping ? mapping.rootFolder : "";
 
         let northstarRoot: string;
