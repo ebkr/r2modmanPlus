@@ -5,7 +5,7 @@ export const NodeChildProcessImplementation: NodeChildProcessProvider = {
     exec: async (path, options, callback) => {
         // Error is passed directly into resolve to keep compatibility with callback implementations.
         // Therefore no need to use a `.catch` block
-        window.node.child_process.exec(path, options)
+        await window.node.child_process.exec(path, options)
             .then(err => {
                 if (callback) {
                     callback(err as unknown as Error);
