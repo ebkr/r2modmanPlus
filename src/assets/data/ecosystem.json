@@ -7449,6 +7449,10 @@
         {
           "platform": "epic-games-store",
           "identifier": "07c634c7291a49b5b2455e14b9a83950"
+        },
+        {
+          "platform": "xbox-game-pass",
+          "identifier": "SupergiantGamesLLC.HadesII"
         }
       ],
       "r2modman": [
@@ -7467,6 +7471,10 @@
             {
               "platform": "epic-games-store",
               "identifier": "07c634c7291a49b5b2455e14b9a83950"
+            },
+            {
+              "platform": "xbox-game-pass",
+              "identifier": "SupergiantGamesLLC.HadesII"
             }
           ],
           "settingsIdentifier": "HadesII",
