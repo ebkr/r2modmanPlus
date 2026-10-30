@@ -2,6 +2,7 @@ import langEn, { dateTimeFormat as enDateTimeFormat } from './en';
 import langFr, { dateTimeFormat as frDateTimeFormat } from './fr';
 import langKo, { dateTimeFormat as koDateTimeFormat } from './ko';
 import langZhCn, { dateTimeFormat as zhCnDateTimeFormat } from './zh-CN';
+import langZhTw, { dateTimeFormat as zhTwDateTimeFormat } from './zh-TW';
 import { PlatformMessageFormat } from './base/platforms/PlatformMessageFormat';
 import { ModListStatusMessageFormat } from './base/modListStatus/ModListStatusMessageFormat';
 import { BannerMessageFormat } from './base/banners/BannerMessageFormat';
@@ -23,6 +24,7 @@ export default {
     'fr': langFr,
     'ko': langKo,
     'zh-CN': langZhCn,
+    'zh-TW': langZhTw,
 };
 
 export const datetimeFormats = {
@@ -30,6 +32,7 @@ export const datetimeFormats = {
     [langFr.metadata.locale]: frDateTimeFormat,
     [langKo.metadata.locale]: koDateTimeFormat,
     [langZhCn.metadata.locale]: zhCnDateTimeFormat,
+    [langZhTw.metadata.locale]: zhTwDateTimeFormat,
 };
 
 // TODO - Use for language selection screens
