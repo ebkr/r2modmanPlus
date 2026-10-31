@@ -1,6 +1,7 @@
 import langEn, { dateTimeFormat as enDateTimeFormat } from './en';
 import langFr, { dateTimeFormat as frDateTimeFormat } from './fr';
 import langKo, { dateTimeFormat as koDateTimeFormat } from './ko';
+import langRu, { dateTimeFormat as ruDateTimeFormat } from './ru';
 import langZhCn, { dateTimeFormat as zhCnDateTimeFormat } from './zh-CN';
 import { PlatformMessageFormat } from './base/platforms/PlatformMessageFormat';
 import { ModListStatusMessageFormat } from './base/modListStatus/ModListStatusMessageFormat';
@@ -22,6 +23,7 @@ export default {
     'en': langEn,
     'fr': langFr,
     'ko': langKo,
+    'ru': langRu,
     'zh-CN': langZhCn,
 };
 
@@ -29,6 +31,7 @@ export const datetimeFormats = {
     [langEn.metadata.locale]: enDateTimeFormat,
     [langFr.metadata.locale]: frDateTimeFormat,
     [langKo.metadata.locale]: koDateTimeFormat,
+    [langRu.metadata.locale]: ruDateTimeFormat,
     [langZhCn.metadata.locale]: zhCnDateTimeFormat,
 };
 
