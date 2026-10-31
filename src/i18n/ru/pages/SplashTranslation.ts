@@ -17,7 +17,7 @@ export const SplashTranslation: SplashMessageFormat = {
         main: {
             didYouKnow: 'Знаете ли вы?',
             externalInstallWithModManager: `
-                            Вы можете использовать кнопку "Install with Mod Manager" на
+                            Вы можете использовать кнопку «Install with Mod Manager» на
                             Thunderstore, чтобы устанавливать моды через {appName}.
                         `,
             goToThunderstore: 'Перейти на Thunderstore',
@@ -46,7 +46,7 @@ export const SplashTranslation: SplashMessageFormat = {
             title: 'Вопросы и ответы',
             howToGetStarted: {
                 title: 'С чего начать?',
-                body: 'Перейдите на вкладку "Онлайн" и скачайте любимые моды. Нажмите "Запустить с модами" и наслаждайтесь.'
+                body: 'Перейдите на вкладку «Онлайн» и скачайте любимые моды. Нажмите «Запустить с модами» и наслаждайтесь.'
             },
             startingWithMods: {
                 title: 'Запуск игры с модами',

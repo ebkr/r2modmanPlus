@@ -15,7 +15,7 @@ export const HelpTranslation: HelpMessageFormat = {
         gettingStarted: {
             title: 'Начните с установки модов',
             whereToFindMods: `
-            Перейдите на вкладку "{''}@:translations.pages.manager.navigation.modsActions.online{''}", найдите мод и нажмите «Скачать».
+            Перейдите на вкладку «{''}@:translations.pages.manager.navigation.modsActions.online{''}», найдите мод и нажмите «Скачать».
             Зависимости скачаются автоматически, что сэкономит ваше время.
             `,
             onceInstalled: 'После установки нужных модов просто нажмите {startModdedAction} в левом верхнем углу.',
@@ -60,7 +60,7 @@ export const HelpTranslation: HelpMessageFormat = {
         },
         consoleCloses: {
             title: 'Появляется текстовое окно и сразу закрывается',
-            tryRunning: 'Попробуйте выполнить "Сбросить установку {gameName}" на экране настроек.', // TODO - Reference translation via Settings screen
+            tryRunning: 'Попробуйте выполнить «Сбросить установку {gameName}» на экране настроек.', // TODO - Reference translation via Settings screen
             ifPersists: 'Если не помогло, принудительно закройте Steam и запустите игру с модами при закрытом Steam.',
         }
     },
@@ -76,7 +76,7 @@ export const HelpTranslation: HelpMessageFormat = {
             title: 'Автоматические обновления',
             whenDoesItUpdate: 'Если доступно обновление, менеджер обновляется автоматически при закрытии.',
             downloadedInBackground: 'Обновления скачиваются в фоне.',
-            promptToRunOldInstaller: 'Может появиться запрос на запуск "{oldInstaller}" от имени администратора. Это программа обновления.',
+            promptToRunOldInstaller: 'Может появиться запрос на запуск «{oldInstaller}» от имени администратора. Это программа обновления.',
             ifProblemOccurs: 'Если при обновлении возникла проблема, скачайте и запустите последний установщик.',
         },
         ignoreUpdates: {

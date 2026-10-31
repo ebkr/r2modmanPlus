@@ -32,7 +32,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
     installed: {
         noModsInstalled: {
             title: 'Похоже, у вас не установлено ни одного мода',
-            content: 'Нажмите вкладку "Онлайн" слева, чтобы просмотреть все доступные моды.',
+            content: 'Нажмите на вкладку «Онлайн» слева, чтобы просмотреть все доступные моды.',
         },
         searchAndSort: {
             search: {

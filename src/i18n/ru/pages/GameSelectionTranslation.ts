@@ -21,8 +21,8 @@ export const GameSelectionTranslation: GameSelectionMessageFormat = {
     },
     noResults: {
         empty: {
-            game: 'Игры по запросу "{filterText}" не найдены',
-            server: 'Серверы по запросу "{filterText}" не найдены',
+            game: 'Игры по запросу «{filterText}» не найдены',
+            server: 'Серверы по запросу «{filterText}» не найдены',
         },
         title: 'Не можете найти то, что ищете?',
         suggestion: 'Попробуйте другое название или ключевое слово. Возможно, эта игра пока не поддерживается.',

@@ -29,7 +29,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
     entries: {
         changeLaunchBehaviour: {
             title: 'Изменить способ запуска',
-            description: 'Выберите способ запуска. Можно указать менеджеру, что игра явно использует Native или Proton.',
+            description: 'Выберите способ запуска. Можно указать менеджеру, что игра запускается через Native или Proton.',
             current: 'Текущий способ запуска:',
             searchTerms: [
                 'Изменить способ запуска',
@@ -294,7 +294,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
         updateAllMods: {
             title: 'Обновить все моды',
             description: 'Быстро обновить все установленные моды до последних версий. {status}',
-            status: 'Доступно обновление для {count} мода. | Доступны обновления для {count} модов. | Доступны обновления для {count} модов. | Доступны обновления для {count} модов.',
+            status: 'Доступно обновление для {count} мода. | Доступны обновления для {count} модов. | Доступны обновления для {count} модов. | Доступны обновления для {count} мода.',
             searchTerms: [
                 'Обновить все моды',
             ],

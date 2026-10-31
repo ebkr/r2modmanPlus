@@ -25,7 +25,7 @@ export const DownloadMonitorTranslation: DownloadMonitorMessageFormat = {
             progress: '{progress}% из {totalSize}',
             installing: 'Установка: {modName}',
             waiting: 'Ожидание завершения загрузки',
-            installProgress: 'Готово на {progress}%',
+            installProgress: 'Выполнено на {progress}%',
         }
     }
 }

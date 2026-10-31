@@ -8,7 +8,7 @@ export const ModalTranslation: ModalMessageFormat = {
     },
     failedToSetTheGameFolder: {
         title: 'Не удалось задать папку {gameName}',
-        listedExecutableNames: 'Исполняемый файл должен быть одним из следующих: "{options}".',
+        listedExecutableNames: 'Исполняемый файл должен быть одним из следующих: «{options}».',
         executableMustBeOneOf: 'Выбранный исполняемый файл должен быть одним из следующих:',
         solution: 'Если эта ошибка появилась, но исполняемый файл указан верно, запустите программу от имени администратора.'
     },
@@ -193,8 +193,8 @@ export const ModalTranslation: ModalMessageFormat = {
     launchType: {
         title: 'Настроить способ запуска',
         auto: {
-            NATIVE: 'Игра будет запущена с параметром "Native"',
-            PROTON: 'Игра будет запущена с параметром "Proton"',
+            NATIVE: 'Игра будет запущена с параметром «Native»',
+            PROTON: 'Игра будет запущена с параметром «Proton»',
         },
         native: {
             unsureWrapperArgsPresent: 'Не удалось определить, заданы ли необходимые параметры обёртки.',
@@ -228,8 +228,8 @@ export const ModalTranslation: ModalMessageFormat = {
         description: 'Этот профиль будет хранить собственные моды независимо от других профилей.',
         tagStates: {
             required: 'Нужно ввести название профиля',
-            valid: '"{profileName}" — допустимое название профиля',
-            error: '"{profileName}" уже используется или содержит недопустимые символы'
+            valid: '«{profileName}» — допустимое название профиля',
+            error: '«{profileName}» уже используется или содержит недопустимые символы'
         },
         actions: {
             create: 'Создать'
@@ -254,8 +254,8 @@ export const ModalTranslation: ModalMessageFormat = {
         },
         tagStates: {
             required: 'Нужно ввести название профиля',
-            valid: '"{profileName}" — допустимое название профиля',
-            error: '"{profileName}" уже используется или содержит недопустимые символы'
+            valid: '«{profileName}» — допустимое название профиля',
+            error: '«{profileName}» уже используется или содержит недопустимые символы'
         },
     },
     importProfile: {
@@ -277,7 +277,7 @@ export const ModalTranslation: ModalMessageFormat = {
                 title: 'Введите код профиля',
                 enterCodePlaceholder: 'Введите код профиля',
                 tagStates: {
-                    invalid: 'Неверный код, проверьте опечатки',
+                    invalid: 'Неверный код, проверьте на опечатки',
                 },
                 actions: {
                     loading: 'Загрузка',
@@ -326,8 +326,8 @@ export const ModalTranslation: ModalMessageFormat = {
                 },
                 tagStates: {
                     required: 'Нужно ввести название профиля',
-                    valid: '"{profileName}" — допустимое название профиля',
-                    error: '"{profileName}" уже используется или содержит недопустимые символы'
+                    valid: '«{profileName}» — допустимое название профиля',
+                    error: '«{profileName}» уже используется или содержит недопустимые символы'
                 },
                 actions: {
                     create: 'Создать',
