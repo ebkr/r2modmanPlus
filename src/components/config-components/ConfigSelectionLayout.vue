@@ -137,8 +137,12 @@ onMounted(async () => {
     tree.navigateAndPerform(plugins => {
         plugins.getDirectories().forEach(value => {
             plugins.navigateAndPerform(sub => {
-                // Remove all manifest.json files from the root of the plugins subdirectory.
+                // Remove mod metadata from the root of the plugins subdirectory: the manifest.json
+                // shipped in the package, and the mm_v2_manifest.json written by LocalModInstaller
+                // next to it for mods imported from a local zip. Both are bookkeeping, not settings,
+                // and listing them made them look like the mod's config file.
                 sub.removeFilesWithBasename('manifest.json');
+                sub.removeFilesWithBasename('mm_v2_manifest.json');
             }, value.getDirectoryName());
         });
     }, 'BepInEx', 'plugins');
