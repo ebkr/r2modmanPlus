@@ -80,8 +80,10 @@ jobs:
         include:
           - kind: flatpak
             os: ubuntu-latest
+            arch: x86_64
           - kind: flatpak-arm
             os: ubuntu-24.04-arm
+            arch: aarch64
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-25.08
       options: --privileged
@@ -94,6 +96,7 @@ jobs:
           bundle: r2modman.flatpak
           manifest-path: flatpak/io.github.ebkr.r2modman.yaml
           upload-artifact: false
+          arch: ${{ matrix.arch }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v6
