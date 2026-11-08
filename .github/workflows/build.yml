@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build:
-    name: Build for ${{ matrix.platform }}
+    name: Build for ${{ matrix.kind }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
