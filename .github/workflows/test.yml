@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
     build:
-        name: Test on ${{ matrix.platform }}
+        name: Test on ${{ matrix.kind }}
         runs-on: ${{ matrix.os }}
         strategy:
             fail-fast: false
@@ -12,6 +12,9 @@ jobs:
                 include:
                     - kind: linux
                       os: ubuntu-latest
+                      platform: linux
+                    - kind: linux-arm
+                      os: ubuntu-latest-arm
                       platform: linux
                     - kind: windows
                       os: windows-latest
