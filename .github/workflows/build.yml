@@ -68,12 +68,20 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           path: "dist/electron/Packaged"
-          name: "r2modman-${{ matrix.platform }}-build-${{ github.sha }}"
+          name: "r2modman-${{ matrix.kind }}-build-${{ github.sha }}"
 
   build-flatpak:
     name: Build for Flatpak
     if: contains(github.event.head_commit.message, 'build(artifact)')
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - kind: flatpak
+            os: ubuntu-latest
+          - kind: flatpak-arm
+            os: ubuntu-latest-arm
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-25.08
       options: --privileged
@@ -91,4 +99,4 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           path: "r2modman.flatpak"
-          name: "r2modman-flatpak-build-${{ github.sha }}"
+          name: "r2modman-${{ matrix.kind }}-build-${{ github.sha }}"
