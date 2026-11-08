@@ -13,6 +13,9 @@ jobs:
           - kind: linux
             os: ubuntu-latest
             platform: linux
+          - kind: linux-arm
+            os: ubuntu-latest-arm
+            platform: linux
           - kind: windows
             os: windows-latest
             platform: win
