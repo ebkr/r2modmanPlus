@@ -68,7 +68,7 @@ modules:
       - pnpm install --frozen-lockfile
       - pnpm build-linux-unpacked
 
-      - cp -r dist/electron/Packaged/$([[ $(uname -m) = "aarch64" ]] && echo "linux-arm64" || echo "linux")-unpacked/* /app/
+      - cp -r dist/electron/Packaged/$([[ $(uname -m) = "aarch64" ]] && echo "linux-arm6" || echo "linux")-unpacked/* /app/
 
       - install -Dm644 src/assets/icon/128x128.png /app/share/icons/hicolor/128x128/apps/io.github.ebkr.r2modman.png
       - install -Dm644 src/assets/icon/256x256.png /app/share/icons/hicolor/256x256/apps/io.github.ebkr.r2modman.png
