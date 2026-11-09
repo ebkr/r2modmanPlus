@@ -34,3 +34,7 @@ export function copyToClipboard(value: string) {
 export async function getEnvironmentVariables() {
     return ipcRenderer.invoke('electron:getEnvironmentVariables');
 }
+
+export async function getPreferredSystemLanguages(): Promise<string[]> {
+    return ipcRenderer.invoke('electron:getPreferredSystemLanguages');
+}

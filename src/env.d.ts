@@ -68,6 +68,7 @@ declare global {
             openExternal: (path: string) => void;
             selectFile: (path: string) => void;
             getEnvironmentVariables: () => Promise<string>;
+            getPreferredSystemLanguages: () => Promise<string[]>;
         }
     }
 }

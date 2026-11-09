@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import LocaleManager from '@r2/r2mm/manager/LocaleManager';
+import { SYSTEM_LOCALE } from '@r2/r2mm/manager/LocaleManager';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t, availableLocales, messages } = useI18n();
+const emit = defineEmits<{
+    (event: 'select-locale', locale: string): void;
+}>();
 
 const searchTerm = ref<string>("");
 
@@ -22,6 +25,13 @@ const languageOptions = computed(() => {
     );
 })
 
+const showSystemOption = computed(() => {
+    const term = searchTerm.value.trim().toLowerCase();
+
+    return SYSTEM_LOCALE.includes(term)
+        || t('metadata.system').toLowerCase().includes(term);
+});
+
 </script>
 
 <template>
@@ -30,9 +40,26 @@ const languageOptions = computed(() => {
     </div>
     <div class="light-separator"></div>
     <ul class="menu-list" ref="listRef" :style="{ minHeight: listHeight ? `${listHeight}px` : undefined }">
-        <li v-if="languageOptions.length === 0" class="locale-list__empty">No languages found</li>
+    <li v-if="showSystemOption">
+        <a
+            href="#"
+            v-close-popper
+            @click.prevent="emit('select-locale', SYSTEM_LOCALE)"
+        >
+            <div class="locale-list__item">
+                <span class="locale-list__text">
+                    {{ t('metadata.system') }}
+                </span>
+            </div>
+        </a>
+    </li>
+        <li v-if="languageOptions.length === 0 && !showSystemOption"
+        class="locale-list__empty"
+    >
+            No languages found
+    </li>
         <li v-for="lang in languageOptions" :key="`locale-select-${lang}`">
-            <a href="#" v-close-popper @click="() => LocaleManager.save(lang)">
+            <a href="#" v-close-popper @click.prevent="emit('select-locale', lang)">
                 <div class="locale-list__item">
                     <span class="locale-list__text">{{ lang }} ({{ t('metadata.name', 0, {locale: lang}) }})</span>
                     <span class="locale-list__divider"></span>

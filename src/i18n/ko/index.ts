@@ -20,6 +20,7 @@ const message: MessageFormat = {
         name: '한국어',
         locale: 'ko-KR',
         wip: "번역 중",
+        system: '시스템',
     },
     translations: {
         pages: {

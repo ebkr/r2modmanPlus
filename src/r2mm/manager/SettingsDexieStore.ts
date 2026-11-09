@@ -122,7 +122,7 @@ export default class SettingsDexieStore extends Dexie {
                 defaultStore: undefined,
                 gameSelectionViewMode: GameSelectionViewMode.CARD,
                 previewPanelWidth: 450,
-                locale: 'en',
+                locale: 'system',
             },
             gameSpecific: {
                 version: 2,
