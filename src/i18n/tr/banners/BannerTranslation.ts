@@ -17,7 +17,7 @@ export const BannerTranslation: BannerMessageFormat = {
         blockedByDownloads: 'Ancak devam eden mod indirmeleri varken mod listesi yenilenemez.',
         waitForDownloads: 'Devam etmeden önce lütfen indirmelerin bitmesini bekleyin.',
         retryPrompt: 'Mod listesi Thunderstore\'dan yenilenirken bir hata oluştu. {retryAction} ister misiniz?',
-        retryAction: 'Şimdi tekrar denemek',
+        retryAction: 'şimdi tekrar denemek',
     },
     updatableMods: {
         text: `
