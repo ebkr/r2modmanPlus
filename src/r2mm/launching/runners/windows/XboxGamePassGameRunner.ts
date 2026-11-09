@@ -9,6 +9,7 @@ import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
 import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameDirectoryResolverProvider';
 import FsProvider from '../../../../providers/generic/file/FsProvider';
+import path from '../../../../providers/node/path/path';
 
 export default class XboxGamePassGameRunner extends GameRunnerProvider {
 
@@ -42,11 +43,13 @@ export default class XboxGamePassGameRunner extends GameRunnerProvider {
             const gameExecutable = (await FsProvider.instance.readdir(gameDir))
                 .find((x: string) => "gamelaunchhelper.exe" === x);
 
+            // Use the full path because Windows may not search the working directory for executables
+            const gameExecutablePath = gameExecutable === undefined ? gameExecutable : path.join(gameDir, gameExecutable);
             const mappedArgs = args.map(value => `"${value}"`).join(' ');
 
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`);
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameExecutablePath} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`);
 
-            ChildProcess.exec(`"${gameExecutable}" ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`, {
+            ChildProcess.exec(`"${gameExecutablePath}" ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`, {
                 cwd: gameDir,
                 windowsHide: false,
             }, (err => {
