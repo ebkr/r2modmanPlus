@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build:
-    name: Build for ${{ matrix.platform }}
+    name: Build for ${{ matrix.kind }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -12,6 +12,9 @@ jobs:
         include:
           - kind: linux
             os: ubuntu-latest
+            platform: linux
+          - kind: linux-arm
+            os: ubuntu-24.04-arm
             platform: linux
           - kind: windows
             os: windows-latest
@@ -65,12 +68,22 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           path: "dist/electron/Packaged"
-          name: "r2modman-${{ matrix.platform }}-build-${{ github.sha }}"
+          name: "r2modman-${{ matrix.kind }}-build-${{ github.sha }}"
 
   build-flatpak:
     name: Build for Flatpak
     if: contains(github.event.head_commit.message, 'build(artifact)')
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - kind: flatpak
+            os: ubuntu-latest
+            arch: x86_64
+          - kind: flatpak-arm
+            os: ubuntu-24.04-arm
+            arch: aarch64
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-25.08
       options: --privileged
@@ -83,9 +96,10 @@ jobs:
           bundle: r2modman.flatpak
           manifest-path: flatpak/io.github.ebkr.r2modman.yaml
           upload-artifact: false
+          arch: ${{ matrix.arch }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v6
         with:
           path: "r2modman.flatpak"
-          name: "r2modman-flatpak-build-${{ github.sha }}"
+          name: "r2modman-${{ matrix.kind }}-build-${{ github.sha }}"
