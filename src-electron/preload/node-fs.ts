@@ -1,5 +1,20 @@
 import { ipcRenderer } from 'electron/renderer';
 
+export async function downloadFile(url: string, targetPath: string, onProgress?: (loaded: number) => void): Promise<void> {
+    const downloadId = Math.random().toString(36).substring(2);
+    const progressChannel = `download:progress:${downloadId}`;
+    if (onProgress) {
+        ipcRenderer.on(progressChannel, (_event, loaded: number) => {
+            onProgress(loaded);
+        });
+    }
+    try {
+        await ipcRenderer.invoke('node:fs:downloadFile', downloadId, url, targetPath);
+    } finally {
+        ipcRenderer.removeAllListeners(progressChannel);
+    }
+}
+
 export async function writeFile(path: string, content: string | Buffer): Promise<any> {
     return ipcRenderer.invoke('node:fs:writeFile', path, content);
 }
