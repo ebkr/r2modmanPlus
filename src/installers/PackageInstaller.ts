@@ -1,12 +1,11 @@
 import FileWriteError from "../model/errors/FileWriteError";
 import R2Error from "../model/errors/R2Error";
 import FileTree from "../model/file/FileTree";
-import GameManager from "../model/game/GameManager";
 import { ImmutableProfile } from "../model/Profile";
 import ManifestV2 from "../model/ManifestV2";
+import { isModLoaderPackage } from "../model/schema/ThunderstoreSchema";
 import FsProvider from "../providers/generic/file/FsProvider";
 import path from "../providers/node/path/path";
-import { MOD_LOADER_VARIANTS } from "../r2mm/installing/profile_installers/ModLoaderVariantRecord";
 import PathResolver from "../r2mm/manager/PathResolver";
 
 export type InstallArgs = {
@@ -64,11 +63,7 @@ export async function uninstallModLoader(mod: ManifestV2, profile: ImmutableProf
     const fs = FsProvider.instance;
 
     try {
-        const loader = MOD_LOADER_VARIANTS[GameManager.activeGame.internalFolderName]!.find(
-            loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase()
-        );
-
-        if (loader) {
+        if (isModLoaderPackage(mod.getName())) {
             for (const file of (await fs.readdir(profile.getProfilePath()))) {
                 if (file.toLowerCase() === "mods.yml") {
                     continue;

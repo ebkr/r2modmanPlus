@@ -4,8 +4,8 @@ import R2Error from '../../../model/errors/R2Error';
 import GameManager from '../../../model/game/GameManager';
 import ManifestV2 from '../../../model/ManifestV2';
 import { ImmutableProfile } from '../../../model/Profile';
+import { isModLoaderPackage } from '../../../model/schema/ThunderstoreSchema';
 import ProfileInstallerProvider from '../../../providers/ror2/installing/ProfileInstallerProvider';
-import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoaderVariantRecord';
 
 
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
@@ -19,19 +19,15 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         this.pluginInstaller = PluginInstallers[loader];
     }
 
-    private isModLoader(mod: ManifestV2): boolean {
-        const modLoaders = MOD_LOADER_VARIANTS[GameManager.activeGame.internalFolderName] ?? [];
-        return modLoaders.some(loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase());
-    }
-
     private getInstallerForPackage(mod: ManifestV2): PackageInstaller {
-        return this.isModLoader(mod) ? this.modLoaderInstaller : this.pluginInstaller;
+        const isModLoader = isModLoaderPackage(mod.getName());
+        return isModLoader ? this.modLoaderInstaller : this.pluginInstaller;
     }
 
     async disableMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | void> {
         try {
             // Mod loaders don't support disabling.
-            if (this.isModLoader(mod)) {
+            if (isModLoaderPackage(mod.getName())) {
                 return;
             }
 
@@ -49,7 +45,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     async enableMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | void> {
         try {
             // Mod loaders don't support enabling.
-            if (this.isModLoader(mod)) {
+            if (isModLoaderPackage(mod.getName())) {
                 return;
             }
 
