@@ -44,6 +44,9 @@ async function copyLogToClipboard() {
             case PackageLoader.GDWEAVE:
                 logOutputPath = path.join(profile.value.getProfilePath(), "GDWeave", "GDWeave.log");
                 break;
+            case PackageLoader.GDPATCH:
+                logOutputPath = path.join(profile.value.getProfilePath(), "GDPatch", "output.log");
+                break;
             case PackageLoader.UMM:
                 logOutputPath = path.join(profile.value.getProfilePath(), "UMM", "Core", "Log.txt");
                 break;

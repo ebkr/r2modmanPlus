@@ -134,7 +134,7 @@ export default class ModLinker {
                                 "melonloader", "plugins", "userdata",
                                 "_state", "userlibs", "qmods", "shimloader",
                                 "returnofmodding", "gdweave", "renderer", "umm",
-                                "rivet", "modconfig"
+                                "rivet", "modconfig", "gdpatch"
                             ];
 
                             if (!exclusionsList.includes(file.toLowerCase())) {

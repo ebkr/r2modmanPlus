@@ -32,8 +32,8 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         let proxyArgs: Record<string, string> = {};
 
         if (isProton) {
-            // BepInEx uses winhttp, GDWeave uses winmm. More can be added later.
-            const proxyDll = game.packageLoader == PackageLoader.GDWEAVE ? "winmm" : "winhttp";
+            // BepInEx uses winhttp, GDWeave and GDPatch use winmm. More can be added later.
+            const proxyDll = [PackageLoader.GDWEAVE, PackageLoader.GDPATCH].includes(game.packageLoader) ? "winmm" : "winhttp";
             const promise = await this.ensureWineWillLoadDllOverride(game, proxyDll);
             if (promise instanceof R2Error) {
                 // We no longer want to display an error as launch args should be set correctly.
