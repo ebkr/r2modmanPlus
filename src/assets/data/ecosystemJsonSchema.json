@@ -259,13 +259,13 @@
                             "shimloader",
                             "lovely",
                             "return-of-modding",
-                            "gdpatch",
                             "gdweave",
                             "recursive-melonloader",
                             "bepisloader",
                             "umm",
                             "rivet",
                             "mio",
+                            "gdpatch",
                             "none"
                           ]
                         },
@@ -414,13 +414,13 @@
                   "shimloader",
                   "lovely",
                   "return-of-modding",
-                  "gdpatch",
                   "gdweave",
                   "recursive-melonloader",
                   "bepisloader",
                   "umm",
                   "rivet",
                   "mio",
+                  "gdpatch",
                   "none"
                 ]
               }
