@@ -93,7 +93,56 @@
           ],
           "relativeFileExclusions": null
         }
-      ]
+      ],
+      "thunderstore": {
+        "displayName": "20 Minutes Till Dawn",
+        "listed": true,
+        "meta": {
+          "icon": "20-minutes-till-dawn/20-minutes-till-dawn-icon-192x192.webp",
+          "cover": "20-minutes-till-dawn/20-minutes-till-dawn-cover-360x480.webp",
+          "background": "20-minutes-till-dawn/20-minutes-till-dawn-bg-1920x1080.webp",
+          "hero": "20-minutes-till-dawn/20-minutes-till-dawn-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/qvWNeNGJD7",
+        "shortDescription": "20 Minutes Till Dawn is a survival roguelite where endless hordes of creatures lurk from the dark. Craft an array of overpowering builds and eradicate waves of Lovecraftian nightmares. Will you be able to survive the night?"
+      }
     },
     "9-kings": {
       "uuid": "3f1b9fa4-a067-4910-877e-78bcd8caef25",
@@ -3026,6 +3075,9 @@
           "mods": {
             "label": "Mods"
           },
+          "modpacks": {
+            "label": "Modpacks"
+          },
           "audio": {
             "label": "Audio"
           },
@@ -3042,7 +3094,20 @@
             "label": "Utility"
           }
         },
-        "sections": {},
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
         "discordUrl": "https://discord.gg/BONELAB",
         "shortDescription": "BONELAB is an experimental physics action game. Explore a mysterious lab filled with weapons, enemies, challenges and secrets. Escape your reality, or wreak havoc. No wrong answers."
       }
@@ -7112,10 +7177,10 @@
             "label": "Client Mods"
           },
           "rundown-mods": {
-            "label": "Rundown Mods"
+            "label": "Rundown Tools"
           },
           "dev-tools": {
-            "label": "Dev Tools"
+            "label": "Developer Tools"
           },
           "modpacks": {
             "label": "Modpacks"
@@ -7127,10 +7192,69 @@
             "label": "AI Generated"
           },
           "geomorph-packs": {
-            "label": "Geomorph Packs"
+            "label": "Asset Packs"
+          },
+          "datablocks": {
+            "label": "DataBlocks (MTFO)"
+          },
+          "rebalance": {
+            "label": "Rebalance"
+          },
+          "quality-of-life": {
+            "label": "Quality of Life"
+          },
+          "bug-fixes": {
+            "label": "Bug Fixes"
           }
         },
-        "sections": {},
+        "sections": {
+          "mods": {
+            "name": "Mods (excluding AI)",
+            "excludeCategories": [
+              "ai-generated",
+              "modpacks",
+              "dev-tools"
+            ]
+          },
+          "mods-including-ai": {
+            "name": "Mods (including AI)",
+            "excludeCategories": [
+              "modpacks",
+              "dev-tools"
+            ]
+          },
+          "rundowns": {
+            "name": "Rundowns",
+            "requireCategories": [
+              "rundowns",
+              "rebalance"
+            ],
+            "excludeCategories": [
+              "client-mods"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ],
+            "excludeCategories": [
+              "dev-tools"
+            ]
+          },
+          "developer-tools": {
+            "name": "Developer Tools",
+            "requireCategories": [
+              "dev-tools",
+              "libraries",
+              "rundown-mods"
+            ],
+            "excludeCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://gtfo-modding.gitbook.io/wiki",
         "discordUrl": "https://discord.com/invite/rRMPtv4FAh",
         "shortDescription": "GTFO is a hardcore cooperative horror shooter that throws you from gripping suspense to explosive action in a heartbeat. Stealth, strategy, and teamwork are necessary to survive in your deadly, underground prison. Work together or die together."
       }
@@ -7428,7 +7552,20 @@
             "label": "AI Generated"
           }
         },
-        "sections": {},
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
         "discordUrl": "https://discord.gg/Hggg7wh",
         "wikiUrl": "https://h3vrmodding.miraheze.org/wiki/Main_Page",
         "shortDescription": "Do you like hot dogs? How about horseshoes? Hand grenades? (everyone likes hand grenades) Anyway, we've got all that, and guns. SO MANY GUNS. So if you like ordnance, meat, and far too many groan-worthy puns, this is the VR sandbox game for you."
@@ -7449,6 +7586,10 @@
         {
           "platform": "epic-games-store",
           "identifier": "07c634c7291a49b5b2455e14b9a83950"
+        },
+        {
+          "platform": "xbox-game-pass",
+          "identifier": "SupergiantGamesLLC.HadesII"
         }
       ],
       "r2modman": [
@@ -7467,6 +7608,10 @@
             {
               "platform": "epic-games-store",
               "identifier": "07c634c7291a49b5b2455e14b9a83950"
+            },
+            {
+              "platform": "xbox-game-pass",
+              "identifier": "SupergiantGamesLLC.HadesII"
             }
           ],
           "settingsIdentifier": "HadesII",
@@ -8894,7 +9039,15 @@
         },
         "sections": {
           "mods": {
-            "name": "Mods",
+            "name": "Mods (excluding AI)",
+            "excludeCategories": [
+              "modpacks",
+              "asset-replacements",
+              "ai-generated"
+            ]
+          },
+          "mods-including-ai": {
+            "name": "Mods (including AI)",
             "excludeCategories": [
               "modpacks",
               "asset-replacements"
@@ -10000,7 +10153,40 @@
             "label": "Audio"
           },
           "clans": {
-            "label": "Clan"
+            "label": "Clans"
+          },
+          "quality-of-life": {
+            "label": "Quality of Life"
+          },
+          "meme": {
+            "label": "Meme"
+          },
+          "cosmetic": {
+            "label": "Cosmetic"
+          },
+          "ui": {
+            "label": "UI"
+          },
+          "translation": {
+            "label": "Translation"
+          },
+          "merchants": {
+            "label": "Merchants"
+          },
+          "events": {
+            "label": "Events"
+          },
+          "battles": {
+            "label": "Battles"
+          },
+          "mutators": {
+            "label": "Mutators"
+          },
+          "balance": {
+            "label": "Balance"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
           }
         },
         "sections": {
@@ -10017,8 +10203,8 @@
             ]
           }
         },
-        "wikiUrl": "https://github.com/Monster-Train-2-Modding-Group",
-        "discordUrl": "https://discord.gg/Rqz4vnGa",
+        "wikiUrl": "https://github.com/Monster-Train-2-Modding-Group/Trainworks-Reloaded/wiki",
+        "discordUrl": "https://discord.gg/6qBCCMU8vP",
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
@@ -16755,7 +16941,7 @@
             "label": "Modpacks"
           },
           "tools": {
-            "label": "Tools"
+            "label": "Developer Tools"
           },
           "libraries": {
             "label": "Libraries"
@@ -16767,7 +16953,7 @@
             "label": "Requires Manual Dependencies"
           },
           "ai-generated": {
-            "label": "AI Generated"
+            "label": "AI Generated Content"
           }
         },
         "sections": {
@@ -16778,6 +16964,7 @@
               "0-62-branch",
               "0-66-branch",
               "0-70-branch",
+              "1-0-classic-branch",
               "tools"
             ]
           },
@@ -16790,6 +16977,7 @@
               "0-62-branch",
               "0-66-branch",
               "0-70-branch",
+              "1-0-classic-branch",
               "tools"
             ]
           },
@@ -17106,7 +17294,7 @@
       ],
       "thunderstore": {
         "displayName": "The Ouroboros King",
-        "listed": true,
+        "listed": false,
         "meta": {
           "icon": "the-ouroboros-king/the-ouroboros-king-icon-192x192.webp",
           "cover": "the-ouroboros-king/the-ouroboros-king-cover-360x480.webp",
@@ -17132,7 +17320,7 @@
             "label": "Misc"
           },
           "ai-generated": {
-            "label": "AI Generated"
+            "label": "AI Generated Content"
           }
         },
         "sections": {
@@ -17509,107 +17697,6 @@
               "route": "BepInEx/Maps",
               "defaultFileExtensions": [],
               "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            }
-          ],
-          "relativeFileExclusions": null
-        }
-      ]
-    },
-    "totally-accurate-battle-simulator": {
-      "uuid": "d731a8bc-0780-432c-9c8a-b8e9d6047831",
-      "label": "totally-accurate-battle-simulator",
-      "meta": {
-        "displayName": "TABS",
-        "iconUrl": "totally-accurate-battle-simulator/totally-accurate-battle-simulator-cover-360x480.webp"
-      },
-      "distributions": [
-        {
-          "platform": "steam",
-          "identifier": "508440"
-        },
-        {
-          "platform": "epic-games-store",
-          "identifier": "Driftfish"
-        },
-        {
-          "platform": "xbox-game-pass",
-          "identifier": "LandfallGames.TotallyAccurateBattleSimulator"
-        }
-      ],
-      "r2modman": [
-        {
-          "meta": {
-            "displayName": "TABS",
-            "iconUrl": "totally-accurate-battle-simulator/totally-accurate-battle-simulator-cover-360x480.webp"
-          },
-          "internalFolderName": "TABS",
-          "dataFolderName": "TotallyAccurateBattleSimulator_Data",
-          "distributions": [
-            {
-              "platform": "steam",
-              "identifier": "508440"
-            },
-            {
-              "platform": "epic-games-store",
-              "identifier": "Driftfish"
-            },
-            {
-              "platform": "xbox-game-pass",
-              "identifier": "LandfallGames.TotallyAccurateBattleSimulator"
-            }
-          ],
-          "settingsIdentifier": "TotallyAccurateBattleSimulator",
-          "packageIndex": "https://thunderstore.io/c/totally-accurate-battle-simulator/api/v1/package-listing-index/",
-          "steamFolderName": "Totally Accurate Battle Simulator",
-          "exeNames": [
-            "TotallyAccurateBattleSimulator.exe"
-          ],
-          "gameInstanceType": "game",
-          "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [
-            "Totally Accurate Battle Simulator",
-            "全面战争模拟器"
-          ],
-          "packageLoader": "bepinex",
-          "installRules": [
-            {
-              "route": "BepInEx/plugins",
-              "defaultFileExtensions": [
-                ".dll"
-              ],
-              "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": true
-            },
-            {
-              "route": "BepInEx/core",
-              "defaultFileExtensions": [],
-              "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            },
-            {
-              "route": "BepInEx/patchers",
-              "defaultFileExtensions": [],
-              "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            },
-            {
-              "route": "BepInEx/monomod",
-              "defaultFileExtensions": [
-                ".mm.dll"
-              ],
-              "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            },
-            {
-              "route": "BepInEx/config",
-              "defaultFileExtensions": [],
-              "trackingMethod": "none",
               "subRoutes": [],
               "isDefaultLocation": false
             }
@@ -18155,7 +18242,15 @@
         },
         "sections": {
           "mods": {
-            "name": "Mods",
+            "name": "Mods (excluding AI)",
+            "excludeCategories": [
+              "modpacks",
+              "soundpacks",
+              "ai-generated"
+            ]
+          },
+          "mods-including-ai": {
+            "name": "Mods (including AI)",
             "excludeCategories": [
               "modpacks",
               "soundpacks"
@@ -19145,6 +19240,9 @@
           "mods": {
             "label": "Mods"
           },
+          "modpacks": {
+            "label": "Modpacks"
+          },
           "cosmetics": {
             "label": "Cosmetics"
           },
@@ -19171,11 +19269,27 @@
           },
           "maps": {
             "label": "Maps"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
           }
         },
-        "sections": {},
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
         "wikiUrl": "https://notnite.github.io/webfishing-mod-wiki/",
-        "discordUrl": "https://discord.gg/PMdFCrJnUb",
+        "discordUrl": "https://discord.gg/eTMGZg2DCx",
         "autolistPackageIds": []
       }
     },
@@ -20969,6 +21083,95 @@
         "shortDescription": "In the distant future when civilization is on the verge of extinction, people follow the legend of the Elysium in the last city, Havenswell. In this post-apocalyptic wasteland sci-fi ARPG, you will play as Arrisa, a Blader with immortality, and explore the city ruin to find the hope of a new life."
       }
     },
+    "airframe-ultra": {
+      "uuid": "c5312094-1a3a-4215-ba0f-76f9626712f9",
+      "label": "airframe-ultra",
+      "meta": {
+        "displayName": "Airframe Ultra",
+        "iconUrl": "airframe-ultra/airframe-ultra-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2522120"
+            }
+          ],
+          "steamFolderName": "Airframe Ultra",
+          "dataFolderName": "AirframeUltra_Data",
+          "exeNames": [
+            "AirframeUltra.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Airframe Ultra",
+            "iconUrl": "airframe-ultra/airframe-ultra-cover-360x480.webp"
+          },
+          "settingsIdentifier": "AirframeUltra",
+          "internalFolderName": "AirframeUltra",
+          "packageIndex": "https://thunderstore.io/c/airframe-ultra/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Airframe Ultra",
+        "listed": true,
+        "meta": {
+          "icon": "airframe-ultra/airframe-ultra-icon-192x192.webp",
+          "cover": "airframe-ultra/airframe-ultra-cover-360x480.webp",
+          "background": "airframe-ultra/airframe-ultra-bg-1920x1080.webp",
+          "hero": "airframe-ultra/airframe-ultra-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/3Wgfb5nHEf",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Airframe Ultra is an online, multiplayer combat racing game. There's only two types of racers in Megacity West: The winners and the dead. Down here, you’ve got a chop shop Airframe, a rusted machete, and blood on the motorway. Welcome to the violent underground world of Ultra Circuit racing!"
+      }
+    },
     "airport-security-sucks": {
       "uuid": "022864b3-9176-4698-8899-eb3e94028a74",
       "label": "airport-security-sucks",
@@ -21399,6 +21602,93 @@
           "LavaGang-MelonLoader"
         ],
         "shortDescription": "Join Red, Chuck, Bomb & the Blues to save the stolen eggs in Angry Birds VR: Isle of Pigs, an immersive VR adventure! Discover the island where the greedy pigs vacation, slingshot your way to defeat Dr. Frankenswine & create/share/discover an infinite number of levels with the online level builder."
+      }
+    },
+    "antivirus-survivors-2003-professional": {
+      "uuid": "9d7ad61a-5f6b-4ba6-8c42-7f402096ba69",
+      "label": "antivirus-survivors-2003-professional",
+      "meta": {
+        "displayName": "Antivirus Survivors 2003 Professional",
+        "iconUrl": "antivirus-survivors-2003-professional/antivirus-survivors-2003-professional-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3832490"
+            }
+          ],
+          "steamFolderName": "Antivirus Survivors 2003 Professional",
+          "dataFolderName": "",
+          "exeNames": [
+            "AVS03Pro.exe"
+          ],
+          "packageLoader": "gdpatch",
+          "meta": {
+            "displayName": "Antivirus Survivors 2003 Professional",
+            "iconUrl": "antivirus-survivors-2003-professional/antivirus-survivors-2003-professional-cover-360x480.webp"
+          },
+          "settingsIdentifier": "AntivirusSurvivors2003Professional",
+          "internalFolderName": "AntivirusSurvivors2003Professional",
+          "packageIndex": "https://thunderstore.io/c/antivirus-survivors-2003-professional/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "AVS03"
+          ],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Antivirus Survivors 2003 Professional",
+        "listed": true,
+        "meta": {
+          "icon": "antivirus-survivors-2003-professional/antivirus-survivors-2003-professional-icon-192x192.webp",
+          "cover": "antivirus-survivors-2003-professional/antivirus-survivors-2003-professional-cover-360x480.webp",
+          "background": "antivirus-survivors-2003-professional/antivirus-survivors-2003-professional-bg-1920x1080.webp",
+          "hero": "antivirus-survivors-2003-professional/antivirus-survivors-2003-professional-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "shortDescription": "The family computer is infected again and it’s your job to fend off waves of viruses and adware foes with an arsenal of nostalgic Y2K-inspired weapons. Antivirus Survivors 2003 Professional is a survivor-like auto-shooter filled with nods to the days when computers were actually fun."
       }
     },
     "approximately-up": {
@@ -21862,6 +22152,79 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "banjo-kazooie-nuts-and-bolts-recompiled": {
+      "uuid": "72c731b3-1935-45cb-a560-c7244ac788a6",
+      "label": "banjo-kazooie-nuts-and-bolts-recompiled",
+      "meta": {
+        "displayName": "Banjo-Kazooie: Nuts & Bolts Recompiled",
+        "iconUrl": "banjo-kazooie-nuts-and-bolts-recompiled/banjo-kazooie-nuts-and-bolts-recompiled-cover-360x480.webp"
+      },
+      "distributions": [
+        {
+          "platform": "other",
+          "identifier": null
+        }
+      ],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Banjo-Kazooie: Nuts & Bolts Recompiled",
+        "listed": true,
+        "meta": {
+          "icon": "banjo-kazooie-nuts-and-bolts-recompiled/banjo-kazooie-nuts-and-bolts-recompiled-icon-192x192.webp",
+          "cover": "banjo-kazooie-nuts-and-bolts-recompiled/banjo-kazooie-nuts-and-bolts-recompiled-cover-360x480.webp",
+          "background": "banjo-kazooie-nuts-and-bolts-recompiled/banjo-kazooie-nuts-and-bolts-recompiled-bg-1920x1080.webp",
+          "hero": "banjo-kazooie-nuts-and-bolts-recompiled/banjo-kazooie-nuts-and-bolts-recompiled-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "vehicle-parts": {
+            "label": "Vehicle Parts"
+          },
+          "model-replacements": {
+            "label": "Model Replacements"
+          },
+          "texture-replacements": {
+            "label": "Texture Replacements"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/D5Bz2ZsHdY",
+        "shortDescription": "Banjo-Kazooie: Nuts and Bolts Recompilation with Rexglue"
       }
     },
     "banjo-recompiled": {
@@ -23866,6 +24229,201 @@
         "shortDescription": "Cast n Chill is a relaxing fishing game where you explore serene lakes, rivers, and oceans. Catch rare fish, upgrade your gear and reel in legendary catches - all with your loyal companion by your side."
       }
     },
+    "castlevania-symphony-of-the-night-recompiled": {
+      "uuid": "dc53d1b8-3abb-4263-9433-2292914c5f58",
+      "label": "castlevania-symphony-of-the-night-recompiled",
+      "meta": {
+        "displayName": "Castlevania: Symphony of the Night Recompiled",
+        "iconUrl": "castlevania-symphony-of-the-night-recompiled/castlevania-symphony-of-the-night-recompiled-cover-360x480.webp"
+      },
+      "distributions": [
+        {
+          "platform": "other",
+          "identifier": null
+        }
+      ],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Castlevania: Symphony of the Night Recompiled",
+        "listed": true,
+        "meta": {
+          "icon": "castlevania-symphony-of-the-night-recompiled/castlevania-symphony-of-the-night-recompiled-icon-192x192.webp",
+          "cover": "castlevania-symphony-of-the-night-recompiled/castlevania-symphony-of-the-night-recompiled-cover-360x480.webp",
+          "background": "castlevania-symphony-of-the-night-recompiled/castlevania-symphony-of-the-night-recompiled-bg-1920x1080.webp",
+          "hero": "castlevania-symphony-of-the-night-recompiled/castlevania-symphony-of-the-night-recompiled-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://github.com/BlackLabelHQ/RecompOne/wiki/Making-a-Mod",
+        "discordUrl": "https://discord.gg/65g8ZEPnbR",
+        "shortDescription": "Recompilation project for Castlevania: Symphony of the Night"
+      }
+    },
+    "casualties-unknown": {
+      "uuid": "d3d59f52-b656-4a7d-98e9-bc88bce361e0",
+      "label": "casualties-unknown",
+      "meta": {
+        "displayName": "Casualties: Unknown",
+        "iconUrl": "casualties-unknown/casualties-unknown-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "4576490"
+            }
+          ],
+          "steamFolderName": "Casualties Unknown",
+          "dataFolderName": "CasualtiesUnknown_Data",
+          "exeNames": [
+            "CasualtiesUnknown.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Casualties: Unknown",
+            "iconUrl": "casualties-unknown/casualties-unknown-cover-360x480.webp"
+          },
+          "settingsIdentifier": "CasualtiesUnknown",
+          "internalFolderName": "CasualtiesUnknown",
+          "packageIndex": "https://thunderstore.io/c/casualties-unknown/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "CU"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Casualties: Unknown",
+        "listed": true,
+        "meta": {
+          "icon": "casualties-unknown/casualties-unknown-icon-192x192.webp",
+          "cover": "casualties-unknown/casualties-unknown-cover-360x480.webp",
+          "background": "casualties-unknown/casualties-unknown-bg-1920x1080.webp",
+          "hero": "casualties-unknown/casualties-unknown-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Casualties: Unknown is an unforgiving cave-exploration survival simulator. Your captors have tasked you with retrieving lost cargo on a foreign planet, explore its 11 layers and do your best to survive diverse hostile environments. You are just one of the thousands of test subjects sent to die."
+      }
+    },
     "cat-mail-co": {
       "uuid": "ec3caa99-c4ad-4b4e-9019-a236a9fac3bf",
       "label": "cat-mail-co",
@@ -24629,6 +25187,137 @@
           }
         },
         "discordUrl": "https://discord.gg/jBGMZqndT3"
+      }
+    },
+    "crack": {
+      "uuid": "c2b420e5-f26e-4994-8107-32f2790a10fa",
+      "label": "crack",
+      "meta": {
+        "displayName": "CRACK",
+        "iconUrl": "crack/crack-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "4312190"
+            }
+          ],
+          "steamFolderName": "CRACK",
+          "dataFolderName": "CRACK_Data",
+          "exeNames": [
+            "CRACK.exe",
+            "CRACK.app",
+            "CRACK.x86_64"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "CRACK",
+            "iconUrl": "crack/crack-cover-360x480.webp"
+          },
+          "settingsIdentifier": "Crack",
+          "internalFolderName": "Crack",
+          "packageIndex": "https://thunderstore.io/c/crack/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "CRACK",
+        "listed": true,
+        "meta": {
+          "icon": "crack/crack-icon-192x192.webp",
+          "cover": "crack/crack-cover-360x480.webp",
+          "background": "crack/crack-bg-1920x1080.webp",
+          "hero": "crack/crack-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/crack-modding",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Why is there a giant egg in this lab? Your job is simple: crack it open. Don't ask questions. CRACK is a 1-4 player co-op incremental adventure about uncovering what's inside a mysterious giant egg."
       }
     },
     "crashout-crew": {
@@ -25986,6 +26675,71 @@
         "shortDescription": "An online VR co-op horror game about delivering parcels into haunted mines. Avoid monsters, drop off packages, and pray you reach the quota! Team up with up to 3 other delivery goblins, survive your shift and pay back your student loans."
       }
     },
+    "def-jam-fight-for-ny-recompiled": {
+      "uuid": "6ed53e8b-e74b-49d5-8418-a1efbc279751",
+      "label": "def-jam-fight-for-ny-recompiled",
+      "meta": {
+        "displayName": "Def Jam: Fight for NY Recompiled",
+        "iconUrl": "def-jam-fight-for-ny-recompiled/def-jam-fight-for-ny-recompiled-cover-360x480.webp"
+      },
+      "distributions": [
+        {
+          "platform": "other",
+          "identifier": null
+        }
+      ],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Def Jam: Fight for NY Recompiled",
+        "listed": true,
+        "meta": {
+          "icon": "def-jam-fight-for-ny-recompiled/def-jam-fight-for-ny-recompiled-icon-192x192.webp",
+          "cover": "def-jam-fight-for-ny-recompiled/def-jam-fight-for-ny-recompiled-cover-360x480.webp",
+          "background": "def-jam-fight-for-ny-recompiled/def-jam-fight-for-ny-recompiled-bg-1920x1080.webp",
+          "hero": "def-jam-fight-for-ny-recompiled/def-jam-fight-for-ny-recompiled-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://github.com/vyanhursky/DefJamFFNY-recomp/blob/main/docs/texture-modding-getting-started.md",
+        "discordUrl": "https://discord.gg/RzyFHVbgZN",
+        "shortDescription": "Def Jam: Fight for NY PC port — static recompilation of the original Xbox game for native Windows and macOS (Direct3D 11 / Vulkan). Bring your own game dump."
+      }
+    },
     "dice-kingdoms": {
       "uuid": "8c924dfa-6781-437a-82ae-1ae2c645ceea",
       "label": "dice-kingdoms",
@@ -26232,9 +26986,70 @@
         "iconUrl": "dread-hunger/dread-hunger-cover-360x480.webp"
       },
       "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1418630"
+            },
+            {
+              "platform": "other",
+              "identifier": null
+            }
+          ],
+          "steamFolderName": "Dread Hunger",
+          "dataFolderName": "DreadHunger",
+          "exeNames": [
+            "DreadHunger.exe"
+          ],
+          "packageLoader": "shimloader",
+          "meta": {
+            "displayName": "Dread Hunger",
+            "iconUrl": "dread-hunger/dread-hunger-cover-360x480.webp"
+          },
+          "settingsIdentifier": "DreadHunger",
+          "internalFolderName": "DreadHunger",
+          "packageIndex": "https://thunderstore.io/c/dread-hunger/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/overlay",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
       "thunderstore": {
         "displayName": "Dread Hunger",
-        "listed": false,
+        "listed": true,
         "meta": {
           "icon": "dread-hunger/dread-hunger-icon-192x192.webp",
           "cover": "dread-hunger/dread-hunger-cover-360x480.webp",
@@ -26279,8 +27094,7 @@
         "autolistPackageIds": [
           "Thunderstore-unreal_shimloader"
         ]
-      },
-      "r2modman": null
+      }
     },
     "ducks-can-drive": {
       "uuid": "5bbaccc5-d8fe-4fab-877d-7dec9db01630",
@@ -26679,6 +27493,125 @@
         "discordUrl": "https://discord.gg/KZRVjVEe5v"
       },
       "r2modman": null
+    },
+    "escape-from-playtime": {
+      "uuid": "87092aa2-20a0-484d-9634-34b09a302b6c",
+      "label": "escape-from-playtime",
+      "meta": {
+        "displayName": "Escape from Playtime",
+        "iconUrl": "escape-from-playtime/escape-from-playtime-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2087540"
+            }
+          ],
+          "steamFolderName": "Escape From Playtime",
+          "dataFolderName": "EscapeFromPlaytime",
+          "exeNames": [
+            "EscapeFromPlaytime.exe"
+          ],
+          "packageLoader": "shimloader",
+          "meta": {
+            "displayName": "Escape from Playtime",
+            "iconUrl": "escape-from-playtime/escape-from-playtime-cover-360x480.webp"
+          },
+          "settingsIdentifier": "EscapeFromPlaytime",
+          "internalFolderName": "EscapeFromPlaytime",
+          "packageIndex": "https://thunderstore.io/c/escape-from-playtime/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "EFP"
+          ],
+          "installRules": [
+            {
+              "route": "shimloader/mod",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/pak",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/cfg",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            },
+            {
+              "route": "shimloader/overlay",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Escape from Playtime",
+        "listed": true,
+        "meta": {
+          "icon": "escape-from-playtime/escape-from-playtime-icon-192x192.webp",
+          "cover": "escape-from-playtime/escape-from-playtime-cover-360x480.webp",
+          "background": "escape-from-playtime/escape-from-playtime-bg-1920x1080.webp",
+          "hero": "escape-from-playtime/escape-from-playtime-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "Thunderstore-unreal_shimloader"
+        ],
+        "shortDescription": "An online 2-8 player co-op horror experience where you and your friends are trapped in an abandoned toy factory. A mysterious voice commands you for an unknown purpose as you explore shifting halls, scavenge for tools, and fight for survival against creatures that lurk in the dark."
+      }
     },
     "everything-is-crab": {
       "uuid": "b8c43422-e740-4f35-9000-323b788a3d65",
@@ -27212,6 +28145,134 @@
         ]
       }
     },
+    "flipping-is-hard": {
+      "uuid": "d72d7d9e-40a1-4e7a-96c3-887275206585",
+      "label": "flipping-is-hard",
+      "meta": {
+        "displayName": "Flipping is Hard",
+        "iconUrl": "flipping-is-hard/flipping-is-hard-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3826670"
+            }
+          ],
+          "steamFolderName": "Flipping is Hard",
+          "dataFolderName": "Flipping is Hard_Data",
+          "exeNames": [
+            "Flipping is Hard.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Flipping is Hard",
+            "iconUrl": "flipping-is-hard/flipping-is-hard-cover-360x480.webp"
+          },
+          "settingsIdentifier": "FlippingIsHard",
+          "internalFolderName": "FlippingIsHard",
+          "packageIndex": "https://thunderstore.io/c/flipping-is-hard/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Flipping is Hard",
+        "listed": true,
+        "meta": {
+          "icon": "flipping-is-hard/flipping-is-hard-icon-192x192.webp",
+          "cover": "flipping-is-hard/flipping-is-hard-cover-360x480.webp",
+          "background": "flipping-is-hard/flipping-is-hard-bg-1920x1080.webp",
+          "hero": "flipping-is-hard/flipping-is-hard-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "No Legs. Just Flips. A hard and punishing game where you flip, fall, and climb as Flippy, using only rotation. Do you have what it takes to get back to Jeff?"
+      }
+    },
     "football-manager-26": {
       "uuid": "dff631a2-171a-4bd1-af49-92a0c81eb49b",
       "label": "football-manager-26",
@@ -27421,6 +28482,92 @@
         "autolistPackageIds": [
           "LavaGang-MelonLoader"
         ]
+      }
+    },
+    "friendos": {
+      "uuid": "39d8d52e-e58b-455f-8a0f-1b4db7dc6399",
+      "label": "friendos",
+      "meta": {
+        "displayName": "FriendOS",
+        "iconUrl": "friendos/friendos-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "4531070"
+            }
+          ],
+          "steamFolderName": "FriendOS Demo",
+          "dataFolderName": "",
+          "exeNames": [
+            "FriendOS.exe",
+            "FriendOS.x86_64"
+          ],
+          "packageLoader": "gdpatch",
+          "meta": {
+            "displayName": "FriendOS",
+            "iconUrl": "friendos/friendos-cover-360x480.webp"
+          },
+          "settingsIdentifier": "FriendOs",
+          "internalFolderName": "FriendOs",
+          "packageIndex": "https://thunderstore.io/c/friendos/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "FriendOS",
+        "listed": true,
+        "meta": {
+          "icon": "friendos/friendos-icon-192x192.webp",
+          "cover": "friendos/friendos-cover-360x480.webp",
+          "background": "friendos/friendos-bg-1920x1080.webp",
+          "hero": "friendos/friendos-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "shortDescription": "FriendOS is a 1-3 player action RPG where viruses must die! Strike and batter your opponents in Cartoon Sports Combat, and create the virtual animal avatar of your dreams. Hang out in lobbies with up to 12 friends and team up to protect the world of FriendOS from virus corruption."
       }
     },
     "frozen-ship": {
@@ -28800,6 +29947,134 @@
         ]
       }
     },
+    "grilluminati": {
+      "uuid": "9568b711-3917-45f0-ac2c-e3794f52c748",
+      "label": "grilluminati",
+      "meta": {
+        "displayName": "Grilluminati",
+        "iconUrl": "grilluminati/grilluminati-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "5368860"
+            }
+          ],
+          "steamFolderName": "Grilluminati Demo",
+          "dataFolderName": "grilluminati_Data",
+          "exeNames": [
+            "grilluminati.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Grilluminati",
+            "iconUrl": "grilluminati/grilluminati-cover-360x480.webp"
+          },
+          "settingsIdentifier": "Grilluminati",
+          "internalFolderName": "Grilluminati",
+          "packageIndex": "https://thunderstore.io/c/grilluminati/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Grilluminati",
+        "listed": true,
+        "meta": {
+          "icon": "grilluminati/grilluminati-icon-192x192.webp",
+          "cover": "grilluminati/grilluminati-cover-360x480.webp",
+          "background": "grilluminati/grilluminati-bg-1920x1080.webp",
+          "hero": "grilluminati/grilluminati-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Start a cult with friends and summon one of three rivalling gods. Sacrifice customers, perform dark rituals and work together to bring an ancient evil being into the world, all under the cover of a steakhouse."
+      }
+    },
     "grime": {
       "uuid": "31937f32-07c0-42ca-b69a-7b1893490213",
       "label": "grime",
@@ -29954,7 +31229,7 @@
             "label": "Misc"
           },
           "ai-generated": {
-            "label": "AI Generated"
+            "label": "AI Generated Content"
           }
         },
         "sections": {
@@ -32155,6 +33430,134 @@
         ]
       }
     },
+    "lucid-cats": {
+      "uuid": "318ed82f-fec7-4886-b56a-9e44868c115c",
+      "label": "lucid-cats",
+      "meta": {
+        "displayName": "Lucid Cats",
+        "iconUrl": "lucid-cats/lucid-cats-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "4778540"
+            }
+          ],
+          "steamFolderName": "Lucid Cats",
+          "dataFolderName": "LucidCats_Data",
+          "exeNames": [
+            "LucidCats.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Lucid Cats",
+            "iconUrl": "lucid-cats/lucid-cats-cover-360x480.webp"
+          },
+          "settingsIdentifier": "LucidCats",
+          "internalFolderName": "LucidCats",
+          "packageIndex": "https://thunderstore.io/c/lucid-cats/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Lucid Cats",
+        "listed": true,
+        "meta": {
+          "icon": "lucid-cats/lucid-cats-icon-192x192.webp",
+          "cover": "lucid-cats/lucid-cats-cover-360x480.webp",
+          "background": "lucid-cats/lucid-cats-bg-1920x1080.webp",
+          "hero": "lucid-cats/lucid-cats-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "An online co-op horror extraction game. Fall asleep, loot a shared nightmare, and find the escape to keep your valuables."
+      }
+    },
     "lucky-shot": {
       "uuid": "93146cfa-fcc4-45a3-8e89-2381d09d7d37",
       "label": "lucky-shot",
@@ -32401,6 +33804,220 @@
           "BepInEx-BepInExPack_IL2CPP"
         ],
         "shortDescription": "LumenTale: Memories of Trey is a captivating Monster Collector RPG set in a beautiful and enchanting world. Follow Trey as he embarks on an adventure to recover his missing memories and make new ones with the Animon."
+      }
+    },
+    "machine-party": {
+      "uuid": "ab992ae7-6a81-4080-ba69-dc64797ef4c8",
+      "label": "machine-party",
+      "meta": {
+        "displayName": "Machine Party",
+        "iconUrl": "machine-party/machine-party-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "4108000"
+            }
+          ],
+          "steamFolderName": "party project/Machine Party_Windows",
+          "dataFolderName": "",
+          "exeNames": [
+            "Machine Party.exe"
+          ],
+          "packageLoader": "gdpatch",
+          "meta": {
+            "displayName": "Machine Party",
+            "iconUrl": "machine-party/machine-party-cover-360x480.webp"
+          },
+          "settingsIdentifier": "MachineParty",
+          "internalFolderName": "MachineParty",
+          "packageIndex": "https://thunderstore.io/c/machine-party/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Machine Party",
+        "listed": true,
+        "meta": {
+          "icon": "machine-party/machine-party-icon-192x192.webp",
+          "cover": "machine-party/machine-party-cover-360x480.webp",
+          "background": "machine-party/machine-party-bg-1920x1080.webp",
+          "hero": "machine-party/machine-party-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "shortDescription": "Machine Party is a collection of violent party games where failure is lethal. Gather your friends and endure high stakes situations to prove your life is worth more than theirs. Survival is unlikely."
+      }
+    },
+    "madness-melee": {
+      "uuid": "78a6b226-9d08-401a-b060-07933f29a212",
+      "label": "madness-melee",
+      "meta": {
+        "displayName": "Madness Melee",
+        "iconUrl": "madness-melee/madness-melee-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "other",
+              "identifier": null
+            }
+          ],
+          "steamFolderName": "Madness Melee",
+          "dataFolderName": "MadnessMelee_Data",
+          "exeNames": [
+            "MadnessMelee.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Madness Melee",
+            "iconUrl": "madness-melee/madness-melee-cover-360x480.webp"
+          },
+          "settingsIdentifier": "MadnessMelee",
+          "internalFolderName": "MadnessMelee",
+          "packageIndex": "https://thunderstore.io/c/madness-melee/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Madness Melee",
+        "listed": true,
+        "meta": {
+          "icon": "madness-melee/madness-melee-icon-192x192.webp",
+          "cover": "madness-melee/madness-melee-cover-360x480.webp",
+          "background": "madness-melee/madness-melee-bg-1920x1080.webp",
+          "hero": "madness-melee/madness-melee-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/CwWrfaCHCy",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ],
+        "shortDescription": "Madness Melee is a 2D madness combat fangame. Enter the new Sleepwalker Program, and fight through 100 arena waves while upgrading your character the whole way through! Unlock new characters to beat the arena with, after completing the game."
       }
     },
     "mage-arena": {
@@ -32906,6 +34523,71 @@
           "Thunderstore-unreal_shimloader"
         ],
         "shortDescription": "Paint yourself to blend in! \"Meccha Chameleon\" is a new-sensation hide-and-seek game where you paint your white body to mimic the stage. Spot, pose, and \"artistic skill\" are keys to survival. Deceive Seekers with techniques that put chameleons to shame! Supports public matches and streaming."
+      }
+    },
+    "medievil-recompiled": {
+      "uuid": "5d1561d4-d001-4725-9f93-80e92081bf2b",
+      "label": "medievil-recompiled",
+      "meta": {
+        "displayName": "MediEvil Recompiled",
+        "iconUrl": "medievil-recompiled/medievil-recompiled-cover-360x480.webp"
+      },
+      "distributions": [
+        {
+          "platform": "other",
+          "identifier": null
+        }
+      ],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "MediEvil Recompiled",
+        "listed": true,
+        "meta": {
+          "icon": "medievil-recompiled/medievil-recompiled-icon-192x192.webp",
+          "cover": "medievil-recompiled/medievil-recompiled-cover-360x480.webp",
+          "background": "medievil-recompiled/medievil-recompiled-bg-1920x1080.webp",
+          "hero": "medievil-recompiled/medievil-recompiled-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://github.com/BlackLabelHQ/RecompOne/wiki/Making-a-Mod",
+        "discordUrl": "https://discord.gg/65g8ZEPnbR",
+        "shortDescription": "Static Recomp of PSX USA MediEvil, By BlackLabelHQ"
       }
     },
     "mega-man-64-recompiled": {
@@ -35213,6 +36895,96 @@
         ]
       }
     },
+    "over-the-hill": {
+      "uuid": "825797ad-9dea-4465-b465-035aa49a75a1",
+      "label": "over-the-hill",
+      "meta": {
+        "displayName": "Over the Hill",
+        "iconUrl": "over-the-hill/over-the-hill-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2929250"
+            }
+          ],
+          "steamFolderName": "over the hill",
+          "dataFolderName": "over the hill_Data",
+          "exeNames": [
+            "over the hill.exe",
+            "over the hill.x86_64"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Over the Hill",
+            "iconUrl": "over-the-hill/over-the-hill-cover-360x480.webp"
+          },
+          "settingsIdentifier": "OverTheHill",
+          "internalFolderName": "OverTheHill",
+          "packageIndex": "https://thunderstore.io/c/over-the-hill/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Over the Hill",
+        "listed": true,
+        "meta": {
+          "icon": "over-the-hill/over-the-hill-icon-192x192.webp",
+          "cover": "over-the-hill/over-the-hill-cover-360x480.webp",
+          "background": "over-the-hill/over-the-hill-bg-1920x1080.webp",
+          "hero": "over-the-hill/over-the-hill-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/TcRCrnh",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Explore the world in the golden age of offroading. Drive iconic 4x4 vehicles from the 60s to 80s by yourself or with friends through challenging trails and beautiful scenery."
+      }
+    },
     "pac-man-world-re-pac": {
       "uuid": "aa3deb5d-b580-4566-a549-4b65460b454f",
       "label": "pac-man-world-re-pac",
@@ -36548,6 +38320,70 @@
         ]
       }
     },
+    "project-eclipse": {
+      "uuid": "40d722d0-c84b-43c6-9b7f-80a9ba4e4b0a",
+      "label": "project-eclipse",
+      "meta": {
+        "displayName": "Project Eclipse",
+        "iconUrl": "project-eclipse/project-eclipse-cover-360x480.webp"
+      },
+      "distributions": [
+        {
+          "platform": "other",
+          "identifier": null
+        }
+      ],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Project Eclipse",
+        "listed": true,
+        "meta": {
+          "icon": "project-eclipse/project-eclipse-icon-192x192.webp",
+          "cover": "project-eclipse/project-eclipse-cover-360x480.webp",
+          "background": "project-eclipse/project-eclipse-bg-1920x1080.webp",
+          "hero": "project-eclipse/project-eclipse-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://dawc17.github.io/ProjectEclipse/",
+        "discordUrl": "https://discord.gg/2k6QKHDZ8d"
+      }
+    },
     "project-gorgon": {
       "uuid": "91fea4ea-4642-4afe-b906-4d45fc8ca1a1",
       "label": "project-gorgon",
@@ -37032,7 +38868,6 @@
           "background": "r5reloaded/r5reloaded-bg-1920x1080.webp",
           "hero": "r5reloaded/r5reloaded-bg-1920x620.webp"
         },
-        "sections": {},
         "categories": {
           "legend": {
             "label": "Legend"
@@ -37075,6 +38910,20 @@
           },
           "qol": {
             "label": "QoL"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpack"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpack"
+            ]
           }
         },
         "wikiUrl": "https://docs.r5reloaded.com/",
@@ -37145,7 +38994,20 @@
             "label": "QoL"
           }
         },
-        "sections": {},
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpack"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpack"
+            ]
+          }
+        },
         "wikiUrl": "https://playvalkyrie.org/docs",
         "discordUrl": "https://discord.gg/GcJSMUGJyD",
         "autolistPackageIds": [],
@@ -37217,7 +39079,20 @@
             "label": "AI Generated"
           }
         },
-        "sections": {},
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpack"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpack"
+            ]
+          }
+        },
         "wikiUrl": "https://r5flowstate.org/host",
         "discordUrl": "https://discord.gg/REQmKk35Kx",
         "shortDescription": "A modded Apex Legends client based on the S21 retail build + our own updated dedicated server that comes from the Season 3 server."
@@ -38473,7 +40348,76 @@
           "identifier": "4954910"
         }
       ],
-      "r2modman": null,
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "4954910"
+            }
+          ],
+          "steamFolderName": "Scam With Your Friends",
+          "dataFolderName": "Scam With Your Friends_Data",
+          "exeNames": [
+            "Scam With Your Friends.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Scam With Your Friends",
+            "iconUrl": "scam-with-your-friends/scam-with-your-friends-cover-360x480.webp"
+          },
+          "settingsIdentifier": "ScamWithYourFriends",
+          "internalFolderName": "ScamWithYourFriends",
+          "packageIndex": "https://thunderstore.io/c/scam-with-your-friends/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "SWYF"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
       "thunderstore": {
         "displayName": "Scam With Your Friends",
         "listed": true,
@@ -39584,6 +41528,257 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "snaptic": {
+      "uuid": "a1159a16-08af-4b9d-af6c-21facc01f6f0",
+      "label": "snaptic",
+      "meta": {
+        "displayName": "SNAPTIC",
+        "iconUrl": "snaptic/snaptic-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "5273300"
+            }
+          ],
+          "steamFolderName": "SNAPTIC Demo",
+          "dataFolderName": "",
+          "exeNames": [
+            "snaptic.exe"
+          ],
+          "packageLoader": "gdpatch",
+          "meta": {
+            "displayName": "SNAPTIC",
+            "iconUrl": "snaptic/snaptic-cover-360x480.webp"
+          },
+          "settingsIdentifier": "Snaptic",
+          "internalFolderName": "Snaptic",
+          "packageIndex": "https://thunderstore.io/c/snaptic/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "SNAPTIC",
+        "listed": true,
+        "meta": {
+          "icon": "snaptic/snaptic-icon-192x192.webp",
+          "cover": "snaptic/snaptic-cover-360x480.webp",
+          "background": "snaptic/snaptic-bg-1920x1080.webp",
+          "hero": "snaptic/snaptic-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/bHgkWgR8wg",
+        "shortDescription": "SNAPTIC is a physics-based puzzle-platformer that takes place in an offline laptop, and it's up to you to remember the Wi-Fi password."
+      }
+    },
+    "socom-legacy": {
+      "uuid": "acc4053d-5df8-41d3-b77f-884157b0336e",
+      "label": "socom-legacy",
+      "meta": {
+        "displayName": "SOCOM Legacy",
+        "iconUrl": "socom-legacy/socom-legacy-cover-360x480.webp"
+      },
+      "distributions": [
+        {
+          "platform": "other",
+          "identifier": null
+        }
+      ],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "SOCOM Legacy",
+        "listed": true,
+        "meta": {
+          "icon": "socom-legacy/socom-legacy-icon-192x192.webp",
+          "cover": "socom-legacy/socom-legacy-cover-360x480.webp",
+          "background": "socom-legacy/socom-legacy-bg-1920x1080.webp",
+          "hero": "socom-legacy/socom-legacy-bg-1920x620.webp"
+        },
+        "categories": {
+          "maps": {
+            "label": "Maps"
+          },
+          "missions-and-campaigns": {
+            "label": "Missions & Campaigns"
+          },
+          "game-modes": {
+            "label": "Game Modes"
+          },
+          "weapons-and-equipment": {
+            "label": "Weapons & Equipment"
+          },
+          "ai-and-npcs": {
+            "label": "AI & NPCs"
+          },
+          "models": {
+            "label": "Models"
+          },
+          "props": {
+            "label": "Props"
+          },
+          "textures": {
+            "label": "Textures"
+          },
+          "visual-effects": {
+            "label": "Visual Effects"
+          },
+          "shaders": {
+            "label": "Shaders"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "music": {
+            "label": "Music"
+          },
+          "ui-and-hud": {
+            "label": "UI & HUD"
+          },
+          "frameworks": {
+            "label": "Frameworks"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "tools": {
+            "label": "Developer Tools"
+          },
+          "tweaks": {
+            "label": "Tweaks"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "ai-generated": {
+            "label": "AI Generated Content"
+          }
+        },
+        "sections": {
+          "all": {
+            "name": "All",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "maps": {
+            "name": "Maps",
+            "requireCategories": [
+              "maps"
+            ],
+            "excludeCategories": [
+              "modpacks",
+              "tools"
+            ]
+          },
+          "missions": {
+            "name": "Missions",
+            "requireCategories": [
+              "missions-and-campaigns"
+            ],
+            "excludeCategories": [
+              "modpacks",
+              "tools"
+            ]
+          },
+          "gameplay": {
+            "name": "Gameplay",
+            "requireCategories": [
+              "game-modes",
+              "weapons-and-equipment",
+              "ai-and-npcs",
+              "tweaks"
+            ],
+            "excludeCategories": [
+              "modpacks",
+              "tools"
+            ]
+          },
+          "assets-and-cosmetics": {
+            "name": "Assets & Cosmetics",
+            "requireCategories": [
+              "models",
+              "props",
+              "textures",
+              "visual-effects",
+              "shaders",
+              "audio",
+              "music",
+              "ui-and-hud"
+            ],
+            "excludeCategories": [
+              "modpacks",
+              "tools"
+            ]
+          },
+          "developer-tools": {
+            "name": "Developer Tools",
+            "requireCategories": [
+              "frameworks",
+              "tools",
+              "libraries"
+            ],
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://github.com/Scotho/socom-legacy",
+        "discordUrl": "https://discord.gg/Rgg62asgYT",
+        "shortDescription": "Bringing SOCOM to your browser. Built by lifelong fans, staying rigidly true to the game we love."
       }
     },
     "soulcalibur-vi": {
@@ -41462,6 +43657,133 @@
         "shortDescription": "Sushiamo is a roguelike deck-builder where you make sushi to reach absurd scores. Discover unique ingredients, sauces, game-changing tools, and navigate the map to break the game with insane combos!"
       }
     },
+    "the-alto-collection": {
+      "uuid": "ce33f5d1-6109-4591-addb-eb1dfd36e1e2",
+      "label": "the-alto-collection",
+      "meta": {
+        "displayName": "The Alto Collection",
+        "iconUrl": "the-alto-collection/the-alto-collection-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2837600"
+            }
+          ],
+          "steamFolderName": "The Alto Collection",
+          "dataFolderName": "The Alto Collection_Data",
+          "exeNames": [
+            "The Alto Collection.exe",
+            "The Alto Collection.app"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "The Alto Collection",
+            "iconUrl": "the-alto-collection/the-alto-collection-cover-360x480.webp"
+          },
+          "settingsIdentifier": "TheAltoCollection",
+          "internalFolderName": "TheAltoCollection",
+          "packageIndex": "https://thunderstore.io/c/the-alto-collection/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "The Alto Collection",
+        "listed": true,
+        "meta": {
+          "icon": "the-alto-collection/the-alto-collection-icon-192x192.webp",
+          "cover": "the-alto-collection/the-alto-collection-cover-360x480.webp",
+          "background": "the-alto-collection/the-alto-collection-bg-1920x1080.webp",
+          "hero": "the-alto-collection/the-alto-collection-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/snowman",
+        "shortDescription": "Across the endless desert and atop an alpine expanse two journeys full of wonder await. Choose your path and set off on a thrilling snowboarding or sandboarding adventure with Alto & friends in both critically acclaimed titles: Alto’s Adventure and Alto’s Odyssey."
+      }
+    },
     "the-choicer-voicer": {
       "uuid": "12bab0c0-24c5-4999-9a20-376abd6693e1",
       "label": "the-choicer-voicer",
@@ -42287,6 +44609,312 @@
           "BepInEx-BepInExPack_IL2CPP"
         ],
         "shortDescription": "Tiny Rogues is a challenging fantasy rogue-lite bullet-hell dungeon crawler with rpg elements. Build a new unique character each run and fight one monster-infested room after another! Discover unique weapons, collect magical items and level up to become more and more powerful!"
+      }
+    },
+    "tiny-terrys-turbo-trip": {
+      "uuid": "7f5cd6a4-17e7-4cf5-8e2f-66dca1ada6db",
+      "label": "tiny-terrys-turbo-trip",
+      "meta": {
+        "displayName": "Tiny Terry's Turbo Trip",
+        "iconUrl": "tiny-terrys-turbo-trip/tiny-terrys-turbo-trip-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2238040"
+            },
+            {
+              "platform": "epic-games-store",
+              "identifier": "7fdfa8d6de6d4705b1e63d5ef599d408"
+            }
+          ],
+          "steamFolderName": "Tiny Terry's Turbo Trip",
+          "dataFolderName": "Tiny Terry's Turbo Trip_Data",
+          "exeNames": [
+            "Tiny Terry's Turbo Trip.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Tiny Terry's Turbo Trip",
+            "iconUrl": "tiny-terrys-turbo-trip/tiny-terrys-turbo-trip-cover-360x480.webp"
+          },
+          "settingsIdentifier": "TinyTerrysTurboTrip",
+          "internalFolderName": "TinyTerrysTurboTrip",
+          "packageIndex": "https://thunderstore.io/c/tiny-terrys-turbo-trip/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "TTTT"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Tiny Terry's Turbo Trip",
+        "listed": true,
+        "meta": {
+          "icon": "tiny-terrys-turbo-trip/tiny-terrys-turbo-trip-icon-192x192.webp",
+          "cover": "tiny-terrys-turbo-trip/tiny-terrys-turbo-trip-cover-360x480.webp",
+          "background": "tiny-terrys-turbo-trip/tiny-terrys-turbo-trip-bg-1920x1080.webp",
+          "hero": "tiny-terrys-turbo-trip/tiny-terrys-turbo-trip-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ],
+        "shortDescription": "Terry wants to launch himself into space using his new car. Doing something this cool and reckless will surely make him the talk of the town. Run, drive and glide through this small journey of big discoveries as Terry works towards achieving this goal."
+      }
+    },
+    "totally-accurate-battle-simulator": {
+      "uuid": "d731a8bc-0780-432c-9c8a-b8e9d6047831",
+      "label": "totally-accurate-battle-simulator",
+      "meta": {
+        "displayName": "TABS",
+        "iconUrl": "totally-accurate-battle-simulator/totally-accurate-battle-simulator-cover-360x480.webp"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "508440"
+        },
+        {
+          "platform": "epic-games-store",
+          "identifier": "Driftfish"
+        },
+        {
+          "platform": "xbox-game-pass",
+          "identifier": "LandfallGames.TotallyAccurateBattleSimulator"
+        }
+      ],
+      "r2modman": [
+        {
+          "meta": {
+            "displayName": "TABS",
+            "iconUrl": "totally-accurate-battle-simulator/totally-accurate-battle-simulator-cover-360x480.webp"
+          },
+          "internalFolderName": "TABS",
+          "dataFolderName": "TotallyAccurateBattleSimulator_Data",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "508440"
+            },
+            {
+              "platform": "epic-games-store",
+              "identifier": "Driftfish"
+            },
+            {
+              "platform": "xbox-game-pass",
+              "identifier": "LandfallGames.TotallyAccurateBattleSimulator"
+            }
+          ],
+          "settingsIdentifier": "TotallyAccurateBattleSimulator",
+          "packageIndex": "https://thunderstore.io/c/totally-accurate-battle-simulator/api/v1/package-listing-index/",
+          "steamFolderName": "Totally Accurate Battle Simulator",
+          "exeNames": [
+            "TotallyAccurateBattleSimulator.exe"
+          ],
+          "gameInstanceType": "game",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "Totally Accurate Battle Simulator",
+            "全面战争模拟器"
+          ],
+          "packageLoader": "bepinex",
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": true
+            },
+            {
+              "route": "BepInEx/core",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/patchers",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/monomod",
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/config",
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Totally Accurate Battle Simulator",
+        "listed": true,
+        "meta": {
+          "icon": "totally-accurate-battle-simulator/totally-accurate-battle-simulator-icon-192x192.webp",
+          "cover": "totally-accurate-battle-simulator/totally-accurate-battle-simulator-cover-360x480.webp",
+          "background": "totally-accurate-battle-simulator/totally-accurate-battle-simulator-bg-1920x1080.webp",
+          "hero": "totally-accurate-battle-simulator/totally-accurate-battle-simulator-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "units": {
+            "label": "Units"
+          },
+          "factions": {
+            "label": "Factions"
+          },
+          "tweaks": {
+            "label": "Tweaks"
+          },
+          "utils": {
+            "label": "Utils"
+          },
+          "maps": {
+            "label": "Maps"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          },
+          "dev-tools": {
+            "label": "Developer Tools"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          },
+          "libraries": {
+            "name": "Dev Tools and Libraries",
+            "requireCategories": [
+              "libraries",
+              "dev-tools"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/nmPYUsXFTz",
+        "shortDescription": "Be the leader of wobblers from ancient lands, spooky places, and fantasy worlds. Watch them fight in simulations made with the wobbliest physics system ever created, make your own wobblers in the unit creator and send your army off to fight your friends in multiplayer."
       }
     },
     "trash-day": {
@@ -43295,6 +45923,95 @@
         "shortDescription": "A creepy-cozy co-op fishing game for 1–4 players with proximity voice chat. Explore a haunted swamp for rare fish, sell your haul by the pound, and try to survive what hunts you in the dark."
       }
     },
+    "wanderburg": {
+      "uuid": "52094106-d4e7-48de-9920-35a3fbb3639a",
+      "label": "wanderburg",
+      "meta": {
+        "displayName": "Wanderburg",
+        "iconUrl": "wanderburg/wanderburg-cover-360x480.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3624140"
+            }
+          ],
+          "steamFolderName": "Wanderburg Game",
+          "dataFolderName": "Wanderburg_Data",
+          "exeNames": [
+            "Wanderburg.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Wanderburg",
+            "iconUrl": "wanderburg/wanderburg-cover-360x480.webp"
+          },
+          "settingsIdentifier": "Wanderburg",
+          "internalFolderName": "Wanderburg",
+          "packageIndex": "https://thunderstore.io/c/wanderburg/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Wanderburg",
+        "listed": true,
+        "meta": {
+          "icon": "wanderburg/wanderburg-icon-192x192.webp",
+          "cover": "wanderburg/wanderburg-cover-360x480.webp",
+          "background": "wanderburg/wanderburg-bg-1920x1080.webp",
+          "hero": "wanderburg/wanderburg-bg-1920x620.webp"
+        },
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "ai-generated": {
+            "label": "AI Generated"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/DU5Ty8HzTt",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Drive your Castle on Wheels into battle in this minimalist medieval roguelike of roaming fortresses! Devour entire villages, build your modular arsenal of siege machinery and break the game as you grow with every stronghold you crush."
+      }
+    },
     "waterpark-simulator": {
       "uuid": "03fed83d-1c42-4906-9a3f-cd60007ac174",
       "label": "waterpark-simulator",
@@ -44247,6 +46964,55 @@
     }
   },
   "communities": {
+    "20-minutes-till-dawn": {
+      "displayName": "20 Minutes Till Dawn",
+      "listed": true,
+      "meta": {
+        "icon": "20-minutes-till-dawn/20-minutes-till-dawn-icon-192x192.webp",
+        "cover": "20-minutes-till-dawn/20-minutes-till-dawn-cover-360x480.webp",
+        "background": "20-minutes-till-dawn/20-minutes-till-dawn-bg-1920x1080.webp",
+        "hero": "20-minutes-till-dawn/20-minutes-till-dawn-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/qvWNeNGJD7",
+      "shortDescription": "20 Minutes Till Dawn is a survival roguelite where endless hordes of creatures lurk from the dark. Craft an array of overpowering builds and eradicate waves of Lovecraftian nightmares. Will you be able to survive the night?"
+    },
     "9-kings": {
       "displayName": "9 Kings",
       "listed": true,
@@ -45190,6 +47956,9 @@
         "mods": {
           "label": "Mods"
         },
+        "modpacks": {
+          "label": "Modpacks"
+        },
         "audio": {
           "label": "Audio"
         },
@@ -45206,7 +47975,20 @@
           "label": "Utility"
         }
       },
-      "sections": {},
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
       "discordUrl": "https://discord.gg/BONELAB",
       "shortDescription": "BONELAB is an experimental physics action game. Explore a mysterious lab filled with weapons, enemies, challenges and secrets. Escape your reality, or wreak havoc. No wrong answers."
     },
@@ -46514,10 +49296,10 @@
           "label": "Client Mods"
         },
         "rundown-mods": {
-          "label": "Rundown Mods"
+          "label": "Rundown Tools"
         },
         "dev-tools": {
-          "label": "Dev Tools"
+          "label": "Developer Tools"
         },
         "modpacks": {
           "label": "Modpacks"
@@ -46529,10 +49311,69 @@
           "label": "AI Generated"
         },
         "geomorph-packs": {
-          "label": "Geomorph Packs"
+          "label": "Asset Packs"
+        },
+        "datablocks": {
+          "label": "DataBlocks (MTFO)"
+        },
+        "rebalance": {
+          "label": "Rebalance"
+        },
+        "quality-of-life": {
+          "label": "Quality of Life"
+        },
+        "bug-fixes": {
+          "label": "Bug Fixes"
         }
       },
-      "sections": {},
+      "sections": {
+        "mods": {
+          "name": "Mods (excluding AI)",
+          "excludeCategories": [
+            "ai-generated",
+            "modpacks",
+            "dev-tools"
+          ]
+        },
+        "mods-including-ai": {
+          "name": "Mods (including AI)",
+          "excludeCategories": [
+            "modpacks",
+            "dev-tools"
+          ]
+        },
+        "rundowns": {
+          "name": "Rundowns",
+          "requireCategories": [
+            "rundowns",
+            "rebalance"
+          ],
+          "excludeCategories": [
+            "client-mods"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ],
+          "excludeCategories": [
+            "dev-tools"
+          ]
+        },
+        "developer-tools": {
+          "name": "Developer Tools",
+          "requireCategories": [
+            "dev-tools",
+            "libraries",
+            "rundown-mods"
+          ],
+          "excludeCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://gtfo-modding.gitbook.io/wiki",
       "discordUrl": "https://discord.com/invite/rRMPtv4FAh",
       "shortDescription": "GTFO is a hardcore cooperative horror shooter that throws you from gripping suspense to explosive action in a heartbeat. Stealth, strategy, and teamwork are necessary to survive in your deadly, underground prison. Work together or die together."
     },
@@ -46649,7 +49490,20 @@
           "label": "AI Generated"
         }
       },
-      "sections": {},
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
       "discordUrl": "https://discord.gg/Hggg7wh",
       "wikiUrl": "https://h3vrmodding.miraheze.org/wiki/Main_Page",
       "shortDescription": "Do you like hot dogs? How about horseshoes? Hand grenades? (everyone likes hand grenades) Anyway, we've got all that, and guns. SO MANY GUNS. So if you like ordnance, meat, and far too many groan-worthy puns, this is the VR sandbox game for you."
@@ -47298,7 +50152,15 @@
       },
       "sections": {
         "mods": {
-          "name": "Mods",
+          "name": "Mods (excluding AI)",
+          "excludeCategories": [
+            "modpacks",
+            "asset-replacements",
+            "ai-generated"
+          ]
+        },
+        "mods-including-ai": {
+          "name": "Mods (including AI)",
           "excludeCategories": [
             "modpacks",
             "asset-replacements"
@@ -47645,7 +50507,40 @@
           "label": "Audio"
         },
         "clans": {
-          "label": "Clan"
+          "label": "Clans"
+        },
+        "quality-of-life": {
+          "label": "Quality of Life"
+        },
+        "meme": {
+          "label": "Meme"
+        },
+        "cosmetic": {
+          "label": "Cosmetic"
+        },
+        "ui": {
+          "label": "UI"
+        },
+        "translation": {
+          "label": "Translation"
+        },
+        "merchants": {
+          "label": "Merchants"
+        },
+        "events": {
+          "label": "Events"
+        },
+        "battles": {
+          "label": "Battles"
+        },
+        "mutators": {
+          "label": "Mutators"
+        },
+        "balance": {
+          "label": "Balance"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
         }
       },
       "sections": {
@@ -47662,8 +50557,8 @@
           ]
         }
       },
-      "wikiUrl": "https://github.com/Monster-Train-2-Modding-Group",
-      "discordUrl": "https://discord.gg/Rqz4vnGa",
+      "wikiUrl": "https://github.com/Monster-Train-2-Modding-Group/Trainworks-Reloaded/wiki",
+      "discordUrl": "https://discord.gg/6qBCCMU8vP",
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
@@ -49666,7 +52561,7 @@
           "label": "Modpacks"
         },
         "tools": {
-          "label": "Tools"
+          "label": "Developer Tools"
         },
         "libraries": {
           "label": "Libraries"
@@ -49678,7 +52573,7 @@
           "label": "Requires Manual Dependencies"
         },
         "ai-generated": {
-          "label": "AI Generated"
+          "label": "AI Generated Content"
         }
       },
       "sections": {
@@ -49689,6 +52584,7 @@
             "0-62-branch",
             "0-66-branch",
             "0-70-branch",
+            "1-0-classic-branch",
             "tools"
           ]
         },
@@ -49701,6 +52597,7 @@
             "0-62-branch",
             "0-66-branch",
             "0-70-branch",
+            "1-0-classic-branch",
             "tools"
           ]
         },
@@ -49847,7 +52744,7 @@
     },
     "the-ouroboros-king": {
       "displayName": "The Ouroboros King",
-      "listed": true,
+      "listed": false,
       "meta": {
         "icon": "the-ouroboros-king/the-ouroboros-king-icon-192x192.webp",
         "cover": "the-ouroboros-king/the-ouroboros-king-cover-360x480.webp",
@@ -49873,7 +52770,7 @@
           "label": "Misc"
         },
         "ai-generated": {
-          "label": "AI Generated"
+          "label": "AI Generated Content"
         }
       },
       "sections": {
@@ -50170,7 +53067,15 @@
       },
       "sections": {
         "mods": {
-          "name": "Mods",
+          "name": "Mods (excluding AI)",
+          "excludeCategories": [
+            "modpacks",
+            "soundpacks",
+            "ai-generated"
+          ]
+        },
+        "mods-including-ai": {
+          "name": "Mods (including AI)",
           "excludeCategories": [
             "modpacks",
             "soundpacks"
@@ -50439,6 +53344,9 @@
         "mods": {
           "label": "Mods"
         },
+        "modpacks": {
+          "label": "Modpacks"
+        },
         "cosmetics": {
           "label": "Cosmetics"
         },
@@ -50465,11 +53373,27 @@
         },
         "maps": {
           "label": "Maps"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
         }
       },
-      "sections": {},
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
       "wikiUrl": "https://notnite.github.io/webfishing-mod-wiki/",
-      "discordUrl": "https://discord.gg/PMdFCrJnUb",
+      "discordUrl": "https://discord.gg/eTMGZg2DCx",
       "autolistPackageIds": []
     },
     "west-of-loathing": {
@@ -51185,6 +54109,58 @@
       ],
       "shortDescription": "In the distant future when civilization is on the verge of extinction, people follow the legend of the Elysium in the last city, Havenswell. In this post-apocalyptic wasteland sci-fi ARPG, you will play as Arrisa, a Blader with immortality, and explore the city ruin to find the hope of a new life."
     },
+    "airframe-ultra": {
+      "displayName": "Airframe Ultra",
+      "listed": true,
+      "meta": {
+        "icon": "airframe-ultra/airframe-ultra-icon-192x192.webp",
+        "cover": "airframe-ultra/airframe-ultra-cover-360x480.webp",
+        "background": "airframe-ultra/airframe-ultra-bg-1920x1080.webp",
+        "hero": "airframe-ultra/airframe-ultra-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/3Wgfb5nHEf",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Airframe Ultra is an online, multiplayer combat racing game. There's only two types of racers in Megacity West: The winners and the dead. Down here, you’ve got a chop shop Airframe, a rusted machete, and blood on the motorway. Welcome to the violent underground world of Ultra Circuit racing!"
+    },
     "airport-security-sucks": {
       "displayName": "Airport Security Sucks!",
       "listed": true,
@@ -51382,6 +54358,54 @@
       ],
       "shortDescription": "Join Red, Chuck, Bomb & the Blues to save the stolen eggs in Angry Birds VR: Isle of Pigs, an immersive VR adventure! Discover the island where the greedy pigs vacation, slingshot your way to defeat Dr. Frankenswine & create/share/discover an infinite number of levels with the online level builder."
     },
+    "antivirus-survivors-2003-professional": {
+      "displayName": "Antivirus Survivors 2003 Professional",
+      "listed": true,
+      "meta": {
+        "icon": "antivirus-survivors-2003-professional/antivirus-survivors-2003-professional-icon-192x192.webp",
+        "cover": "antivirus-survivors-2003-professional/antivirus-survivors-2003-professional-cover-360x480.webp",
+        "background": "antivirus-survivors-2003-professional/antivirus-survivors-2003-professional-bg-1920x1080.webp",
+        "hero": "antivirus-survivors-2003-professional/antivirus-survivors-2003-professional-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "shortDescription": "The family computer is infected again and it’s your job to fend off waves of viruses and adware foes with an arsenal of nostalgic Y2K-inspired weapons. Antivirus Survivors 2003 Professional is a survivor-like auto-shooter filled with nods to the days when computers were actually fun."
+    },
     "approximately-up": {
       "displayName": "Approximately Up",
       "listed": true,
@@ -51569,6 +54593,64 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "banjo-kazooie-nuts-and-bolts-recompiled": {
+      "displayName": "Banjo-Kazooie: Nuts & Bolts Recompiled",
+      "listed": true,
+      "meta": {
+        "icon": "banjo-kazooie-nuts-and-bolts-recompiled/banjo-kazooie-nuts-and-bolts-recompiled-icon-192x192.webp",
+        "cover": "banjo-kazooie-nuts-and-bolts-recompiled/banjo-kazooie-nuts-and-bolts-recompiled-cover-360x480.webp",
+        "background": "banjo-kazooie-nuts-and-bolts-recompiled/banjo-kazooie-nuts-and-bolts-recompiled-bg-1920x1080.webp",
+        "hero": "banjo-kazooie-nuts-and-bolts-recompiled/banjo-kazooie-nuts-and-bolts-recompiled-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "vehicle-parts": {
+          "label": "Vehicle Parts"
+        },
+        "model-replacements": {
+          "label": "Model Replacements"
+        },
+        "texture-replacements": {
+          "label": "Texture Replacements"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/D5Bz2ZsHdY",
+      "shortDescription": "Banjo-Kazooie: Nuts and Bolts Recompilation with Rexglue"
     },
     "banjo-recompiled": {
       "displayName": "Banjo: Recompiled",
@@ -52482,6 +55564,107 @@
       ],
       "shortDescription": "Cast n Chill is a relaxing fishing game where you explore serene lakes, rivers, and oceans. Catch rare fish, upgrade your gear and reel in legendary catches - all with your loyal companion by your side."
     },
+    "castlevania-symphony-of-the-night-recompiled": {
+      "displayName": "Castlevania: Symphony of the Night Recompiled",
+      "listed": true,
+      "meta": {
+        "icon": "castlevania-symphony-of-the-night-recompiled/castlevania-symphony-of-the-night-recompiled-icon-192x192.webp",
+        "cover": "castlevania-symphony-of-the-night-recompiled/castlevania-symphony-of-the-night-recompiled-cover-360x480.webp",
+        "background": "castlevania-symphony-of-the-night-recompiled/castlevania-symphony-of-the-night-recompiled-bg-1920x1080.webp",
+        "hero": "castlevania-symphony-of-the-night-recompiled/castlevania-symphony-of-the-night-recompiled-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://github.com/BlackLabelHQ/RecompOne/wiki/Making-a-Mod",
+      "discordUrl": "https://discord.gg/65g8ZEPnbR",
+      "shortDescription": "Recompilation project for Castlevania: Symphony of the Night"
+    },
+    "casualties-unknown": {
+      "displayName": "Casualties: Unknown",
+      "listed": true,
+      "meta": {
+        "icon": "casualties-unknown/casualties-unknown-icon-192x192.webp",
+        "cover": "casualties-unknown/casualties-unknown-cover-360x480.webp",
+        "background": "casualties-unknown/casualties-unknown-bg-1920x1080.webp",
+        "hero": "casualties-unknown/casualties-unknown-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Casualties: Unknown is an unforgiving cave-exploration survival simulator. Your captors have tasked you with retrieving lost cargo on a foreign planet, explore its 11 layers and do your best to survive diverse hostile environments. You are just one of the thousands of test subjects sent to die."
+    },
     "cat-mail-co": {
       "displayName": "Cat Mail Co.",
       "listed": true,
@@ -52837,6 +56020,58 @@
         }
       },
       "discordUrl": "https://discord.gg/jBGMZqndT3"
+    },
+    "crack": {
+      "displayName": "CRACK",
+      "listed": true,
+      "meta": {
+        "icon": "crack/crack-icon-192x192.webp",
+        "cover": "crack/crack-cover-360x480.webp",
+        "background": "crack/crack-bg-1920x1080.webp",
+        "hero": "crack/crack-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/crack-modding",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Why is there a giant egg in this lab? Your job is simple: crack it open. Don't ask questions. CRACK is a 1-4 player co-op incremental adventure about uncovering what's inside a mysterious giant egg."
     },
     "crashout-crew": {
       "displayName": "Crashout Crew",
@@ -53393,6 +56628,56 @@
       ],
       "shortDescription": "An online VR co-op horror game about delivering parcels into haunted mines. Avoid monsters, drop off packages, and pray you reach the quota! Team up with up to 3 other delivery goblins, survive your shift and pay back your student loans."
     },
+    "def-jam-fight-for-ny-recompiled": {
+      "displayName": "Def Jam: Fight for NY Recompiled",
+      "listed": true,
+      "meta": {
+        "icon": "def-jam-fight-for-ny-recompiled/def-jam-fight-for-ny-recompiled-icon-192x192.webp",
+        "cover": "def-jam-fight-for-ny-recompiled/def-jam-fight-for-ny-recompiled-cover-360x480.webp",
+        "background": "def-jam-fight-for-ny-recompiled/def-jam-fight-for-ny-recompiled-bg-1920x1080.webp",
+        "hero": "def-jam-fight-for-ny-recompiled/def-jam-fight-for-ny-recompiled-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://github.com/vyanhursky/DefJamFFNY-recomp/blob/main/docs/texture-modding-getting-started.md",
+      "discordUrl": "https://discord.gg/RzyFHVbgZN",
+      "shortDescription": "Def Jam: Fight for NY PC port — static recompilation of the original Xbox game for native Windows and macOS (Direct3D 11 / Vulkan). Bring your own game dump."
+    },
     "dice-kingdoms": {
       "displayName": "Dice Kingdoms",
       "listed": true,
@@ -53536,7 +56821,7 @@
     },
     "dread-hunger": {
       "displayName": "Dread Hunger",
-      "listed": false,
+      "listed": true,
       "meta": {
         "icon": "dread-hunger/dread-hunger-icon-192x192.webp",
         "cover": "dread-hunger/dread-hunger-cover-360x480.webp",
@@ -53772,6 +57057,57 @@
       },
       "discordUrl": "https://discord.gg/KZRVjVEe5v"
     },
+    "escape-from-playtime": {
+      "displayName": "Escape from Playtime",
+      "listed": true,
+      "meta": {
+        "icon": "escape-from-playtime/escape-from-playtime-icon-192x192.webp",
+        "cover": "escape-from-playtime/escape-from-playtime-cover-360x480.webp",
+        "background": "escape-from-playtime/escape-from-playtime-bg-1920x1080.webp",
+        "hero": "escape-from-playtime/escape-from-playtime-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "Thunderstore-unreal_shimloader"
+      ],
+      "shortDescription": "An online 2-8 player co-op horror experience where you and your friends are trapped in an abandoned toy factory. A mysterious voice commands you for an unknown purpose as you explore shifting halls, scavenge for tools, and fight for survival against creatures that lurk in the dark."
+    },
     "everything-is-crab": {
       "displayName": "Everything is Crab",
       "listed": true,
@@ -53966,6 +57302,57 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "flipping-is-hard": {
+      "displayName": "Flipping is Hard",
+      "listed": true,
+      "meta": {
+        "icon": "flipping-is-hard/flipping-is-hard-icon-192x192.webp",
+        "cover": "flipping-is-hard/flipping-is-hard-cover-360x480.webp",
+        "background": "flipping-is-hard/flipping-is-hard-bg-1920x1080.webp",
+        "hero": "flipping-is-hard/flipping-is-hard-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "No Legs. Just Flips. A hard and punishing game where you flip, fall, and climb as Flippy, using only rotation. Do you have what it takes to get back to Jeff?"
+    },
     "football-manager-26": {
       "displayName": "Football Manager 26",
       "listed": true,
@@ -54057,6 +57444,54 @@
       "autolistPackageIds": [
         "LavaGang-MelonLoader"
       ]
+    },
+    "friendos": {
+      "displayName": "FriendOS",
+      "listed": true,
+      "meta": {
+        "icon": "friendos/friendos-icon-192x192.webp",
+        "cover": "friendos/friendos-cover-360x480.webp",
+        "background": "friendos/friendos-bg-1920x1080.webp",
+        "hero": "friendos/friendos-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "shortDescription": "FriendOS is a 1-3 player action RPG where viruses must die! Strike and batter your opponents in Cartoon Sports Combat, and create the virtual animal avatar of your dreams. Hang out in lobbies with up to 12 friends and team up to protect the world of FriendOS from virus corruption."
     },
     "frozen-ship": {
       "displayName": "Frozen Ship",
@@ -54637,6 +58072,57 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "grilluminati": {
+      "displayName": "Grilluminati",
+      "listed": true,
+      "meta": {
+        "icon": "grilluminati/grilluminati-icon-192x192.webp",
+        "cover": "grilluminati/grilluminati-cover-360x480.webp",
+        "background": "grilluminati/grilluminati-bg-1920x1080.webp",
+        "hero": "grilluminati/grilluminati-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Start a cult with friends and summon one of three rivalling gods. Sacrifice customers, perform dark rituals and work together to bring an ancient evil being into the world, all under the cover of a steakhouse."
+    },
     "grime": {
       "displayName": "GRIME",
       "categories": {
@@ -55139,7 +58625,7 @@
           "label": "Misc"
         },
         "ai-generated": {
-          "label": "AI Generated"
+          "label": "AI Generated Content"
         }
       },
       "sections": {
@@ -56154,6 +59640,57 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "lucid-cats": {
+      "displayName": "Lucid Cats",
+      "listed": true,
+      "meta": {
+        "icon": "lucid-cats/lucid-cats-icon-192x192.webp",
+        "cover": "lucid-cats/lucid-cats-cover-360x480.webp",
+        "background": "lucid-cats/lucid-cats-bg-1920x1080.webp",
+        "hero": "lucid-cats/lucid-cats-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "An online co-op horror extraction game. Fall asleep, loot a shared nightmare, and find the escape to keep your valuables."
+    },
     "lucky-shot": {
       "displayName": "Lucky Shot",
       "categories": {
@@ -56243,6 +59780,106 @@
         "BepInEx-BepInExPack_IL2CPP"
       ],
       "shortDescription": "LumenTale: Memories of Trey is a captivating Monster Collector RPG set in a beautiful and enchanting world. Follow Trey as he embarks on an adventure to recover his missing memories and make new ones with the Animon."
+    },
+    "machine-party": {
+      "displayName": "Machine Party",
+      "listed": true,
+      "meta": {
+        "icon": "machine-party/machine-party-icon-192x192.webp",
+        "cover": "machine-party/machine-party-cover-360x480.webp",
+        "background": "machine-party/machine-party-bg-1920x1080.webp",
+        "hero": "machine-party/machine-party-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "shortDescription": "Machine Party is a collection of violent party games where failure is lethal. Gather your friends and endure high stakes situations to prove your life is worth more than theirs. Survival is unlikely."
+    },
+    "madness-melee": {
+      "displayName": "Madness Melee",
+      "listed": true,
+      "meta": {
+        "icon": "madness-melee/madness-melee-icon-192x192.webp",
+        "cover": "madness-melee/madness-melee-cover-360x480.webp",
+        "background": "madness-melee/madness-melee-bg-1920x1080.webp",
+        "hero": "madness-melee/madness-melee-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/CwWrfaCHCy",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ],
+      "shortDescription": "Madness Melee is a 2D madness combat fangame. Enter the new Sleepwalker Program, and fight through 100 arena waves while upgrading your character the whole way through! Unlock new characters to beat the arena with, after completing the game."
     },
     "mage-arena": {
       "displayName": "Mage Arena",
@@ -56439,6 +60076,56 @@
         "Thunderstore-unreal_shimloader"
       ],
       "shortDescription": "Paint yourself to blend in! \"Meccha Chameleon\" is a new-sensation hide-and-seek game where you paint your white body to mimic the stage. Spot, pose, and \"artistic skill\" are keys to survival. Deceive Seekers with techniques that put chameleons to shame! Supports public matches and streaming."
+    },
+    "medievil-recompiled": {
+      "displayName": "MediEvil Recompiled",
+      "listed": true,
+      "meta": {
+        "icon": "medievil-recompiled/medievil-recompiled-icon-192x192.webp",
+        "cover": "medievil-recompiled/medievil-recompiled-cover-360x480.webp",
+        "background": "medievil-recompiled/medievil-recompiled-bg-1920x1080.webp",
+        "hero": "medievil-recompiled/medievil-recompiled-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://github.com/BlackLabelHQ/RecompOne/wiki/Making-a-Mod",
+      "discordUrl": "https://discord.gg/65g8ZEPnbR",
+      "shortDescription": "Static Recomp of PSX USA MediEvil, By BlackLabelHQ"
     },
     "mega-man-64-recompiled": {
       "displayName": "Mega Man 64: Recompiled",
@@ -57506,6 +61193,58 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "over-the-hill": {
+      "displayName": "Over the Hill",
+      "listed": true,
+      "meta": {
+        "icon": "over-the-hill/over-the-hill-icon-192x192.webp",
+        "cover": "over-the-hill/over-the-hill-cover-360x480.webp",
+        "background": "over-the-hill/over-the-hill-bg-1920x1080.webp",
+        "hero": "over-the-hill/over-the-hill-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/TcRCrnh",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Explore the world in the golden age of offroading. Drive iconic 4x4 vehicles from the 60s to 80s by yourself or with friends through challenging trails and beautiful scenery."
+    },
     "pac-man-world-re-pac": {
       "displayName": "PAC-MAN WORLD Re-PAC",
       "listed": true,
@@ -58089,6 +61828,55 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "project-eclipse": {
+      "displayName": "Project Eclipse",
+      "listed": true,
+      "meta": {
+        "icon": "project-eclipse/project-eclipse-icon-192x192.webp",
+        "cover": "project-eclipse/project-eclipse-cover-360x480.webp",
+        "background": "project-eclipse/project-eclipse-bg-1920x1080.webp",
+        "hero": "project-eclipse/project-eclipse-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://dawc17.github.io/ProjectEclipse/",
+      "discordUrl": "https://discord.gg/2k6QKHDZ8d"
+    },
     "project-gorgon": {
       "displayName": "Project Gorgon",
       "listed": true,
@@ -58293,7 +62081,6 @@
         "background": "r5reloaded/r5reloaded-bg-1920x1080.webp",
         "hero": "r5reloaded/r5reloaded-bg-1920x620.webp"
       },
-      "sections": {},
       "categories": {
         "legend": {
           "label": "Legend"
@@ -58336,6 +62123,20 @@
         },
         "qol": {
           "label": "QoL"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpack"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpack"
+          ]
         }
       },
       "wikiUrl": "https://docs.r5reloaded.com/",
@@ -58396,7 +62197,20 @@
           "label": "QoL"
         }
       },
-      "sections": {},
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpack"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpack"
+          ]
+        }
+      },
       "wikiUrl": "https://playvalkyrie.org/docs",
       "discordUrl": "https://discord.gg/GcJSMUGJyD",
       "autolistPackageIds": [],
@@ -58458,7 +62272,20 @@
           "label": "AI Generated"
         }
       },
-      "sections": {},
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpack"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpack"
+          ]
+        }
+      },
       "wikiUrl": "https://r5flowstate.org/host",
       "discordUrl": "https://discord.gg/REQmKk35Kx",
       "shortDescription": "A modded Apex Legends client based on the S21 retail build + our own updated dedicated server that comes from the Season 3 server."
@@ -59533,6 +63360,205 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "snaptic": {
+      "displayName": "SNAPTIC",
+      "listed": true,
+      "meta": {
+        "icon": "snaptic/snaptic-icon-192x192.webp",
+        "cover": "snaptic/snaptic-cover-360x480.webp",
+        "background": "snaptic/snaptic-bg-1920x1080.webp",
+        "hero": "snaptic/snaptic-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/bHgkWgR8wg",
+      "shortDescription": "SNAPTIC is a physics-based puzzle-platformer that takes place in an offline laptop, and it's up to you to remember the Wi-Fi password."
+    },
+    "socom-legacy": {
+      "displayName": "SOCOM Legacy",
+      "listed": true,
+      "meta": {
+        "icon": "socom-legacy/socom-legacy-icon-192x192.webp",
+        "cover": "socom-legacy/socom-legacy-cover-360x480.webp",
+        "background": "socom-legacy/socom-legacy-bg-1920x1080.webp",
+        "hero": "socom-legacy/socom-legacy-bg-1920x620.webp"
+      },
+      "categories": {
+        "maps": {
+          "label": "Maps"
+        },
+        "missions-and-campaigns": {
+          "label": "Missions & Campaigns"
+        },
+        "game-modes": {
+          "label": "Game Modes"
+        },
+        "weapons-and-equipment": {
+          "label": "Weapons & Equipment"
+        },
+        "ai-and-npcs": {
+          "label": "AI & NPCs"
+        },
+        "models": {
+          "label": "Models"
+        },
+        "props": {
+          "label": "Props"
+        },
+        "textures": {
+          "label": "Textures"
+        },
+        "visual-effects": {
+          "label": "Visual Effects"
+        },
+        "shaders": {
+          "label": "Shaders"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "music": {
+          "label": "Music"
+        },
+        "ui-and-hud": {
+          "label": "UI & HUD"
+        },
+        "frameworks": {
+          "label": "Frameworks"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "tools": {
+          "label": "Developer Tools"
+        },
+        "tweaks": {
+          "label": "Tweaks"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "ai-generated": {
+          "label": "AI Generated Content"
+        }
+      },
+      "sections": {
+        "all": {
+          "name": "All",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "maps": {
+          "name": "Maps",
+          "requireCategories": [
+            "maps"
+          ],
+          "excludeCategories": [
+            "modpacks",
+            "tools"
+          ]
+        },
+        "missions": {
+          "name": "Missions",
+          "requireCategories": [
+            "missions-and-campaigns"
+          ],
+          "excludeCategories": [
+            "modpacks",
+            "tools"
+          ]
+        },
+        "gameplay": {
+          "name": "Gameplay",
+          "requireCategories": [
+            "game-modes",
+            "weapons-and-equipment",
+            "ai-and-npcs",
+            "tweaks"
+          ],
+          "excludeCategories": [
+            "modpacks",
+            "tools"
+          ]
+        },
+        "assets-and-cosmetics": {
+          "name": "Assets & Cosmetics",
+          "requireCategories": [
+            "models",
+            "props",
+            "textures",
+            "visual-effects",
+            "shaders",
+            "audio",
+            "music",
+            "ui-and-hud"
+          ],
+          "excludeCategories": [
+            "modpacks",
+            "tools"
+          ]
+        },
+        "developer-tools": {
+          "name": "Developer Tools",
+          "requireCategories": [
+            "frameworks",
+            "tools",
+            "libraries"
+          ],
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://github.com/Scotho/socom-legacy",
+      "discordUrl": "https://discord.gg/Rgg62asgYT",
+      "shortDescription": "Bringing SOCOM to your browser. Built by lifelong fans, staying rigidly true to the game we love."
+    },
     "soulcalibur-vi": {
       "displayName": "SOULCALIBUR VI",
       "listed": true,
@@ -60416,6 +64442,55 @@
       "discordUrl": "https://discord.gg/rvN9GW2F8T",
       "shortDescription": "Sushiamo is a roguelike deck-builder where you make sushi to reach absurd scores. Discover unique ingredients, sauces, game-changing tools, and navigate the map to break the game with insane combos!"
     },
+    "the-alto-collection": {
+      "displayName": "The Alto Collection",
+      "listed": true,
+      "meta": {
+        "icon": "the-alto-collection/the-alto-collection-icon-192x192.webp",
+        "cover": "the-alto-collection/the-alto-collection-cover-360x480.webp",
+        "background": "the-alto-collection/the-alto-collection-bg-1920x1080.webp",
+        "hero": "the-alto-collection/the-alto-collection-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/snowman",
+      "shortDescription": "Across the endless desert and atop an alpine expanse two journeys full of wonder await. Choose your path and set off on a thrilling snowboarding or sandboarding adventure with Alto & friends in both critically acclaimed titles: Alto’s Adventure and Alto’s Odyssey."
+    },
     "the-choicer-voicer": {
       "displayName": "The Choicer Voicer",
       "listed": true,
@@ -60754,6 +64829,128 @@
         "BepInEx-BepInExPack_IL2CPP"
       ],
       "shortDescription": "Tiny Rogues is a challenging fantasy rogue-lite bullet-hell dungeon crawler with rpg elements. Build a new unique character each run and fight one monster-infested room after another! Discover unique weapons, collect magical items and level up to become more and more powerful!"
+    },
+    "tiny-terrys-turbo-trip": {
+      "displayName": "Tiny Terry's Turbo Trip",
+      "listed": true,
+      "meta": {
+        "icon": "tiny-terrys-turbo-trip/tiny-terrys-turbo-trip-icon-192x192.webp",
+        "cover": "tiny-terrys-turbo-trip/tiny-terrys-turbo-trip-cover-360x480.webp",
+        "background": "tiny-terrys-turbo-trip/tiny-terrys-turbo-trip-bg-1920x1080.webp",
+        "hero": "tiny-terrys-turbo-trip/tiny-terrys-turbo-trip-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ],
+      "shortDescription": "Terry wants to launch himself into space using his new car. Doing something this cool and reckless will surely make him the talk of the town. Run, drive and glide through this small journey of big discoveries as Terry works towards achieving this goal."
+    },
+    "totally-accurate-battle-simulator": {
+      "displayName": "Totally Accurate Battle Simulator",
+      "listed": true,
+      "meta": {
+        "icon": "totally-accurate-battle-simulator/totally-accurate-battle-simulator-icon-192x192.webp",
+        "cover": "totally-accurate-battle-simulator/totally-accurate-battle-simulator-cover-360x480.webp",
+        "background": "totally-accurate-battle-simulator/totally-accurate-battle-simulator-bg-1920x1080.webp",
+        "hero": "totally-accurate-battle-simulator/totally-accurate-battle-simulator-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "units": {
+          "label": "Units"
+        },
+        "factions": {
+          "label": "Factions"
+        },
+        "tweaks": {
+          "label": "Tweaks"
+        },
+        "utils": {
+          "label": "Utils"
+        },
+        "maps": {
+          "label": "Maps"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        },
+        "dev-tools": {
+          "label": "Developer Tools"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        },
+        "libraries": {
+          "name": "Dev Tools and Libraries",
+          "requireCategories": [
+            "libraries",
+            "dev-tools"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/nmPYUsXFTz",
+      "shortDescription": "Be the leader of wobblers from ancient lands, spooky places, and fantasy worlds. Watch them fight in simulations made with the wobbliest physics system ever created, make your own wobblers in the unit creator and send your army off to fight your friends in multiplayer."
     },
     "trash-day": {
       "displayName": "Trash Day",
@@ -61189,6 +65386,58 @@
         "BepInEx-BepInExPack_IL2CPP"
       ],
       "shortDescription": "A creepy-cozy co-op fishing game for 1–4 players with proximity voice chat. Explore a haunted swamp for rare fish, sell your haul by the pound, and try to survive what hunts you in the dark."
+    },
+    "wanderburg": {
+      "displayName": "Wanderburg",
+      "listed": true,
+      "meta": {
+        "icon": "wanderburg/wanderburg-icon-192x192.webp",
+        "cover": "wanderburg/wanderburg-cover-360x480.webp",
+        "background": "wanderburg/wanderburg-bg-1920x1080.webp",
+        "hero": "wanderburg/wanderburg-bg-1920x620.webp"
+      },
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "ai-generated": {
+          "label": "AI Generated"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/DU5Ty8HzTt",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Drive your Castle on Wheels into battle in this minimalist medieval roguelike of roaming fortresses! Devour entire villages, build your modular arsenal of siege machinery and break the game as you grow with every stronghold you crush."
     },
     "waterpark-simulator": {
       "displayName": "Waterpark Simulator",
@@ -61977,6 +66226,11 @@
       "loader": "mio"
     },
     {
+      "packageId": "GDPatch-GDPatch",
+      "rootFolder": "",
+      "loader": "gdpatch"
+    },
+    {
       "packageId": "BepInEx-BepInExPack_AmongUs",
       "rootFolder": "BepInExPack_AmongUs",
       "loader": "bepinex"
@@ -62152,6 +66406,11 @@
       "loader": "bepinex"
     },
     {
+      "packageId": "Alto_Modding-BepInExPack_Alto",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
       "packageId": "HoldfastModding-BepInExPack_Holdfast",
       "rootFolder": "BepInExPack",
       "loader": "bepinex"
@@ -62174,6 +66433,11 @@
     {
       "packageId": "Crawl_Modding-BepInExPack_Crawl",
       "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "Yakari-BepInExPack_SWYF",
+      "rootFolder": "BepInExPack_SWYF",
       "loader": "bepinex"
     }
   ]
