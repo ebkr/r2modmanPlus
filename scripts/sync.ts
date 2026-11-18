@@ -86,6 +86,13 @@ const GAME_PROPERTIES_POINTER = `${ROOT_PROPERTIES_POINTER}/games/additionalProp
 
 function deriveValidationSchema(schema: Buffer): string {
     const parsed = JSON.parse(schema.toString());
+    const rootProperties = parsed.definitions.thunderstore.properties;
+    const gameProperties = rootProperties.games.additionalProperties.properties;
+
+    // Remove forced "enum" fields in ecosystem-schema that we can't guarantee we accept.
+    delete gameProperties.r2modman.anyOf[0].items.properties.packageLoader.enum;
+    delete gameProperties.distributions.items.properties.platform.enum;
+    delete rootProperties.modloaderPackages.items.properties.loader.enum;
 
     return JSON.stringify({
         $schema: parsed.$schema,

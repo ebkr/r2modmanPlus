@@ -50,16 +50,7 @@
                   "type": "object",
                   "properties": {
                     "platform": {
-                      "type": "string",
-                      "enum": [
-                        "steam",
-                        "steam-direct",
-                        "epic-games-store",
-                        "oculus-store",
-                        "origin",
-                        "xbox-game-pass",
-                        "other"
-                      ]
+                      "type": "string"
                     },
                     "identifier": {
                       "anyOf": [
@@ -250,24 +241,7 @@
                           }
                         },
                         "packageLoader": {
-                          "type": "string",
-                          "enum": [
-                            "bepinex",
-                            "melonloader",
-                            "northstar",
-                            "godotml",
-                            "shimloader",
-                            "lovely",
-                            "return-of-modding",
-                            "gdpatch",
-                            "gdweave",
-                            "recursive-melonloader",
-                            "bepisloader",
-                            "umm",
-                            "rivet",
-                            "mio",
-                            "none"
-                          ]
+                          "type": "string"
                         },
                         "installRules": {
                           "type": "array",
@@ -405,24 +379,7 @@
                 "type": "string"
               },
               "loader": {
-                "type": "string",
-                "enum": [
-                  "bepinex",
-                  "melonloader",
-                  "northstar",
-                  "godotml",
-                  "shimloader",
-                  "lovely",
-                  "return-of-modding",
-                  "gdpatch",
-                  "gdweave",
-                  "recursive-melonloader",
-                  "bepisloader",
-                  "umm",
-                  "rivet",
-                  "mio",
-                  "none"
-                ]
+                "type": "string"
               }
             },
             "required": [
