@@ -245,7 +245,7 @@ describe('EcosystemSchema', () => {
         });
 
         test('populates games from cache into reactives when fetch fails with existing cache', async () => {
-            const r2Field = [{ meta: { iconUrl: null } }] as R2Modman[];
+            const r2Field = [{ meta: { iconUrl: null }, packageLoader: 'bepinex', distributions: [] }] as unknown as R2Modman[];
             await writeCacheFile({
                 games: {
                     'test-cached-game': {
@@ -326,7 +326,7 @@ describe('EcosystemSchema', () => {
                             distributions: [],
                             label: 'Test New Game',
                             meta: { displayName: 'Test New Game', iconUrl: null },
-                            r2modman: [{ meta: { iconUrl: newGameIconUrl } }],
+                            r2modman: [{ meta: { iconUrl: newGameIconUrl }, packageLoader: 'bepinex', distributions: [] }],
                             uuid: 'test-uuid',
                         },
                     },
@@ -337,6 +337,139 @@ describe('EcosystemSchema', () => {
             await updateLatestEcosystemSchema();
 
             expect(mockPrefetchAll).toHaveBeenCalledWith([newGameIconUrl]);
+        });
+
+        describe('unsupported package loaders and platforms', () => {
+
+            const createGame = (r2modman: object[]) => ({
+                distributions: [],
+                label: 'Test Game',
+                meta: { displayName: 'Test Game', iconUrl: null },
+                r2modman: r2modman.map((entry) => ({
+                    meta: { iconUrl: null },
+                    packageLoader: 'bepinex',
+                    distributions: [{ platform: 'steam' }],
+                    ...entry,
+                })) as unknown as R2Modman[],
+                uuid: 'test-uuid',
+            });
+
+            const getSupportedGame = (settingsIdentifier: string) => EcosystemSupportedGames.value.find(
+                ([_id, config]) => config.settingsIdentifier === settingsIdentifier
+            );
+
+            test('ignores games and modloader packages using an unknown loader', async () => {
+                mockAxiosGet.mockResolvedValue({
+                    status: 200,
+                    data: {
+                        ...createMinimalSchema(),
+                        games: {
+                            'test-unknown-loader': createGame([
+                                { meta: { iconUrl: 'unknown.webp' }, settingsIdentifier: 'TestUnknown', packageLoader: 'not-a-loader' },
+                            ]),
+                            'test-known-loader': createGame([
+                                { meta: { iconUrl: 'known.webp' }, settingsIdentifier: 'TestKnown', packageLoader: 'bepinex' },
+                            ]),
+                        },
+                        modloaderPackages: [
+                            { packageId: 'test-unknown-package', rootFolder: '', loader: 'not-a-loader' },
+                            { packageId: 'test-known-package', rootFolder: '', loader: 'bepinex' },
+                        ],
+                    },
+                    headers: {},
+                });
+
+                await updateLatestEcosystemSchema();
+
+                expect(getSupportedGame('TestUnknown')).toBeUndefined();
+                expect(getSupportedGame('TestKnown')).toBeDefined();
+                expect(mockPrefetchAll).toHaveBeenCalledWith(['known.webp']);
+
+                const packageIds = EcosystemModloaderPackages.value.map((x) => x.packageId);
+                expect(packageIds).not.toContain('test-unknown-package');
+                expect(packageIds).toContain('test-known-package');
+
+                const content = (await FsProvider.instance.readFile(latestSchemaFilePath)).toString('utf8');
+                const parsed: VersionedThunderstoreEcosystem = JSON.parse(content);
+                expect(parsed.games['test-unknown-loader']).toBeUndefined();
+                expect(parsed.games['test-known-loader']).toBeDefined();
+            });
+
+            test('keeps the supported entries of a game that also has an unknown loader', async () => {
+                mockAxiosGet.mockResolvedValue({
+                    status: 200,
+                    data: {
+                        ...createMinimalSchema(),
+                        games: {
+                            'test-mixed-loaders': createGame([
+                                { meta: { iconUrl: null }, settingsIdentifier: 'TestMixedKnown', packageLoader: 'bepinex' },
+                                { meta: { iconUrl: null }, settingsIdentifier: 'TestMixedUnknown', packageLoader: 'not-a-loader' },
+                            ]),
+                        },
+                    },
+                    headers: {},
+                });
+
+                await updateLatestEcosystemSchema();
+
+                expect(getSupportedGame('TestMixedKnown')).toBeDefined();
+                expect(getSupportedGame('TestMixedUnknown')).toBeUndefined();
+            });
+
+            test('ignores games only distributed on an unknown platform', async () => {
+                mockAxiosGet.mockResolvedValue({
+                    status: 200,
+                    data: {
+                        ...createMinimalSchema(),
+                        games: {
+                            'test-unknown-platform': createGame([
+                                { settingsIdentifier: 'TestUnknownPlatform', distributions: [{ platform: 'not-a-platform' }] },
+                            ]),
+                            'test-known-platform': createGame([
+                                { settingsIdentifier: 'TestKnownPlatform', distributions: [{ platform: 'steam' }] },
+                            ]),
+                        },
+                    },
+                    headers: {},
+                });
+
+                await updateLatestEcosystemSchema();
+
+                expect(getSupportedGame('TestUnknownPlatform')).toBeUndefined();
+                expect(getSupportedGame('TestKnownPlatform')).toBeDefined();
+
+                const content = (await FsProvider.instance.readFile(latestSchemaFilePath)).toString('utf8');
+                const parsed: VersionedThunderstoreEcosystem = JSON.parse(content);
+                expect(parsed.games['test-unknown-platform']).toBeUndefined();
+                expect(parsed.games['test-known-platform']).toBeDefined();
+            });
+
+            test('keeps the supported platforms of a game that also has an unknown platform', async () => {
+                mockAxiosGet.mockResolvedValue({
+                    status: 200,
+                    data: {
+                        ...createMinimalSchema(),
+                        games: {
+                            'test-mixed-platforms': createGame([
+                                {
+                                    settingsIdentifier: 'TestMixedPlatforms',
+                                    distributions: [
+                                        { platform: 'steam', identifier: '123' },
+                                        { platform: 'not-a-platform' },
+                                    ],
+                                },
+                            ]),
+                        },
+                    },
+                    headers: {},
+                });
+
+                await updateLatestEcosystemSchema();
+
+                const [_id, config] = getSupportedGame('TestMixedPlatforms')!;
+                expect(config.distributions).toEqual([{ platform: 'steam', identifier: '123' }]);
+            });
+
         });
 
         test('does not call prefetchAll when all games are already bundled', async () => {

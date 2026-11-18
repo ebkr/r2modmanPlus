@@ -10,7 +10,12 @@ import path from "../../providers/node/path/path";
 import FsProvider from "../../providers/generic/file/FsProvider";
 import VersionNumber from "../../model/VersionNumber";
 import ManagerInformation from "../../_managerinf/ManagerInformation";
-import {EcosystemModloaderPackages, EcosystemSupportedGames} from "../../model/schema/ThunderstoreSchema";
+import {
+    EcosystemModloaderPackages,
+    EcosystemSupportedGames,
+    PackageLoader,
+    Platform,
+} from "../../model/schema/ThunderstoreSchema";
 import {updateModLoaderExports} from "../installing/profile_installers/ModLoaderVariantRecord";
 import LoggerProvider, {LogSeverity} from "../../providers/ror2/logging/LoggerProvider";
 import {getAxiosWithTimeouts} from "../../utils/HttpUtils";
@@ -29,6 +34,8 @@ type LatestSchemaFetchResult =
 const REMOTE_ECOSYSTEM_DATA_URL = "https://thunderstore.io/api/experimental/schema/dev/latest/";
 const LOCAL_ECOSYSTEM_DATA_URL = "/_local/latest.json";
 const LOCAL_HEALTHZ_URL = "/_local/healthz";
+const SUPPORTED_LOADERS = new Set<string>(Object.values(PackageLoader));
+const SUPPORTED_PLATFORMS = new Set<string>(Object.values(Platform));
 
 async function isLocalSchemaReachable(): Promise<boolean> {
     try {
@@ -60,7 +67,35 @@ function validateSchema(schema: unknown): ThunderstoreEcosystem {
     if (!isOk) {
         throw new R2Error("Schema validation error", ajv.errorsText(validate.errors));
     }
-    return schema as unknown as ThunderstoreEcosystem;
+    return removeUnsupportedEntries(schema as unknown as ThunderstoreEcosystem);
+}
+
+function removeUnsupportedFromEntry(entry: R2Modman): R2Modman[] {
+    if (!SUPPORTED_LOADERS.has(entry.packageLoader)) {
+        return [];
+    }
+    const distributions = entry.distributions.filter((x) => SUPPORTED_PLATFORMS.has(x.platform));
+    if (distributions.length === entry.distributions.length) {
+        return [entry];
+    }
+    return distributions.length > 0 ? [{...entry, distributions}] : [];
+}
+
+function removeUnsupportedEntries(schema: ThunderstoreEcosystem): ThunderstoreEcosystem {
+    const games: ThunderstoreEcosystem["games"] = {};
+    for (const [identifier, game] of Object.entries(schema.games)) {
+        if (game.r2modman == null) {
+            games[identifier] = game;
+            continue;
+        }
+        const r2modman = game.r2modman.flatMap(removeUnsupportedFromEntry);
+        if (r2modman.length > 0 || game.r2modman.length === 0) {
+            games[identifier] = {...game, r2modman};
+        }
+    }
+    const modloaderPackages = schema.modloaderPackages.filter((pkg) => SUPPORTED_LOADERS.has(pkg.loader));
+
+    return {...schema, games, modloaderPackages};
 }
 
 function loadBundledSchema(): ThunderstoreEcosystem {
