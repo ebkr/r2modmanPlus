@@ -6,7 +6,17 @@ on:
 jobs:
   deploy-flatpak-repo:
     name: Build and deploy the Flatpak repo
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - kind: flatpak
+            os: ubuntu-latest
+            arch: x86_64
+          - kind: flatpak-arm
+            os: ubuntu-24.04-arm
+            arch: aarch64
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-25.08
       options: --privileged
@@ -45,6 +55,7 @@ jobs:
         run: |
           flatpak-builder \
             --force-clean \
+            --arch=${{ matrix.arch }} \
             --disable-rofiles-fuse \
             --install-deps-from=flathub \
             --default-branch=stable \

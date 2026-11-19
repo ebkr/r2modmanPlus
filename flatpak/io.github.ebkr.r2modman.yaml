@@ -52,13 +52,23 @@ modules:
         sha256: 86b9aa5362b06cc61f5e829e41614ffda2fbda09993b8e84176feaa3c97b9532
         dest: pnpm-standalone
         strip-components: 0
+        only-arches:
+          - x86_64
+
+      - type: archive
+        url: https://github.com/pnpm/pnpm/releases/download/v11.8.0/pnpm-linux-arm64.tar.gz
+        sha256: 251222a30b3dcf6bc1c30c44fe3fdcd0bd4b2b06dd29f6a549647e56fa51548c
+        dest: pnpm-standalone
+        strip-components: 0
+        only-arches:
+          - aarch64
 
     build-commands:
       - chmod +x pnpm-standalone/pnpm
       - pnpm install --frozen-lockfile
       - pnpm build-linux-unpacked
 
-      - cp -r dist/electron/Packaged/linux-unpacked/* /app/
+      - cp -r dist/electron/Packaged/$([[ $(uname -m) = "aarch64" ]] && echo "linux-arm64" || echo "linux")-unpacked/* /app/
 
       - install -Dm644 src/assets/icon/128x128.png /app/share/icons/hicolor/128x128/apps/io.github.ebkr.r2modman.png
       - install -Dm644 src/assets/icon/256x256.png /app/share/icons/hicolor/256x256/apps/io.github.ebkr.r2modman.png
