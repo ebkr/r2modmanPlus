@@ -23,6 +23,7 @@ export default {
     'fr': langFr,
     'ko': langKo,
     'zh-CN': langZhCn,
+	'ja': langJa,
 };
 
 export const datetimeFormats = {
