@@ -13,4 +13,5 @@ export const NodeChildProcessImplementation: NodeChildProcessProvider = {
             });
     },
     spawnSync: (path, args, options) => window.node.child_process.spawnSync(path, args, options),
+    spawn: async (path, args, options) => window.node.child_process.spawn(path, args, options),
 }
