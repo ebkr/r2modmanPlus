@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from 'axios';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ZipExtract from '../installing/ZipExtract';
 import R2Error from '../../model/errors/R2Error';
@@ -58,37 +57,48 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             }
 
             try {
-                const response = await this._downloadCombo(comboInProgress, singleModProgressCallback);
-                await this._saveDownloadResponse(response, comboInProgress, singleModProgressCallback);
+                const fs = FsProvider.instance;
+                const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
+                const modFolder = path.join(cacheDirectory, comboInProgress.getMod().getFullName());
+                const zipFileName = comboInProgress.getVersion().getVersionNumber().toString() + '.zip';
+                const zipPath = path.join(modFolder, zipFileName);
+                const versionFolder = comboInProgress.getVersion().getVersionNumber().toString();
+
+                if (!await fs.exists(modFolder)) {
+                    await fs.mkdirs(modFolder);
+                }
+
+                await fs.downloadFile(
+                    comboInProgress.getVersion().getDownloadUrl(),
+                    zipPath,
+                    (loaded) => singleModProgressCallback(loaded, DownloadStatusEnum.DOWNLOADING, null)
+                );
+
+                const comboSize = comboInProgress.getVersion().getFileSize();
+                singleModProgressCallback(comboSize, DownloadStatusEnum.EXTRACTING, null);
+
+                await new Promise<void>((resolve, reject) => {
+                    ZipExtract.extractAndDelete(
+                        modFolder,
+                        zipFileName,
+                        versionFolder,
+                        (success: boolean, error?: R2Error) => {
+                            if (success) {
+                                singleModProgressCallback(comboSize, DownloadStatusEnum.EXTRACTED, null);
+                                resolve();
+                            } else {
+                                singleModProgressCallback(comboSize, DownloadStatusEnum.FAILED, error || null);
+                                reject(error || new Error('Extraction failed'));
+                            }
+                        }
+                    );
+                });
+
                 await DownloadUtils.markAsDownloadedFromOnline(comboInProgress);
             } catch(e) {
                 throw R2Error.fromThrownValue(e, `Failed to download mod ${comboInProgress.getVersion().getFullName()}`);
             }
         }
-    }
-
-    private async _downloadCombo(combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: DownloadStatusEnum, err: R2Error | null) => void): Promise<AxiosResponse> {
-        return axios.get(combo.getVersion().getDownloadUrl(), {
-            onDownloadProgress: progress => callback(progress.loaded, DownloadStatusEnum.DOWNLOADING, null),
-            responseType: 'arraybuffer',
-            headers: {
-                'Content-Type': 'application/zip',
-                'Access-Control-Allow-Origin': '*'
-            }
-        });
-    }
-
-    private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: DownloadStatusEnum, err: R2Error | null) => void): Promise<void> {
-        const buf: Buffer = Buffer.from(response.data);
-        const comboSize = combo.getVersion().getFileSize();
-        callback(comboSize, DownloadStatusEnum.EXTRACTING, null);
-        await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
-            if (success) {
-                callback(comboSize, DownloadStatusEnum.EXTRACTED, null);
-            } else {
-                callback(comboSize, DownloadStatusEnum.FAILED, error || null);
-            }
-        });
     }
 
     public async saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void) {

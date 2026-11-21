@@ -250,4 +250,8 @@ export default class InMemoryFsProvider extends FsProvider {
         await this.emptyDirectory(directory);
         await this.rmdir(directory);
     }
+
+    async downloadFile(url: string, targetPath: string, onProgress?: (loaded: number) => void): Promise<void> {
+        return Promise.resolve();
+    }
 }

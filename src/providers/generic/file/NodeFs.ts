@@ -3,6 +3,8 @@ import * as fs from 'fs';
 import StatInterface from './StatInterface';
 import Lock from 'async-lock';
 import path from '../../../providers/node/path/path';
+import axios from 'axios';
+import { pipeline } from 'stream/promises';
 
 export default class NodeFs extends FsProvider {
 
@@ -167,4 +169,39 @@ export default class NodeFs extends FsProvider {
             }).catch(reject);
         });
     }
+
+    async downloadFile(url: string, destination: string, onProgress?: (progress: number) => void): Promise<void> {
+        return new Promise((resolve, reject) => {
+            NodeFs.lock.acquire(destination, async () => {
+                try {
+                    const response = await axios({
+                        method: 'get',
+                        url: url,
+                        responseType: 'stream',
+                        maxContentLength: Infinity,
+                        maxBodyLength: Infinity,
+                    });
+
+                    const contentLength = response.headers['content-length'];
+                    const totalLength = contentLength ? parseInt(contentLength, 10) : NaN;
+                    let downloaded = 0;
+
+                    if (onProgress && !isNaN(totalLength) && totalLength > 0) {
+                        response.data.on('data', (chunk: Buffer) => {
+                            downloaded += chunk.length;
+                            const percent = (downloaded / totalLength) * 100;
+                            onProgress(Math.min(percent, 100));
+                        });
+                    }
+
+                    const writer = fs.createWriteStream(destination);
+                    await pipeline(response.data, writer);
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                }
+            }).catch(reject);
+        });
+    }
 }
+
