@@ -19,6 +19,7 @@ const message = {
     metadata: {
         name: 'Français',
         locale: 'fr-FR',
+        system: 'Système',
         wip: "WIP",
     },
     translations: {

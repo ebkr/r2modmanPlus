@@ -12,13 +12,17 @@
                     <div>
                         <ActivityDropdown>
                             <button type="button" class="activity-bar__action"
-                                :aria-label="`${t('metadata.name', 0, { locale })}`"
+                                :aria-label="selectedLocale === SYSTEM_LOCALE
+                                    ? t('metadata.system')
+                                    : t('metadata.name', 0, { locale })"
                                 @click.stop.prevent="focusOnLanguageOverlaySearch"
                             >
-                                <i class="fas fa-globe-europe"></i> {{ locale }}
+                                <i class="fas fa-globe-europe"></i>
+                                {{ selectedLocale === SYSTEM_LOCALE ? t('metadata.system') : locale }}
                             </button>
+
                             <template #popper>
-                                <SelectOverlay/>
+                                <SelectOverlay @select-locale="selectLocale" />
                             </template>
                         </ActivityDropdown>
                     </div>
@@ -78,14 +82,21 @@ import GameImageProvider, { provideGameImageImplementation } from './providers/g
 import { GameImageProviderImplementation } from './r2mm/image/GameImageProviderImpl';
 import { useI18n } from 'vue-i18n';
 import { ActivityDropdown, SelectOverlay } from './components/all';
-import LocaleManager from './r2mm/manager/LocaleManager';
+import LocaleManager, { SYSTEM_LOCALE } from './r2mm/manager/LocaleManager';
 
 const store = baseStore;
 const router = useRouter();
 provideStoreImplementation(() => store);
 
 const quasar = useQuasar();
-const { t, locale, availableLocales, messages } = useI18n();
+const { t, locale } = useI18n();
+
+const selectedLocale = ref<string>(SYSTEM_LOCALE);
+
+async function selectLocale(localeValue: string) {
+    await LocaleManager.save(localeValue);
+    selectedLocale.value = localeValue;
+}
 
 document.addEventListener('auxclick', e => {
     const target = e.target! as any;
@@ -128,6 +139,8 @@ BindLoaderImpl.bind();
 
 onMounted(async () => {
     const settings: ManagerSettings = await store.dispatch('resetActiveGame');
+
+    selectedLocale.value = await settings.getLocale();
 
     await LocaleManager.apply();
 
