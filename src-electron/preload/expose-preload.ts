@@ -2,6 +2,7 @@ import { contextBridge } from 'electron';
 import * as path from './node-path';
 import * as child_process from './node-child-process';
 import * as fs from './node-fs';
+import * as net from './node-net';
 import * as buffer from './node-buffer';
 import * as os from './node-os';
 import * as zip from './zip-preload';
@@ -12,6 +13,7 @@ contextBridge.exposeInMainWorld('node', {
     path: path,
     child_process: child_process,
     fs: fs,
+    net: net,
     buffer: buffer,
     os: os,
 });
