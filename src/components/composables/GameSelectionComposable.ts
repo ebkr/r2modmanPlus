@@ -10,6 +10,7 @@ import ProviderUtils from '../../providers/generic/ProviderUtils';
 import R2Error from '../../model/errors/R2Error';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import { getInstalledSteamAppIds } from '../../r2mm/manager/SteamLibraryScanner';
 import { isGameNewlyAdded, registerGames } from '../../r2mm/ecosystem/EcosystemGameStatus';
 
 export function useGameSelectionComposable() {
@@ -17,6 +18,7 @@ export function useGameSelectionComposable() {
     const router = useRouter();
 
     const favourites = ref<string[]>([]);
+    const installedAppIds = ref<Set<string>>(new Set());
     const selectedGame = ref<Game | null>(null);
     const selectedPlatform = ref<Platform | null>(null);
     const filterText = ref<string>('');
@@ -27,18 +29,9 @@ export function useGameSelectionComposable() {
     const isSettingDefaultPlatform = ref<boolean>(false);
 
     const gameList = computed<Game[]>(() => {
-        return GameManager.gameList.sort((a, b) => {
-            if (favourites.value.includes(a.settingsIdentifier)) {
-                if (favourites.value.includes(b.settingsIdentifier)) {
-                    return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
-                } else {
-                    return -1;
-                }
-            } else if (favourites.value.includes(b.settingsIdentifier)) {
-                return 1;
-            }
-            return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
-        });
+        return GameManager.gameList.sort((a, b) =>
+            a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase())
+        );
     });
 
     const matchesSearch = (game: Game): boolean => {
@@ -76,10 +69,21 @@ export function useGameSelectionComposable() {
             .filter((value: Game) => favourites.value.includes(value.settingsIdentifier));
     });
 
+    const installedGameList = computed(() => {
+        return filteredGameList.value
+            .filter((value: Game) => !hiddenGameList.value.includes(value))
+            .filter((value: Game) => value.storePlatformMetadata.some(
+                p => [Platform.STEAM, Platform.STEAM_DIRECT].includes(p.storePlatform)
+                    && p.storeIdentifier != null
+                    && installedAppIds.value.has(String(p.storeIdentifier))
+            ));
+    });
+
     const nonFavouriteGameList = computed(() => {
         return filteredGameList.value
             .filter((value: Game) => !hiddenGameList.value.includes(value))
-            .filter((value: Game) => !favourites.value.includes(value.settingsIdentifier));
+            .filter((value: Game) => !favourites.value.includes(value.settingsIdentifier))
+            .filter((value: Game) => !installedGameList.value.includes(value));
     });
 
     function isFavourited(game: Game): boolean {
@@ -146,7 +150,7 @@ export function useGameSelectionComposable() {
         const platform = await s.getLastSelectedPlatform();
         selectedPlatform.value = platform ? Platform[platform as unknown as keyof typeof Platform] : null;
     }
-
+2025magazine/?utm_source=chatgpt.com
     async function initialize() {
         runningMigration.value = true;
         await store.dispatch('checkMigrations');
@@ -157,6 +161,7 @@ export function useGameSelectionComposable() {
         settings.value = await ManagerSettings.getSingleton(GameManager.defaultGame);
         const globalSettings = settings.value.getContext().global;
         favourites.value = globalSettings.favouriteGames || [];
+        installedAppIds.value = await getInstalledSteamAppIds();
 
         const lastGame = GameManager.findByFolderName(globalSettings.lastSelectedGame);
         if (lastGame) markAsSelectedGame(lastGame);
@@ -205,6 +210,7 @@ export function useGameSelectionComposable() {
         hiddenGameList,
         newGameSet,
         favouriteGameList,
+        installedGameList,
         nonFavouriteGameList,
         isFavourited,
         isGameSelected,
