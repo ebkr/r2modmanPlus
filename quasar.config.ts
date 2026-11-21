@@ -276,6 +276,23 @@ export default defineConfig((ctx: QuasarContext) => {
                     category: 'Game',
                     mimeTypes: ['x-scheme-handler/ror2mm'],
                 },
+                pacman: {
+                    depends: [
+                        'c-ares',
+                        'ffmpeg',
+                        'gtk3',
+                        'libevent',
+                        'libvpx',
+                        'libxslt',
+                        'libxss',
+                        'minizip',
+                        'nss',
+                        're2',
+                        'snappy',
+                        'libnotify',
+                        'libappindicator-gtk3',
+                    ],
+                },
                 mac: {
                     category: 'games',
                     icon: 'src/assets/icon',
