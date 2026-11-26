@@ -200,12 +200,26 @@ export async function resetCommunity(community: string) {
     });
 }
 
+const withoutDownloads = (key: string, value: unknown) => key === 'downloads' ? undefined : value;
+
+export function hasPackageChanged(stored: DexiePackage | undefined, fetched: DexiePackage): boolean {
+    return JSON.stringify(stored, withoutDownloads) !== JSON.stringify(fetched, withoutDownloads);
+}
+
 export async function upsertPackageListChunk(community: string, packageChunk: any[]) {
     const newPackages: DexiePackage[] = packageChunk.map((pkg) => Object.assign(pkg, {community}));
     const newSummaries: DexieSummary[] = packageChunk.map((pkg) => toSummary(community, pkg));
+    const keys = newPackages.map((pkg): [string, string] => [community, pkg.full_name]);
+
     await db.transaction('rw', db.packages, db.summaries, async () => {
-        await db.packages.bulkPut(newPackages);
-        await db.summaries.bulkPut(newSummaries);
+        const storedPackages = await db.packages.bulkGet(keys);
+        const storedSummaries = await db.summaries.bulkGet(keys);
+        await db.packages.bulkPut(
+            newPackages.filter((pkg, i) => hasPackageChanged(storedPackages[i], pkg))
+        );
+        await db.summaries.bulkPut(
+            newSummaries.filter((s, i) => JSON.stringify(storedSummaries[i]) !== JSON.stringify(s))
+        );
     });
 }
 
